@@ -1,0 +1,3428 @@
+[
+  { "name": "Trans.eu Group Spółka Akcyjna", "tax": "8942764658" },
+  { "name": "Auto Acqua Tomasz Paczkowski", "tax": "4660315456" },
+  { "name": "Dantruck Daniel Gołębiewski", "tax": "7743183272" },
+  { "name": "Opoltrans - Sp. z o. o.", "tax": "7542760478" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno Handlowe Unigum Wrotek Zbigniew",
+    "tax": "8790261235"
+  },
+  { "name": "Kompix It Sp. z o. o.", "tax": "4660429007" },
+  { "name": "Orange Polska Spółka Akcyjna", "tax": "5260250995" },
+  { "name": "Partner Premium Salata Spółka Jawna", "tax": "7740014505" },
+  { "name": "Dariusz Fidura Omnibus", "tax": "6442337604" },
+  { "name": "Kapter Sp. z o. o.", "tax": "5222880547" },
+  {
+    "name": "Sprzedaż Części Do Aut Ciężarowych Coner-Części Krzysztof Coner",
+    "tax": "5732742643"
+  },
+  {
+    "name": "”Media Markt Polska Sp. z o. o. Płock” Spółka Komandytowa",
+    "tax": "7010208556"
+  },
+  { "name": "”Suder Plus” Sp. z o. o.", "tax": "9231390224" },
+  {
+    "name": "”Soley - Areca Sp. z o. o.” Spółka Komandytowa",
+    "tax": "6151966270"
+  },
+  {
+    "name": "R.s. Hawk Wrapping&Styling Car Robert Szeremeta",
+    "tax": "5481549787"
+  },
+  { "name": "P.p.u.h. Celmar Celiński Mariusz", "tax": "8222048678" },
+  {
+    "name": "Kulpa Piotr Przedsiębiorstwo Produkcyjno Handlowo Usługowe Brat-Kul",
+    "tax": "7342908226"
+  },
+  { "name": "Geoinf Głydziak Spółka Jawna", "tax": "7742411050" },
+  { "name": "Mawy Marcin Wydra", "tax": "6392015398" },
+  { "name": "Jysk Sp. z o. o.", "tax": "5862016763" },
+  {
+    "name": "Firma Usługowo-Handlowa Rafir Rafał Dziemidowicz",
+    "tax": "5981523058"
+  },
+  { "name": "Fxl Sp. z o. o.", "tax": "5472218507" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno Usługowe Plandeki-Ostrowska Hanna Ostrowska",
+    "tax": "7741012537"
+  },
+  {
+    "name": "Firma Handlowo Usługowa ”A&A Tacho-Serwis” Andrzej Podgrudny",
+    "tax": "7741621354"
+  },
+  { "name": "Tronik Sp. z o. o. Spółka Komandytowa", "tax": "5681567494" },
+  { "name": "Inelo Polska Sp. z o. o.", "tax": "5512333463" },
+  { "name": "”Skuba Polska” Sp. z o. o.", "tax": "1181788586" },
+  { "name": "Janusz Kowalczyk Kowalczyk Holding", "tax": "7742679887" },
+  {
+    "name": "Przdsiębiorstwo Produkcyjno-Handlowo-Usługowe Eko-Benz Spółka Z O.o.",
+    "tax": "8371555340"
+  },
+  { "name": "Astex Logistic Sp. z o. o.", "tax": "8911628026" },
+  {
+    "name": "Zasada Trans-Spedition Sp. z o. o. Spółka Jawna",
+    "tax": "8691018773"
+  },
+  {
+    "name": "Transport Towarowy Krzysztof Cichon Sp. z o. o.",
+    "tax": "7551933257"
+  },
+  { "name": "Hermes Marcin Pieściński", "tax": "8891518894" },
+  {
+    "name": "Zakład Urządzeń Grzewczych Elektromet Wojciech Jurkiewicz",
+    "tax": "7480000770"
+  },
+  { "name": "Ltp-Logistyka Sp. z o. o.", "tax": "7773363429" },
+  { "name": "”Cemet Serwis” Sp. z o. o.", "tax": "5960004844" },
+  {
+    "name": "Kmb Polska - Marek Dzięgiel Spółka Komandytowa",
+    "tax": "7511773379"
+  },
+  { "name": "Rhenus Port Logistics Sp. z o. o.", "tax": "8520404334" },
+  { "name": "E100 Power Max Sp. z o. o.", "tax": "5213837842" },
+  { "name": "Vivaro Sp. z o. o.", "tax": "7743219484" },
+  { "name": "Wenet Group Spółka Akcyjna", "tax": "7010046065" },
+  { "name": "Arcese Polska Sp. z o. o.", "tax": "6762300100" },
+  {
+    "name": "Usługi Transportowe I Spedycyjne Bogumił Dudek 36-062 Zaczernie 771",
+    "tax": "8130012359"
+  },
+  { "name": "Podlasie Spółka Akcyjna", "tax": "8250004049" },
+  {
+    "name": "P.H.U. Trans Europa Sp. z o. o. Spółka Komandytowa",
+    "tax": "7743247983"
+  },
+  { "name": "Andrzej Hycnar U.h.t.", "tax": "8731370454" },
+  { "name": "Aksam Sp. z o. o. Spółka Komandytowa", "tax": "5492410136" },
+  { "name": "Krzysztof Więzowski Usługi Transportowe", "tax": "6321221067" },
+  { "name": "Staned Serwis Witek Spółka Jawna", "tax": "5540086479" },
+  {
+    "name": "Biśta Sebastian Mechanika I Blacharstwo Samochodowe",
+    "tax": "6281356392"
+  },
+  {
+    "name": "Oratyński Jan Przedsiębiorstwo Produkcyjno Handlowo Usługowe Jan-Pol",
+    "tax": "7680000415"
+  },
+  { "name": "Luko Sp. z o. o.", "tax": "7343522078" },
+  {
+    "name": "Firma Handlowo Uslugowa Kolasio Transport, Łukasz Kolasiński",
+    "tax": "5482120885"
+  },
+  { "name": "Katarzyna Królak P.h.u. Ka-Trans", "tax": "8252044082" },
+  {
+    "name": "C-Trans Usługi Transportowe Zbigniew Cichocki",
+    "tax": "8931048409"
+  },
+  { "name": "Jas-Fbg Spółka Akcyjna", "tax": "6330003565" },
+  {
+    "name": "”Paul Schockemohle Logistics Polska” Sp. z o. o.",
+    "tax": "7551789547"
+  },
+  {
+    "name": "Pedrotrans-Bis S.c. Dawid I Patrycja Poremba",
+    "tax": "7551890080"
+  },
+  {
+    "name": "Probio Profesjonalne Żywienie - Paweł Benedykciński",
+    "tax": "8891001599"
+  },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno- Usługowo- Handlowe Rolbud Adam Trzmielewski, Jerzy Dąbrowski Spółka Jawna",
+    "tax": "5391001181"
+  },
+  { "name": "Usługi Transportowe - Handel Adam Peć", "tax": "5611191575" },
+  { "name": "Soli Deo Sp. z o. o.", "tax": "6631878063" },
+  {
+    "name": "Ruger Polska Spółka Z Ograniczoną  Odpowiedzialnością",
+    "tax": "9542657505"
+  },
+  { "name": "Uniq Logistic Sp. z o. o. Spółka Jawna", "tax": "9820351795" },
+  {
+    "name": "Firma Handlowo-Usługowa Kargo-Max Karol Gębka",
+    "tax": "6492136871"
+  },
+  { "name": "Millennium Leasing Sp. z o. o.", "tax": "5260213126" },
+  { "name": "”Superhobby Market Budowlany” Sp. z o. o.", "tax": "9511008094" },
+  {
+    "name": "Polski Koncern Naftowy Orlen Spółka Akcyjna",
+    "tax": "7740001454"
+  },
+  { "name": "Złomex Sp. z o. o.", "tax": "5252571874" },
+  { "name": "Nest Sp. z o. o.", "tax": "9680973171" },
+  { "name": "Circle K Polska Sp. z o. o.", "tax": "7790001083" },
+  { "name": "Unimot Spółka Akcyjna", "tax": "7561967341" },
+  { "name": "Autostrada Eksploatacja Spółka Akcyjna", "tax": "7822182433" },
+  { "name": "Agata Spółka Akcyjna", "tax": "6340197476" },
+  {
+    "name": "Społem Powszechna Spółdzielnia Spożywców Zgoda W Płocku",
+    "tax": "7740002011"
+  },
+  { "name": "Auchan Polska Sp. z o. o.", "tax": "5260309174" },
+  { "name": "Jeronimo Martins Polska Spółka Akcyjna", "tax": "7791011327" },
+  { "name": "”Wss Detal” Sp. z o. o.", "tax": "8542174261" },
+  { "name": "Lidl Sp. z o. o. Spółka Komandytowa", "tax": "7811897358" },
+  {
+    "name": "Stalexport Autostrada Małopolska Spółka Akcyjna",
+    "tax": "6342262054"
+  },
+  { "name": "Gdańsk Transport Company Spółka Akcyjna", "tax": "5831092438" },
+  { "name": "”Grupa Transportowa” Sp. z o. o.", "tax": "7712852200" },
+  { "name": "Oil Toruń Sp. z o. o.", "tax": "8792546195" },
+  { "name": "Neele-Vat Transport B.V", "tax": "NL804421341B01" },
+  { "name": "Joppa Logistics s.r.o", "tax": "CZ25597086" },
+  { "name": "Erb Transporte GmbH", "tax": "DE274675735" },
+  { "name": "Gtc Poland Sp. z o. o.", "tax": "6462968704" },
+  { "name": "Visline Sp. z o. o.", "tax": "5862232082" },
+  { "name": "Auto-Port Kobuszewski,Dymek S.c.", "tax": "7743216221" },
+  { "name": "Wistrans Sp. z o. o.", "tax": "5272799971" },
+  {
+    "name": "Aviva Towarzystwo Ubezpieczeń Na Życie Spółka Akcyjna",
+    "tax": "5260209975"
+  },
+  { "name": "”Poczta Polska Spółka Akcyjna”", "tax": "5250007313" },
+  { "name": "Guretruck Sp. z o. o.", "tax": "9562260892" },
+  {
+    "name": "Sopockie Towarzystwo Ubezpieczeń Ergo Hestia Spółka Akcyjna",
+    "tax": "5850001690"
+  },
+  { "name": "Toll Collect GmbH", "tax": "DE224136187" },
+  { "name": "Ministerstwo Finansów", "tax": "5260250274" },
+  { "name": "Ages Sp. z o. o.", "tax": "8942910953" },
+  { "name": "”Nord Serwis” Sp. z o. o.", "tax": "9562018317" },
+  { "name": "Zakład Ubezpieczeń Społecznych", "tax": "5213017228" },
+  { "name": "CTS EVENTIM AG&Co. KGaA", "tax": "5262774751" },
+  { "name": "Sentinelle Est", "tax": "FR22531680445" },
+  { "name": "”Dkv Euro Service Polska” Sp. z o. o.", "tax": "5262473400" },
+  {
+    "name": "Europejski Fundusz Leasingowy Spółka Akcyjna",
+    "tax": "8970012657"
+  },
+  { "name": "SALAMANDER", "tax": "8881016263" },
+  { "name": "Stalmech K1 Sp. z o. o.", "tax": "7743242856" },
+  { "name": "Stalmech", "tax": "7741004288" },
+  { "name": "Iwmark Marek Jankowski", "tax": "7740019632" },
+  { "name": "Schenker Sp. z o. o.", "tax": "5270103824" },
+  { "name": "Gefco Polska Sp. z o. o.", "tax": "5252109503" },
+  { "name": "Fuh Truck Maria Górska", "tax": "9482099354" },
+  { "name": "Miratrans Transport I Spedycja Sp. z o. o.", "tax": "9551872999" },
+  { "name": "Automoto Tsl Sp. z o. o.", "tax": "6222820422" },
+  { "name": "Ewals Cargo Polska Sp. z o. o.", "tax": "9551807921" },
+  { "name": "Ergis Recycling Sp. z o.o.", "tax": "7742795062" },
+  { "name": "Neoinvest Zamachowski, Blady Spółka Jawna", "tax": "7743126452" },
+  { "name": "Vml Spółka Akcyjna", "tax": "9721081418" },
+  { "name": "Mpm Group Maciej Michalak", "tax": "8212581141" },
+  { "name": "Fanlogic Sp. z o. o. Spółka Komandytowa", "tax": "8862845685" },
+  { "name": "Ultra Logistics Sp. z o. o.", "tax": "1132993837" },
+  { "name": "Xpo Transport Solutions Poland Sp. z o. o.", "tax": "7250013591" },
+  { "name": "Enepso Sp. z o. o.", "tax": "5252712381" },
+  { "name": "Polbema Sp. z o. o.", "tax": "6762492192" },
+  { "name": "Laude Smart Intermodal Spółka Akcyjna", "tax": "9562224293" },
+  { "name": "Fol-Mech Paweł Zgorzelski", "tax": "7741929632" },
+  { "name": "Wrosped Sp. z o. o.", "tax": "8992887044" },
+  { "name": "Budiak Karolina Anioł", "tax": "6121727738" },
+  { "name": "Sped-Trans Sp. z o. o.", "tax": "7393862103" },
+  { "name": "Vet Planet Sp. z o. o.", "tax": "5272581427" },
+  {
+    "name": "PHU Jubo-Trans Jerzy Halczuk, Bogdan Halczuk Spółka Jawna",
+    "tax": "9281696505"
+  },
+  { "name": "Motiva Solutions Sp. z o. o.", "tax": "6462973929" },
+  { "name": "Expol Speditionsges mbH", "tax": "DE123878780" },
+  {
+    "name": "Hansped Transport I Spedycja A. Hanusiak-Tatarska  S.K.A",
+    "tax": "9542572720"
+  },
+  { "name": "Pgm Group Sp. z o. o.", "tax": "8971790931" },
+  { "name": "JSC ”Girteka cargo”", "tax": "LT100005835710" },
+  { "name": "SWIDA Innovative s.r.o", "tax": "SK2020030639" },
+  { "name": "Px Kabel Sp z o.o.", "tax": "6772447891" },
+  { "name": "Neoinvest Sp. z o. o.", "tax": "7743258774" },
+  { "name": "Neosystem Spółka Cywilna", "tax": "7743243382" },
+  { "name": "Startis Hmp Sp. z o. o.", "tax": "9452108249" },
+  { "name": "Liner J. Krywko Spółka Komandytowa", "tax": "9112029344" },
+  {
+    "name": "Przedsiębiorstwo Przewozu Towarów Pks Gdańsk-Oliwa Spółka Akcyjna",
+    "tax": "5841031823"
+  },
+  { "name": "Master Tsl Sp.zo.o Sp.K", "tax": "7272791924" },
+  {
+    "name": "Sprint Logistyka Polska Spółka Akcyjna Spółka Komandytowa",
+    "tax": "8512841994"
+  },
+  { "name": "Schwerdtfeger Transport GmbH", "tax": "DE191009319" },
+  { "name": "ABT Logistics Group LTD", "tax": "GB290233911" },
+  { "name": "Open Logistics Sp. z o. o.", "tax": "9471981083" },
+  { "name": "Done Deliveries Sp. z o. o.", "tax": "5542945426" },
+  { "name": "Slowaker s. r. o.", "tax": "SK2120615552" },
+  { "name": "Abakus Logistics Sp. z o. o.", "tax": "7010453787" },
+  { "name": "Mar-Med Logistics Sp. z o. o.", "tax": "5342500487" },
+  { "name": "Leader Logistics Sp. z o. o.", "tax": "8992733619" },
+  { "name": "Lifi Logistics Sp. z o. o.", "tax": "8992845407" },
+  { "name": "Best Transports", "tax": "FR66842326969" },
+  {
+    "name": "Tft Logistic Sp. z o. o. Spółka Komandytowa",
+    "tax": "6182156276"
+  },
+  { "name": "Synertis Sp. z o. o.", "tax": "9372678223" },
+  { "name": "Jan-Sped Sp. z o. o.", "tax": "9151615862" },
+  { "name": "Euro24 Sp. z o. o. Spółka Komandytowa", "tax": "5170356307" },
+  { "name": "Palar Trans Daniel Palarczyk", "tax": "6511652882" },
+  { "name": "Fide-Trans  Spółka Jawna", "tax": "9581637501" },
+  { "name": "Oba-Trans Sp. z o. o.", "tax": "6681884700" },
+  { "name": "Remo & Co Sp. z o. o.", "tax": "9452227882" },
+  {
+    "name": "Royal Transport&Spedition Szczepaniak Spółka Komandytowa",
+    "tax": "6972350216"
+  },
+  { "name": "Baltic Spedition Sp. z o. o.", "tax": "5662017189" },
+  { "name": "Mtm Logistics Marcin Śliwiński", "tax": "8992586779" },
+  {
+    "name": "Adw Logistic Sp. z o. o. Spółka Komandytowa",
+    "tax": "5423240702"
+  },
+  { "name": "D&A Logistic Łukasz Robak", "tax": "8392289582" },
+  { "name": "Eko-Robak Andrzej Robaczewski", "tax": "8761971483" },
+  { "name": "Orpak Orbaczewski Spółka Jawna", "tax": "8930001239" },
+  { "name": "Colian Logistic Sp. z o. o.", "tax": "9680933964" },
+  { "name": "Geodis Poland Sp. z o. o.", "tax": "5242388571" },
+  { "name": "Danko-Trans Poland Sp. z o. o.", "tax": "5213921778" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Matryk Piotr Kossowski",
+    "tax": "5391000537"
+  },
+  { "name": "Bowim Spółka Akcyjna", "tax": "6452244873" },
+  { "name": "Targor-Truck Sp. z o. o.", "tax": "7582045405" },
+  {
+    "name": "Abc Czepczyński Sp. Z o.o. Spółka Komandytowa",
+    "tax": "5951442504"
+  },
+  { "name": "Robert Muller Sp. z o. o.", "tax": "8992507277" },
+  { "name": "Ms Logistics Sp. z o. o.", "tax": "6431764165" },
+  { "name": "Karamac Logistics Spółka Cywilna", "tax": "6040220449" },
+  {
+    "name": "Martrans Przedsiębiorstwo Handlowo-Usługowe Marcin Pietrzak",
+    "tax": "7321966508"
+  },
+  { "name": "Dp Trans Łukasz Łazutka", "tax": "8311485989" },
+  { "name": "Ampol - Merol Sp. z o. o.", "tax": "8781697424" },
+  {
+    "name": "Bogusz Piotr Sped-Trans Przedsiębiorstwo Usługowe",
+    "tax": "5381269226"
+  },
+  {
+    "name": "Przedsiębiorstwo Koordynacji Spedycji Torm Sp. z o. o.",
+    "tax": "9571070731"
+  },
+  { "name": "Avero Logistics Adrian Janik", "tax": "6182025137" },
+  { "name": "Polonia Logistyka Sp. z o. o.", "tax": "5771805193" },
+  { "name": "M. Preymesser Logistyka Sp. z o. o.", "tax": "6342102824" },
+  {
+    "name": "Pik Materiały Budowlane Sp. z o. o. Spółka Komandytowa",
+    "tax": "7742357907"
+  },
+  { "name": "Bildau & Bussmann Polska Sp. z o. o.", "tax": "7741012974" },
+  { "name": "Kris-Trans Sp. z o. o.", "tax": "6762450584" },
+  { "name": "Forever Logistics Kubiak Spółka Jawna", "tax": "9820377777" },
+  { "name": "Z&G Trans Pysz Sp. z o. o.", "tax": "6511662685" },
+  { "name": "Wolspedtrans Sp. z o. o.", "tax": "9231685830" },
+  { "name": "Grzebinoga Intertrans Piotr Grzebinoga", "tax": "6371968302" },
+  { "name": "B.weber Sp. z o. o.", "tax": "7831710742" },
+  { "name": "C.h. Robinson Polska Spółka Akcyjna", "tax": "5252392290" },
+  { "name": "Compra Recykling Sp. z o. o.", "tax": "7692234900" },
+  { "name": "West Cargo GmbH", "tax": "DE288755529" },
+  { "name": "Gabi Witold Wojciechowicz", "tax": "5771327026" },
+  {
+    "name": "Ekoinstal Holding Sp. z o. o. Spółka Komandytowa",
+    "tax": "6340000723"
+  },
+  {
+    "name": "Firma Handlowo-Usługowa Armeks Dorota Damaziak Spółka Jawna",
+    "tax": "7742764653"
+  },
+  {
+    "name": "Advectus Iwona Adamczyk, Alicja Szczęsna Spółka Cywilna",
+    "tax": "8992639889"
+  },
+  { "name": "Power Trade - Konrad Hrabia", "tax": "8882763051" },
+  { "name": "Satori Sp. z o. o.", "tax": "8513177386" },
+  { "name": "Dinbox Sp. z o. o.", "tax": "7743253860" },
+  { "name": "”Skat Transport P.S.A", "tax": "5851356886" },
+  { "name": "Enpire Łukasz Wojciechowski", "tax": "9532556300" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe ”Centrostal - Wrocław” Spółka Akcyjna",
+    "tax": "8960006052"
+  },
+  {
+    "name": "S&M Logistic Bartniczak Nawrocki Sp. z o.o.",
+    "tax": "9721254356"
+  },
+  { "name": "Lexstar s.r.o", "tax": "SK2023890462" },
+  { "name": "Wen Spółka Cywilna", "tax": "8961535841" },
+  { "name": "Marcin Sekula Bmt Express", "tax": "5371894626" },
+  { "name": "Ml Global Express 24 Monika Butor", "tax": "5532409459" },
+  {
+    "name": "Desmond Marek Sulikowski, Tomasz Chojnacki S.c.",
+    "tax": "7471896146"
+  },
+  {
+    "name": "Acropol Jastrzębski Orzechowska Spółka Jawna",
+    "tax": "6182103475"
+  },
+  {
+    "name": "Bba Transport System Sp. z o. o. Spółka Komandytowa",
+    "tax": "1132590157"
+  },
+  { "name": "Sdg Jan Błahut Spółka Jawna", "tax": "6342828745" },
+  {
+    "name": "”Margo Worldwide” Sp. z o. o. Spółka Komandytowa",
+    "tax": "7792409687"
+  },
+  { "name": "Piomar Sp. z o. o.", "tax": "7540336291" },
+  { "name": "”Marcegaglia Poland” Sp. z o. o.", "tax": "5761485249" },
+  { "name": "Gea Invest Sp. z o. o.", "tax": "8992811118" },
+  { "name": "Fixemer Logistics GmbH", "tax": "DE813333009" },
+  { "name": "Magnus Logistics UAB", "tax": "LT100001806917" },
+  { "name": "Chenczke Logistic Sp. z o. o.", "tax": "9680993038" },
+  { "name": "Codognotto Polska Sp. z o. o.", "tax": "7251959614" },
+  { "name": "Inox Transport Patryk Maksymienko", "tax": "9282038951" },
+  { "name": "Express Heroes Sp. z o. o.", "tax": "5732922397" },
+  {
+    "name": "Droader Usługi Transportowe Maksymilian Wieczorek",
+    "tax": "9291794907"
+  },
+  { "name": "4M Michał Ulan", "tax": "2530294453" },
+  { "name": "”Artcem Tępiński I Wspólnicy” Spółka Jawna", "tax": "9661789294" },
+  { "name": "B-Trans Spedition Katarzyna Brewińska", "tax": "6692393360" },
+  { "name": "Cargobiz Anna Bizan", "tax": "6180000481" },
+  { "name": "Umss Robert Wasilewski", "tax": "5541920080" },
+  { "name": "Crasco Sp. z o. o.", "tax": "5311692362" },
+  { "name": "Pegas Logistics GmbH", "tax": "DE813872796" },
+  {
+    "name": "Przesiębiorstwo Produkcyjno-Handlowo-Usługowe Dimex Sp. z o. o.",
+    "tax": "6340130532"
+  },
+  { "name": "Kaspeda Sp. z o. o.", "tax": "1132939536" },
+  {
+    "name": "Js Logistics Sebastian Sroga Spółka Komandytowa",
+    "tax": "9721265779"
+  },
+  { "name": "Euro-Solution Sp. z o. o.", "tax": "6060069352" },
+  { "name": "Simple Way Sp. z o. o. Spółka Komandytowa", "tax": "5951455352" },
+  { "name": "Metfix Sp. z o. o.", "tax": "7743254486" },
+  { "name": "Rbb-Stal Sp. z o. o.", "tax": "6172162766" },
+  { "name": "Wosped Waldemar Okonkowski", "tax": "8931232260" },
+  { "name": "Fracht Fwo Polska Sp. z o. o.", "tax": "7542735115" },
+  { "name": "Easy Pro Logistik Sp. z o. o.", "tax": "7773255421" },
+  {
+    "name": "Dgs Logistic Sp. z o. o. Spółka Komandytowa",
+    "tax": "6772393758"
+  },
+  { "name": "Spedycja Logis Sp. z o. o.", "tax": "5213625212" },
+  { "name": "Dpv Logistic Sp. z o. o.", "tax": "9532637642" },
+  { "name": "Zajazd Boryna Sylwia Wolska", "tax": "8321006482" },
+  {
+    "name": "Tacho Port Spółka Cywilna Filip Orleański, Jarosław Wypart",
+    "tax": "7722404408"
+  },
+  { "name": "Dpd Polska Sp. z o. o.", "tax": "5260204110" },
+  { "name": "Dhl Parcel Polska Sp. z o. o.", "tax": "9512417713" },
+  { "name": "Ciesielski Sp. z o. o.", "tax": "9731064427" },
+  { "name": "P.p.u.h Sławpol Sławomira Wojciechowska", "tax": "5571255351" },
+  { "name": "Truck24 Sp. z o. o.", "tax": "8952126623" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Transportowe Transmas Spółka Jawna Ireneusz I Andrzej Stefaniak",
+    "tax": "9160001303"
+  },
+  { "name": "”Port Radomsko” Sp. z o. o.", "tax": "7722355590" },
+  { "name": "”Komunikacja Miejska-Płock” Sp. z o. o.", "tax": "7742352235" },
+  { "name": "Admax Serwis Adam Siwanowicz", "tax": "7741751335" },
+  { "name": "Spot1 Sp. z o. o. Spółka Komandytowa", "tax": "6681998384" },
+  { "name": "”P4 Sp. z o. o.”", "tax": "9512120077" },
+  {
+    "name": "Polmax Spółka Akcyjna Spółka Komandytowo-Akcyjna",
+    "tax": "9270101000"
+  },
+  { "name": "”Euro - Net” Sp. z o. o.", "tax": "5270005984" },
+  { "name": "Web Innovative Software Sp. z o. o.", "tax": "8982167294" },
+  { "name": "Office - Jet Paweł Zwierzchlewski", "tax": "7742752638" },
+  {
+    "name": "Piotr Januszko Biuro Doradztwa Gospodarczo-Handlowego",
+    "tax": "5221176817"
+  },
+  {
+    "name": "Centrum Zaopatrzenia Rolnictwa Greenwes Maria Wesołowska",
+    "tax": "8882807558"
+  },
+  {
+    "name": "”Eko-Trans Kowaluk K. Brzózka M.” Spółka Jawna",
+    "tax": "6550006169"
+  },
+  {
+    "name": "Firma Handlowo Transportowo Usługowa Zbigniew Warczachowski",
+    "tax": "7742410234"
+  },
+  { "name": "Vtr Logistics Spółka Akcyjna", "tax": "6341014934" },
+  {
+    "name": "Tama-Trans Usługi Transportowe Tamara Tomczak",
+    "tax": "8891413586"
+  },
+  {
+    "name": "Usługi Transportowo-Handlowe Stanisław Gawęcki",
+    "tax": "6571732834"
+  },
+  {
+    "name": "”Omega Pilzno” International Transport & Spedition Godawski & Godawski Sp. z o. o.",
+    "tax": "8722106396"
+  },
+  { "name": "Trans - Romantica Dariusz Mossakowski", "tax": "7411121602" },
+  { "name": "Usługi Transportowe ”Aneta Pietrzak”", "tax": "6661281140" },
+  { "name": "Mich-Trans Michał Buler", "tax": "8792476678" },
+  {
+    "name": "Kris-Trans Usługi Transportowe Krzysztof Poryszewski",
+    "tax": "9710271173"
+  },
+  { "name": "Staldex Sp. z o. o.", "tax": "7010473092" },
+  { "name": "Transport Ciężarowy Robert Opertowski", "tax": "9670238820" },
+  {
+    "name": "Przdsiębiorstwo Produkcyjno-Handlowo-Usługowe I Transportowe Grod-Pol Sp. z o. o.",
+    "tax": "6422162952"
+  },
+  { "name": "Nordic Logistics Polska Sp. z o. o.", "tax": "6832088830" },
+  {
+    "name": "Optimum Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "5423256347"
+  },
+  { "name": "Amic Polska Sp. z o. o.", "tax": "5271711106" },
+  {
+    "name": "Hit Transport Międzynarodowy, Spedycja I Logistyka Sp. z o. o.",
+    "tax": "9231689207"
+  },
+  { "name": "Anwim Spółka Akcyjna", "tax": "5270011878" },
+  {
+    "name": "H.b.crab Spółka Jawna, Stacja Paliw Zając Adam, Bąk Paweł, Piestrak Krzysztof",
+    "tax": "6420410512"
+  },
+  { "name": "”Leroy-Merlin Polska” Sp. z o. o.", "tax": "1130089950" },
+  {
+    "name": "Atelkom Spółka Jawna Dyrek, Kasprzyk, Turakiewicz",
+    "tax": "7343525036"
+  },
+  {
+    "name": "Generalny Partner Logistyczny Terminus - Spółka Cywilna",
+    "tax": "5423223282"
+  },
+  { "name": "Martex Sp. z o. o.", "tax": "6422466043" },
+  {
+    "name": "Przedsiębiorstwo Robót Drogowych Drobud Sp. z o. o.",
+    "tax": "8781546412"
+  },
+  { "name": "Watis Sp. z o. o.", "tax": "6671003388" },
+  {
+    "name": "Szkopek - Radosław I Grzegorz Szkopek Spółka Jawna",
+    "tax": "6222509724"
+  },
+  {
+    "name": "Przedsiębiorstwo Handlowo - Usługowe ”Roltmex' Nowak Jan”",
+    "tax": "6371012673"
+  },
+  {
+    "name": "Wrocławskie Przedsiębiorstwo Oczyszczania Alba Spółka Akcyjna",
+    "tax": "8960000026"
+  },
+  { "name": "Alkla", "tax": "DE279686225" },
+  { "name": "Transcash.eu Spółka Akcyjna", "tax": "8971714717" },
+  { "name": "Transport Handel Marek Hawrylak", "tax": "6481107104" },
+  { "name": "Atr Sp. z o. o.", "tax": "5671924165" },
+  { "name": "Kr Al - Trans Katarzyna Mastalerz", "tax": "6631721516" },
+  { "name": "Rhenus Freight Logistics Sp. z o. o.", "tax": "5213951377" },
+  { "name": "Landi Sp. z o. o.", "tax": "7010600366" },
+  { "name": "Sm Spedition Sp. z o. o.", "tax": "6222828665" },
+  { "name": "Paweł Jagiełło Shipping Sp. z o. o.", "tax": "9731033355" },
+  { "name": "Greenlights Sp. z o.o.", "tax": "5423000079" },
+  { "name": "Tsl Spertusiak Sp. z o. o.", "tax": "8272312344" },
+  { "name": "M-Express Mikuła Spółka Komandytowa", "tax": "6981853520" },
+  { "name": "Simple Solutions Sp. z o. o.", "tax": "7393943534" },
+  { "name": "H.u.p. Pama Maślaniec Adam", "tax": "8131700311" },
+  { "name": "Trans Elite Sp. z o. o. Spółka Komandytowa", "tax": "8921486800" },
+  {
+    "name": "Transland Tsl Sp. Z O.o. Spółka Komandytowa",
+    "tax": "6272752450"
+  },
+  { "name": "Air Express Poland Sp. z o. o.", "tax": "8971790210" },
+  { "name": "Global Prospect Sp. z o. o.", "tax": "5542932406" },
+  {
+    "name": "Plt Invest S.c. Łukasz Żołnierowicz,Joanna Niejedli",
+    "tax": "6821772184"
+  },
+  { "name": "Optima Logistics Group Spółka Akcyjna", "tax": "7010157936" },
+  { "name": "ERFOLG s.r.o.", "tax": "SK2022195615" },
+  { "name": "Primo Sole Group Łańcut Sp. z o. o.", "tax": "8151809560" },
+  { "name": "Transport Międzynarodowy Jakub Tyszkiewicz", "tax": "7842390353" },
+  { "name": "Romont Sp. z o. o. Spółka Komandytowa", "tax": "7743240981" },
+  { "name": "Devil Express Paulina Gościcka", "tax": "7743241555" },
+  {
+    "name": "Forcon Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "7792414145"
+  },
+  { "name": "Kowalik Spółka Jawna", "tax": "5482637128" },
+  { "name": "Gl Steel Sp. z o. o.", "tax": "5213643960" },
+  { "name": "Trade Trans Combi Sp. z o. o.", "tax": "8971649500" },
+  { "name": "Mirglass Wioleta Kopera", "tax": "7742962436" },
+  {
+    "name": "Aion Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "9721258650"
+  },
+  { "name": "Główny Inspektorat Transportu Drogowego", "tax": "5262596640" },
+  {
+    "name": "Powszechny Zakład Ubezpieczeń Spółka Akcyjna",
+    "tax": "5260251049"
+  },
+  {
+    "name": "Generali Towarzystwo Ubezpieczeń Spółka Akcyjna",
+    "tax": "5262349108"
+  },
+  { "name": "Abm Logistic Sp. z o. o.", "tax": "7561958885" },
+  { "name": "Logistic Network Log-Net Sp. z o. o.", "tax": "1132809791" },
+  { "name": "Skoczeń Transport Logistik Karol Skoczeń", "tax": "6372157161" },
+  { "name": "Logitarius Sp. z o. o. Spółka Komandytowa", "tax": "7272840806" },
+  { "name": "”Transmeble Cargo” Sp. z o. o.", "tax": "7791632213" },
+  { "name": "Pezdrive Mariusz Pezdek", "tax": "5532205461" },
+  { "name": "PHU Jakub Kołakowski", "tax": "7182152907" },
+  { "name": "As-Pol Spedycja I Logistyka Anna Jóźwiak", "tax": "7581472281" },
+  { "name": "Polskie Młyny Sp. z o. o.", "tax": "5540314294" },
+  { "name": "Inter Cars Spółka Akcyjna", "tax": "1181452946" },
+  { "name": "Natanek Hiszpania", "tax": "ESB67343707" },
+  { "name": "Virtus Logistics Sp. z o. o.", "tax": "5851466250" },
+  { "name": "Ligural Sp. z o. o.", "tax": "5252712961" },
+  { "name": "Pks Trans Żary Sp. z o. o.", "tax": "9282095239" },
+  { "name": "L.I.T. Speditions GmbH", "tax": "DE117406156" },
+  { "name": "Przedsiębiorstwo Handlowe ”J I K” S.c.", "tax": "7740022309" },
+  {
+    "name": "”Agnes 24” Spółka Cywilna  Agnieszka Zawadzka, Piotr Zawadzki",
+    "tax": "4290040612"
+  },
+  { "name": "Wismar Sp. z o. o.", "tax": "7743218533" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno Handlowe Export-Import Bogusław I Rafał Bodnar Drew-Trans Spółka Jawna",
+    "tax": "8420003506"
+  },
+  { "name": "Raftrans Usługi Transportowe Rafał Cudo", "tax": "8141663830" },
+  {
+    "name": "Grzegorz Mosiołek Przedsiębiorstwo Trans-Beat",
+    "tax": "6631496195"
+  },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno Handlowo Usługowe Auto-Lift Agnieszka Borkowska",
+    "tax": "8882634767"
+  },
+  {
+    "name": "Krzysztof Kmiecik Przedsiębiorstwo Handlowo-Usługowe Agromas",
+    "tax": "8311242778"
+  },
+  { "name": "Krysiak Polska Nieruchomości Sp. z o. o.", "tax": "5252847135" },
+  { "name": "”Rohlig Suus Logistics Spółka Akcyjna”", "tax": "1230993241" },
+  {
+    "name": "Stanisław Galoch Usługi Handlowo Transportowe  Stangal",
+    "tax": "6520011154"
+  },
+  { "name": "Spedcom Logistic Sp. z o. o.", "tax": "6793070003" },
+  { "name": "Kurier Sp. z o. o.", "tax": "8250007289" },
+  {
+    "name": "Firma Transportowa Pińkowski Zbigniew Pińkowski",
+    "tax": "7751080753"
+  },
+  { "name": "Prymus Szumacher, Wieczorek Spółka Jawna", "tax": "5291744913" },
+  { "name": "Kar-Pol Karol Roszak", "tax": "6171238786" },
+  { "name": "Firma  Handlowo-  Usługowa  Dawid Kiełtyka", "tax": "7382071527" },
+  { "name": "Goliat Olsztyn Sp. z o. o.", "tax": "7891598556" },
+  { "name": "Zygfryd Michalec Transport Ciężarowy", "tax": "7550008714" },
+  {
+    "name": "Małgorzata Marciniak, Przedsiębiorstwo Usług Transportowych I Handlu M.s.m.m. Expres",
+    "tax": "6661396104"
+  },
+  { "name": "Ewa Katarzyna Olszewska - Klif Logistics", "tax": "7971257981" },
+  {
+    "name": "Voltrans Józef Derkus Artur Derkus Spółka Jawna",
+    "tax": "7743223468"
+  },
+  { "name": "Jarosław Aleksandrowicz ”Ma - Ciej”", "tax": "8271942273" },
+  { "name": "Wędzikowski Sp. z o. o.", "tax": "7842467050" },
+  { "name": "Jotmex Michał Jeżewicz", "tax": "7270002780" },
+  {
+    "name": "Ośrodek Transportowo-Komputerowy Kom-Trans Wojciech Lis, Marek Lis",
+    "tax": "7960012193"
+  },
+  { "name": "Iwona Jackowiak Studio Samui", "tax": "7841570082" },
+  { "name": "Transport Dariusz Drożdżal", "tax": "7291247676" },
+  {
+    "name": "Usługi Transportowo-Przewozowe - Wojciech Gąbarczyk",
+    "tax": "8392461727"
+  },
+  { "name": "K&M Joanna Ciećwierz", "tax": "7741586853" },
+  { "name": "Zromid Kozon Czesław", "tax": "7580002952" },
+  { "name": "Logimp Sp. z o. o.", "tax": "7732262281" },
+  { "name": "Hornet Krasowska, Turska Spółka Jawna", "tax": "9662104789" },
+  { "name": "Berger Logistik GmbH", "tax": "ATU62611338" },
+  { "name": "Giz-Trans Robert Giza", "tax": "5272163960" },
+  { "name": "Eltrak Andrzej Bielecki", "tax": "7761164569" },
+  { "name": "Action Poland Sp. z o. o.", "tax": "9542778083" },
+  { "name": "Lotos Paliwa Sp. z o. o.", "tax": "5831023182" },
+  {
+    "name": "Auto-Port Brzezimierz Phu R. Kaczor J. Kaczor Spółka Jawna",
+    "tax": "9120006122"
+  },
+  { "name": "Citronex Trans Energy Sp. z o. o.", "tax": "6152046672" },
+  { "name": "Olkop Sp. z o. o.", "tax": "5030073466" },
+  { "name": "Petrokan Polska Agnieszka Kandarian", "tax": "8891279975" },
+  { "name": "”Dino Polska” Spółka Akcyjna", "tax": "6211766191" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Ritex Sp. z o. o. Spółka Komandytowa",
+    "tax": "6932176752"
+  },
+  { "name": "Quart Log Sp. z o. o.", "tax": "9522166112" },
+  { "name": "Oktrano Sp. z o. o.", "tax": "5252713908" },
+  { "name": "I.S.D.B s.r.o", "tax": "SK2022044068" },
+  { "name": "MP Logistik GmbH", "tax": "DE815107498" },
+  { "name": "Drop Zone Daniel Adamowicz", "tax": "9662103100" },
+  {
+    "name": "Jit Logistik Sp. z o. o. Spółka Komandytowa",
+    "tax": "6222819614"
+  },
+  {
+    "name": "”El Logistics, Gołębiewski, Koźlakowski, Spółka Jawna”",
+    "tax": "5783131211"
+  },
+  { "name": "Mti Group Sp. z o. o.", "tax": "5272690151" },
+  { "name": "Creative Logistic Group Sp. z o. o.", "tax": "8952038764" },
+  { "name": "Dominus Trans Dominik Przybyła", "tax": "8133736052" },
+  { "name": "Ip Logistic Jacek Pytka", "tax": "5372422823" },
+  { "name": "Sn Logistics Sp Zoo Spółka Komandytowa", "tax": "7252288139" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Cargo-Trans",
+    "tax": "6271783454"
+  },
+  { "name": "Wiklogistic Włodzimierz Leszczyński", "tax": "9680025830" },
+  { "name": "Link Sp. z o. o.", "tax": "5210086737" },
+  { "name": "SMI Logistique", "tax": "FR52333007771" },
+  {
+    "name": "Tb Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "8133710868"
+  },
+  { "name": "Promet Cargo Sp. z o. o.", "tax": "5981591048" },
+  { "name": "Grzegorz Łoboda Trans Europe", "tax": "9452064523" },
+  {
+    "name": "Krajowy Transport Ciężarowy Krzysztof Kałuża",
+    "tax": "7320010452"
+  },
+  { "name": "Whitepro Kamil Kajkowski", "tax": "7742961425" },
+  { "name": "Donckers Malle Bv", "tax": "BE0436133972" },
+  { "name": "Stork Sp. z o. o. Spółka Komandytowa", "tax": "8792689799" },
+  {
+    "name": "Dtw Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "1182081972"
+  },
+  { "name": "Bispel Sp. z o. o.", "tax": "1132939594" },
+  { "name": "Marcin Żurek Sm Spedition", "tax": "6222305565" },
+  { "name": "Aramis System Sp. z o. o.", "tax": "6793020175" },
+  { "name": "Rechung der Shell Deutschland GmbH", "tax": "DE811127597" },
+  { "name": "Eurogate Logistics Sp. z o. o.", "tax": "9531026770" },
+  { "name": "Aldona s.r.o", "tax": "SK2020506609" },
+  { "name": "Budmat Transport Sp. z o. o.", "tax": "7742862232" },
+  { "name": "Cemcom Sp. z o. o.", "tax": "7773271176" },
+  { "name": "Upper Logistyka Krzysztof Kostrzewa", "tax": "5342189670" },
+  { "name": "Tb Truck & Trailer Serwis Sp. z o. o.", "tax": "5342342491" },
+  { "name": "PHUp Panek Renata Panek", "tax": "9512034219" },
+  { "name": "Euro Meble Sp. z o. o.", "tax": "7722415151" },
+  { "name": "”Europart Polska” Spółka Akcyjna", "tax": "8322023689" },
+  { "name": "Asmet Sp. z o. o.", "tax": "5342487841" },
+  { "name": "Walan Sp. z o. o.", "tax": "9731062434" },
+  { "name": "Auto Forum 3 Sp. z o. o.", "tax": "7743214357" },
+  { "name": "Polpoż Sp. z o. o.", "tax": "7742720532" },
+  { "name": "Junkosped Sp. z o. o.", "tax": "1132939565" },
+  { "name": "Vgl Road Sp. z o. o.", "tax": "5862253658" },
+  { "name": "Dominika Kłęska Dajdo-Trans", "tax": "6452377048" },
+  { "name": "Kampol Anna Kamińska", "tax": "8351412927" },
+  {
+    "name": "Przedsiębiorstwo Handlowe Somir Sp. z o. o.",
+    "tax": "8890001574"
+  },
+  { "name": "Rb Road Sp. z o. o.", "tax": "6443509007" },
+  {
+    "name": "Usługi Transportowo-Handlowe Henryk Wacięga",
+    "tax": "5531003560"
+  },
+  {
+    "name": "Transport - Spedycja Edo Trans K.rusin, Z.cieślak Spółka Jawna",
+    "tax": "8722407028"
+  },
+  { "name": "Szczepański Transport Paweł Szczepański", "tax": "7722191208" },
+  { "name": "Optitrans Sp. z o. o.", "tax": "8882795890" },
+  { "name": "Lux - Truck Sp. z o. o.", "tax": "8992430209" },
+  { "name": "Shell Polska Sp. z o. o.", "tax": "5261009190" },
+  { "name": "Whiteclock Sp. z o. o. Spółka Komandytowa", "tax": "5272788602" },
+  { "name": "Neovis Sp. z o. o.", "tax": "6793138540" },
+  { "name": "Terg Spółka Akcyjna", "tax": "7671004218" },
+  { "name": "Growing Eco Sp. z o. o.", "tax": "7842499682" },
+  { "name": "Road Runner Maciej Matan", "tax": "5342293284" },
+  { "name": "SV Logistic UAB", "tax": "LT100002147314" },
+  { "name": "C.H.Robinson Europe BV", "tax": "NL811514274B01" },
+  { "name": "Zumalta Sp. z o. o.", "tax": "1132938778" },
+  { "name": "Paweł Gembarowski  Magem- F.h.- Recykling", "tax": "9161099770" },
+  {
+    "name": "3Cargo Spółka Z Ograniczoną Odpowedzialnością Spółka Komandytowa",
+    "tax": "6521741972"
+  },
+  { "name": "Renata Kosiacka Mały Płock Club Disco", "tax": "7742384318" },
+  { "name": "Allgaier Polska Sp. z o. o.", "tax": "8971768469" },
+  { "name": "Krafttrans Taurus Sp. z o. o.", "tax": "5213880950" },
+  { "name": "”B.p. Transports” Sp. z o. o.", "tax": "7122361122" },
+  { "name": "Omida Logistics Sp. z o. o.", "tax": "5842739582" },
+  { "name": "Trukker Europe Sp. z o.o.", "tax": "7010943304" },
+  { "name": "C.S.Cargo a.s", "tax": "CZ64259374" },
+  { "name": "STAVMATIC EU s.r.o.", "tax": "SK2023970146" },
+  { "name": "Fere Logistics Justyna Michalak-Mach", "tax": "8862479223" },
+  { "name": "Amtk Logistic Sp. z o. o.", "tax": "7773301115" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Auto-Serwis Mirosław Marciszonek",
+    "tax": "8421042997"
+  },
+  { "name": "Best Performance Logistics Sp. z o. o.", "tax": "5213680300" },
+  { "name": "Professional Thermo Logistics Sp. z o. o.", "tax": "7732474184" },
+  { "name": "”No Limit” Sp. z o. o.", "tax": "5241066960" },
+  { "name": "Atts Sp. z o. o.", "tax": "7322199637" },
+  { "name": "Bfi Sp. z o. o. Spółka Komandytowa", "tax": "5862323399" },
+  { "name": "FR Trans Ltd.", "tax": "GB11948073" },
+  { "name": "Go Logis Sp. z o. o. Spółka Komandytowa", "tax": "5372601282" },
+  { "name": "Roll Steel Sp. z o. o.", "tax": "9721266052" },
+  { "name": "Dekra Polska Sp. z o. o.", "tax": "5222511608" },
+  { "name": "Route A4 Sp. z o. o. Spółka Komandytowa", "tax": "8951983437" },
+  { "name": "Zep-Mot Sp. z o. o.", "tax": "7741017486" },
+  { "name": "Rol - Chem Janusz Górzyński", "tax": "7742905504" },
+  { "name": "Teslox Sp. z o. o.", "tax": "5272875844" },
+  { "name": "Nevada Artur Podkowski", "tax": "7742655332" },
+  { "name": "TOZ", "tax": "7743036045" },
+  { "name": "Promet Sp. z o. o.", "tax": "8762178700" },
+  { "name": "Firma Handlowo Usługowa Adrian Przydanek", "tax": "7773364274" },
+  { "name": "Transpetrol-Bis Sp. z o. o.", "tax": "6211521348" },
+  { "name": "Marcin Kraśniewski Air Technology", "tax": "7742977202" },
+  {
+    "name": "Truckmech Robert Kosidło Mechanika Pojazdowa",
+    "tax": "5140294056"
+  },
+  { "name": "Dbk Sp. z o. o.", "tax": "7451003240" },
+  { "name": "Semicargo Sp. z o. o.", "tax": "6682002895" },
+  { "name": "Magistral Transport Sp. z o. o.", "tax": "5732870312" },
+  { "name": "Interlogis Poland Sp. z o. o.", "tax": "9512364106" },
+  { "name": "MDS", "tax": "FR94422804468" },
+  { "name": "Global Way Maciej Rataj", "tax": "7642109676" },
+  {
+    "name": "Fdm Logistics & Transport Sp. z o. o. Spółka Komandytowa",
+    "tax": "8992813755"
+  },
+  { "name": "Euroma S.c.", "tax": "6222774159" },
+  { "name": "Instalspedition Michał Dudkowiak", "tax": "6221981181" },
+  { "name": "Legacy s.r.o", "tax": "SK2120939458" },
+  { "name": "Kompas Spedycja Sp. z o. o.", "tax": "9532637524" },
+  { "name": "Nardo Logistics Sp. z o. o.", "tax": "7773369538" },
+  { "name": "Locotranssped Sp. z o. o.", "tax": "7831682017" },
+  { "name": "Pamo Paweł Ambrożej", "tax": "5422689564" },
+  { "name": "Ines Kniat Domar", "tax": "6151980175" },
+  { "name": "Tjx Poland Sp. z o. o.", "tax": "7010180987" },
+  {
+    "name": "Dynamic Gas&Wash Budek Krzysztof Jarosław Budek Łukasz Dariusz Spółka Cywilna",
+    "tax": "7743223273"
+  },
+  { "name": "L&W Trans Maciej Willim", "tax": "6421030496" },
+  { "name": "Hegelmann Transporte Sp. z o. o.", "tax": "5732832688" },
+  { "name": "Zet Transport Sp. z o. o.", "tax": "7340019189" },
+  { "name": "St-Trans.eu Sp. z o. o. W Likwidacji", "tax": "8322074327" },
+  { "name": "Dav-Trans  Dawid Jonderko", "tax": "9691609865" },
+  { "name": "Cygan Jarosław Transport Ciężarowy", "tax": "6581000015" },
+  { "name": "Usługi Wielobranżowe Roman Walczak", "tax": "8891053113" },
+  { "name": "Calc Group Sp. z o. o.", "tax": "5080092709" },
+  { "name": "Krzyśko Bogdan Szczepan Firma Krzyśko", "tax": "7351656451" },
+  { "name": "Firma Transportowo -Handlowa Jerzy Nieć", "tax": "7341134969" },
+  {
+    "name": "Ag-Rolbud Anna Wyrwol Gabriel Mateja Spółka Jawna",
+    "tax": "6260001560"
+  },
+  { "name": "Kupiec Spółka Akcyjna", "tax": "8732941947" },
+  { "name": "H&S Logistic Sp. z o. o.", "tax": "8883150586" },
+  { "name": "Sylwester Idziak - Idziak Trans", "tax": "6681919663" },
+  { "name": "Krzysztof Hejduk Camel-Speed", "tax": "6581799024" },
+  { "name": "Dariusz Siwek - Dartis", "tax": "8261776809" },
+  { "name": "Eurotrans Sp.z o.o.", "tax": "8212648916" },
+  { "name": "”Max Logistic” Sp. z o. o.", "tax": "6351831830" },
+  { "name": "Bud-Kor Sp. z o. o.", "tax": "7492089468" },
+  { "name": "Tron Group Sp. z o. o. Spółka Komandytowa", "tax": "6572893551" },
+  {
+    "name": "Firma Handlowo Usługowa Agromex Wiesław Wójcik",
+    "tax": "5671007150"
+  },
+  {
+    "name": "Prywatne Przedsiębiorstwo Handlu I Usług Rol-Bud Joanna Głowacka, Michalina Pająk Spółka Jawna",
+    "tax": "5670003196"
+  },
+  { "name": "Firma Handlowa ” Janko” Strzelec Jan", "tax": "5720003880" },
+  { "name": "Sped Partner Sp. z o. o.", "tax": "6621768189" },
+  { "name": "Nova Kurcz, Maduzia Spółka Jawna", "tax": "6852324535" },
+  { "name": "DSV Workshop Venlo", "tax": "NL001258345B01" },
+  {
+    "name": "Usługi Transportowo-Handlowe Mw Market Mateusz Walasiewicz",
+    "tax": "8792672652"
+  },
+  { "name": "EuVi services s.r.o.", "tax": "CZ11653710" },
+  { "name": "Tango Cecylia Pociej W Spadku", "tax": "7741009788" },
+  { "name": "Rutkowski Roman 'Lux'", "tax": "7741414193" },
+  { "name": "Cargo - Partner Spedycja Sp. z o. o.", "tax": "5222349705" },
+  { "name": "Art.Dach i Spedycja Krystian Szmigiel", "tax": "7773096603" },
+  { "name": "Logtime Sp. z o. o.", "tax": "7272833456" },
+  { "name": "Hamburger Recycling Polska Sp. z o. o.", "tax": "7542853180" },
+  { "name": "Sts Invest Sp. z o. o. Spółka Komandytowa", "tax": "5020111975" },
+  { "name": "Plastic Worx Sp. z o. o.", "tax": "6762217020" },
+  { "name": "Loginex Sp. z o. o.", "tax": "5222995196" },
+  { "name": "Regesta Spółka Akcyjna", "tax": "6621004747" },
+  { "name": "Geodis Road Network Sp.zo.o", "tax": "5270104717" },
+  {
+    "name": "Van Berde - Zubiel, Pogoda Spółka Komandytowa",
+    "tax": "8172084346"
+  },
+  { "name": "Sennder", "tax": "DE302502945" },
+  {
+    "name": "Mariusz Sysak Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe",
+    "tax": "7551196014"
+  },
+  { "name": "Hegelman Express GmbH", "tax": "DE232903785" },
+  { "name": "M.G.M. Logistik GmbH", "tax": "ATU74373901" },
+  { "name": "Deliver Logistik Marcin Loko", "tax": "9671189070" },
+  { "name": "Spedytor.pl Adam Ścigajło", "tax": "8841845993" },
+  {
+    "name": "Gako Transport Sp. z o. o. Spółka Komandytowa",
+    "tax": "9442258183"
+  },
+  {
+    "name": "New Wave International Cargo Sp. z o. o. Spółka Komandytowa",
+    "tax": "5213669600"
+  },
+  { "name": "Royal Impero Sp. z o. o.", "tax": "5272862830" },
+  {
+    "name": "Małgorzata Handzel Firma Transportowo-Usługowa Euro-Trans",
+    "tax": "9442112309"
+  },
+  { "name": "Ams Sp. z o. o.", "tax": "5542989317" },
+  { "name": "Primo Sole Group Rzeszów Sp. z o. o.", "tax": "8133851511" },
+  { "name": "Bls Logistics Lampart Spółka Komandytowa", "tax": "8133696909" },
+  { "name": "Szulc-Logistik  Łukasz Szulc", "tax": "8291550180" },
+  { "name": "Amg Cargo Logistics Sp. z o. o.", "tax": "5223043173" },
+  { "name": "Transsped Sp. z o. o. Spółka Komandytowa", "tax": "8130012922" },
+  { "name": "Renomal Czesław Tabisz", "tax": "9111674918" },
+  { "name": "Firma Usługowa Ewelina Jędrys", "tax": "5811902609" },
+  {
+    "name": "Moto-Chem S.c. Krzysztof Zdanowicz, Anna Zdanowicz-Kurowska",
+    "tax": "9112008750"
+  },
+  { "name": "FHU Oleksy Bartłomiej Oleksy", "tax": "8722415329" },
+  { "name": "St Truck Sp. z o. o.", "tax": "6472576070" },
+  { "name": "Traker24.Eu Sp. z o. o.", "tax": "6941686398" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Mares Sp. z o. o.",
+    "tax": "8882734948"
+  },
+  { "name": "Janisz Sp. z o. o.", "tax": "7322109485" },
+  {
+    "name": "Atut Przedsiębiorstwo Wielobranżowe Sp. z o. o.",
+    "tax": "7880013026"
+  },
+  {
+    "name": "Jan Pawlicki Jan-Pol Przedsiębiorstwo Handlowo-Usługowe",
+    "tax": "6680003318"
+  },
+  { "name": "Raben Transport Sp. z o. o.", "tax": "7810020506" },
+  {
+    "name": "Logit Tomasz J. Kowalewski I Wspólnicy Spółka Jawna",
+    "tax": "6651435713"
+  },
+  { "name": "Wiesław Śliwowski Usługi Transportowe", "tax": "7221168049" },
+  {
+    "name": "Greencarrier Freight Services Poland Sp. z o. o.",
+    "tax": "5242402928"
+  },
+  { "name": "Emplex Sp. z o. o.", "tax": "6671714853" },
+  { "name": "Anna Wójtowicz Am-Trans", "tax": "8911576594" },
+  { "name": "PPHU Adart Adriana Sawicka", "tax": "5671517017" },
+  { "name": "Go Ahead Sp. z o. o.", "tax": "8992753711" },
+  { "name": "Walkowiak Group Sp. z o. o.", "tax": "5621814687" },
+  { "name": "Anna Kainka Przedsiębiorstwo Usługowe", "tax": "7561663983" },
+  { "name": "Pablo Transport Drogowy Paweł Sondaj", "tax": "6121040823" },
+  { "name": "Usługi Transportowo Sprzętowe Paweł Mikrut", "tax": "8731077168" },
+  { "name": "Mk Trade Sp. z o. o.", "tax": "8442351195" },
+  { "name": "Dalubo Kędzierscy Spółka Jawna", "tax": "7582351102" },
+  { "name": "Wotaro Sp. z o. o.", "tax": "9291896051" },
+  { "name": "Mglogistic Sp. z o. o. Spółka Komandytowa", "tax": "6192010249" },
+  { "name": "Goguła Aleksander   Alex -Transport", "tax": "7960000184" },
+  {
+    "name": "Cargo Europe Marcin Andraczko Spółka Komandytowa",
+    "tax": "6692564703"
+  },
+  { "name": "Phenix Sp. z o. o.", "tax": "5040073143" },
+  { "name": "DC Cargo Augsburg GmbH", "tax": "DE344473518" },
+  { "name": "bgm express logistik GmbH", "tax": "DE301261245" },
+  { "name": "Gg-Trans Sp. z o. o. Spółka Komandytowa", "tax": "5423264401" },
+  {
+    "name": "Rapido Express Sp. z o. o. Spółka Komandytowa",
+    "tax": "5242828248"
+  },
+  {
+    "name": "Bo-Mar Ewa I Bogdan Wróblewski Spółka Cywilna",
+    "tax": "7481590638"
+  },
+  { "name": "Schenker Deutschland AG", "tax": "DE811228366" },
+  {
+    "name": "Firma Transportowa Ekoprzem Przemysław Trzciński",
+    "tax": "6571492732"
+  },
+  { "name": "Transmat Maciej Kowalik", "tax": "6871002146" },
+  { "name": "Andrzej Piosek Usługi Transportowe", "tax": "7561004335" },
+  { "name": "Kmwz Sp. z o. o.", "tax": "6342997821" },
+  { "name": "Jan Fedorowicz Usługi Transportowe", "tax": "7551385985" },
+  {
+    "name": "Firma Usługowo-Handlowo-Transportowa M-Trans Mateusz Turski",
+    "tax": "8691919453"
+  },
+  { "name": "Zbigniew Krieger ”Zbych - Trans”", "tax": "5581649063" },
+  { "name": "Michał Kmita Usługowy Przewóz Towarów", "tax": "9452130556" },
+  { "name": "Firma Handlowa Grud-Pol Janusz Grudny", "tax": "7741011578" },
+  { "name": "Greficz Krzysztof Gref-Trans", "tax": "6651665318" },
+  { "name": "Józef Michalik - Działalność Transportowa", "tax": "7381019424" },
+  { "name": "Czech-Oil Sp. z o. o.", "tax": "7262594062" },
+  { "name": "Najemnaczep.pl Sp. z o. o.", "tax": "8943063509" },
+  { "name": "Cross Country Trans s.r.o", "tax": "CZ08741824" },
+  { "name": "Sl West Sp. z o. o.", "tax": "1231305272" },
+  {
+    "name": "Spedycja Pomorze B. Ziemba, R. Sadecki Spółka Jawna",
+    "tax": "8421664397"
+  },
+  {
+    "name": "Krystian Miszczak Kriss-Trans Transport Ciężarowy",
+    "tax": "8942701913"
+  },
+  {
+    "name": "Hart Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "7792413387"
+  },
+  { "name": "”Duvenbeck Logistik” Sp. z o. o.", "tax": "5992808712" },
+  { "name": "Kmc - Services Sp. z o. o.", "tax": "6772197307" },
+  { "name": "Bruk-Bet Sp. z o. o.", "tax": "5170200580" },
+  { "name": "Asap Prologis Marcin Lipiec", "tax": "5060065626" },
+  { "name": "Warmia Group Anna Brzóska", "tax": "7393268311" },
+  { "name": "Db Logistic Sp. z o. o.", "tax": "9691605264" },
+  { "name": "Kub - Trans Wojciech Kubacki", "tax": "6681972798" },
+  { "name": "Chomar Sp. z o. o.", "tax": "8940018023" },
+  { "name": "Logimar Marcin Gajewski", "tax": "1230959072" },
+  { "name": "Multicco Sp. z o. o. Spółka Komandytowa", "tax": "5423242138" },
+  { "name": "Intrawer Sp. z o. o.", "tax": "7822806773" },
+  {
+    "name": "Centrum Utylizacji Sc K. Szcześnik S. Palij",
+    "tax": "7471895572"
+  },
+  { "name": "Ray Trans Sp. z o. o.", "tax": "8522643563" },
+  { "name": "”Sawa Logistics” Sp. z o. o.", "tax": "5242682187" },
+  { "name": "Prl Grzegorz Piotrowski", "tax": "5311567384" },
+  { "name": "K.s. Logistics Sp. z o. o.", "tax": "6482743233" },
+  { "name": "Msp Fracht Sp. z o. o.", "tax": "7831688899" },
+  { "name": "Noort Cc Sp. z o. o.", "tax": "5833268410" },
+  { "name": "Kuśtrans Sp. z o. o.", "tax": "6372194989" },
+  { "name": "Erbud Industry Sp. z o. o.", "tax": "8792294552" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Grand-Tex",
+    "tax": "5341481055"
+  },
+  { "name": "Natanex Logistics Poland Sp. z o. o.", "tax": "7372190940" },
+  { "name": "Gasa Group Poland Sp. z o. o.", "tax": "5272652914" },
+  { "name": "Wortel Sp. z o. o.", "tax": "5272520064" },
+  { "name": "Evaz Sp. z o. o.", "tax": "5252819653" },
+  { "name": "”Stalko-Przybysz I Wspólnicy Spółka Jawna”", "tax": "1250022090" },
+  { "name": "Trill-Trans Anna Trill", "tax": "6821624791" },
+  {
+    "name": "RS Logistics S.Rożeński, M.Sitarz Spółka Jawna",
+    "tax": "9542625988"
+  },
+  { "name": "Frukta Trans Sp. z o. o.", "tax": "7831694196" },
+  { "name": "Home.pl Spółka Akcyjna", "tax": "8522103252" },
+  { "name": "Sachs Trans International Sp. z o. o.", "tax": "6472583012" },
+  { "name": "Auto Gaz S.t.a.g.andrzej Ossowski", "tax": "7742805688" },
+  {
+    "name": "Firma Handlowo-Usługowa A&A Adam Piórkowski",
+    "tax": "7741621466"
+  },
+  { "name": "Romulus Sp. z o. o.", "tax": "9452189638" },
+  {
+    "name": "Lamiro S.c. Igor Roszczyk,Elżbieta Roszczyk,Jerzy Roszczyk",
+    "tax": "1250840291"
+  },
+  { "name": "Traker Kinga Gawrysiak", "tax": "7743258478" },
+  { "name": "Premium Express Sp. z o. o.", "tax": "5272731507" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Alicja Sp. z o. o.",
+    "tax": "6991124751"
+  },
+  { "name": "”Westa Group” Sp. z o. o.", "tax": "9930653474" },
+  { "name": "Targo Polska Sp. z o. o.", "tax": "7811848035" },
+  { "name": "Hojczak - Trans  Hojczak Rafał", "tax": "6422885751" },
+  { "name": "Carolina Logistics Eu Sp. z o. o.", "tax": "9671438248" },
+  { "name": "Crystal-Mix Sp. z o. o.", "tax": "7811900936" },
+  {
+    "name": "Sl Transport Spółka Z Ograniczoną Odpowiedzialnościa",
+    "tax": "8133823012"
+  },
+  { "name": "Z.h.u.p. Agromal Grzegorz Malewski", "tax": "8270005247" },
+  { "name": "Caveral Express Sp. z o. o.", "tax": "8522660076" },
+  { "name": "zipmend GmbH", "tax": "DE304638568" },
+  { "name": "Ragnar Logistics Sp. z o. o.", "tax": "5732894821" },
+  { "name": "PLT Express", "tax": "FR64818976805" },
+  {
+    "name": "Transport Międzynarodowy Mk-Trans Mateusz Kamiński",
+    "tax": "5732852231"
+  },
+  {
+    "name": "Firma Handlowo-Usługowa Vifnet Mgr Inż. Piotr Kozieł",
+    "tax": "5482193571"
+  },
+  { "name": "MATEO LOGSITICS", "tax": "LU26338029" },
+  { "name": "Andrzej Okrajni F.h.u. ”Car - Max”", "tax": "9451873611" },
+  { "name": "Mirpol Trans Sp. z o. o.", "tax": "9491830789" },
+  {
+    "name": "Piotrowski Marian Rol Mex Skład Materiałów Przemysłowych I Rolniczych",
+    "tax": "7130206123"
+  },
+  {
+    "name": "Transport Handel Drewnem I Tarcicą Mucha Kazimierz",
+    "tax": "7371065440"
+  },
+  {
+    "name": "Rola Agnieszka, Firma Handlowo - Usługowa Cargodirections",
+    "tax": "7342981074"
+  },
+  { "name": "Kromir Sp. z o. o.", "tax": "6681830093" },
+  { "name": "Wiśniewski Bogumił W.s.k.i", "tax": "6390002368" },
+  { "name": "Utms  Marzena Sosnowska", "tax": "6661728486" },
+  {
+    "name": "Firma Handlowo Usługowa ”Północ Południe” Kazimierz Łącki, Krzysztof Stabrawa Spółka Jawna",
+    "tax": "8681001363"
+  },
+  { "name": "P.u.h. Marbet - Beata Grygorowicz", "tax": "7541483829" },
+  { "name": "P.u.h.t. Młynpol Ryszard Stalmach", "tax": "7620012946" },
+  {
+    "name": "Semona Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe Sebastian Nassan",
+    "tax": "7671174357"
+  },
+  {
+    "name": "Grażyna Rogowska Przedsiębiorstwo Usługowo-Transportowe Dagra",
+    "tax": "5671477849"
+  },
+  { "name": "Rafał Arendarczyk F.h.u. Arpol", "tax": "7343051437" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Agtrans Joanna Żółtańska",
+    "tax": "7742874287"
+  },
+  { "name": "Altis Sp. z o. o. Spółka Komandytowa", "tax": "6263024573" },
+  {
+    "name": "Usługi Transportowe Handel Eksport-Import Witold Bolibok",
+    "tax": "7130015618"
+  },
+  {
+    "name": "Shefer Group Sp. z o. o. Spółka Komandytowa",
+    "tax": "5542969622"
+  },
+  { "name": "Da Vinci Team Sp. z o. o.", "tax": "6342718086" },
+  { "name": "Lx Pantos Poland Sp. z o. o.", "tax": "5213342879" },
+  {
+    "name": "Firma Usługowo Handlowa Agtrans - Agnieszka Zelmańska",
+    "tax": "8781717115"
+  },
+  { "name": "Radosław Pazera Raan Transport&Spedition", "tax": "6782954997" },
+  { "name": "P.P.H.U. Olatrans - Olga Skibińska", "tax": "7742635453" },
+  {
+    "name": "Majkar Spółka Cywilna Majewska Justyna, Karpiński Paweł",
+    "tax": "5691885698"
+  },
+  { "name": "Iwmar Sp. z o. o.", "tax": "7743213955" },
+  { "name": "C.s. Cargo Poland Sp. z o. o.", "tax": "5482427448" },
+  { "name": "Chemipack-Sp. z o. o.", "tax": "8341863812" },
+  { "name": "EGT Express CZ s.r.o", "tax": "CZ62301951" },
+  { "name": "Tomiq Tomasz Morawski", "tax": "7291123922" },
+  { "name": "Mas Logistics Sp. z o. o.", "tax": "9552561818" },
+  { "name": "Wan Sp. z o. o. Spółka Komandytowa", "tax": "7661544717" },
+  { "name": "Axis Przemysław Matuszewski", "tax": "5841198701" },
+  { "name": "Fimax Paweł Filipiak", "tax": "7431811155" },
+  { "name": "Pakt Sp. z o. o.", "tax": "9710729867" },
+  { "name": "Sealand Transport Sp. z o. o.", "tax": "5862325487" },
+  { "name": "Ggk Wieland Polska Sp. z o. o.", "tax": "6482773062" },
+  { "name": "Green Bison Natalia Wojtczak", "tax": "7752534274" },
+  { "name": "Skyfox Poland Sp. z o. o.", "tax": "1132872513" },
+  {
+    "name": "Przedsiębiorstwo Transportowo-Spedycyjne Autozak Sp. z o. o.",
+    "tax": "7491787986"
+  },
+  { "name": "Adta Sp. z o. o.", "tax": "9512517780" },
+  { "name": "Duka International Spółka Akcyjna", "tax": "5252651886" },
+  { "name": "Ofix Lewandowski Spółka Jawna", "tax": "7830028623" },
+  { "name": "Mar-Kom Gsm Marcin Włoszczyk", "tax": "7742423797" },
+  { "name": "Lobotrans Paweł Łobos", "tax": "7962825492" },
+  { "name": "Usługi Transportowe Wiesław Osmałek", "tax": "7750016003" },
+  {
+    "name": "Envio Group Poland Sp. z o. o. Spółka Komandytowa",
+    "tax": "9532640176"
+  },
+  { "name": "Gruber Logistics Sp. z o. o.", "tax": "7010935919" },
+  {
+    "name": "Connect Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "6772392397"
+  },
+  { "name": "Tolex-Met Sp. z o. o.", "tax": "7743257786" },
+  { "name": "Minit Polska Sp. z o. o.", "tax": "5252246542" },
+  { "name": "Przedsiębiorstwo Wielobranżowe Michał Wach", "tax": "5562758673" },
+  { "name": "Eurosend Sp. z o. o.", "tax": "9522223347" },
+  { "name": "Xfeed Europe Sp. z o. o.", "tax": "9512500466" },
+  { "name": "Aldi Sp. z o. o.", "tax": "1070002973" },
+  { "name": "Hotel Oleńka Anna Witowska", "tax": "7991284053" },
+  { "name": "Ewelina Czarnecka", "tax": "7742273613" },
+  { "name": "F.H.U.p Inez Dariusz Kaczmarczyk", "tax": "7761001755" },
+  {
+    "name": "Usługi Transportowe P.k. Ponczkowscy Kamil Ponczkowski",
+    "tax": "5030027561"
+  },
+  { "name": "P.P.H.U. Macio Maciej Wiśniewski", "tax": "5621278616" },
+  {
+    "name": "Kulig Teresa Przedsiębiorstwo Produkcyjno - Usługowo - Handlowe",
+    "tax": "7371705460"
+  },
+  {
+    "name": "Firma Usługowo-Handlowa Janiak Janiak Marek",
+    "tax": "6660005840"
+  },
+  { "name": "Think Logistic Sp. z o. o.", "tax": "5130233975" },
+  { "name": "Skibińscy Spółka Komandytowa", "tax": "8883115443" },
+  { "name": "LA&WS Logistics UG", "tax": "DE333532495" },
+  { "name": "Adam - Trans U.a. Kirejczyk Spółka Cywilna", "tax": "9662055275" },
+  { "name": "Dartom Sp. z o. o.", "tax": "8380000966" },
+  { "name": "Lubo-Trans Mrówczyński Arkadiusz", "tax": "6651437474" },
+  { "name": "Kamal Kamil Wyrąbkiewicz", "tax": "8911558900" },
+  { "name": "Mapa -Trans Mariusz Pająk", "tax": "7731019503" },
+  {
+    "name": "Produkcja-Handel-Usługi-Transport-Tadeusz Jankowski",
+    "tax": "8881086358"
+  },
+  { "name": "Rado Transport Radosław Dołęgowski", "tax": "9710537033" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Fil - Trans Filip Kącikowski",
+    "tax": "8882673804"
+  },
+  { "name": "Discover New Lands Sp. z o. o.", "tax": "6252474723" },
+  { "name": "Stosped Stokłosa Spółka Jawna", "tax": "8681961117" },
+  { "name": "C. Hartwig Gdynia Spółka Akcyjna", "tax": "5860104285" },
+  { "name": "Kalimera Mateusz Chudzik", "tax": "1251566544" },
+  {
+    "name": "Tm Transport - Spedycja Sp. z o. o. Spółka Komandytowa",
+    "tax": "1251678792"
+  },
+  { "name": "Opal Transport Sp. z o. o.", "tax": "8971789626" },
+  { "name": "Extrego Spółka Akcyjna", "tax": "8133781093" },
+  { "name": "Colistrans Sp. z o. o.", "tax": "5423316664" },
+  {
+    "name": "Mirosław Wilczyński Przedsiębiorstwo Handlowo - Usługowe",
+    "tax": "5761002854"
+  },
+  { "name": "Staszaklogistic Jakub Staszak", "tax": "9680989723" },
+  { "name": "Moto-Filar Katarzyna Gajek-Filar", "tax": "6491349139" },
+  { "name": "Leopard Tsl Poland", "tax": "9561539847" },
+  {
+    "name": "Skrzypczyk - Trans Pl Sp. z o. o. Spółka Komandytowa",
+    "tax": "7561978652"
+  },
+  { "name": "Eurosnack Spółka Akcyjna", "tax": "6271554848" },
+  { "name": "Log-An Sp. z o. o.", "tax": "7792444821" },
+  {
+    "name": "Budizol Sp. z o. o. Spółka Komandytowo-Akcyjna",
+    "tax": "8882905485"
+  },
+  { "name": "Rainbow Logistics s.r.o", "tax": "SK2023859442" },
+  {
+    "name": "Przedsiębiorstwo Przemysłowo-Handlowe Standard Sp. z o. o.",
+    "tax": "7120152851"
+  },
+  { "name": "Heytransport Bartosz Tomczak", "tax": "8371868323" },
+  { "name": "V4L Sp. z o. o. Spółka Komandytowa", "tax": "8513162545" },
+  { "name": "Emerlog Sp. z o. o.", "tax": "5223029032" },
+  { "name": "Meble Makarowski Piotr Makarowski", "tax": "7952548430" },
+  {
+    "name": "Przedsiebiorstwo Handlowo-Usługowe Arpol Arkadiusz Szymaniak",
+    "tax": "9121067025"
+  },
+  {
+    "name": "Batcar Krzysztof Pawluć, Bogdan Tyliszczak Spółka Jawna",
+    "tax": "9730548815"
+  },
+  { "name": "Kampo  Przemysław Kędzierski", "tax": "6951438816" },
+  {
+    "name": "Jerzy Kwiatkowski Zakład Usługowo - Handlowy ” Bud -Tech ”",
+    "tax": "9710318934"
+  },
+  { "name": "Recycling Service Trucks Marcin Ziółkowski", "tax": "5691704509" },
+  {
+    "name": "Grupa Lambda Sp. z o. o. Dystrybucja Spółka Komandytowa",
+    "tax": "7792109525"
+  },
+  { "name": "Car-Pland Spółka Cywilna", "tax": "6121859807" },
+  { "name": "”Bogate Wnętrza” Ilona Gryz", "tax": "9452180442" },
+  { "name": "Mariusz Bajer Handel-Pośrednictwo-Usługi", "tax": "7551089011" },
+  {
+    "name": "Zakład Transportu Handlu I Usług Sp. z o. o.",
+    "tax": "8891513098"
+  },
+  { "name": "Krakpol Sp. z o. o. Spółka Komandytowa", "tax": "5130241420" },
+  { "name": "Twins Car Design Konrad Kajkowski", "tax": "7742961431" },
+  { "name": "Makstor Paweł Kucharczyk", "tax": "6572549960" },
+  { "name": "Adam Gacki Firma Handlowo-Usługowa Ab-Gum", "tax": "9131091893" },
+  { "name": "Mexem Sp. z o. o.", "tax": "5220003084" },
+  { "name": "Renata Dembska", "tax": "7741495398" },
+  {
+    "name": "Citronex Mop Sp. z o. o. Spółka Komandytowa",
+    "tax": "6152021413"
+  },
+  { "name": "Xaum Transport Sp. z o. o.", "tax": "6351860441" },
+  { "name": "Spółdzielnia Stw W Bolesławcu", "tax": "6120004475" },
+  { "name": "Dorgas Dorota Łyżwa", "tax": "7272341279" },
+  { "name": "”Port 2000 Marcinkiewicz” Spółka Jawna", "tax": "9730643695" },
+  { "name": "KHMELNYTSKYY KBM LTD", "tax": "UA03576806" },
+  { "name": "Made-Trans Emilian Krych", "tax": "9820247632" },
+  {
+    "name": "PHU Łukpol E.kawczyńska, K.kartasińska Spółka Jawna",
+    "tax": "6172211720"
+  },
+  { "name": "Czar-Trans Cezary Fijałkowski", "tax": "7732431163" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Re-Trans Bogdan Foksowicz",
+    "tax": "6481004120"
+  },
+  { "name": "Robin Robert Seferyniak", "tax": "8361654767" },
+  {
+    "name": "Transv8 Transport I Spedycja  Damian Łętkowski",
+    "tax": "8921478640"
+  },
+  {
+    "name": "”J.p.trans Spółka Cywilna”  Chmiel Józef Chmiel Piotr",
+    "tax": "7561892896"
+  },
+  { "name": "Piast Cargo Transport Sp. z o. o.", "tax": "6521725298" },
+  {
+    "name": "Lukmar Spółka Cywilna Marcin Błoch, Łukasz Smolarek",
+    "tax": "7312043951"
+  },
+  { "name": "Bad-Trans Kapusta Marcin", "tax": "7991848662" },
+  { "name": "Ms-Logistyka Gdańsk Poland Sp. z o. o.", "tax": "5833175890" },
+  {
+    "name": "Adam Karasiński Transport I Spedycja Międzynarodowa Kadam",
+    "tax": "6422553919"
+  },
+  { "name": "Pgs Group Sp. z o. o. Spółka Komandytowa", "tax": "8411719783" },
+  {
+    "name": "Firma Handlowo - Usługowa Tymek2 Maciej Bajek",
+    "tax": "8882437794"
+  },
+  { "name": "Mur-Bud Łukasz Ożóg", "tax": "5170163844" },
+  { "name": "F.b. Morcin  Krzysztof Jagieła", "tax": "7351245340" },
+  { "name": "Ever Go Paweł Wróblewski", "tax": "9271798109" },
+  {
+    "name": "Przedsiębiorstwo Transportowo Usługowe Łukasz Kłobus",
+    "tax": "5961680889"
+  },
+  { "name": "An-Trans Drabik Janicka Spółka Jawna", "tax": "9462672425" },
+  { "name": "Rap-Way Sp. z o. o.", "tax": "8222345028" },
+  { "name": "Geis Pl Sp. z o. o.", "tax": "5261025183" },
+  { "name": "PHU Cb- Elektra Paweł Śliwa", "tax": "9271385749" },
+  { "name": "Tsl Rekon Bartosz Haręza", "tax": "5562653342" },
+  { "name": "Grupa Azoty Koltar Sp. z o. o.", "tax": "9930177482" },
+  { "name": "Agrolok Sp. z o. o.", "tax": "8781499026" },
+  { "name": "Inkluz Logistik Piotr Jarosławicki", "tax": "9271625136" },
+  { "name": "”Gopet Poland” Sp. z o. o.", "tax": "7252004461" },
+  { "name": "JIT Sp. z o.o.", "tax": "9512381292" },
+  { "name": "Omega Logistic Daniel Kowalski", "tax": "6181299275" },
+  { "name": "Merlimi sp. z o.o.", "tax": "1132939298" },
+  { "name": "MIG Spedition Sp. z o.o.", "tax": "6222835116" },
+  { "name": "HIR-SPED Małgorzata Milewska", "tax": "9680240706" },
+  {
+    "name": "Kurierservice Schnelltransporte Karl Reith, Inhaber Silvia Reith",
+    "tax": "DE815483490"
+  },
+  {
+    "name": "Pst S.c.  Kamil Płaczkowski, Igor Samsonowicz",
+    "tax": "5981632528"
+  },
+  { "name": "”Hermes Logistics” Béatrice Fauriez", "tax": "9291810693" },
+  { "name": "Orion Express Sp. z o. o.", "tax": "7812020717" },
+  { "name": "Nst Iwona Wojtysiak", "tax": "6171519611" },
+  { "name": "Cargonet Sp. z o. o.", "tax": "5272919814" },
+  {
+    "name": "A-Z Trans Service Sp. z o. o. Spółka Komandytowa",
+    "tax": "9131615190"
+  },
+  { "name": "Ntg Polar Road Sp. z o. o.", "tax": "5272674838" },
+  { "name": "Elmex Logistics Group Sp. z o. o.", "tax": "7773225584" },
+  { "name": "Winner Spedition Polska Sp. z o. o.", "tax": "6222582684" },
+  { "name": "Botrans Sp. z o. o.", "tax": "5911003253" },
+  { "name": "Mika Logistyka Michał Balcerzak", "tax": "7752107862" },
+  { "name": "Greenlights Sp. z o. o.", "tax": "5423241587" },
+  { "name": "Fenix Kamil Miłosz Spółka Komandytowa", "tax": "8863020320" },
+  { "name": "Aluwind Sp. z o. o.", "tax": "5170372157" },
+  { "name": "Unico Logistics Polska Sp. z o. o.", "tax": "9721210152" },
+  {
+    "name": "Hieronim Milewski Agencja Handlowa Export I Import W Spadku",
+    "tax": "6180009401"
+  },
+  { "name": "Luesan s.r.o", "tax": "SK2121368832" },
+  { "name": "Awiacom Sp. z o. o.", "tax": "5342544125" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Watrans Marzena Wachelka",
+    "tax": "5732777044"
+  },
+  {
+    "name": "Przedsiębiorstwo Transportowe Arko-Trans Grzegorz Jasitczak",
+    "tax": "6721004190"
+  },
+  {
+    "name": "Kameleon Logistics Joanna Tarnolicka-Janeczko",
+    "tax": "5581748658"
+  },
+  { "name": "Cdsr Sp. z o. o.", "tax": "5252642663" },
+  { "name": "Motolargo Mariusz Wierzchowski", "tax": "7741656967" },
+  { "name": "Trans-Spedycja Materna Waldemar", "tax": "5621607586" },
+  { "name": "N Agro Service  Sp. z o. o.", "tax": "5581862029" },
+  { "name": "Alicja Szczygieł Firma Kams", "tax": "6781648548" },
+  { "name": "Jag Sp. z o. o.", "tax": "9671449826" },
+  { "name": "Mega-Sped Sp. z o. o.", "tax": "7741003320" },
+  { "name": "Me M04 Sp. z o. o.", "tax": "7671714061" },
+  { "name": "PPHU Bodek Bodziany Krzysztof", "tax": "8841001232" },
+  { "name": "PPHU Jarko Michał Wybrańczyk", "tax": "8971008267" },
+  { "name": "Pack & Go Logistics Sp. z o. o.", "tax": "6462987446" },
+  { "name": "Epo-Trans Logistic Spółka Akcyjna", "tax": "6462699090" },
+  { "name": "ORIGINAL BVBA", "tax": "BE0462049008" },
+  { "name": "Cargonite Sp. z o. o.", "tax": "5851464096" },
+  {
+    "name": "Transport Międzynarodowy Automandarin Natallia Skrobat",
+    "tax": "7123322414"
+  },
+  { "name": "Dk Trade Konrad Dębski", "tax": "9522069076" },
+  { "name": "Tesko Steel Logistic Sp. z o. o.", "tax": "6423183212" },
+  { "name": "Krystian Hordyn Eska Transport", "tax": "6492264994" },
+  { "name": "Riko Logistyka Sp. z o. o.", "tax": "8212672748" },
+  { "name": "Adrian Klajnowski Firma  Wielobranżowa", "tax": "7491781699" },
+  { "name": "Alimak Kamila Sałek", "tax": "9131523341" },
+  { "name": "Izobud - K. Pola, J. Sekler Spółka Jawna", "tax": "7561000372" },
+  { "name": "Transport Ciężarowy Czesław Szajdek", "tax": "7411516128" },
+  { "name": "Mer-Sped Joanna Smolińska", "tax": "8511866087" },
+  { "name": "Car Andrzej Skrzypa", "tax": "5632155372" },
+  { "name": "Gruszka Eu Sp. z o. o.", "tax": "7312050744" },
+  {
+    "name": "1.Firma Handlowo-Usługowa Deux Katarzyna Jabłońska",
+    "tax": "8882691481"
+  },
+  {
+    "name": "Transport Towarów. Handel Materiałami Budowlanymi, Opałem. Sułkowski Franciszek",
+    "tax": "7371007307"
+  },
+  {
+    "name": "Firma Usługowo Handlowa” One4Drive” Tomasz Bajek",
+    "tax": "8881450930"
+  },
+  {
+    "name": "Łukasz Tokarczyk Edtrans Firma Handlowo-Transportowo-Usługowa",
+    "tax": "7343101543"
+  },
+  {
+    "name": "Drewnut Jacek Gałaszek, Tomasz Adamczyk Spółka Jawna",
+    "tax": "6511736604"
+  },
+  {
+    "name": "Kz-Pol Transport Spedycja Rosińscy Sp. z o. o.",
+    "tax": "5570002458"
+  },
+  { "name": "Tsl Duszczak Sp. z o. o.", "tax": "7861726133" },
+  {
+    "name": "Zbigniew Furgał Firma Tarnsportowo Handlowa Kortex",
+    "tax": "8711000257"
+  },
+  {
+    "name": "Luka-Trans Transport Krajowy I Międzynarodowy Łukasz Wojnowski",
+    "tax": "7132885298"
+  },
+  { "name": "Tsl Expert Sp. z o. o. Spółka Komandytowa", "tax": "5862326185" },
+  { "name": "Febo Logistic Warszawa Sp. z o. o.", "tax": "7010820151" },
+  { "name": "Investgroup Sp. z o. o.", "tax": "5170375026" },
+  {
+    "name": "MARWAY Europe Sp. z o.o. Sp. K. Zweigniederlassung Deutschland",
+    "tax": "DE316199430"
+  },
+  { "name": "Euromaster Sp. z o. o.", "tax": "8992690169" },
+  { "name": "Il Logistics Martyna Palus", "tax": "1132484573" },
+  { "name": "Fastr GmbH", "tax": "DE813791922" },
+  { "name": "Urząd Dozoru Technicznego", "tax": "5220004617" },
+  { "name": "Wernic Marek Bielski", "tax": "6412169326" },
+  { "name": "Inter-Logic Sp. z o. o.", "tax": "7752649528" },
+  {
+    "name": "Kazimierz Żochowski Dan-Pol Usługi Transportowe",
+    "tax": "5360011190"
+  },
+  {
+    "name": "1. Przedsiębiorstwo Wielobranżowe Kwant Paweł Piotrowski",
+    "tax": "7741041361"
+  },
+  {
+    "name": "Pack Truck Sp. z o. o. Liberacka Spółka Komandytowa",
+    "tax": "9671431878"
+  },
+  { "name": "F.u.s. Logistika Dawid Popławski", "tax": "9562343218" },
+  {
+    "name": "Zaborowski Stanisław Andrzej -Przedsiębiorstwo Handlowo- Usługowe Almar",
+    "tax": "5690010242"
+  },
+  {
+    "name": "L.c.s. Elektronika Automatyka Ludwik Chyczewski",
+    "tax": "7751032777"
+  },
+  { "name": "Caveral Cargo  Sp. z o. o.", "tax": "8522617229" },
+  { "name": "Hotel Hamburg Altona GmbH", "tax": "DE294410566" },
+  {
+    "name": "As Spółka Cywilna Sebastian Pisarski, Marlena Janik",
+    "tax": "7681837138"
+  },
+  { "name": "Seifert Polska Sp. z o. o.", "tax": "6272356984" },
+  { "name": "B+K Brzeziński Kasperek Spółka Komandytowa", "tax": "5291745284" },
+  { "name": "Broclean Sp. z o. o.", "tax": "9721314360" },
+  { "name": "Łukasz Bednarek", "tax": "9482205135" },
+  { "name": "Lit Spedycja Polska Sp. z o. o.", "tax": "6450015571" },
+  { "name": "Kamil Seliga Services", "tax": "7543167759" },
+  { "name": "Daw-Pol Dawidowski Paweł", "tax": "7611361162" },
+  { "name": "Esa Trucks Polska Sp. z o. o.", "tax": "9721145555" },
+  {
+    "name": "S & S Adrian Skiba, „Skiba Auto Lab” Spółka Cywilna Adrian Skiba, Łukasz Skiba",
+    "tax": "6852198527"
+  },
+  { "name": "S.d.s. ,,Karat” Tadeusz Omiecina", "tax": "9111027248" },
+  { "name": "Regmot Rib Miłoś Spółka Jawna", "tax": "8172178768" },
+  { "name": "Romuald Pawelec Big Wash", "tax": "7721336225" },
+  { "name": "Prime Line Sp. z o. o. Spółka Komandytowa", "tax": "5213282290" },
+  { "name": "Łukasz Bartłomiej Speed-Trans", "tax": "9141370809" },
+  { "name": "Hurtpetrol Sp. z o. o.", "tax": "7773171055" },
+  { "name": "Bar U Zbycha Mariola Michalak", "tax": "7751605701" },
+  {
+    "name": "Transport Towarowy Samochodowy Jacek Słomka",
+    "tax": "5310007306"
+  },
+  { "name": "Transporter.mb Sp. z o. o.", "tax": "9542820922" },
+  { "name": "MIKER Steel s.r.o", "tax": "CZ28088867" },
+  { "name": "Henzel Transporte GmbH", "tax": "DE356272974" },
+  { "name": "Ventus Paweł Gierkowski", "tax": "8882793939" },
+  { "name": "Transmat Dariusz Ryń", "tax": "9221573756" },
+  { "name": "Agro-Trans Dawid Zachwieja", "tax": "8891523033" },
+  { "name": "Tm-Polimer Sp. z o. o. Spółka Komandytowa", "tax": "6722086681" },
+  { "name": "Woal Trans Sp. z o. o. Spółka Komandytowa", "tax": "6471003484" },
+  { "name": "Vilga Sp. z o. o.", "tax": "8952123783" },
+  { "name": "Autoandreas Sp. z o. o. Spółka Komandytowa", "tax": "8792681438" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe, Transport Krajowy I Międzynarodowy Jędruś Andrzej Rembek",
+    "tax": "6262154859"
+  },
+  { "name": "Tethys Sp. z o. o. Spółka Komandytowa", "tax": "6652994478" },
+  { "name": "Jobex Sped-Trans Beata Kuna", "tax": "6421013776" },
+  { "name": "Ada Transport-Spedycja. Aldona Korniejczuk", "tax": "6831961372" },
+  { "name": "BP Europa Oddział w Polsce", "tax": "9720865431" },
+  { "name": "Rystal Sp. z o. o.", "tax": "8681983751" },
+  { "name": "Rtz Polska Tomasz Rumiński", "tax": "2220782589" },
+  { "name": "Telmex Sp. z o. o.", "tax": "5420200346" },
+  { "name": "Duvenbeck Transport GmbH", "tax": "DE124162767" },
+  { "name": "Pj Transport Sp. z o. o.", "tax": "6452535642" },
+  {
+    "name": "Maciej Kańczewski Przedsiębiorstwo Usługowo Produkcyjno Handlowe Tormat",
+    "tax": "9561116779"
+  },
+  {
+    "name": "Centrum Konferencyjno-Piknikowe Nad Wisłą Bogdan Sumiński City Center",
+    "tax": "7741011182"
+  },
+  { "name": "TDS Express-Mesüt Telkan e.k", "tax": "DE274011544" },
+  { "name": "Marek Martynowski", "tax": "7741017859" },
+  { "name": "Ventus Logistic Sp. z o. o.", "tax": "9512514103" },
+  { "name": "Wisła Płock Spółka Akcyjna", "tax": "7742262118" },
+  { "name": "Ep - Logistik Polska Sp. z o. o.", "tax": "9291822006" },
+  { "name": "Sqline Sp. z o. o.", "tax": "8961530045" },
+  { "name": "Reifen Bart GmbH", "tax": "DE307286867" },
+  { "name": "De Joungle", "tax": "NL857751062B01" },
+  { "name": "Integral Logistics Sp. z o. o.", "tax": "5252532532" },
+  { "name": "K&B Trans Sp. z o. o.", "tax": "7811993702" },
+  { "name": "Paweł Śnieżek Ps Transport", "tax": "9442213393" },
+  { "name": "UAB Legarta Logistics", "tax": "LT100012075111" },
+  { "name": "Konsorcjum Stali Spółka Akcyjna", "tax": "5220004379" },
+  { "name": "Auto Serwis Piotr Becker", "tax": "6171761453" },
+  { "name": "Transmex Michał Młynarczyk", "tax": "6572954904" },
+  { "name": "Sodecide Damian Baran", "tax": "5512523904" },
+  { "name": "rheintalQrier.de", "tax": "DE333502938" },
+  { "name": "Power&Light Sp. z o. o.", "tax": "9291900462" },
+  {
+    "name": "Bocianex Kinga Bociańska Spółka Komandytowa",
+    "tax": "6080114943"
+  },
+  { "name": "Transam Sp. z o. o.", "tax": "5993168841" },
+  { "name": "HR Polska Sp.zo.o Sp.K", "tax": "9671137245" },
+  { "name": "Baywa Agro Polska Sp. z o. o.", "tax": "5291803886" },
+  {
+    "name": "Agro-Handlowiec Szymańscy Sp. z o. o. Spółka Komandytowa",
+    "tax": "7621996519"
+  },
+  { "name": "Uni-Logistics Sp. z o. o.", "tax": "9581554011" },
+  { "name": "Transports Vega Express", "tax": "FR94753690577" },
+  { "name": "Tracking Trans Sp. z o. o.", "tax": "6060093913" },
+  { "name": "Uniwer-Trans Łukasz Raputa", "tax": "8982111833" },
+  { "name": "Modalto Sp. z o. o.", "tax": "7882005427" },
+  { "name": "Eco Log Maciej Maćków", "tax": "9281963389" },
+  { "name": "Przedsiębiorstwo Usługowe Roland Glonke", "tax": "9570692459" },
+  { "name": "Kliwaro Sp. z o. o.", "tax": "1132939571" },
+  {
+    "name": "Derwi Spółka Cywilna  Jarosław Derdowski, Michał Windorpski",
+    "tax": "5851463926"
+  },
+  { "name": "”Ikea Retail” Sp. z o. o.", "tax": "5270103385" },
+  { "name": "Dx Electronic Wojciech Winikajtis", "tax": "9271870829" },
+  { "name": "Wittchen Spółka Akcyjna", "tax": "9511022154" },
+  { "name": "P.p.u.h. Progres Przemysław Wojciechowski", "tax": "5571660778" },
+  {
+    "name": "Transport Międzynarodowy I Krajowy Tomasz Dzida Sp. z o. o.",
+    "tax": "6381538402"
+  },
+  { "name": "Kronos Sławomir Wesołowski", "tax": "8491386561" },
+  { "name": "Bobinas BV", "tax": "BE0899117348" },
+  { "name": "Krotrans Logistics Sp. z o. o.", "tax": "6462928260" },
+  { "name": "FHU Ratio Plus Sylwia Opólska", "tax": "7741726455" },
+  { "name": "Bcube Sp. z o. o.", "tax": "6443050313" },
+  { "name": "PHU Mat-Pol Mateusz Chmielewski", "tax": "5621805889" },
+  { "name": "Latras Angelika Zacharska", "tax": "9552228154" },
+  { "name": "”Ppskiz Transmeble Poznań” Sp. z o. o.", "tax": "7822136522" },
+  { "name": "Elsan Monika Połeć", "tax": "8371616515" },
+  { "name": "Ew-Trans Wojciech Michalczyk", "tax": "6572729194" },
+  { "name": "Załadowani Sp. z o. o.", "tax": "7262680896" },
+  { "name": "Bubuś Trans Hubert Sygnecki", "tax": "7661931130" },
+  { "name": "Gamma Logistics - Adam Kramarski", "tax": "8882234140" },
+  { "name": "Auto Transport Rogalscy Spółka Jawna", "tax": "6372058074" },
+  { "name": "PPHU 'Trans-Brado' Kuśnierkiewicz Mieszko", "tax": "6271665884" },
+  { "name": "Robert Ręka ”Tsm Service”", "tax": "6451533150" },
+  { "name": "FHU Malik Jolanta Kowalczyk", "tax": "6181292758" },
+  { "name": "Seba Sp. z o. o.", "tax": "6392005773" },
+  {
+    "name": "Sobiecki Tomasz Usługi Transportowe I Rolnicze",
+    "tax": "9710656571"
+  },
+  { "name": "Renova Sp. z o. o.", "tax": "7282762054" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Woj-Trans Wojciech Zaworski",
+    "tax": "7891542805"
+  },
+  { "name": "San-Trans Sandra Ruzik-Andrejczuk", "tax": "7492043727" },
+  { "name": "Mirotrans Sp. z o. o.", "tax": "5482461907" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe Inter - Plast Tomasz Nowak",
+    "tax": "5732157643"
+  },
+  {
+    "name": "Firma Handlowo-Usługowa Mar-Trans Kawa Marek",
+    "tax": "7381112477"
+  },
+  { "name": "Max-Trans Paweł Kopczyński", "tax": "8361349573" },
+  { "name": "Mirosław Skupin Ph Kontra", "tax": "6991003970" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe Batis Sp. z o. o.",
+    "tax": "7691459873"
+  },
+  { "name": "Pg-Trans Piotr Kotara", "tax": "8681865690" },
+  {
+    "name": "Spiżarnia Smakosza, Natural Sweet Good Sp. z o. o. Spółka Komandytowa",
+    "tax": "5110290533"
+  },
+  { "name": "Sandra Knach", "tax": "7743198813" },
+  { "name": "Sylwia Fabiszewska-Osiak", "tax": "7742449383" },
+  { "name": "”Carrefour Polska” Sp. z o. o.", "tax": "9370008168" },
+  { "name": "Monax Sp. z o. o.", "tax": "4660430861" },
+  {
+    "name": "Handel * Wytwórczość* Usługi Dariusz Łoziński",
+    "tax": "7420010380"
+  },
+  { "name": "Kona-Stal Rafał Janik", "tax": "7741280522" },
+  { "name": "Cognor Spółka Akcyjna", "tax": "1181234296" },
+  { "name": "Presto Lesińska Joanna", "tax": "8861041217" },
+  {
+    "name": "Smart Trans Rafał Bańkowski, Tomasz Lesiński Spółka Jawna",
+    "tax": "5862175125"
+  },
+  { "name": "Dss Polska Sp. z o. o.", "tax": "6772301213" },
+  { "name": "Drewnex Gabriela Wyleżuch-Ryguła", "tax": "6411598999" },
+  { "name": "Fox Forwarding Nicolas Oswald", "tax": "LU34399409" },
+  {
+    "name": "Centrum Logistyczne Grześkowiak Sp. z o. o. - Spółka Komandytowa",
+    "tax": "6972370472"
+  },
+  { "name": "”Spedycja Rentrans” Sp. z o. o.", "tax": "6340133016" },
+  { "name": "Febo Logistic Sp. z o. o.", "tax": "8222241582" },
+  { "name": "Revico Spółka Akcyjna", "tax": "7743094172" },
+  { "name": "Armako A. Kokosza, M. Kokosza Spółka Jawna", "tax": "1251286856" },
+  { "name": "Kaczmarski Group Spółka Jawna", "tax": "8952053350" },
+  {
+    "name": "Zakład Mechaniki Pojazdowej - Pomoc Drogowa - Usł. Transportowe Białek Leszek",
+    "tax": "5961016370"
+  },
+  { "name": "Empik Foto Sp. z o. o.", "tax": "5252754103" },
+  { "name": "Plandeki Ostrowski Mariusz", "tax": "7741298367" },
+  { "name": "”Omni Moto” Sp. z o. o.", "tax": "6910017207" },
+  { "name": "”Yazamco Poland” Sp. z o. o.", "tax": "5251030449" },
+  { "name": "Trans - Kaj Bobrowski Bogusław", "tax": "9551995673" },
+  { "name": "Maciej Śliżewski Samac Logistics", "tax": "8421732638" },
+  { "name": "Flora Sp. z o. o.", "tax": "5761450765" },
+  { "name": "Get Gierzyński Spółka Jawna", "tax": "7743217025" },
+  { "name": "Wrc Sp. z o. o.", "tax": "6652969291" },
+  { "name": "Rps Real Property & Servicing Sp. z o. o.", "tax": "5213679432" },
+  {
+    "name": "Prywatny Gabinet Psychologiczny Aleksandra Kuźma-Gajewska",
+    "tax": "7742953213"
+  },
+  { "name": "Mirosław Zych Handlo-Trans", "tax": "7481242498" },
+  {
+    "name": "”Międzynarodowy Transport Drogowy Jerzy Borski”",
+    "tax": "7780023166"
+  },
+  { "name": "Lenmar Damian Borkowski", "tax": "9482501649" },
+  { "name": "Maciej Barciński Nasionex", "tax": "7743012085" },
+  {
+    "name": "Przedsiębiorstwo Transportowo-Handlowe ,,Amigo” Andrzej Gołębiewski",
+    "tax": "6660007922"
+  },
+  { "name": "Wentra Przemysław Pawelczyk", "tax": "5090027694" },
+  {
+    "name": "Zakład Produkcyjno - Usługowo- Handlowy Kesur Sławomir Rusek",
+    "tax": "1230842022"
+  },
+  { "name": "Tt Plast Spółka Akcyjna", "tax": "6831862210" },
+  {
+    "name": "Usługi Transportowe Pro-Geo Dariusz Andrzejewski",
+    "tax": "6671420695"
+  },
+  { "name": "Wichot Transport Andrzej Wichot", "tax": "9120010721" },
+  { "name": "Bogdan Mazur-Usługi Transportowe", "tax": "8211003123" },
+  { "name": "Krzysztof Trzciński Usługi Transportowe", "tax": "8771000309" },
+  { "name": "Hupało Tomasz  P.h.u. Tompol", "tax": "8842347228" },
+  { "name": "Tir Transport Rafał Pawlak", "tax": "6852259358" },
+  { "name": "Transport Ciężarowy Dybowski Marek", "tax": "8791031365" },
+  { "name": "Tomawer Tomasz Nesterowicz", "tax": "8882483831" },
+  { "name": "Adam Kuziemski Impex", "tax": "6452291826" },
+  { "name": "P.w Traczek  Mieczysław Rak", "tax": "8131113849" },
+  { "name": "Bukowski Roman", "tax": "7361063959" },
+  { "name": "Toma-Trans Tomasz Jankowski", "tax": "7721160631" },
+  { "name": "Transpl Krzysztof Cieślak", "tax": "9710671582" },
+  { "name": "Firma Handlowo-Usługowa Patrycja Bąk", "tax": "7962988389" },
+  {
+    "name": "Bogdan Miszkiewicz Przedsiębiorstwo Handlowo-Przemysłowe Przemix",
+    "tax": "6971682666"
+  },
+  { "name": "Maciej Ułanowski Usługi Transportowe", "tax": "9680884266" },
+  { "name": "Agronom Marcin Kotfas", "tax": "8882567574" },
+  { "name": "Cargoflex Szymon Cieślik", "tax": "6391874389" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe - Kowalski - Kowalski Jan",
+    "tax": "8792591617"
+  },
+  { "name": "Delta Trans Logistik Sp. z o. o.", "tax": "6270012418" },
+  { "name": "Hespon Sp. z o. o.", "tax": "5252712263" },
+  { "name": "Mariański Dariusz", "tax": "6331118684" },
+  { "name": "Usługi Transportowe Mariusz Chmielewski", "tax": "9490578017" },
+  { "name": "Mio Logistics Sp. z o. o.", "tax": "9532768723" },
+  { "name": "Lumar Transport Sp. z o. o.", "tax": "5532127040" },
+  { "name": "VP Pneus SRL", "tax": "BE0421371166" },
+  { "name": "”Nord Logistic Sp. z o. o.”", "tax": "9581597865" },
+  { "name": "Auto - Diesel Marek Perzyński", "tax": "5930206566" },
+  { "name": "Orsped Sp. z o. o.", "tax": "7292684479" },
+  { "name": "Zbigniew Siedlecki", "tax": "8291462932" },
+  { "name": "Trasteel Engineering Polska Sp. z o. o.", "tax": "5252674611" },
+  { "name": "Ing Lease (Polska) Sp. z o. o.", "tax": "5261040337" },
+  { "name": "Mawero Magdalena Witkowska", "tax": "9252079945" },
+  { "name": "Labor Sp. z o. o.", "tax": "7011021630" },
+  { "name": "Sanmar Sp. z o. o.", "tax": "7831622707" },
+  { "name": "”Osadkowski - Cebulski” Sp. z o. o.", "tax": "6912146050" },
+  { "name": "Rafał Stępniewski Sterpol", "tax": "7971808429" },
+  {
+    "name": "Mrozik Szczepan Transport Ciężarowy Roboty Ziemne",
+    "tax": "6161010857"
+  },
+  { "name": "C2C Sp. z o. o.", "tax": "9462637937" },
+  {
+    "name": "”Europejskie Centrum Logistyczne” Sp. z o. o.",
+    "tax": "5170355762"
+  },
+  { "name": "Bnp Paribas Leasing Services Sp. z o. o.", "tax": "5213110063" },
+  { "name": "Psb Budomat Sp. z o. o.", "tax": "7742792684" },
+  {
+    "name": "Nowa Logistic International Sp. z o. o. Spółka Komandytowa",
+    "tax": "8291743223"
+  },
+  {
+    "name": "Hurtownia Artykułów Spożywczych Bogumiła I Jerzy Ryduchowscy Spółka Jawna",
+    "tax": "5552009183"
+  },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Jarecki Jarosław Nocny",
+    "tax": "8911209660"
+  },
+  { "name": "Tc Inkasso Sp. z o. o.", "tax": "8992942056" },
+  {
+    "name": "Firma Handlowo-Usługowa Trans-Kop Morawscy Michał Morawski",
+    "tax": "5512440354"
+  },
+  { "name": "T-Q-M Sp. z o. o. Spółka Komandytowa", "tax": "5472158024" },
+  { "name": "AXIS Transport", "tax": "LT100002786510" },
+  { "name": "Abas Logistics Sp. z o. o.", "tax": "5242866697" },
+  { "name": "Mobilia Transport Sp. z o. o.", "tax": "6182151385" },
+  { "name": "Mastervent Sp. z o. o.", "tax": "7743270143" },
+  { "name": "Ranvier Anna Korzybska", "tax": "9562296588" },
+  { "name": "Euronet Jolanta Wysoczańska-Maryczkanicz", "tax": "8581152140" },
+  {
+    "name": "DeutschMann Internationale Spedition s.r.o",
+    "tax": "SK2020030584"
+  },
+  { "name": "”Dsv Road” Sp. z o. o.", "tax": "1130017933" },
+  { "name": "Elektro - Serwis Piotr Lewandowski", "tax": "9710585150" },
+  {
+    "name": "Autko Części Samochodowe Arkadiusz Pietruszewski",
+    "tax": "7741150498"
+  },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Autos Sp. z o. o.",
+    "tax": "9532271460"
+  },
+  { "name": "Supon Spółka Akcyjna", "tax": "8511006700" },
+  { "name": "Oltruck Spółka Cywilna", "tax": "9111952085" },
+  { "name": "Mjkb Sp. z o. o.", "tax": "2220919781" },
+  { "name": "Dromader Junior Krzysztof Zając", "tax": "7343498546" },
+  { "name": "Gm7 Stacje Sp. z o. o.", "tax": "5591988068" },
+  { "name": "Mobilny Serwis Tir Sylweriusz Malinowski", "tax": "8862761161" },
+  {
+    "name": "Andrzej Oliwkowski, Krzysztof Zwierełło Przedsiębiorstwo Handlowo-Usługowo-Produkcyjne Auto-Trak Spółka Jawna",
+    "tax": "7741002094"
+  },
+  { "name": "Truck - Mobil Jan Zając", "tax": "7121430677" },
+  { "name": "Stu Płock Sp. z o. o.", "tax": "7743136108" },
+  { "name": "Alior Leasing Sp. z o. o.", "tax": "5223027866" },
+  { "name": "F.H.U. Regmar Marek Peregrym", "tax": "6911117939" },
+  { "name": "” Kak - Trans ” Adam Kołodziejczyk", "tax": "6492176787" },
+  {
+    "name": "Tabo Kuzimski Sp. z o. o. Spółka Komandytowa",
+    "tax": "8351347348"
+  },
+  { "name": "”Sm Logistic” Sp. z o. o.", "tax": "5512272371" },
+  { "name": "Hopi Pl Poland Sp. z o. o.", "tax": "5272681413" },
+  { "name": "Husar Arkadiusz Wiśniewski", "tax": "9710683906" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Bukowscy Sp. z o. o.",
+    "tax": "5570002547"
+  },
+  { "name": "Trans-Gondola Artur Stodulski", "tax": "6351225302" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Legertrans Grzegorz Prucnal",
+    "tax": "5170224439"
+  },
+  { "name": "Utl Sp. z o. o.", "tax": "5342530494" },
+  { "name": "Bosped Spółka Jawna Bartłomiej Bobrek", "tax": "6172083699" },
+  { "name": "Usługi Transportowe Andrzej Sobisz", "tax": "8421386219" },
+  { "name": "Mat-Pol  Transport-Spedycja Mateusz Wenda", "tax": "7971829621" },
+  {
+    "name": "Grzegorz Sośnicki Instalex Przedsiębiorstwo Produkcyjno-Usługowo-Handlowe",
+    "tax": "6181010091"
+  },
+  { "name": "Błażej Kopczyński ''Rolkop''", "tax": "4660232782" },
+  {
+    "name": "Przedsiębiorstwo Spedycyjno-Transportowe Kro-Sped S.c.",
+    "tax": "6842147161"
+  },
+  {
+    "name": "Firma Handlowo Usługowa Radmar Zembrzuski Radosław",
+    "tax": "8291577836"
+  },
+  { "name": "Feniks K&L Sp. z o. o.", "tax": "7773095561" },
+  {
+    "name": "Anita Bazychowska Przedsiębiorstwo Transportowo-Usługowe ,,Orion Plus”",
+    "tax": "5891420691"
+  },
+  { "name": "Woj-Trans Wojciech Dziuk", "tax": "5751871034" },
+  { "name": "Walmar-Drażba Spółka Jawna", "tax": "8441006993" },
+  {
+    "name": "Transport Krajowy I Międzynarodowy Mirosław Dyląg",
+    "tax": "8781260638"
+  },
+  { "name": "J. Rider Tsl Sp. z o. o.", "tax": "8361879265" },
+  { "name": "Firma Dar-Trans Dariusz Domański", "tax": "7861253166" },
+  {
+    "name": "Hellmann Worldwide Logistics Polska Sp. z o. o. Spółka Komandytowa",
+    "tax": "1230005823"
+  },
+  {
+    "name": "Przedsiębiorstwo Robót Inżynieryjnych Eko-Bud-Instal Spółka Akcyjna",
+    "tax": "7492035768"
+  },
+  { "name": "Maniek-Trans Łukasz Mański", "tax": "8421779166" },
+  {
+    "name": "”Trans-Sped, Usługi Handlowe” U. I J. Bednarczyk Spółka Jawna",
+    "tax": "6981619646"
+  },
+  { "name": "Fol-Mech Sp. z o. o.", "tax": "7743277369" },
+  { "name": "Krismar Krzysztof Szymański", "tax": "8781701798" },
+  { "name": "Mariusz Kosecki Kos - Trans", "tax": "6681012957" },
+  {
+    "name": "Spectra Plus Sp. z o. o. Spółka Komandytowa",
+    "tax": "6832079535"
+  },
+  { "name": "Rafkyl Rafał Kubicki", "tax": "8361407365" },
+  { "name": "Van Cargo Spółka Akcyjna", "tax": "5242125771" },
+  { "name": "Petroman Paliwa Sp. z o. o.", "tax": "7272796488" },
+  { "name": "”Trans-Kol Paliwa” Sp. z o. o.", "tax": "6661975486" },
+  { "name": "Petrokan Bis Sp. z o. o.", "tax": "8883159972" },
+  { "name": "Artel Czarniecki Spółka Jawna", "tax": "7920010615" },
+  {
+    "name": "Przedsiębiorstwo Handlowo - Usługowe Solo - Bożena Wiśniewska",
+    "tax": "8781002296"
+  },
+  {
+    "name": "Business Logistics Services Polska Sp. z o. o.",
+    "tax": "7851799308"
+  },
+  { "name": "Kostrzycki Waldemar Firma Mirwal", "tax": "9131000229" },
+  { "name": "Verocargo  Sp. z o. o.", "tax": "6312642473" },
+  {
+    "name": "M&M Logistik Sp. z o. o. Spółka Komandytowa",
+    "tax": "6182133068"
+  },
+  { "name": "Transtom Bis Sp. z o. o.", "tax": "5542971458" },
+  {
+    "name": "Ifb International Freightbridge (Poland) Sp. z o. o.",
+    "tax": "5272625573"
+  },
+  { "name": "Andy Trans Andrzej Basoń", "tax": "6372051126" },
+  { "name": "Nobile Cargo Katarzyna Sać", "tax": "5981018254" },
+  { "name": "Ketulo Spółka Akcyjna Spółka Komandytowa", "tax": "9121910728" },
+  { "name": "Szymczyk Jan Eko-Stalsprzęt Puhp", "tax": "6291005263" },
+  { "name": "Petrosped S.C. G.Lipowska M.Dubicki", "tax": "7742856757" },
+  { "name": "Kraft Global Logistics Sp. z o. o.", "tax": "6443560853" },
+  { "name": "UnitCargo Speditionsges.m.b.H", "tax": "ATU57970404" },
+  { "name": "”Galan Logistics” Sp. z o. o.", "tax": "8561811616" },
+  {
+    "name": "”Bałtyk - Transport” Ewa Przychodzka-Wiewióra",
+    "tax": "6692287741"
+  },
+  { "name": "DJ Transport Damian Jackowski", "tax": "4660413489" },
+  { "name": "Yusen Logistics (Polska) Sp. z o. o.", "tax": "5213145216" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno-Handlowe Hen-Stol Hanna Piórkowska Spółka Jawna",
+    "tax": "7580002142"
+  },
+  {
+    "name": "Citronex Energy Sp. z o. o. Spółka Komandytowa",
+    "tax": "6152044489"
+  },
+  { "name": "Ungaro Karol Małolepszy", "tax": "5571325614" },
+  { "name": "Skald Sp. z o. o.", "tax": "9112039199" },
+  { "name": "Toni Logistics Sp. z o. o.", "tax": "6372219620" },
+  {
+    "name": "Pablosped  Paweł Dudek, Anna Dudek Spółka Cywilna",
+    "tax": "6793115071"
+  },
+  { "name": "Pol-Buss Sp. z o. o. Spółka Komandytowa", "tax": "7822854140" },
+  { "name": "Silva Sp. z o. o.", "tax": "6731697591" },
+  { "name": "Martom-Bis Maria Prus", "tax": "5541908423" },
+  { "name": "Kalbi Karina Karbowiak", "tax": "5562687341" },
+  { "name": "Hojczak - Trans Sp. z o. o.", "tax": "6423243546" },
+  { "name": "Dsb Logistics Sp. z o. o.", "tax": "2220919315" },
+  { "name": "Kalimera Logistics Sp. z o. o.", "tax": "1133070359" },
+  {
+    "name": "Szymczyk Michał Przedsiębiorstwo Wielobranżowe ” A-Remis ”",
+    "tax": "6442435643"
+  },
+  { "name": "Transport Ciężarowy Waldemar Głuszko", "tax": "9121273405" },
+  { "name": "Art-Mark Usługi Marketingowe Kluziak Artur", "tax": "9111348679" },
+  { "name": "Garda Tsl Sp. z o. o.", "tax": "7792526051" },
+  { "name": "Dakarex Paweł Baryła", "tax": "7122821411" },
+  {
+    "name": "Centrum Optyczno-Okulistyczne Essilor-Szewczyk Barbara Buszman",
+    "tax": "7741012000"
+  },
+  { "name": "Eko - Tank Sp. z o. o.", "tax": "5591828206" },
+  { "name": "Logissmile Tse Sp. z o. o.", "tax": "9112028416" },
+  {
+    "name": "Leo Group Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "9542802456"
+  },
+  { "name": "Woźtrans Mariusz Woźniak", "tax": "7321910198" },
+  { "name": "Łukasz Wróbel - Firma Handlowo-Usługowa", "tax": "7511666436" },
+  { "name": "Mikobud Transport Sp. z o. o.", "tax": "8741804003" },
+  { "name": "Wójtowicz Tomasz Merco Transport Ciężarowy", "tax": "7122309162" },
+  { "name": "Sławomir Biliński Firma Wielobranżowa", "tax": "9151028981" },
+  {
+    "name": "Mareno Handel I Transport Polska Sp. z o. o.",
+    "tax": "9131634589"
+  },
+  {
+    "name": "Żelazowski Transport Międzynarodowy I Krajowy Grzegorz Żelazowski",
+    "tax": "8711272398"
+  },
+  { "name": "Novo Trade Market Damian Arkuszewski", "tax": "6661897817" },
+  { "name": "R-Pas Sp. z o. o.", "tax": "1090003579" },
+  {
+    "name": "Usługi Transportowe Diana - Trans Dariusz Wenczuk",
+    "tax": "5632299415"
+  },
+  { "name": "Marek Jarzębski- Marko", "tax": "8221864424" },
+  { "name": "Key Logistic Justyna Wasińska-Ryl", "tax": "1250992925" },
+  { "name": "Tomasz Zaborowski P.h.u. ” Transtom ”", "tax": "5691682009" },
+  { "name": "Roman Żyto Pw Romar", "tax": "6991477627" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Szymon Szymański Mariusz",
+    "tax": "8750001551"
+  },
+  {
+    "name": "Stef -Trans Arkadiusz Barański Spółka Komandytowa",
+    "tax": "5070098863"
+  },
+  {
+    "name": "Tsl Transport Sp. z o. o. Spółka Komandytowa",
+    "tax": "5911696670"
+  },
+  { "name": "Tomar Renata Duchnowska", "tax": "6652615363" },
+  { "name": "Ah Ekol-Trans Sp. z o. o.", "tax": "1182218827" },
+  { "name": "Metal-Truck Sp. z o. o.", "tax": "8272333257" },
+  { "name": "Eurocel Sp. z o. o.", "tax": "5222947671" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Wig Spółka Cywilna Krzysztof Grzybowski, Wojciech Gozdawa-Dydyński",
+    "tax": "9281918615"
+  },
+  { "name": "Auto-Błysk Falaciński Łukasz", "tax": "7743056094" },
+  {
+    "name": "Ber-Trans Transport - Spedycja Sylwia Bernacka",
+    "tax": "5222370970"
+  },
+  { "name": "Szoptrans Kacper Pazio", "tax": "1251643670" },
+  {
+    "name": "”Przedsiębiorstwo Wielobranżowe J.k. Wojciechowscy” Spółka Jawna",
+    "tax": "9231557003"
+  },
+  { "name": "Gladeko Sp. z o. o.", "tax": "6252453046" },
+  { "name": "Speedmag Sp. z o. o.", "tax": "9121852623" },
+  { "name": "Sped-Inpex s.r.o", "tax": "SK2023240868" },
+  { "name": "Logis Com Sp. z o. o.", "tax": "8952136768" },
+  { "name": "Ramzes Invest Aleksander Rams", "tax": "9441728729" },
+  { "name": "Magda-Trans Sp. z o. o.", "tax": "6783120981" },
+  { "name": "Ski Logistic Kowalski Spółka Jawna", "tax": "6372214769" },
+  { "name": "Overis Sp. z o. o.", "tax": "8252176323" },
+  { "name": "Krzysztof Augustyniak", "tax": "6661727104" },
+  {
+    "name": "Przedsiębiorstwo Usługowo-Handlowe ”Trans - Rach” Mirosław Łagód",
+    "tax": "8790016843"
+  },
+  { "name": "Bring Intermodal Sp. z o. o.", "tax": "8551597469" },
+  {
+    "name": "Steel Trans Logistic GmbH Spedition und Transport",
+    "tax": "DE814295360"
+  },
+  { "name": "Inpost Sp. z o. o.", "tax": "6793108059" },
+  { "name": "Select Recycling Wojciech Pudliński", "tax": "8781358998" },
+  { "name": "Trans - Rach Ewa Korfanty", "tax": "8792438809" },
+  {
+    "name": "Wiśniowski Sp. z o. o. Spółka Komandytowo-Akcyjna",
+    "tax": "7343513091"
+  },
+  { "name": "Górażdże Cement Spółka Akcyjna", "tax": "7560003405" },
+  { "name": "Eisen+Stahl Service Center GmbH", "tax": "DE223674964" },
+  { "name": "Bogdan Marszał", "tax": "6131254388" },
+  { "name": "Łukasz Waś Cargo Transport", "tax": "1251405858" },
+  { "name": "”Budmat Materiały Budowlane” Sp. z o. o.", "tax": "7743154939" },
+  { "name": "FHU Wim Serwis Opon Witosław Michna", "tax": "8150000589" },
+  { "name": "West Trans Maciej Pajor", "tax": "8941723284" },
+  { "name": "Unipetrolium Sp. z o. o.", "tax": "8951825402" },
+  { "name": "Viktoria Sp. z o. o.", "tax": "7743231924" },
+  { "name": "Delikatesy Centrum Sp. z o. o.", "tax": "8951012337" },
+  { "name": "”Tsl Nordic” Sp. z o. o.", "tax": "6692522113" },
+  {
+    "name": "Menpol Krzysztof Mencel Spółka Komandytowo-Akcyjna",
+    "tax": "5981651595"
+  },
+  {
+    "name": "Mechanika Maszyn I Urządzeń Rolniczych Mechanika Pojazdowa Piasecki Maciej",
+    "tax": "7741378652"
+  },
+  { "name": "Mariusz Patyk P.h.u. ”Bart - Pol”", "tax": "8891428843" },
+  { "name": "All In Trans Bartosz Rutkowski", "tax": "9562203977" },
+  {
+    "name": "”M&W Spedition” Sp. z o. o. Spółka Komandytowa",
+    "tax": "6060063651"
+  },
+  {
+    "name": "Spedycja Transport Usługi Makuła Mirosław Makuła",
+    "tax": "6611042516"
+  },
+  { "name": "Roland Transport I Spedycja Sp. z o. o.", "tax": "6040235511" },
+  { "name": "Jmj Logistic Services Sp. z o. o.", "tax": "5562758147" },
+  { "name": "Spedycja Fides Piotr Madej", "tax": "9820195332" },
+  {
+    "name": "Mag Dystrybucja Sp. z o. o. Spółka Komandytowa",
+    "tax": "7391027750"
+  },
+  { "name": "RJP perfect spedition s.r.o", "tax": "CZ06544053" },
+  {
+    "name": "Best Cargo-Spedycja Krajowa I Międzynarodowa Katarzyna Brodowska",
+    "tax": "8371624058"
+  },
+  { "name": "Usługi Transportowe Rafał Kesling", "tax": "5691631934" },
+  {
+    "name": "Firma Transportowo - Usługowa ” Dargo” Dariusz Kalisz",
+    "tax": "7343019801"
+  },
+  { "name": "Skład Opałowy Janusz Hoffman", "tax": "8891294696" },
+  { "name": "Wisła Global Trans Sp. z o. o.", "tax": "5482729735" },
+  { "name": "Usługi Transportowe Damian Owczarek", "tax": "7692203012" },
+  { "name": "Man-Trans Józef Wiśniewski", "tax": "8410005780" },
+  { "name": "Godzwon-Czechowska Edyta Lubtrans", "tax": "8661090524" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Grunpol Zbigniew Grunwald",
+    "tax": "9570693252"
+  },
+  {
+    "name": "Przedsiębiorstwo Usługowo - Handlowe Góral Kazimierz Matuszek",
+    "tax": "5921817945"
+  },
+  { "name": "X-Trans Tomasz Ptasiński", "tax": "7132905256" },
+  {
+    "name": "Usługi Transportowe I Asenizacyjne Machowski Tadeusz",
+    "tax": "7741076448"
+  },
+  { "name": "Golden Eggs Grzegorz Siewierski", "tax": "8521082737" },
+  { "name": "Prospero Meble Sp. z o. o.", "tax": "6192055743" },
+  { "name": "Stark Log Sp. z o. o.", "tax": "5851467901" },
+  { "name": "Jpd Transport - Spółka Cywilna", "tax": "8371742906" },
+  {
+    "name": "Bembnista Transport Sp. z o. o. Spółka Komandytowa",
+    "tax": "7642698052"
+  },
+  { "name": "Traker Group  Sp. z o. o.", "tax": "7743276097" },
+  { "name": "Pit-Stop Jacek Zimnicki", "tax": "8641725445" },
+  {
+    "name": "Towarzystwo Ubezpieczeń I Reasekuracji Warta Spółka Akcyjna",
+    "tax": "5210420047"
+  },
+  { "name": "Hieronim Strapagiel Drum-Polska", "tax": "6180008979" },
+  {
+    "name": "Super - Trans Spedycja Transport Krajowy Jan Bombała",
+    "tax": "7740000874"
+  },
+  { "name": "Thx Logistyka Sp. z o. o.", "tax": "5420301254" },
+  { "name": "Transcoil Sp. z o. o.", "tax": "5771989572" },
+  {
+    "name": "Dariusz Dwojak Przedsiębiorstwo Handlowo-Usługowe ” Darex ”",
+    "tax": "7470002589"
+  },
+  { "name": "Prezero Bałtycka Energia Sp. z o. o.", "tax": "9512371649" },
+  { "name": "Ługowski Logistic Sp. z o. o.", "tax": "8212681339" },
+  { "name": "Polmark Logistic Sp. z o. o.", "tax": "9542784681" },
+  {
+    "name": "Transport Spedycja Logistyka-Olbryś Bartłomiej Olbryś",
+    "tax": "5562580577"
+  },
+  { "name": "Salvada Sp. z o. o.", "tax": "6793170118" },
+  { "name": "Adrikon Sp. z o. o.", "tax": "9261690190" },
+  { "name": "Bartłomiej Kędzia Anbar", "tax": "6172047019" },
+  {
+    "name": "Augustyn Stanisław Makurat Usługi Transportowe Mks",
+    "tax": "5881822057"
+  },
+  { "name": "Destina Group Sp. z o. o.", "tax": "5543003318" },
+  { "name": "Stel-Mark Sp. z o. o.", "tax": "7743210922" },
+  { "name": "LogEx Logistics s.r.o.", "tax": "CZ24771511" },
+  { "name": "Globgranit Logistic Spółka Akcyjna", "tax": "8822119889" },
+  { "name": "Bacargo Sp. z o. o.", "tax": "8322088861" },
+  { "name": "Arko-Trans Sp. z o. o.", "tax": "6722083317" },
+  { "name": "Ts Frigo Sp. z o. o.", "tax": "5291793194" },
+  { "name": "Krystyna Marczewska Cargo King", "tax": "6221378786" },
+  { "name": "Sedina Group Sp. z o. o.", "tax": "8513133785" },
+  { "name": "Omega Piotr Szewczyk", "tax": "9121482480" },
+  {
+    "name": "Zakład Usług Gospodarczych Serwkomb S.c. P.kalinowski M.kalinowska",
+    "tax": "7740008321"
+  },
+  { "name": "Bruta Krzysztof Żamojdzik", "tax": "6792988360" },
+  {
+    "name": "Doradztwo Techniczne Iso Ce Bhp Piotr Szynkowski",
+    "tax": "7761472578"
+  },
+  { "name": "Usługi Transportowe Mika Mariusz Bielecki", "tax": "6621071169" },
+  { "name": "Tom-Trans Tomasz Domański", "tax": "6661859863" },
+  {
+    "name": "Ireneusz Nizioł Usługi Transportowe Irtrans",
+    "tax": "5791557396"
+  },
+  {
+    "name": "Euro-Mar S.c. Marcin Nitecki & Mariusz Witczak",
+    "tax": "6662112379"
+  },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe ,,Pattika” Grzegorz Miara",
+    "tax": "5741984044"
+  },
+  { "name": "Franczak Bogusław Usługi Transportowe", "tax": "7371145280" },
+  { "name": "Lew-Trans Renata Lewandowska", "tax": "6671032734" },
+  {
+    "name": "Janina Jarzębińska Usługi Transportowe Czechtrans",
+    "tax": "5891022217"
+  },
+  { "name": "Zbg Cargo Sp. z o. o.", "tax": "9581665012" },
+  {
+    "name": "Firma Handlowo - Usługowa Ikar Ireneusz Tułacz",
+    "tax": "9680857708"
+  },
+  {
+    "name": "Firma Transportowo-Spedycyjna Panorama Marek Mordarski",
+    "tax": "7531350771"
+  },
+  { "name": "'Łukaszewska Ewa Pthu '", "tax": "7841003408" },
+  {
+    "name": "Transbud-Sanok Elżbieta I Dariusz Rogus Spółka Jawna",
+    "tax": "6870003706"
+  },
+  { "name": "Trans-Car Potęga Tomasz", "tax": "6761437618" },
+  { "name": "Mar - Kar Marcin Wiśniewski", "tax": "4660395946" },
+  { "name": "Logitarius  Sp. z o. o.", "tax": "7262675228" },
+  { "name": "Irs.eu Sp. z o. o.", "tax": "5291825793" },
+  {
+    "name": "Wilhelm Rosebrock GmbH & Co. (KG)  Spółka Komandytowa oddział w Polsce",
+    "tax": "1080022121"
+  },
+  { "name": "Gato Logistics Sp. z o. o.", "tax": "6671777291" },
+  { "name": "At Road Sp. z o. o.", "tax": "7811744212" },
+  {
+    "name": "”Cołokidzi I Wspólnicy - Lipiany Południe” Spółka Jawna",
+    "tax": "6121546698"
+  },
+  { "name": "M.v.p. Trans Michał Pracz", "tax": "4660265221" },
+  { "name": "Jm J.m.r. Bieniek Spółka Jawna", "tax": "7962492151" },
+  { "name": "Przemysław Grzybowski Phu Profit", "tax": "8321901047" },
+  { "name": "PPHU Paulo Sp. z o. o.", "tax": "9271968497" },
+  { "name": "Foliarex Foroof Sp. z o. o.", "tax": "8943016935" },
+  { "name": "Saati Elektronic Sebastian Kucharski", "tax": "6121870482" },
+  { "name": "Just In Time Logistics Sp. z o. o.", "tax": "9542749383" },
+  {
+    "name": "Centrum Handlowo-Usługowe Bugaj Tomasz Bugaj",
+    "tax": "7742404624"
+  },
+  { "name": "Sentigo Sp. z o. o.", "tax": "5833213024" },
+  { "name": "Euro-Pegaz Transport Sp. z o. o.", "tax": "5213405781" },
+  { "name": "Faspandi Sp. z o. o.", "tax": "5252713481" },
+  { "name": "Im Logistics Ilona Matusiak", "tax": "4660285347" },
+  {
+    "name": "Lublux Spółka Z Ograniczoną Odpowiedzialnoscią",
+    "tax": "7123435644"
+  },
+  {
+    "name": "Atu Logistic Sp. z o. o. Spółka Komandytowa",
+    "tax": "6792820413"
+  },
+  { "name": "Mainfreight Poland Sp. z o. o.", "tax": "5342280548" },
+  { "name": "Ritex Logistics Sp. z o. o.", "tax": "6912510231" },
+  { "name": "”Droper Logistic” Sp. z o. o.", "tax": "8862759224" },
+  { "name": "”Craiss Logistyka” Sp. z o. o.", "tax": "7772319981" },
+  { "name": "Steel Trans Logistic Sp. z o. o.", "tax": "9542474911" },
+  { "name": "Kucharski Marek Transport Cieżarowy", "tax": "6831418320" },
+  { "name": "Delphia Pisarska I Zagarów Spółka Jawna", "tax": "5862151455" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Promocyjne Agro-Efekt Sp. z o. o.",
+    "tax": "6221032125"
+  },
+  { "name": "Tslogistic Tomasz Sawicki", "tax": "9271282860" },
+  { "name": "”Logistic Solutions Group” Sp. z o. o.", "tax": "8943027057" },
+  { "name": "Ibiza-Speed Sp. z o. o.", "tax": "9231700877" },
+  { "name": "Xero Flor W Polsce Sp. z o. o.", "tax": "9590820972" },
+  { "name": "Venom Trans Sp. z o. o.", "tax": "7792432597" },
+  { "name": "Insurance & Logistics Group  Sp. z o. o.", "tax": "6070091442" },
+  {
+    "name": "” Kal-Trans ” Spedycja Usługi Transportowe Krajowe I Międzynarodowe Piotr Kaleta",
+    "tax": "7991710389"
+  },
+  { "name": "Dts Adam Powałowski", "tax": "5571688268" },
+  { "name": "Andryszczyk Tomasz Peritus", "tax": "8481501322" },
+  { "name": "1wayeurope OU", "tax": "EE102537400" },
+  { "name": "Ad Hoc Solutions Sp. z o. o.", "tax": "8952236458" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Pieprzyk Sp. z o. o.",
+    "tax": "6991672323"
+  },
+  { "name": "Claudia Stanirowscy Spółka Jawna", "tax": "9491839359" },
+  { "name": "PPHU Adam-Pol Adam Kowalski", "tax": "7741534744" },
+  { "name": "Automotive Logistics Polska Sp. z o. o.", "tax": "6431655269" },
+  { "name": "Hello Logistics Group Sp. z o. o.", "tax": "8952172801" },
+  { "name": "4Ward Wiland Spółka Jawna", "tax": "7851799811" },
+  { "name": "Impekstir Operations Sp. z o. o.", "tax": "9680946234" },
+  {
+    "name": "Vos Logistics Cargo International Spółka Akcyjna",
+    "tax": "7010715572"
+  },
+  {
+    "name": "Prywatna Praktyka Lekarska Krystyna Majerska",
+    "tax": "7741886070"
+  },
+  { "name": "Eco Harpoon-Recycling Sp. z o. o.", "tax": "5272745389" },
+  { "name": "PPHU Wojciech Rutkowski", "tax": "7340005098" },
+  { "name": "Wiesław Owczarek Usługi Transportowe", "tax": "7691414770" },
+  { "name": "Tr Trans Transport Spedycja Rafał Tomalik", "tax": "6191369391" },
+  { "name": "Adam-Trans Adam Kmiecik", "tax": "8311170464" },
+  {
+    "name": "Jurczak Krzysztof Firma Handlowo- Usługowa Importex Jurczak Krzysztof",
+    "tax": "7370000094"
+  },
+  { "name": "Trans-Jack Sp. z o. o.", "tax": "1182119781" },
+  { "name": "Eugeniusz Nuzia Usługi Transportowe", "tax": "7370004531" },
+  {
+    "name": "Tar-Star Przedsiębiorstwo Produkcyjno-Usługowo-Handlowe Wiesław Głowacz",
+    "tax": "8731134156"
+  },
+  { "name": "B2B Partner Sp. z o. o.", "tax": "6772357018" },
+  {
+    "name": "Jarosław Wiśniewski Przedsiębiorstwo Usług Antykorozyjnych ''Centro-Kor''",
+    "tax": "9710372046"
+  },
+  { "name": "Elkado Sp. z o. o.", "tax": "6423189195" },
+  {
+    "name": "Przedsiębiorstwo Transportowo - Handlowe Francepol Sp. z o. o.",
+    "tax": "7270125287"
+  },
+  {
+    "name": "Cenergo Logistyka Sp. z o. o. Spółka Komandytowa",
+    "tax": "5423206898"
+  },
+  { "name": "Axell Logistics Sp. z o. o.", "tax": "7881540294" },
+  { "name": "Flying Cargo Ryszard Kozłowski", "tax": "5951125471" },
+  {
+    "name": "Kulesza Piotr Firma Produkcyjno-Handlowa Mest",
+    "tax": "8481112997"
+  },
+  { "name": "Ags Sp. z o. o.", "tax": "7773156989" },
+  {
+    "name": "Alfa Sped Sp. z o. o. Spółka Komandytowo-Akcyjna",
+    "tax": "6792834154"
+  },
+  {
+    "name": "”Super -Trans” Transport Samochodowy Maciej Sułek",
+    "tax": "7962112177"
+  },
+  { "name": "As Logistics Skrzypek Anna", "tax": "7131369040" },
+  { "name": "Lucky Truck Sp. z o. o.", "tax": "1251707275" },
+  { "name": "Hezner Transport-Spedycja Krzysztof Hezner", "tax": "6321891856" },
+  { "name": "Prugar's Family Transport  Sp. z o. o.", "tax": "8863014710" },
+  { "name": "Gonera Transport Szymon Gonera", "tax": "9112030301" },
+  { "name": "Brent Sp. z o. o.", "tax": "9282086571" },
+  { "name": "Artima Sp. z o. o.", "tax": "5632431702" },
+  { "name": "Grupa Czarkowski Sp. z o. o.", "tax": "4960255847" },
+  { "name": "Fabryka Transportu Spółka Cywilna", "tax": "7773354844" },
+  { "name": "Firma Handlowo Usługowa Marek Dapa", "tax": "7492005253" },
+  { "name": "Wojciech Staniek Stan-Trans", "tax": "6391411229" },
+  { "name": "Force Team Sp. z o. o.", "tax": "8971843739" },
+  {
+    "name": "Northgate Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "6040186712"
+  },
+  { "name": "Solver Sp. z o. o.", "tax": "6312247009" },
+  { "name": "Transport Ciężarowy Krzysztof Gawryś", "tax": "8180004379" },
+  { "name": "Da-Li Cubera Dariusz", "tax": "8651230231" },
+  { "name": "Nowa Logistic Sp. z o. o.", "tax": "8291644403" },
+  { "name": "Qsynergy Sp. z o. o. Spółka Komandytowa", "tax": "9462622462" },
+  { "name": "Tsl Dav-Mar Poland Dawid Kałużny", "tax": "6681946660" },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe Mattrans Mateusz Kłudziak",
+    "tax": "7361700892"
+  },
+  { "name": "Kamil Gęśla Teox", "tax": "8652420241" },
+  { "name": "Sts Logistic Sp. z o. o.", "tax": "7773196380" },
+  { "name": "Vesta Polska Sp. z o. o.", "tax": "5342408474" },
+  { "name": "Vena Handel Usługi Sp. z o. o.", "tax": "6681999260" },
+  { "name": "S8 Truck Service Paweł Janus", "tax": "8951604670" },
+  { "name": "Kd Metal Jakub Dziembowski", "tax": "8971873410" },
+  { "name": "Truck Serwis Jarosław Szoszorek", "tax": "5571049841" },
+  { "name": "Vikk S.c.", "tax": "6192056122" },
+  { "name": "Usługi Transportowe Małgorzata Sudoł", "tax": "5170106131" },
+  { "name": "Corrugated Board Sp. z o. o.", "tax": "6912498180" },
+  { "name": "Usługi Wulkanizacyjne Seweryn Brzozowski", "tax": "6151640574" },
+  {
+    "name": "”P O L S P E D” S.c. Marczak Sławomir I S-Ka",
+    "tax": "7971632700"
+  },
+  { "name": "Utd-T Express Mariusz Gzyl", "tax": "8842519178" },
+  { "name": "Girteka Europe West UAB", "tax": "LT100015399114" },
+  { "name": "Toll4Europe GmbH", "tax": "BE0252151302" },
+  { "name": "Inter-Log Sp. z o. o.", "tax": "6381804944" },
+  { "name": "Ajeto Piotr Golczewski", "tax": "5372532598" },
+  {
+    "name": "Tsl Kama  Katarzyna Kościelny, Magdalena Dubas S.c.",
+    "tax": "9542815909"
+  },
+  { "name": "Jaqbs Sp. z o. o. Spółka Komandytowa", "tax": "9462667921" },
+  { "name": "Cargoklik Prosta Spółka Akcyjna", "tax": "6961893746" },
+  {
+    "name": "Kielan-Trans Usługi Transportowe Paweł Kielan",
+    "tax": "7732361356"
+  },
+  { "name": "Energy 5 Sp. z o. o.", "tax": "9710723296" },
+  { "name": "Speed Group Hajduk Spółka Komandytowa", "tax": "6351818686" },
+  { "name": "Solidaris Sp. z o. o.", "tax": "7491945480" },
+  { "name": "”Konig Stahl” Sp. z o. o.", "tax": "5270103379" },
+  {
+    "name": "Firma Handlowo Usługowa Spidi Logistic Transport Spedycja Natalia Jachnicka",
+    "tax": "4990523117"
+  },
+  {
+    "name": "Abx Solution Wojciech Trela Spółka Komandytowa",
+    "tax": "8883161532"
+  },
+  {
+    "name": "Przedsiębiorstwo Transportowo-Spedycyjno -Usługowe ”Indeka Iwona”",
+    "tax": "8391006783"
+  },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe  Ost-Trans Biała Izabela",
+    "tax": "6221523001"
+  },
+  {
+    "name": "Stacje Paliw Angielscy Spółka Jawna Małgorzata Angielska-Ślusarska, Włodzimierz Angielski, Mirosław Angielski",
+    "tax": "6550003969"
+  },
+  {
+    "name": "Autoryzowany Serwis Ogumienia I Sprzedaż Opon Paweł Jaśkiewicz",
+    "tax": "9710292100"
+  },
+  { "name": "Autoport Strefa Sp. z o. o.", "tax": "5040073226" },
+  { "name": "Bagat Sp. z o. o.", "tax": "5423175353" },
+  { "name": "Transport I Spedycja  Janusz Karwicki", "tax": "5341521837" },
+  {
+    "name": "Przedsiębiorstwo Obrotu Samochodami I Częściami Zamiennymi ”Polmozbyt Jelcz” Spółka Akcyjna",
+    "tax": "9120002420"
+  },
+  {
+    "name": "Edward Magdziak - Przedsiębiorstwo Transportowo-Spedycyjne Magtrans",
+    "tax": "6550003113"
+  },
+  { "name": "Sk Transport Szczepan Kurowski", "tax": "5372608746" },
+  { "name": "Schumacher Packaging Sp. z o. o.", "tax": "9131397830" },
+  {
+    "name": "Transport Spedycja Handel Sulich Sp. z o. o.",
+    "tax": "5432058256"
+  },
+  { "name": "Maju Logistics Sp. z o. o.", "tax": "8222343905" },
+  { "name": "Sqline Sp. z o. o.  Spółka Komandytowa", "tax": "8961590248" },
+  { "name": "”Transmec Poland” Sp. z o. o.", "tax": "6351187317" },
+  { "name": "Permento Sp. z o. o.", "tax": "5272807280" },
+  { "name": "Cat Lc Polska Sp. z o. o.", "tax": "5213319024" },
+  { "name": "Marboss-Sped Marcin Piotrowski", "tax": "6341955045" },
+  {
+    "name": "Kmlogistics K. Kuczur M. Rosiński Spółka Jawna",
+    "tax": "5542970269"
+  },
+  { "name": "Roadjet Logistics", "tax": "NL860232517B01" },
+  {
+    "name": "Michał Kozłowski Zakład Produkcyjno-Remontowy Energetyki",
+    "tax": "8992507426"
+  },
+  { "name": "Itrans Konowalski, Śmiech Spółka Jawna", "tax": "6222795196" },
+  { "name": "Blue Sped Sp. z o. o.", "tax": "5272982356" },
+  {
+    "name": "Magictime Małgorzata Michalska Spółka Komandytowa",
+    "tax": "8952242660"
+  },
+  {
+    "name": "Rg Lider Import Export Małgorzata Brzozowska",
+    "tax": "9510041764"
+  },
+  { "name": "Bartex Węgiel Sp. z o. o.", "tax": "2220925907" },
+  {
+    "name": "Przedsiębiorstwo Spedycyjno Transportowe ”Ost Sped” Sp. z o. o.",
+    "tax": "7780048114"
+  },
+  { "name": "”Rekord Hale Namiotowe” Sp. z o. o.", "tax": "8992210873" },
+  { "name": "Top-Ten Express Poland Sp. z o. o.", "tax": "9662133443" },
+  { "name": "Usługi Transportowe Krzysztof Dobosz", "tax": "5740010104" },
+  { "name": "Moto Speed Sp. z o. o.", "tax": "5213915401" },
+  { "name": "Rmsped Sp. z o. o.", "tax": "5223167774" },
+  { "name": "Feestartikelen Salon Roger NV", "tax": "BE0444746087" },
+  {
+    "name": "Transtone Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "9731024333"
+  },
+  {
+    "name": "Rzatkowsky Transport & Service Tomasz Rzatkowski",
+    "tax": "8441901481"
+  },
+  { "name": "Ct Cargo s.r.o.", "tax": "SK2020031079" },
+  { "name": "Seifert Logistics GmbH", "tax": "DE210204607" },
+  { "name": "Adam Stasiński Astrans", "tax": "7722253642" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Lechpol Sp. z o. o.",
+    "tax": "5581688910"
+  },
+  { "name": "Fastline Michał Rosiński", "tax": "8331404474" },
+  { "name": "Uniweg Sp. z o. o.", "tax": "5391511901" },
+  {
+    "name": "Pluta Marcin Kroma - Bis Transport Ciężarowy Przewozy Autokarowe",
+    "tax": "9121335371"
+  },
+  { "name": "Bomba-Trans Sp. z o. o.", "tax": "7743271237" },
+  { "name": "Bowim-Podkarpacie Sp. z o. o.", "tax": "5170150735" },
+  {
+    "name": "Tpu Transport I Logistyka Sp. z o. o. Spółka Komandytowa",
+    "tax": "8883115940"
+  },
+  {
+    "name": "Przedsiębiorstwo Komunikacji Samochodowej W Oławie Spółka Akcyjna",
+    "tax": "9120002710"
+  },
+  { "name": "Centrum Serwisowe Błach Spółka Komandytowa", "tax": "8992578082" },
+  {
+    "name": "Firma Handlowo-Usługowa Serwis Opon Tomasz Kluczyński",
+    "tax": "7841676099"
+  },
+  { "name": "Vanillya Sp. z o. o.", "tax": "6192050929" },
+  { "name": "P.H.U. Auto-Max Krzysztof Jabłoński", "tax": "9121087565" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Mera Edmund Kosiec, Elżbieta Kosiec - Spółka Jawna",
+    "tax": "7960067308"
+  },
+  { "name": "Medax Sp. z o. o.", "tax": "7711000995" },
+  { "name": "Matbud Sp. z o. o.", "tax": "6252178309" },
+  { "name": "Stacja Paliw Kogut Spółka Jawna", "tax": "5640001554" },
+  { "name": "Term-Oil Sp. z o. o.", "tax": "7962880746" },
+  { "name": "Stachowicz I Świtalski Spółka Jawna", "tax": "7740014215" },
+  {
+    "name": "”Grill Pod Wrzosem” Krzysztof Biernacik ”Krzywa Chata” Krzysztof Biernacik",
+    "tax": "9241659538"
+  },
+  {
+    "name": "Bomar Marek Kołtowski, Bogdan Sromek - Spółka Jawna",
+    "tax": "5470245894"
+  },
+  { "name": "Sparrows Agnieszka Wróblewska", "tax": "6222678734" },
+  { "name": "Ewa Dróżdż-Barańska Indigo Trans", "tax": "9490871639" },
+  { "name": "Ksk Logistic Kamil Siurdyna", "tax": "5291656913" },
+  { "name": "”Lalemant Poland” Spółka Akcyjna", "tax": "8971196607" },
+  { "name": "Tip Trailer Services Poland Sp. z o. o.", "tax": "5252148118" },
+  { "name": "Art-Trans Artur Burzyński", "tax": "6941335546" },
+  { "name": "Gawpol Michał Gawin", "tax": "8351607588" },
+  { "name": "Tc Cargomass Marek Czermak", "tax": "8982055017" },
+  { "name": "Ltl Express Maciej Prochowski", "tax": "6423007484" },
+  { "name": "H&s Logistic GmbH", "tax": "DE363769345" },
+  { "name": "F.t.h Domagała Domagała Marek", "tax": "6771850923" },
+  {
+    "name": "Jarmex Trans Sp. z o. o. Spółka Komandytowa",
+    "tax": "9482606495"
+  },
+  { "name": "Fm Polska Sp. z o. o.", "tax": "8381000827" },
+  { "name": "Velo Trans Sp. z o. o.", "tax": "8971879536" },
+  { "name": "Id Logistics Polska Spółka Akcyjna", "tax": "5252425204" },
+  { "name": "MD COMPANY s.r.o.", "tax": "SK2120188829" },
+  { "name": "Cargo Transport Sp. z o. o.", "tax": "1251753447" },
+  { "name": "Mo-Bruk Spółka Akcyjna", "tax": "7343294252" },
+  { "name": "Eltmar Tsl Sp. z o. o.", "tax": "9581722827" },
+  { "name": "Hobernik Sp. z o. o.", "tax": "5482664763" },
+  {
+    "name": "Pol-Sar Anna Stasiak Piotr Ossowski Spółka Cywilna",
+    "tax": "8513159075"
+  },
+  { "name": "Mr Transport Robert Kobryń", "tax": "5861732693" },
+  { "name": "”Kgk Trans” Sp. z o. o.", "tax": "5291845910" },
+  { "name": "Paneltech Sp. z o. o.", "tax": "6270012306" },
+  { "name": "Fiege Sp. z o. o.", "tax": "5252114869" },
+  { "name": "Transtone Sp. z o. o.", "tax": "9731007553" },
+  { "name": "Eco-Ergis Sp. z o. o.", "tax": "9562076378" },
+  { "name": "Serwis Aut Ciężarowych - Lkw Zenon Zawada", "tax": "6191797402" },
+  { "name": "PHU Global Walczak Katarzyna", "tax": "7741778943" },
+  { "name": "Łukasz Cepa Firma Handlowo-Usługowa", "tax": "8531488926" },
+  { "name": "Stacja Paliw Apollo Frączak Zygmunt", "tax": "7971087208" },
+  { "name": "Petrolan Sp. z o. o. Spółka Komandytowa", "tax": "7722413241" },
+  {
+    "name": "PHU Irena S.c. Grażyna Parafińczuk, Lidia Litwinek, Krzysztof Parafińczuk",
+    "tax": "6642113507"
+  },
+  { "name": "Cbadmir - Spółka Cywilna", "tax": "6121850611" },
+  {
+    "name": "PHU A&S Joanna Błażewicz, Sławomir Błażewicz Spółka Cywilna",
+    "tax": "9282080864"
+  },
+  {
+    "name": "Mieczysław Adamek Handel Det. I Hurtowy Art.przemyslowymi Eksport-Import",
+    "tax": "9281001495"
+  },
+  { "name": "Ekspresso Group I Sp. z o. o.", "tax": "5311719121" },
+  { "name": "Seleco Logistics Sp. z o. o.", "tax": "5272683501" },
+  {
+    "name": "Ab Logistics Transport I Spedycja Kamil Bożałek",
+    "tax": "8361771013"
+  },
+  { "name": "Mirtrans Sp. z o. o.", "tax": "7972072019" },
+  {
+    "name": "Omega Matusiak, Pawlak, Przybysz Spółka Cywilna",
+    "tax": "7752672734"
+  },
+  { "name": "Drog-Bruk A.p.szczerek Spółka Jawna", "tax": "8271903126" },
+  { "name": "Klaudia Logistyka Sp. z o. o.", "tax": "8262191442" },
+  { "name": "Transport Drogowy Ciężarowy Marek Urban", "tax": "7141248527" },
+  {
+    "name": "Kris-Trans Transport-Spedycja  Krystian Książek",
+    "tax": "7972036236"
+  },
+  { "name": "Transport I Spedycja Krystian Żebrowski", "tax": "7752533530" },
+  { "name": "Car & Truck Kompleks - Dragan Mariusz", "tax": "5020100049" },
+  { "name": "Marek Saliński", "tax": "8821771122" },
+  { "name": "Marcin Stryniewski  Art- Moto", "tax": "8381625390" },
+  {
+    "name": "Raf-Gum Usługi Wulkanizacyjne Rafał Kiryczuk",
+    "tax": "9131503930"
+  },
+  { "name": "P.u.h. Prymus Połeć Paweł", "tax": "8371468428" },
+  { "name": "Adamo Adam Litwicki", "tax": "7822441886" },
+  { "name": "Petro-Tank Spółka Jawna Czajczyńscy", "tax": "6180043906" },
+  { "name": "Stacje Paliw Haczykowscy Spółka Jawna", "tax": "8340003415" },
+  { "name": "Auto-Wis Sp. z o. o.", "tax": "8371599283" },
+  { "name": "P.t.h.u. ” Betia” Tyrakowski Eugeniusz", "tax": "6170003006" },
+  { "name": "Brooklyn Transport Sp. z o. o.", "tax": "9731061802" },
+  { "name": "Antalis Poland Sp. z o. o.", "tax": "8790168062" },
+  { "name": "Ewa Makowska Damak", "tax": "8891333864" },
+  { "name": "Zaninoni Austria GmbH", "tax": "ATU42714906" },
+  {
+    "name": "Bultman Spółka Z Ograniczoną Odpowiedzalnością",
+    "tax": "9111000491"
+  },
+  { "name": "Preskol Szul Mariusz", "tax": "8421103658" },
+  {
+    "name": "Mazovia Transport M. S. Zygmunciak Spółka Cywilna",
+    "tax": "8371832986"
+  },
+  { "name": "Rdt Rafał Doliński Transport", "tax": "2530194473" },
+  { "name": "Clermont Express Sp. z o. o.", "tax": "5213681624" },
+  { "name": "UAB Tirola", "tax": "LT100006332114" },
+  { "name": "Cargo-Trans Arkadiusz Kopciara", "tax": "6461314277" },
+  { "name": "Ceramika Centrum Ii Daniel Storczyk", "tax": "7731416322" },
+  { "name": "P.w. Zefir Sławomir Sroka", "tax": "9542391059" },
+  {
+    "name": "Hill Logistics Sp. z o. o. Spółka Komandytowa",
+    "tax": "5423345430"
+  },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe ”Katarzyna, Jan Padewscy” Spółka Jawna",
+    "tax": "9161324304"
+  },
+  { "name": "T-House Poland Sp. z o. o.", "tax": "1132549278" },
+  { "name": "”Amb Logistics” Witt Beata", "tax": "7871384556" },
+  { "name": "Tedi Spedycja Sp. z o. o.", "tax": "9662133851" },
+  { "name": "Eko-Solar Sp. z o. o.", "tax": "7521450494" },
+  { "name": "Diakom S.c. Jacek Biń, Kamen Nikolov", "tax": "7971743575" },
+  {
+    "name": "Paweł Ranka Firma Handlowo Usługowa Ran-Tech",
+    "tax": "6981837797"
+  },
+  { "name": "Aseem Sp. z o. o.", "tax": "9482600311" },
+  {
+    "name": "Przedsiębiorstwo Handlowe Edal Alicja Czykirska, Edward Czykirski",
+    "tax": "6930012704"
+  },
+  {
+    "name": "1 /Firma Usługowo Handlowa Irhal 2 Firma - Eko Trans Sp.cywilna Irena Kłysiak Jacek Kłysiak",
+    "tax": "7741822242"
+  },
+  { "name": "”Pieprzyk Family” Sp. z o. o.", "tax": "6991961808" },
+  { "name": "Dikar Karol Dzik", "tax": "5361798832" },
+  {
+    "name": "Honestis Marek Kiebdój, Michał Kiebdój Spółka Cywilna",
+    "tax": "9492202517"
+  },
+  { "name": "Autohof Mellendorf", "tax": "DE326150178" },
+  { "name": "Liga Obrony Kraju", "tax": "5210086832" },
+  { "name": "Spedycja Transport Robert Sokołowski", "tax": "7691035162" },
+  { "name": "Lk Log Karol Lewandowski", "tax": "8881558461" },
+  { "name": "ID Logistics DIstribution Sp. z o.o.", "tax": "7280019486" },
+  { "name": "Foodware Logistics Sp. z o. o.", "tax": "8681979502" },
+  { "name": "Fortis Logistics Group Sp. z o. o.", "tax": "6342817115" },
+  { "name": "Albud Cargo Sp. z o. o.", "tax": "6121872676" },
+  { "name": "Hada Sp. z o. o.", "tax": "5213402989" },
+  { "name": "Actv Sławomir Kępczyński", "tax": "5241648952" },
+  { "name": "Anneberg Transpol Int. Sp. z o. o.", "tax": "9290093309" },
+  { "name": "Beskidzka Koniczynka Sp. z o. o.", "tax": "5472212775" },
+  { "name": "Go On Group Logistics Daria Połomska", "tax": "9281845661" },
+  { "name": "”Ff Fracht” Sp. z o. o.", "tax": "8990203797" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe Strzelwul-Opony Wojdyła Wiesław Wojdyła Mirosław S.c.",
+    "tax": "5571593510"
+  },
+  { "name": "Gumiś Krzysztof Krzemiński", "tax": "7740005831" },
+  { "name": "Tomasz Ciesielski Fhu Tomcar", "tax": "9710610095" },
+  {
+    "name": "Carrier Thermo King System Łukasz Kwiatkowski",
+    "tax": "2530207804"
+  },
+  {
+    "name": "Firma Handlowo-Usługowa Tip-Top Agnieszka Lewandowska",
+    "tax": "7741783660"
+  },
+  { "name": "Auto Port Pleszew Sp. z o. o.", "tax": "6080110342" },
+  { "name": "Kost-Trans Zbigniew Kostecki", "tax": "7752016303" },
+  { "name": "Puh Sumka Sumka Gabryela", "tax": "5341015620" },
+  {
+    "name": "Stacja Paliw Słabomierz Rekord Nieruchomości Sp. z o. o. I Spółka, Spółka Komandytowa",
+    "tax": "7010265494"
+  },
+  { "name": "Pulse Europe s.r.o", "tax": "SK2121343521" },
+  { "name": "Wizax S.c., P.witek, K.zagajewski", "tax": "8371706141" },
+  { "name": "Oksel-Lesko Sp. z o. o.", "tax": "6342665869" },
+  { "name": "Ewelina I Adrian Święciccy Spółka Jawna", "tax": "7282860905" },
+  { "name": "Damo Sp. z o. o. Spółka Komandytowa", "tax": "8341883045" },
+  { "name": "Przewóz Towarów Dariusz Budny", "tax": "5241028942" },
+  { "name": "”Mark Spedition” Sp. z o. o.", "tax": "8513086873" },
+  { "name": "Mat-Ros Sp. z o. o.", "tax": "9532783496" },
+  { "name": "Firma Usługowo - Handlowa Irena Hobernik", "tax": "5481402357" },
+  {
+    "name": "Arcelormittal Construction Polska Sp. z o. o.",
+    "tax": "6641003716"
+  },
+  { "name": "Royal Cargo Sp. z o. o.", "tax": "5871700720" },
+  {
+    "name": "Dsm Logistyka S.c. Marzena Krawczyk,Dariusz Krawczyk",
+    "tax": "7732465400"
+  },
+  { "name": "Hs Prestige Boats&Cars  Sp. z o. o.", "tax": "8883158435" },
+  { "name": "Wiesław Stefanik F.h.u. Wiest", "tax": "7491003938" },
+  { "name": "Damar Spółka Cywilna", "tax": "9581681382" },
+  { "name": "Artekto Sp. z o. o.", "tax": "8992950015" },
+  {
+    "name": "Lajon Tadeusz Zając Spółka Komandytowo - Akcyjna",
+    "tax": "6312237040"
+  },
+  {
+    "name": "Tj Logistic Transport Jabłoński Spółka Komandytowa",
+    "tax": "6070080792"
+  },
+  { "name": "Rychem Group SRL", "tax": "BE0833384507" },
+  { "name": "Dm Logis Sp. z o. o.", "tax": "7872032902" },
+  { "name": "Redpal Sp. z o. o.", "tax": "6342853938" },
+  { "name": "Mawi Logistics Sp. z o. o.", "tax": "8513113535" },
+  { "name": "”Eurobox Polska” Sp. z o. o.", "tax": "5262207578" },
+  {
+    "name": "H&K Przedsiębiorstwo Wielobranżowe Dariusz Majewski",
+    "tax": "9710019462"
+  },
+  { "name": "Transmark Senenko Marek", "tax": "9131581597" },
+  {
+    "name": "Hurt-Papier Ryszard Cebula Spółka Komandytowa",
+    "tax": "8130067366"
+  },
+  { "name": "Damian Kość", "tax": "7922076044" },
+  {
+    "name": "Andrzej Kazubowski, Specjalistyczny Zakład Naprawy Wag",
+    "tax": "6660001894"
+  },
+  {
+    "name": "Komtek Piotr I Paweł Kominek Spółka Komandytowa",
+    "tax": "9522154712"
+  },
+  { "name": "Usługi Transportowe Sitarski Dariusz", "tax": "8371006099" },
+  { "name": "Polpetrol Spółka Akcyjna", "tax": "9720143560" },
+  {
+    "name": "Omega Przedsiębiorstwo Handlowo-Usługowe Sp. z o. o.",
+    "tax": "6931980713"
+  },
+  { "name": "Kik-Pol Halina Pytka", "tax": "8351048002" },
+  {
+    "name": "Marinex Maria Wieteska, Grzegorz Wieteska Spółka Jawna",
+    "tax": "8341736574"
+  },
+  { "name": "Quad/Graphics Europe Sp. z o. o.", "tax": "7642085674" },
+  {
+    "name": "Neoprofil Spółka Jawna Rafał Herzyk, Adam Prokop",
+    "tax": "9372555153"
+  },
+  { "name": "Bałtyk Trans Spedition Sp. z o. o.", "tax": "6692567328" },
+  { "name": "Magtrans Sp. z o. o.", "tax": "6551430917" },
+  {
+    "name": "Trans Centrum Spedycja Sp. z o. o. Spółka Komandytowa",
+    "tax": "6681971913"
+  },
+  { "name": "Kuehne+Nagel Sp. z o. o.", "tax": "7792429566" },
+  {
+    "name": "Stoper-Pro Przedsiębiorstwo Wielobranżowe Artur Laszczyk",
+    "tax": "6571243213"
+  },
+  { "name": "Imber Logistics Bożena Włodarska-Opiela", "tax": "8421375865" },
+  {
+    "name": "Heytransport Bartosz Tomczak Spółka Komandytowa",
+    "tax": "8371873229"
+  },
+  { "name": "Freja Transport & Logistics Sp. z o. o.", "tax": "9552256133" },
+  { "name": "Mariusz Pałka Maktur Logistics", "tax": "5521025956" },
+  { "name": "Translider Miastko Sp. z o. o.", "tax": "8421772709" },
+  { "name": "Newport Group Sp. z o. o.", "tax": "7262679278" },
+  { "name": "Arcon Polska Sp. z o. o.", "tax": "5212039736" },
+  { "name": "Eliot Lech Jaworski Tomasz Toboła", "tax": "6931567522" },
+  { "name": "Tirsped Sp. z o. o.", "tax": "5270204399" },
+  {
+    "name": "LKW Walter Internationale Transportorganisation AG",
+    "tax": "ATU19208701"
+  },
+  {
+    "name": "Seneszyn Mirosław 1. Firma Transportowa - Import - Export 2. Firma Transportowa Mirko S.c.",
+    "tax": "6120006161"
+  },
+  {
+    "name": "Damian Zając F-Core; Arena-X; Wspólnik Spółki Cywilnej: Trucks-Shop",
+    "tax": "7343353517"
+  },
+  {
+    "name": "Przychodnia Rodzinna Beata Obernikowicz Sp. z o. o.",
+    "tax": "7743284091"
+  },
+  { "name": "Metal Market Ii S.c.", "tax": "7743249947" },
+  {
+    "name": "Indywidualna Praktyka Lekarska Profilaktyczno-Lecznicza Lek. Aleksandra Nowak-Guszkowska",
+    "tax": "7741931936"
+  },
+  {
+    "name": "Pracownia Psychotechniczna Marta Wierzbicka",
+    "tax": "7761618421"
+  },
+  { "name": "Deer Sp. z o. o.", "tax": "7642665437" },
+  { "name": "Goltrans Spedition Artur Golasa", "tax": "7641749095" },
+  {
+    "name": "”Centrum Wolnocłowe Wschód-Zachód” Sp. z o. o.",
+    "tax": "8381546207"
+  },
+  {
+    "name": "Petro-Trans Spółka Cywilna Łukasz Leszczyński, Tomasz Leszczyński",
+    "tax": "7842400979"
+  },
+  { "name": "Europe Distribution Group Sp. z o. o.", "tax": "9151792044" },
+  { "name": "Nakoma Logistics Sp. z o. o.", "tax": "7543349420" },
+  { "name": "Tpl Logistic Sp. z o. o.", "tax": "1182215711" },
+  { "name": "Rentrans Cargo Sp. z o. o.", "tax": "8521022830" },
+  { "name": "Eurotrans Sp. z o. o.", "tax": "5832818966" },
+  { "name": "Axl Polska Sp. z o. o.", "tax": "1182106040" },
+  { "name": "Kiki Tsl Sp. z o. o.", "tax": "8522704945" },
+  { "name": "Crusar Sp. z o. o. Spółka Komandytowa", "tax": "8943070320" },
+  { "name": "B-Trans Logistics Sp. z o. o.", "tax": "6351859656" },
+  { "name": "Nutri Care Polska Sp. z o. o.", "tax": "5272757777" },
+  { "name": "Reprin Grupa Sp. z o. o.", "tax": "8992705528" },
+  { "name": "Blp Sp. z o. o.", "tax": "7743223681" },
+  { "name": "Tak Logistics Sp. z o. o.", "tax": "5423141207" },
+  { "name": "Rs-Steel Sp. z o. o.", "tax": "7011092802" },
+  { "name": "Usługi Transportowe Marek Siedlecki", "tax": "7591169905" },
+  { "name": "Ft Logistics Sp. z o. o.", "tax": "6751736934" },
+  { "name": "Omega Transport Sp. z o. o.", "tax": "5771980401" },
+  { "name": "Antrans Group Sp. z o. o.", "tax": "6372193748" },
+  { "name": "Mpm Logistics Sp. z o. o.", "tax": "8212681730" },
+  { "name": "Emka Logistics Sp. z o. o.", "tax": "7393864326" },
+  {
+    "name": "Firma Usługi Transportowo Spedycyjne Transcar Sp. z o. o. Spółka Komandytowa",
+    "tax": "5842787339"
+  },
+  {
+    "name": "Euro-Seven Spółka Akcyjna Spółka Komandytowa",
+    "tax": "7632128637"
+  },
+  { "name": "Tsd Sp. z o. o.", "tax": "7752663971" },
+  { "name": "Omega Spedition Slovakia s.r.o.", "tax": "SK2023299784" },
+  { "name": "Lema Logistic Sp. z o. o.", "tax": "1251693165" },
+  { "name": "Stowarzyszenie Aktywne Mazowsze", "tax": "7743258969" },
+  { "name": "Zakład Obsługi Holdingu Zoh Sp. z o. o.", "tax": "8881005041" },
+  { "name": "Charter Sp. z o. o.", "tax": "8121766337" },
+  { "name": "P.H.U. Bartgum Tomasz Psuja", "tax": "9111261731" },
+  {
+    "name": "Przedsiębiorstwo Handlowo - Usługowe Andrzej Litwin",
+    "tax": "6911134843"
+  },
+  { "name": "Łukasz Pikulicki Cyber Truck", "tax": "6912406321" },
+  {
+    "name": "Przedsiębiorstwo Usługowo - Handlowo - Produkcyjne Kotpol Tadeusz Kot",
+    "tax": "5381003209"
+  },
+  {
+    "name": "Gabinet Badań Psychologicznych Psychotest Anna Czarnomska-Rypińska",
+    "tax": "7742960288"
+  },
+  { "name": "Multiserwis Sp. z o. o.", "tax": "1180021492" },
+  { "name": "Padro Logistics Sp. z o. o.", "tax": "6282273805" },
+  { "name": "Ag Trans Spedition Sp. z o. o.", "tax": "5532590766" },
+  { "name": "Agnieszka Zalewska Czarter Jachtu", "tax": "5671675905" },
+  { "name": "Zuzana Beckmann Int. Spedition", "tax": "DE297203822" },
+  { "name": "Ares Logistics Sp. z o. o.", "tax": "7582389820" },
+  { "name": "Asstra Forwarding Ag", "tax": "CHE115138470" },
+  { "name": "Elandra Monika Lalak-Foksińska", "tax": "7431862589" },
+  { "name": "Castorama Polska Sp. z o. o.", "tax": "5261009959" },
+  { "name": "Real Eu Sp. z o. o.", "tax": "7543086446" },
+  { "name": "Linktis Sp. z o. o.", "tax": "9512373803" },
+  { "name": "Aral Autohof Niels Karg", "tax": "DE118616994" },
+  { "name": "Bridge Polymers The Netherlands B.V.", "tax": "NL852529740B01" },
+  { "name": "Trans-Nat Natalia Hebel", "tax": "5862214167" },
+  {
+    "name": "Huet Trading & Translate Patrycja Arciszewska",
+    "tax": "7871914126"
+  },
+  { "name": "Bb Sped Sp. z o. o.", "tax": "5851493608" },
+  { "name": "Sped-Trans Ząbki Sp. z o. o.", "tax": "1251684462" },
+  {
+    "name": "Aldo Leszek Długołęcki I Andrzej Długołęcki Spółka Komandytowo-Akcyjna",
+    "tax": "7581860669"
+  },
+  { "name": "Masis Logistics Volodya Yayloyan", "tax": "8371875441" },
+  { "name": "Honesty  Marek Zaręba", "tax": "7671297172" },
+  {
+    "name": "Wol-Trans Transport I Spedycja  Sp. z o. o.",
+    "tax": "8252203238"
+  },
+  { "name": "Wheel Of Steel Beata Kubicka", "tax": "1990031482" },
+  { "name": "Omni-Sped Sp. z o. o.", "tax": "9930546695" },
+  { "name": "Srh Logistics Radosław Hołubowicz", "tax": "9581671188" },
+  { "name": "Gopet Trans EOOD", "tax": "BG831689341" },
+  { "name": "Karena Group Sp. z o. o.", "tax": "6340135185" },
+  { "name": "Fiba Cargo Bartosz Popko", "tax": "9521768211" },
+  { "name": "Nattoni Sp. z o. o.", "tax": "6343023133" },
+  { "name": "Taurus Sp. z o. o.", "tax": "7742691865" },
+  { "name": "Scandica Logistics Sp. z o. o.", "tax": "5423261897" },
+  { "name": "Transport Ciężarowy Rafał Musiał", "tax": "5541025698" },
+  { "name": "Alaine Forwarding sa", "tax": "FR78418114351" },
+  { "name": "F.H.U. Aston  Zbigniew Ciosmak", "tax": "9180006918" },
+  { "name": "Orbis Spółka Akcyjna", "tax": "5260250469" },
+  { "name": "Neksa Plandeki Renata Żuk", "tax": "5992960526" },
+  { "name": "Paint Ral Adrian Korzeniewski", "tax": "7743269950" },
+  { "name": "Biuro Handlowe”Topaz” Dorota Zygmunt", "tax": "9950025166" },
+  {
+    "name": "Agroas Spółka Z Ograniczoną Odpowiedzalnością",
+    "tax": "7530010984"
+  },
+  { "name": "Firma Handlowo-Usługowa Iwona Czajkowska", "tax": "9482118548" },
+  {
+    "name": "Firma Transportowo-Usługowo-Handlowa Paweł Broczkowski",
+    "tax": "6371807651"
+  },
+  { "name": "Balex Metal Sp. z o. o.", "tax": "5881130299" },
+  { "name": "Łukasz Dygas Lukan", "tax": "5090017477" },
+  { "name": "Ewals Cargo Care Logistics B.V", "tax": "NL801746899B01" },
+  {
+    "name": "CNTS CARGO NAVIGATOR Transport Spedition GmbH",
+    "tax": "ATU76904708"
+  },
+  { "name": "Hmk Logistic Sp. z o. o.", "tax": "5423443440" },
+  { "name": "Serwistal Sp. z o. o.", "tax": "8481639865" },
+  { "name": "Iml Logistics Sp. z o. o.", "tax": "9562374035" },
+  {
+    "name": "Kmk Agro D. Kaźmierczak C. Mądry M. Kaźmierczak Spółka Jawna",
+    "tax": "7861572061"
+  },
+  { "name": "Sped Łata Logistics Damian Łata", "tax": "9131613920" },
+  { "name": "Wojciech Kaczmarek Wojtrans", "tax": "9151043331" },
+  { "name": "Burian Logistic Sp. z o. o.", "tax": "9372664764" },
+  { "name": "Solidcargo Group Sp. z o. o.", "tax": "5213680197" },
+  {
+    "name": "Przedsiębiorstwo Budowlano Remontowo Usługowe Dźwig-Mar Spółka Cywilna Domiński Marek, Zielonka Marcin",
+    "tax": "7742771446"
+  },
+  { "name": "Rut-Trans Paweł Rutkowski", "tax": "7342922746" },
+  { "name": "PHU Daniel Kaiser", "tax": "7393729290" },
+  { "name": "Marcin Jóźwik - Martrans", "tax": "6751309830" },
+  { "name": "Tnf Polska Sp. z o. o.", "tax": "5562801860" },
+  { "name": "Darian Spedycja Urszula Jarosińska", "tax": "9591525531" },
+  {
+    "name": "Przedsiębiorstwo Transportowo - Spedycyjne Guliver Sp. z o. o.",
+    "tax": "6792720249"
+  },
+  {
+    "name": "Myjnia Tir Kolonia Poręby Przemysław Miętki",
+    "tax": "5961557309"
+  },
+  { "name": "Wulkanizacja Waldemar Mielczarkowski", "tax": "7721032258" },
+  { "name": "Medra Sp. z o. o.", "tax": "7743224947" },
+  { "name": "Serwis 44 Sp. z o. o.", "tax": "8322078093" },
+  {
+    "name": "Marpol Przedsiębiorstwo Budowlano-Handlowe Ryszard Okuniewski",
+    "tax": "7210000211"
+  },
+  {
+    "name": "Raf-Mat Spółka Cywilna Rafał Przywitowski, Mateusz Przywitowski",
+    "tax": "5110289257"
+  },
+  {
+    "name": "Marszel Spółka Jawna Ryszard Marcinkowski, Eugeniusz Szerszeń",
+    "tax": "5660004946"
+  },
+  {
+    "name": "”Zajazd Myśliwski - Magdalenka” Magdalena Kujawska",
+    "tax": "8881508279"
+  },
+  { "name": "Lft Logistic Solutions Sp. z o. o.", "tax": "9542762001" },
+  { "name": "Mprofile Sp. z o. o.", "tax": "7743284211" },
+  { "name": "Iooo.pl Sp. z o. o.", "tax": "6793202410" },
+  {
+    "name": "Przedsiębiorstwo Remontów I Modernizacji Chemorozruch Sp. z o. o.",
+    "tax": "5490000173"
+  },
+  { "name": "Orbital Trading B.V.", "tax": "NL862586124B01" },
+  { "name": "Megalog Sp. z o. o.", "tax": "5662027377" },
+  { "name": "Piotr Tatka Storm-Logistics", "tax": "5512593968" },
+  { "name": "P.t.u.h. Poltrans Krzysztof Lewandowski", "tax": "5571150882" },
+  { "name": "Apis Sp. z o. o.", "tax": "8882736166" },
+  { "name": "Broocler Group Sp. z o. o.", "tax": "6262700776" },
+  { "name": "Msteel.pl Sp. z o. o.", "tax": "5253005800" },
+  { "name": "Easy Trade International Sp. z o. o.", "tax": "7743234087" },
+  {
+    "name": "Firma Handlowo-Usługowa Mar-Trans Marcin Wijata",
+    "tax": "7681802140"
+  },
+  { "name": "Nosta Logistik Sp. z o. o.", "tax": "5981632563" },
+  { "name": "Tosped Sp. z o. o.", "tax": "7011050169" },
+  { "name": "Esa Logistika Polska Sp. z o. o.", "tax": "6343019657" },
+  { "name": "CEE Logistics a.s", "tax": "CZ24135291" },
+  { "name": "Spedycja Leo24 Mirela Urbaniak", "tax": "9191691036" },
+  { "name": "Global Concept Sp. z o. o.", "tax": "7011169539" },
+  { "name": "Jkm Spedition Jolanta Monika Masłowska", "tax": "8911389627" },
+  { "name": "Jastim Sp. z o. o.", "tax": "5262499368" },
+  { "name": "E-Scatman Sp. z o. o.", "tax": "7011172530" },
+  { "name": "P.H.U. Kapioo Kapusta Karol", "tax": "7881864594" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe-”Rico”Ryszard Zieliński",
+    "tax": "5961349019"
+  },
+  { "name": "M. R. Trans Roman Mały", "tax": "9231073191" },
+  { "name": "Lontex Group Sp. z o. o.", "tax": "6521723017" },
+  { "name": "Wies-Mar Sp. z o. o.", "tax": "6652986154" },
+  { "name": "Tedi Sieć Handlowa Sp. z o. o.", "tax": "9542790463" },
+  { "name": "Jerzy Iwiński P.p.h. Firma Iwiński", "tax": "7890003012" },
+  {
+    "name": "Firma Markowski Sp. z o. o. Spółka Komandytowa",
+    "tax": "6961880991"
+  },
+  { "name": "Łuczyńska Beata Prywatny Gabinet Lekarski", "tax": "7741621609" },
+  { "name": "Rat Logistics Sp. z o. o.", "tax": "6080125817" },
+  { "name": "Mpl Logistics Sp. z o. o.", "tax": "9671460928" },
+  { "name": "Transpact Sp. z o. o. Spółka Komandytowa", "tax": "5581873027" },
+  { "name": "Waldemar Sp. z o. o.", "tax": "5981004217" },
+  { "name": "Global Trans Company Sp. z o. o.", "tax": "6751525663" },
+  { "name": "Modus Vivendi Sp. z o. o.", "tax": "7831865858" },
+  {
+    "name": "Iwona Szlachta Firma Handlowo-Usługowa Iwcar",
+    "tax": "7381721207"
+  },
+  {
+    "name": "Rest 8 Linda M. Krajewska Anna I. Gawkowska Spółka Cywilna",
+    "tax": "5213897531"
+  },
+  { "name": "M.G.M. Express s.r.o.", "tax": "SK2022864646" },
+  { "name": "Stanisław Walicki Usługi Transportowe", "tax": "6481788311" },
+  {
+    "name": "Icaro P. Janiszewski T. Wąż Spółka Komandytowo - Akcyjna",
+    "tax": "9532789079"
+  },
+  { "name": "Tis Anedaw Dawid Skrzypczyński", "tax": "5291707728" },
+  { "name": "P-Trans Paweł Pietuszko", "tax": "8381133876" },
+  { "name": "Jedynak Ts Michał Jedynak", "tax": "6452583405" },
+  { "name": "Ergologis Sp. z o. o.", "tax": "8961538609" },
+  { "name": "Tom Trans Tomasz Szafrański", "tax": "8831570767" },
+  { "name": "Indeka Sp. z o. o.", "tax": "8393243139" },
+  { "name": "Merena Sp. z o. o.", "tax": "6922535988" },
+  { "name": "Quality&Quantity Sp. z o. o.", "tax": "8371871420" },
+  { "name": "Perfectset Logistics Sp. z o. o.", "tax": "8262214746" },
+  {
+    "name": "Meridian Trading Sp. z o. o. Spółka Komandytowa",
+    "tax": "7393785845"
+  },
+  { "name": "Am-Trans Logistyka Sp. z o. o.", "tax": "9112037088" },
+  { "name": "Eco-Stal Sp. z o. o.", "tax": "9542755277" },
+  { "name": "Ev Cargo Global Forwarding Sp. z o. o.", "tax": "5240401310" },
+  { "name": "Byś Wojciech Byśkiniewicz", "tax": "1180094315" },
+  { "name": "Stanisz Transport Sp. z o. o.", "tax": "9141569296" },
+  { "name": "Anora Internationale Speditions GmbH", "tax": "DE812995629" },
+  { "name": "Kaidar Logistics Sp. z o. o.", "tax": "9291860886" },
+  { "name": "Chenczke Energy Sp. z o. o.", "tax": "9680959567" },
+  { "name": "Eko - Oil Sp. z o. o. Spółka Komandytowa", "tax": "8272304793" },
+  { "name": "Pomoc Drogowa Wiesław Rucki", "tax": "1230110017" },
+  { "name": "Nce Servis Arkadiusz Klorek", "tax": "9271675878" },
+  {
+    "name": "Tomasz Nurkowski Mechanika Pojazdowa, Usługi Transportowe",
+    "tax": "7712253847"
+  },
+  { "name": "Grupa Mawy Eu Sp. z o. o.", "tax": "6392032155" },
+  { "name": "Tacho-Mar Marcin Pakulski", "tax": "8881319839" },
+  { "name": "Mk-Oil Sp. z o. o.", "tax": "6821789026" },
+  { "name": "Karl Michl Speditions GmbH", "tax": "DE128856635" },
+  { "name": "Symbio Logistics Sp. z o. o.", "tax": "8992867426" },
+  { "name": "Marcin Cynkier Marco", "tax": "6371841257" },
+  { "name": "Europa-Spedition Sp. z o. o.", "tax": "8871824688" },
+  { "name": "Firma Transportowa Mirko Spółka Cywilna", "tax": "6121491193" },
+  {
+    "name": "Firma Usługowo-Handlowa Grast Stefan Grabowski",
+    "tax": "8211006222"
+  },
+  { "name": "Raben Logistics Polska Sp. z o. o.", "tax": "7773249627" },
+  { "name": "Vuello Logistics Sp. z o. o.", "tax": "6020140842" },
+  { "name": "Fenix Spedycja Sp. z o. o.", "tax": "5542995140" },
+  {
+    "name": "Pag Polska Spółka Cywilna  Czesław Parysz, Tomasz Głodek",
+    "tax": "6462927071"
+  },
+  {
+    "name": "Usługi Transportowe Montaż Urządzeń Gazowych - Tomasz Kobziński",
+    "tax": "8260009433"
+  },
+  { "name": "Ansped Sp. z o. o.", "tax": "5862376579" },
+  { "name": "Sanmar Szczytkowice Sp. z o. o.", "tax": "9151796757" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno- Handlowo-Usługowo-Transportowe Grzegorz Kwiecień",
+    "tax": "7991262873"
+  },
+  { "name": "Omida Sea And Air Spółka Akcyjna", "tax": "5862288993" },
+  { "name": "Bila-Plan S.c.", "tax": "5341013555" },
+  { "name": "Krzysztof Kucharczyk ,,Mobilek”", "tax": "5741755846" },
+  { "name": "Atm-Rd Sp. z o. o.", "tax": "5213677580" },
+  { "name": "Marek Szaniewski ”Las Vegas”", "tax": "9271019364" },
+  {
+    "name": "”Stadnina Koni Dębno” Adam Lachera, Ewa Lachera, Żaneta Lachera - Spółka Jawna",
+    "tax": "6991771692"
+  },
+  { "name": "Przedsiębiorstwo Sj Paliwa Sp. z o. o.", "tax": "5542938490" },
+  { "name": "Dft Sp. z o. o.", "tax": "5732938760" },
+  { "name": "Bmc Sp. z o. o.", "tax": "7010362139" },
+  { "name": "Handlog Sp. z o. o. Spółka Jawna", "tax": "6252456582" },
+  { "name": "P.H.U. Frantex Marta Nosewicz-Ostrowska", "tax": "8481678888" },
+  { "name": "Europa Logistics Sp. z o. o.", "tax": "5552125251" },
+  { "name": "Wiesław Krawczyk Krajowy Transport Drogowy", "tax": "6771011631" },
+  { "name": "Pawa Trading Sp. z o. o.", "tax": "9292000447" },
+  { "name": "Stan-Pol - Stanisław Pawlak", "tax": "7321017769" },
+  {
+    "name": "More-Trans Renata Mosiewicz, Dawid Miarka Spółka Jawna",
+    "tax": "6692540542"
+  },
+  { "name": "Amw-Sped Sp. z o. o. Spółka Komandytowa", "tax": "6462971474" },
+  { "name": "El-Kons-Bud Sp. z o. o.", "tax": "7742434192" },
+  { "name": "Miko Logistic - Mariusz Mikołajczak", "tax": "7891560186" },
+  { "name": "”Gold Calc” Nowex Łukasz Nowak", "tax": "5080044219" },
+  { "name": "Aktel Adam Telus", "tax": "7681798177" },
+  {
+    "name": "Zbigniew Suszka Przedsiębiorstwo Wielobranżowe Zibi-Spedtrans",
+    "tax": "7771451508"
+  },
+  { "name": "Flex Logistics Sp. z o. o.", "tax": "7792410644" },
+  { "name": "Owson Sp. z o. o.", "tax": "7543170767" },
+  { "name": "Elistorcar Transport Sp. z o. o.", "tax": "5951491023" },
+  { "name": "Dodger Tsl Sp. z o. o. Spółka Komandytowa", "tax": "6961877003" },
+  { "name": "Transfed Maciej Fedyk", "tax": "8961464874" },
+  { "name": "Kreska Logistic Sp. z o. o.", "tax": "6443517596" },
+  { "name": "Gastel Prefabrykacja Spółka Akcyjna", "tax": "5911693890" },
+  { "name": "Henryk Jarmoszko", "tax": "8461000870" },
+  { "name": "P.P.H.U. 2D Dawid Dopieralski", "tax": "6681381117" },
+  { "name": "Tirest Beata Knaak", "tax": "8222347375" },
+  { "name": "Bomar Sp. z o. o. Spółka Komandytowa", "tax": "7471915197" },
+  { "name": "Kris Grzymkowscy Krzysztof Grzymkowski", "tax": "8441520715" },
+  { "name": "Finsterwalder Transport & Logistk GmbH", "tax": "DE813809302" },
+  {
+    "name": "Przedsiębiorstwo Produkcyjno Handlowe I Usługowe Solvent Sp. z o. o.",
+    "tax": "7752434087"
+  },
+  { "name": "Ultrespa Sp. z o. o.", "tax": "1132938815" },
+  { "name": "Polish Forwarding Company Sp. z o. o.", "tax": "7010331788" },
+  { "name": "Cominos Sp. z o. o.", "tax": "5273097627" },
+  { "name": "Lenovita Jacek Błaszczak", "tax": "5671833244" },
+  { "name": "Seguro Logistics Sp. z o. o.", "tax": "9671435876" },
+  {
+    "name": "Przemysław Wojda Elektrum-Sped Transport Ciężarowy",
+    "tax": "9151683450"
+  },
+  { "name": "Ogrodowscy Adam Ogrodowski", "tax": "8381747957" },
+  { "name": "Stal Mat Mateusz Tkaczyk", "tax": "4660407690" },
+  { "name": "Kamaros Sp. z o. o.", "tax": "6282287055" },
+  { "name": "Jenson Logistics Sp. z o. o.", "tax": "5981595247" },
+  { "name": "Góral-Trans Sp. z o. o.", "tax": "6783176496" },
+  { "name": "Gwiazda Trans Urszula Bączkowska", "tax": "8421613661" },
+  {
+    "name": "Firma Handlowo-Usługowo-Transportowa Trans-Bor Krzysztof Gadomski",
+    "tax": "7610000427"
+  },
+  { "name": "Gomex Gometal Krzysztof Goryński", "tax": "5971013829" },
+  { "name": "Ntg Ebrex Polska Sp. z o. o.", "tax": "7542798570" },
+  { "name": "Sante Sp. z o. o.", "tax": "5241006610" },
+  { "name": "Grabski Sp. z o. o.", "tax": "7772881783" },
+  { "name": "Trazmet Lager Technik Sp. z o. o.", "tax": "6182141116" },
+  { "name": "Bete Group Sp. z o. o.", "tax": "7252309232" },
+  {
+    "name": "Marcin Gądek Usługi Transportowe Grand-Trans",
+    "tax": "6831868448"
+  },
+  { "name": "” Routier - Trans Bis ” Kłosiński Piotr", "tax": "9481785946" },
+  { "name": "Kruk Grzegorz Kruk", "tax": "6331231274" },
+  { "name": "Kaczmarek-Team Sp. z o. o.", "tax": "7773364328" },
+  {
+    "name": "Admin.net.pl Tomasz Rzepka Arkadiusz Nowara S.c.",
+    "tax": "8733250257"
+  },
+  { "name": "Mador Mieczysław Lewandowski", "tax": "7970008508" },
+  {
+    "name": "Medien Partner Recykling Dariusz Bogdański W Spadku",
+    "tax": "1181199312"
+  },
+  {
+    "name": "Przedsiębiorstwo Handlowo-Usługowe I Produkcyjne A I J Stępień Spółka Jawna",
+    "tax": "7690501952"
+  },
+  { "name": "Tank - Sp. z o. o.", "tax": "8870006189" },
+  { "name": "Kik Textil Sp. z o. o.", "tax": "8971777132" },
+  { "name": "Przedsiębiorstwo Ochman Adam Ochmann", "tax": "6211792225" },
+  {
+    "name": "Qartex Marek Małkiewicz, Jacek Małkiewicz, Artur Ulanowski, Dorota Kardasz Spółka Komandytowa",
+    "tax": "9281960876"
+  },
+  { "name": "Nowakowski Marek", "tax": "8371006975" },
+  { "name": "Moto-Warsztat Paweł Kowalczyk", "tax": "8222025714" },
+  { "name": "Logistik Helden KTG GmbH", "tax": "DE305440117" },
+  { "name": "M2M-Trans Sp. z o. o.", "tax": "5170407447" },
+  { "name": "”Alkaro Team Logistics” Sp. z o. o.", "tax": "1181660248" },
+  {
+    "name": "Firma Handlowo-Usługowa Victoria Anita Kucharska",
+    "tax": "7721306974"
+  },
+  {
+    "name": "Usługi Transportowo Handlowe Mateusz Janiszewski",
+    "tax": "6662130727"
+  },
+  { "name": "Max Laufer Sp. z o. o.", "tax": "9581198450" },
+  { "name": "Beefree Logistics Sp. z o. o.", "tax": "6443551363" },
+  { "name": "Maximuss Joanna Wojtowicz", "tax": "9251924686" },
+  { "name": "Tom Surowce Sp. z o. o.", "tax": "9552568186" },
+  { "name": "Sklejka Orzechowo Spółka Akcyjna", "tax": "7890001711" },
+  { "name": "Wit-Trans Hanna Witkowska", "tax": "7691003110" },
+  {
+    "name": "Usługi Transportowe Mechanika Pojazdowa Tomiak Rafał",
+    "tax": "9231374389"
+  },
+  { "name": "Mfo Spółka Akcyjna", "tax": "8371605871" },
+  { "name": "Starlog Sp. z o. o.", "tax": "8961628962" },
+  { "name": "Śląskie Centrum Logistyki Spółka Akcyjna", "tax": "6310000121" },
+  { "name": "Arcyz Marta ”Safe Way Transport”", "tax": "6443111641" },
+  { "name": "Marco Polo Trans Sp. z o. o.", "tax": "8971877632" },
+  {
+    "name": "Przedsiębiorstwo Usługowo-Transportowe Auto-Transport Łuczak Spółka Jawna",
+    "tax": "9231693350"
+  },
+  { "name": "Sida-Trans Mariusz Plewinski", "tax": "7861543272" },
+  { "name": "Spedco Logistics Sp. z o. o.", "tax": "9231745905" },
+  { "name": "Familijo Sp. z o. o.", "tax": "6343023736" },
+  { "name": "Dr Felga Serwis", "tax": "8862357655" },
+  { "name": "Best Arkadiusz Jarzębski", "tax": "6121885555" },
+  { "name": "Agata Biełkowska World Car", "tax": "9840202710" },
+  { "name": "Myjnia Nevada Sp. z o. o.", "tax": "9271971140" },
+  {
+    "name": "”A.t.h. Hernik” A. Hernik, T. Hernik Spółka Jawna",
+    "tax": "9480007336"
+  },
+  { "name": "Elżbieta Sulińska Aikido „Ren Shin” Płock", "tax": "7743264208" },
+  { "name": "Flash-Logistic Sp. z o. o.", "tax": "8952191201" },
+  { "name": "Est Poland Sp. z o. o.", "tax": "5273133168" },
+  { "name": "Techmat S.c.katarzyna I Cezary Sobiescy", "tax": "7743036068" },
+  { "name": "Usługi Transportowe Krzysztof Mysza", "tax": "7370010709" },
+  { "name": "Michał Cichowlas Trans-Mich", "tax": "5080043585" },
+  { "name": "Stacje Paliw Speed Sp. z o. o.", "tax": "8971804018" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe Wilis Wiesław Lis",
+    "tax": "7760003918"
+  },
+  { "name": "Puh Skar Karwowska Spółka Jawna", "tax": "8631443076" },
+  { "name": "Jerzy Hofman", "tax": "9261002333" },
+  { "name": "P.P.H.U. Moto - Benz Wiesław Budny", "tax": "7571126703" },
+  { "name": "PHU Janterm Jan Leszczyński", "tax": "8441001731" },
+  { "name": "Wilhelm Hoyer B.V. & Co.KG", "tax": "DE" },
+  { "name": "Ketulo Spółka Akcyjna 1 Spółka Komandytowa", "tax": "9121940221" },
+  { "name": "W-Way Daniel Wojdyga", "tax": "8262220623" },
+  { "name": "Evo Transport Sp. z o. o.", "tax": "7011034271" },
+  { "name": "H&S Steel Sp. z o. o. Spółka Komandytowa", "tax": "9372639631" },
+  {
+    "name": "Firma Handlowo Usługowa Marbar Marianna Barcikowska",
+    "tax": "8260011447"
+  },
+  { "name": "Firma Frankiewicz Jarosław Frankiewicz", "tax": "7792154744" },
+  { "name": "Tsl Jolmar Sp. z o. o.", "tax": "9372753108" },
+  { "name": "Loresa Logistics Sp. z o. o.", "tax": "5862396926" },
+  { "name": "Dc Cargo Sp. z o. o.", "tax": "9571143370" },
+  { "name": "Tls Klimków Kowalczyk, Spółka Jawna", "tax": "8982119237" },
+  { "name": "Daw-Trans Sp. z o. o. Spółka Komandytowa", "tax": "8792676526" },
+  { "name": "Aga-Trans A.m. Maliszewscy Sp. z o. o.", "tax": "6941687191" },
+  { "name": "Td Elkey Sp. z o. o.", "tax": "8542431976" },
+  { "name": "K&K Logistyka Sp. z o. o.", "tax": "7322207549" },
+  { "name": "KERA GROUP LTD", "tax": "GB234423334" },
+  { "name": "Drakar Transport Sp. z o. o.", "tax": "6762648033" },
+  { "name": "3Js Sp. z o. o.", "tax": "5242801605" },
+  { "name": "Spedytorpl Sp. z o. o.", "tax": "8952256165" },
+  { "name": "Polsad Jacek Korczak", "tax": "7751007408" },
+  { "name": "Mobilny Serwis Tir Kalisz Marcin Gwóźdź", "tax": "9680876404" },
+  {
+    "name": "Agro-Chyżyńscy Sklep Rolniczno-Techniczny  Sp. z o. o.",
+    "tax": "7761712924"
+  },
+  { "name": "Eberpol Sp. z o. o.", "tax": "7773275085" },
+  {
+    "name": "Przedsiębiorstwo Wielobranżowe ”Harnaś 2” Bogumiła Pelczarska",
+    "tax": "5781004023"
+  },
+  { "name": "Mas Solution Sp. z o. o.", "tax": "8241807613" },
+  { "name": "Hb Cargo Sp. z o. o.", "tax": "9231743740" },
+  { "name": "Sln Company Sp. z o. o.", "tax": "7831873444" },
+  { "name": "Petrokan Polska Sp. z o. o.", "tax": "8883090909" },
+  { "name": "Ekonaft - Bolesławiec - Sp. z o. o.", "tax": "6121594616" },
+  { "name": "4Mz Marcin Zagdański", "tax": "7962466030" },
+  { "name": "Shell Mobility Polska Sp. z o. o.", "tax": "5252838515" },
+  { "name": "Tvm Transport & Logistics Sp. z o. o.", "tax": "6381838877" },
+  { "name": "Asena Group Sp. z o. o.", "tax": "9662114374" },
+  { "name": "Optimal Transport Sp. z o. o.", "tax": "7543353545" },
+  {
+    "name": "Sławomir Rogala  Usługi Transportowe Ciężarowe",
+    "tax": "8631202898"
+  },
+  { "name": "Brisko Sp. z o. o.", "tax": "5833475511" },
+  { "name": "Lukro Sp. z o. o.", "tax": "7123373802" },
+  { "name": "Myway-24 Sp. z o. o.", "tax": "7963024794" },
+  { "name": "West North Logistics Sp. z o. o.", "tax": "5223007970" },
+  { "name": "Panstar s.r.o", "tax": "SK2023762697" },
+  { "name": "Prezero Service Południe Sp. z o. o.", "tax": "6411005806" },
+  { "name": "Mk-Trans Marcin Kłos", "tax": "8822032556" },
+  {
+    "name": "RDS STAL Spółka z ograniczoną odpowiedzialnością Spółka Komandytowa",
+    "tax": "7742882803"
+  },
+  {
+    "name": "”Greenways Logistyka” Sp. z o. o. Spółka Komandytowa",
+    "tax": "9721258762"
+  },
+  { "name": "Emmar Kamila Masny", "tax": "6832000663" },
+  { "name": "Autoserwis Max Wojciech Kocjan", "tax": "6372107619" },
+  { "name": "Ifa Logistics Ewelina Kapustyńska", "tax": "7642437736" },
+  { "name": "S7Serwis Sp. z o. o. Spółka Komandytowa", "tax": "5671919626" },
+  { "name": "Traker24.Eu Słubice Sp. z o. o.", "tax": "8982310018" },
+  {
+    "name": "”Gas-Truck Plus” Paweł Gąsiński I Anna Gąsińska",
+    "tax": "8341876536"
+  },
+  {
+    "name": "1. ”Roboty Ziemne ” Magdalena Sikora-Maślanka 2.Elektrownia Fotowoltaiczna Mroczeń Iv Magdalena Sikora-Maślanka - Wspólnik Spółk",
+    "tax": "6191941537"
+  },
+  { "name": "Grand Bms Sp. z o. o.", "tax": "7872142111" },
+  {
+    "name": "Peter-Gum Zenon Petera, Anna Petera, Marcin Petera, Jakub Petera Spółka Cywilna",
+    "tax": "7742698531"
+  },
+  { "name": "Pieprzyk Station Sp. z o. o.", "tax": "6991971646" },
+  {
+    "name": "Przedsiębiorstwo Handlowo Usługowe Grelen Grech Spółka Jawna",
+    "tax": "5020110757"
+  },
+  { "name": "”Adgam Investment” Sp. z o. o.", "tax": "7872045158" },
+  { "name": "Firma Handlowo-Usługowa Bogdan Kardyński", "tax": "5731260445" },
+  {
+    "name": "Grzegorz Pytlas Greys Bistro, Restauracja, Hotel",
+    "tax": "7861000519"
+  },
+  { "name": "Bonse Manor House Sp. z o. o.", "tax": "7872136961" },
+  { "name": "Marco-Oil Sp. z o. o.", "tax": "5342393784" },
+  { "name": "Zbigniew Kisio", "tax": "7742148635" },
+  {
+    "name": "Firma Handlowo Usługowa Master Marcin Olejnik",
+    "tax": "8321982318"
+  },
+  { "name": "Chem-Glas Sp. z o. o., Spółka Komandytowa", "tax": "7842494710" },
+  { "name": "Pro-Hurt Wiśniewscy Spółka Jawna", "tax": "9542816636" },
+  { "name": "Tensei Sp. z o. o.", "tax": "9532804726" },
+  { "name": "KOLODA e.K.", "tax": "DE316574154" },
+  { "name": "Found Solution Sp. z o. o.", "tax": "5040080114" },
+  { "name": "Jks Truck Jarosław Szczepuła", "tax": "5571625032" },
+  { "name": "Stik Group Sp. z o. o.", "tax": "7743264421" },
+  { "name": "Mpr Cargo Sp. z o. o.", "tax": "8222388606" },
+  { "name": "Zoya Logistics Group Sp. z o. o.", "tax": "5273048020" },
+  { "name": "Apek Logistics Solutions Rafał Grajda", "tax": "8222391347" },
+  { "name": "Lizard Logistics Marcin Jaszczur", "tax": "8241612430" },
+  {
+    "name": "Przedsiębiorstwo Usługowo Produkcyjno Handlowe Carpol Mirosław Sulikowski",
+    "tax": "7471229533"
+  },
+  { "name": "Wiedyska Sp. z o. o.", "tax": "9492232984" },
+  { "name": "Kelis Spedycja Sp. z o. o.", "tax": "9231746164" },
+  {
+    "name": "Rencar S.c. Piotr Pianka, Roman Karolak, Paweł Pianka",
+    "tax": "5342013310"
+  },
+  { "name": "PPHU Agata Marchewka", "tax": "9492050964" },
+  { "name": "Zadbano Spółka Akcyjna", "tax": "5222969098" },
+  { "name": "Przedsiębiorstwo Tank Sp. z o. o.", "tax": "8970020444" },
+  {
+    "name": "”Marathon International” Sp. z o. o. Spółka Komandytowa",
+    "tax": "7773092315"
+  },
+  { "name": "Motohouse Logistics Sp. z o. o.", "tax": "6751677611" },
+  { "name": "Dedal Sp. z o. o. Spółka Komandytowa", "tax": "8821000353" },
+  { "name": "Sarsped Sp. z o. o. Spółka Komandytowa", "tax": "7882007165" },
+  {
+    "name": "Claudie Design Sp. z o. o. Spółka Komandytowa.",
+    "tax": "9151800223"
+  },
+  { "name": "Move Inermodal nv", "tax": "BE0836403977" },
+  { "name": "Orion Sp. z o. o.", "tax": "8943249869" },
+  { "name": "Marcin Suchan   Kursor", "tax": "8851530618" },
+  { "name": "Wands Design Artur Kałuża Spółka Jawna", "tax": "8992780748" },
+  { "name": "Sped Trans Polska Sp. z o. o.", "tax": "6342616836" },
+  { "name": "Kerry Logistics (Poland) Sp. z o. o.", "tax": "7010063661" },
+  { "name": "Ambese s.r.o", "tax": "SK2023650244" },
+  { "name": "Nova Stal  Sp. z o. o.", "tax": "7743254291" },
+  { "name": "Tcl Sp. z o. o.", "tax": "7282366097" },
+  {
+    "name": "Przedsiębiorstwo Usługowo - Handlowe Mettos Grzegorz Luty",
+    "tax": "6191072745"
+  },
+  { "name": "Firma Kim Maciej Walas", "tax": "9121599934" },
+  { "name": "Hns Transport & Spedition Daniel Hanus", "tax": "6731607932" },
+  { "name": "Koimex Spółka Akcyjna", "tax": "9271933903" },
+  { "name": "Wjw Logistics Sp. z o. o.", "tax": "8952249337" },
+  { "name": "Fenomeno s.r.o", "tax": "SK2121088750" },
+  { "name": "Bb Cargo Sp. z o. o.", "tax": "9721326593" },
+  { "name": "Transmulde Sp. z o. o.", "tax": "9241923780" },
+  { "name": "Tripex Michał Kosobucki", "tax": "5543025142" },
+  { "name": "Frida Logistics Sp. z o. o.", "tax": "7831878944" },
+  { "name": "Kwt Sp. z o. o.", "tax": "6922495415" },
+  { "name": "Dakpol Sp. z o. o.", "tax": "9231630059" },
+  { "name": "P&M Team Sp. z o. o.", "tax": "6472613345" },
+  { "name": "Px-Logistics Sp. z o. o.", "tax": "9571169671" },
+  { "name": "Load4U", "tax": "NL819529424B01" },
+  { "name": "A&D Legion  Sp. z o. o.", "tax": "8681984897" },
+  { "name": "Stopserwis Łukasz Sobieraj", "tax": "9161279791" },
+  {
+    "name": "Miejskie Przedsiębiorstwo Komunikacyjne W Siedlcach  Sp. z o. o.",
+    "tax": "8210006964"
+  },
+  { "name": "Howea Sp. z o. o.", "tax": "7812058418" },
+  {
+    "name": "”Centrum Paliw I Rozpuszczalników” Sp. z o. o.",
+    "tax": "7891538867"
+  },
+  { "name": "Kdm Sp. z o. o.", "tax": "6151006475" },
+  { "name": "Dezako Sp. z o. o.", "tax": "8720003657" },
+  { "name": "Marcin Wiśniewski", "tax": "7741641523" },
+  { "name": "Mako Tsl Sp. z o. o.", "tax": "9571090509" },
+  { "name": "”Schavemaker Intermodal” Sp. z o. o.", "tax": "8961460787" },
+  { "name": "Transtom Logistics Sp. z o. o.", "tax": "9671460584" },
+  { "name": "Scg Group Sp. z o. o.", "tax": "5223275682" },
+  { "name": "EST Contracts B.V.", "tax": "NL866889899B01" }
+]
