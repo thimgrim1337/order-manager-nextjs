@@ -1,7 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import {
   pgTable,
-  serial,
   integer,
   text,
   date,
@@ -25,7 +24,12 @@ const order = pgTable(
   'orders',
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
+    createdAt: timestamp('created_at', { mode: 'string' })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { mode: 'string' })
+      .notNull()
+      .defaultNow(),
     orderNr: text('order_nr').notNull(),
     startDate: date('start_date', { mode: 'string' }).notNull().defaultNow(),
     endDate: date('end_date', { mode: 'string' }).notNull().defaultNow(),
@@ -72,9 +76,10 @@ const order = pgTable(
 );
 
 export const ordersWithDetailsView = pgView('orders_with_details', {
-  id: serial().primaryKey(),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   createdAt: timestamp('created_at', { mode: 'string' }).notNull().defaultNow(),
-  orderNr: text('order_nr'),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).notNull().defaultNow(),
+  orderNr: text('order_nr').notNull(),
   startDate: date('start_date', { mode: 'string' }).notNull().defaultNow(),
   endDate: date('end_date', { mode: 'string' }).notNull().defaultNow(),
   statusId: integer('status_id')
@@ -101,18 +106,18 @@ export const ordersWithDetailsView = pgView('orders_with_details', {
     .references(() => customer.id),
 
   // Joined data
-  customer: text('customer_name'),
-  driver: text('driver_name'),
-  truck: text('truck_plate'),
-  status: text('status_name'),
+  customer: text('customer_name').notNull(),
+  driver: text('driver_name').notNull(),
+  truck: text('truck_plate').notNull(),
+  status: text('status_name').notNull(),
 
   // JSON aggregated data
-  loadingPlaces: json('loading_places').$type<City[]>(),
-  unloadingPlaces: json('unloading_places').$type<City[]>(),
+  loadingPlaces: json('loading_places').$type<City[]>().notNull(),
+  unloadingPlaces: json('unloading_places').$type<City[]>().notNull(),
 
   // Helper columns for sorting
-  loadingCity: text('loading_city'),
-  unloadingCity: text('unloading_city'),
+  loadingCity: text('loading_city').notNull(),
+  unloadingCity: text('unloading_city').notNull(),
 }).existing();
 
 export const orderRelations = relations(order, ({ one, many }) => ({
