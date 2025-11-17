@@ -1,4 +1,3 @@
-import { SortOptions } from '@/types/types';
 import { SortingState } from '@tanstack/react-table';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -49,19 +48,17 @@ export function analyzeGlobalFiltering(value: string) {
   };
 }
 
-export function sortToState(sortString: string): SortOptions | undefined {
-  if (!sortString) return;
+export function sortToState(sortString: string | undefined): SortingState {
+  if (!sortString) return [];
 
-  const [field, order] = sortString.split('.');
-
-  return {
-    field,
-    order: order === 'asc' ? 'asc' : 'desc',
-  };
+  const [id, desc] = sortString.split('.');
+  return [{ id, desc: desc === 'desc' }];
 }
 
-export function stateToSort(sortState: SortingState) {
-  return sortState.length
-    ? `${sortState[0].id}.${sortState[0].desc === true ? 'desc' : 'asc'}`
-    : '';
-}
+export const stateToSort = (sorting: SortingState | undefined) => {
+  if (!sorting || sorting.length == 0) return undefined;
+
+  const sort = sorting[0];
+
+  return `${sort.id}.${sort.desc ? 'desc' : 'asc'}` as const;
+};

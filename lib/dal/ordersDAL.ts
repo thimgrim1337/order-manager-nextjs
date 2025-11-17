@@ -1,22 +1,18 @@
 import db from '@/db/db';
-import { ordersWithDetailsView } from '@/db/schemas';
-import { and, asc, desc, eq, gte, ilike, lte, or, sql } from 'drizzle-orm';
-import { Order, OrderFilters, SortOptions } from '@/types/types';
+import { order, ordersWithDetailsView } from '@/db/schemas';
+import { and, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
+import { SortOptions } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
-
-const DEFAULT_PAGE_INDEX = 0;
-const DEFAULT_PAGE_SIZE = 10;
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '../consts';
 
 export async function getAllOrders(
   pageIndex: number = DEFAULT_PAGE_INDEX,
   pageSize: number = DEFAULT_PAGE_SIZE,
   sortOptions?: SortOptions,
-  filters?: OrderFilters
-): Promise<Order[]> {
-  const sortField = sortOptions?.field;
-  const sortOrder = sortOptions?.order === 'desc' ? desc : asc;
-
-  console.log(sortField);
+  filters?: string
+) {
+  const sortField = sortOptions?.id;
+  const sortOrder = sortOptions?.desc === true ? desc : asc;
 
   const getSortColumn = (field?: string) => {
     const sortMappings = {
@@ -42,19 +38,9 @@ export async function getAllOrders(
 
   const whereConditions: any[] = [];
 
-  if (filters?.startDate) {
-    whereConditions.push(
-      gte(ordersWithDetailsView.startDate, filters.startDate)
-    );
-  }
-
-  if (filters?.endDate) {
-    whereConditions.push(lte(ordersWithDetailsView.endDate, filters.endDate));
-  }
-
-  if (filters?.globalFilters) {
+  if (filters) {
     const { searchTerm, isNumeric, numericValue, isDate, normalizedDate } =
-      analyzeGlobalFiltering(filters.globalFilters);
+      analyzeGlobalFiltering(filters);
 
     const searchConditions = [
       ilike(ordersWithDetailsView.orderNr, searchTerm),
@@ -92,8 +78,15 @@ export async function getAllOrders(
     query.where(and(...whereConditions));
   }
 
-  return query
+  const rowCount = await db.select({ count: count() }).from(order);
+
+  const result = await query
     .orderBy(sortOrder(getSortColumn(sortField)))
     .limit(pageSize)
     .offset(pageIndex * pageSize);
+
+  return {
+    data: result,
+    rowCount: rowCount[0].count,
+  };
 }

@@ -1,29 +1,32 @@
-import { columns } from '@/components/OrdersTable/columns';
-import { OrdersTable } from '@/components/OrdersTable/orders-table';
-import { getAllOrders } from '@/lib/dal/ordersDAL';
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/lib/consts';
+import { SearchParams } from '@/types/types';
 import { sortToState } from '@/lib/utils';
-
-const DEFAULT_PAGE_INDEX = 0;
-const DEFAULT_PAGE_SIZE = 10;
+import { getAllOrders } from '@/lib/dal/ordersDAL';
+import OrdersTable from '@/components/OrdersTable/orders-table';
 
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ sort?: string }>;
+  searchParams?: Promise<SearchParams>;
 }) {
   const sort = (await searchParams)?.sort || '';
-  const sortOptions = sortToState(sort);
+  const globalFilters = (await searchParams)?.globalFilters || '';
+  const pageIndex = (await searchParams)?.pageIndex || DEFAULT_PAGE_INDEX;
+  const pageSize = (await searchParams)?.pageSize || DEFAULT_PAGE_SIZE;
 
-  const orders = await getAllOrders(
-    DEFAULT_PAGE_INDEX,
-    DEFAULT_PAGE_SIZE,
-    sortOptions
+  const sortOptions = sortToState(sort)[0];
+
+  const { data: orders, rowCount } = await getAllOrders(
+    pageIndex,
+    pageSize,
+    sortOptions,
+    globalFilters
   );
 
   return (
-    <div>
+    <>
       <h1>Orders</h1>
-      <OrdersTable columns={columns} data={orders} rowCount={0} />
-    </div>
+      <OrdersTable data={orders} rowCount={rowCount} />
+    </>
   );
 }
