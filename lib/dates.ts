@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { addDays, format, parse } from 'date-fns';
 import { pl } from 'date-fns/locale';
 
 export const formatDate = (
@@ -9,3 +9,9 @@ export const formatDate = (
 
   return format(date, dateFormat, { locale: pl });
 };
+
+export const parseDate = (date: string) =>
+  parse(date, 'yyyy-MM-dd', new Date());
+
+export const getToday = () => formatDate(Date.now());
+export const getTomorrow = () => formatDate(addDays(getToday(), 1));

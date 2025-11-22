@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, ReactNode, useEffect, useState } from 'react';
-import { Input } from '../ui/input';
+import { Input } from '../../../components/ui/input';
 
 type DebouncedInputProps = {
   value: string;

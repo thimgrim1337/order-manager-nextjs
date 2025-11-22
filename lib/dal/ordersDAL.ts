@@ -78,15 +78,12 @@ export async function getAllOrders(
     query.where(and(...whereConditions));
   }
 
-  const rowCount = await db.select({ count: count() }).from(order);
-
-  const result = await query
+  return query
     .orderBy(sortOrder(getSortColumn(sortField)))
     .limit(pageSize)
     .offset(pageIndex * pageSize);
+}
 
-  return {
-    data: result,
-    rowCount: rowCount[0].count,
-  };
+export async function getOrderCount() {
+  return db.select({ count: count() }).from(order);
 }

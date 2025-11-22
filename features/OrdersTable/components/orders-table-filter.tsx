@@ -1,9 +1,9 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import DebouncedInput from './debounced-input';
-import { Button } from '../ui/button';
-import { useFilters } from './useFilters';
+import DebouncedInput from '../../OrderForm/components/debounced-input';
+import { Button } from '../../../components/ui/button';
+import { useFilters } from '../hooks/useFilters';
 
 export default function OrderTableFilter() {
   const { filters, setFilters, resetFilters } = useFilters();

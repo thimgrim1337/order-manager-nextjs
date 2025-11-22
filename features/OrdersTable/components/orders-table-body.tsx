@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from '../../../components/ui/table';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 
 interface OrdersTableBodyProps<TData, TValue> {

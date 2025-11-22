@@ -35,7 +35,8 @@ const order = pgTable(
     endDate: date('end_date', { mode: 'string' }).notNull().defaultNow(),
     statusId: integer('status_id')
       .notNull()
-      .references(() => status.id),
+      .references(() => status.id)
+      .default(1),
     priceCurrency: numeric('price_currency', {
       precision: 10,
       scale: 2,
@@ -48,7 +49,9 @@ const order = pgTable(
     currencyRate: numeric('currency_rate', {
       precision: 5,
       scale: 4,
-    }).notNull(),
+    })
+      .notNull()
+      .default('1'),
     truckId: integer('truck_id')
       .notNull()
       .references(() => truck.id),
