@@ -1,3 +1,5 @@
+'use server';
+
 import db from '@/db/db';
 import { truck } from '@/db/schemas';
 

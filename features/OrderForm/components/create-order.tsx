@@ -12,7 +12,7 @@ import {
 import { Plus } from 'lucide-react';
 import CreateOrderForm from './create-order-form';
 import { City, Country, Customer, Driver, Truck } from '@/types/types';
-import { use } from 'react';
+import { use, useState } from 'react';
 
 export default function CreateOrder({
   customers,
@@ -27,6 +27,7 @@ export default function CreateOrder({
   trucks: Promise<Truck[]>;
   countries: Promise<Country[]>;
 }) {
+  const [open, setOpen] = useState(false);
   const customersData = use(customers);
   const citiesData = use(cities);
   const driversData = use(drivers);
@@ -34,7 +35,7 @@ export default function CreateOrder({
   const countryData = use(countries);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className='group'>
           <Plus className='transition-transform group-hover:rotate-45 group-hover:scale-125' />
@@ -55,6 +56,7 @@ export default function CreateOrder({
           drivers={driversData}
           trucks={trucksData}
           countries={countryData}
+          onDialogOpenChange={setOpen}
         />
       </DialogContent>
     </Dialog>

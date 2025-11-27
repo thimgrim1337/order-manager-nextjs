@@ -1,3 +1,5 @@
+'use server';
+
 import db from '@/db/db';
 import { customer } from '@/db/schemas';
 import { and, ilike, or } from 'drizzle-orm';

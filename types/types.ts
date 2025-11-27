@@ -36,9 +36,11 @@ export const orderSchema = z.object({
   driverId: z.number().min(1, { error: 'Wyberz kierowcę.' }),
   customerId: z.number().min(1, { error: 'Wybierz zleceniodawcę.' }),
   currency: z.string(),
-  priceCurrency: z
-    .number()
-    .min(0, { error: 'Podaj cenę frachtu. Kwota nie może być niższa niż 0.' }),
+  priceCurrency: z.string().refine((val) => Number(val) > 0, {
+    error: 'Cena musi być wyższa od zera.',
+  }),
+  pricePLN: z.string(),
+  currencyRate: z.string(),
   loadingPlaces: z
     .array(City)
     .min(1, { error: 'Wybierz co najmniej 1 miejsce załadunku.' }),

@@ -1,5 +1,8 @@
+'use server';
+
 import db from '@/db/db';
 import { city } from '@/db/schemas';
+import { City } from '@/types/types';
 import { and, ilike } from 'drizzle-orm';
 
 export async function getAllCities(filters?: string) {
@@ -19,4 +22,13 @@ export async function getAllCities(filters?: string) {
   const data = await query.orderBy(city.name).limit(10);
 
   return data;
+}
+
+export async function getCityByName(cityName: string) {
+  return db.query.city.findFirst({ where: ilike(city.name, cityName) });
+}
+
+export async function createCity(newCity: City) {
+  const query = await db.insert(city).values(newCity).returning();
+  return query[0];
 }

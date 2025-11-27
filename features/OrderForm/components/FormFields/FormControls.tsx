@@ -18,6 +18,7 @@ export default function FormControls({ id }: { id: string }) {
           </Button>
           <Button
             type='reset'
+            variant={'secondary'}
             onClick={(e) => {
               e.preventDefault();
               form.reset();

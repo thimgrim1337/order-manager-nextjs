@@ -23,8 +23,11 @@ import {
   Hash,
   MapPinCheck,
   MapPinX,
+  TruckIcon,
   User,
 } from 'lucide-react';
+import { Dispatch, SetStateAction } from 'react';
+import { redirect, useRouter } from 'next/navigation';
 
 export default function CreateOrderForm({
   customers,
@@ -32,14 +35,17 @@ export default function CreateOrderForm({
   drivers,
   trucks,
   countries,
+  onDialogOpenChange,
 }: {
   customers: Customer[];
   cities: City[];
   drivers: Driver[];
   trucks: Truck[];
   countries: Country[];
+  onDialogOpenChange: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { setFilters } = useFilters();
+  const { setFilters, resetFilters } = useFilters();
+  const { refresh } = useRouter();
 
   const form = useAppForm({
     ...orderFormOptions,
@@ -47,31 +53,35 @@ export default function CreateOrderForm({
       onSubmit: orderSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.success('Utworzono nowe zlecenie.');
-      console.log(value);
+      value.pricePLN = value.priceCurrency;
+      const response = await fetch('http://localhost:3000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(value),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        toast.error(`Nie udało się utworzyć nowego zlecenia: ${value.orderNr}`);
+      } else {
+        toast.success(`Pomyślnie utworzono nowe zlecenie: ${value.orderNr}`);
+        onDialogOpenChange(false);
+        refresh();
+        resetFilters();
+      }
     },
     onSubmitInvalid: async ({ value }) => {
       const result = orderSchema.safeParse(value);
-      if (!result.success) console.log(z.prettifyError(result.error));
+      if (!result.success) console.error(z.prettifyError(result.error));
     },
   });
-
-  function handleCustomerSearch(value: string) {
-    setFilters({ customer: value });
-  }
 
   const fieldGroupStyle = 'grid grid-cols-2 pt-5';
 
   return (
     <>
-      <form
-        id='create-order-form'
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
-        }}
-      >
+      <form id='create-order-form' onSubmit={() => form.handleSubmit()}>
         <FieldGroup className='grid grid-cols-2'>
           <form.AppField
             name='customerId'
@@ -81,7 +91,7 @@ export default function CreateOrderForm({
                   id: customer.id,
                   value: customer.name,
                 }))}
-                onSearch={handleCustomerSearch}
+                onSearch={(value) => setFilters({ customer: value })}
                 label='Zleceniodwca'
                 placeholder='Wybierz zleceniodawcę'
                 Icon={<Briefcase />}
@@ -193,16 +203,16 @@ export default function CreateOrderForm({
                 }))}
                 label='Pojazd'
                 placeholder='Wybierz pojazd'
-                Icon={<User />}
+                Icon={<TruckIcon />}
               />
             )}
           />
         </FieldGroup>
-      </form>
 
-      <form.AppForm>
-        <form.FormControls id={form.formId} />
-      </form.AppForm>
+        <form.AppForm>
+          <form.FormControls id={form.formId} />
+        </form.AppForm>
+      </form>
     </>
   );
 }

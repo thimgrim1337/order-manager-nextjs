@@ -18,9 +18,11 @@ export default async function OrdersPage({
   searchParams?: Promise<SearchParams>;
 }) {
   const sort = (await searchParams)?.sort || '';
+  ``;
   const globalFilters = (await searchParams)?.globalFilters || '';
-  const pageIndex = (await searchParams)?.pageIndex || DEFAULT_PAGE_INDEX;
-  const pageSize = (await searchParams)?.pageSize || DEFAULT_PAGE_SIZE;
+  const pageIndex =
+    Number((await searchParams)?.pageIndex) || DEFAULT_PAGE_INDEX;
+  const pageSize = Number((await searchParams)?.pageSize) || DEFAULT_PAGE_SIZE;
   const customerSearch = (await searchParams)?.customer || '';
 
   const sortOptions = sortToState(sort)[0];

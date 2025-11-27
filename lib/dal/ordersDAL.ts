@@ -1,13 +1,19 @@
-import db from '@/db/db';
-import { order, ordersWithDetailsView } from '@/db/schemas';
+'use server';
+
+import db, { dbTransaction } from '@/db/db';
+import {
+  loadingPlace,
+  order,
+  ordersWithDetailsView,
+  unloadingPlace,
+} from '@/db/schemas';
 import { and, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
-import { SortOptions } from '@/types/types';
+import { OrderCreate, SortOptions } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '../consts';
 
 export async function getAllOrders(
-  pageIndex: number = DEFAULT_PAGE_INDEX,
-  pageSize: number = DEFAULT_PAGE_SIZE,
+  pageIndex: number,
+  pageSize: number,
   sortOptions?: SortOptions,
   filters?: string
 ) {
@@ -86,4 +92,33 @@ export async function getAllOrders(
 
 export async function getOrderCount() {
   return db.select({ count: count() }).from(order);
+}
+
+export async function getOrderByNumberAndCustomer(
+  orderNumber: string,
+  customerId: number
+) {
+  return db.query.order.findFirst({
+    where: (order) =>
+      and(eq(order.orderNr, orderNumber), eq(order.customerId, customerId)),
+  });
+}
+
+export async function createOrder(newOrder: OrderCreate, trx: dbTransaction) {
+  const query = await trx.insert(order).values(newOrder).returning();
+  return query[0];
+}
+
+export async function addOrderPlaces(
+  orderId: number,
+  placesIds: number[],
+  placeType: 'loadingPlace' | 'unloadingPlace',
+  trx: dbTransaction
+) {
+  const places = placesIds.map((placeId) => ({
+    orderId,
+    placeId,
+  }));
+  const table = placeType === 'loadingPlace' ? loadingPlace : unloadingPlace;
+  return trx.insert(table).values(places);
 }

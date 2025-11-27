@@ -23,7 +23,15 @@ export function useFilters() {
 
   function resetFilters() {
     if (!Object.entries(filters).length) return;
-    replace(`${pathname}`);
+
+    const params = new URLSearchParams(searchParams);
+
+    Object.keys(filters).forEach((param) => {
+      if (param === 'pageSize' || param === 'pageIndex') return;
+      else params.delete(param);
+    });
+
+    replace(`${pathname}?${params.toString()}`);
   }
 
   return { filters, setFilters, resetFilters };

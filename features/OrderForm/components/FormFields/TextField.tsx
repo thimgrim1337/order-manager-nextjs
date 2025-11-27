@@ -1,4 +1,4 @@
-import { HTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
+import { InputHTMLAttributes, ReactNode } from 'react';
 import { useFieldContext } from '../../context/form-context';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,7 @@ export default function TextField({
   label: string;
   Icon?: ReactNode;
 } & InputHTMLAttributes<HTMLInputElement>) {
-  const field = useFieldContext<string | number>();
+  const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   return (
     <Field aria-invalid={isInvalid}>
@@ -24,11 +24,7 @@ export default function TextField({
         name={field.name}
         value={field.state.value}
         onBlur={field.handleBlur}
-        onChange={(e) =>
-          field.handleChange(
-            props.type === 'number' ? +e.target.value : e.target.value
-          )
-        }
+        onChange={(e) => field.handleChange(e.target.value)}
         aria-invalid={isInvalid}
         {...props}
       />
