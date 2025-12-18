@@ -1,6 +1,7 @@
 import { getToday, getTomorrow } from '@/lib/dates';
-import { City } from '@/types/types';
+import { City, orderSchema } from '@/types/types';
 import { formOptions } from '@tanstack/react-form-nextjs';
+import { isAfter, isBefore } from 'date-fns';
 
 export const orderFormOptions = formOptions({
   defaultValues: {
@@ -12,10 +13,44 @@ export const orderFormOptions = formOptions({
     truckId: 0,
     statusId: 1,
     priceCurrency: '1',
-    currencyRate: '1',
-    pricePLN: '1',
     currency: 'PLN',
     loadingPlaces: [] as City[] | [],
     unloadingPlaces: [] as City[] | [],
+    currencyInfo: {
+      table: '',
+      rate: '',
+      date: '',
+    },
+  },
+
+  validators: {
+    onChange: orderSchema,
+    onSubmit: ({ value }) => {
+      const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
+      const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
+
+      if (isLoadingDateAfter || isUnloadingDateBefore) {
+        return {
+          fields: {
+            ...(isLoadingDateAfter
+              ? {
+                  startDate: {
+                    message:
+                      'Data załadunku nie może być późniejsza niż data rozładunku.',
+                  },
+                }
+              : {}),
+            ...(isUnloadingDateBefore
+              ? {
+                  endDate: {
+                    message:
+                      'Data rozładunku nie może być wcześniejsza niż data załadunku.',
+                  },
+                }
+              : {}),
+          },
+        };
+      }
+    },
   },
 });

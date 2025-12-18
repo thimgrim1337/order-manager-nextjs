@@ -3,6 +3,7 @@ import {
   country,
   customer,
   driver,
+  order,
   ordersWithDetailsView,
   truck,
 } from '@/db/schemas';
@@ -11,6 +12,9 @@ import z from 'zod';
 
 export const Order = createSelectSchema(ordersWithDetailsView);
 export type Order = z.infer<typeof Order>;
+
+const OrderCreate = createInsertSchema(order);
+export type OrderCreate = z.infer<typeof OrderCreate>;
 
 const City = createSelectSchema(city, { id: z.number().optional() });
 export type City = z.infer<typeof City>;
@@ -27,6 +31,8 @@ export type Truck = z.infer<typeof Truck>;
 const Country = createSelectSchema(country);
 export type Country = z.infer<typeof Country>;
 
+export type Currencies = 'PLN' | 'EUR';
+
 export const orderSchema = z.object({
   orderNr: z.string().min(1, { error: 'Numer zlecenia nie może być pusty.' }),
   startDate: z.string(),
@@ -39,16 +45,25 @@ export const orderSchema = z.object({
   priceCurrency: z.string().refine((val) => Number(val) > 0, {
     error: 'Cena musi być wyższa od zera.',
   }),
-  pricePLN: z.string(),
-  currencyRate: z.string(),
   loadingPlaces: z
     .array(City)
     .min(1, { error: 'Wybierz co najmniej 1 miejsce załadunku.' }),
   unloadingPlaces: z
     .array(City)
     .min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
+  currencyInfo: z.object({
+    rate: z.string(),
+    table: z.string(),
+    date: z.string(),
+  }),
 });
-export type OrderCreate = z.infer<typeof orderSchema>;
+export type FormOrderCreate = z.infer<typeof orderSchema>;
+
+export type CurrencyInfo = {
+  date: string;
+  table: string;
+  rate: string;
+};
 
 export type SortOptions = {
   id: string;
@@ -70,3 +85,12 @@ export type Data = {
   id: number;
   value: string | number;
 };
+
+export type ApiError = {
+  error: string;
+  status: number;
+};
+
+export type ApiResult<TData = unknown> =
+  | { type: 'success'; data: TData; status: number }
+  | { type: 'error'; error: string; status: number };

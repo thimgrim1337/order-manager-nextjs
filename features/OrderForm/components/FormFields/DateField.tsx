@@ -37,8 +37,10 @@ export default function DateField({
             variant='outline'
             id='date'
             className='w-48 justify-between font-normal'
+            aria-invalid={isInvalid}
           >
             {selectedDate ? selectedDate : 'Wybierz datę'}
+
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -50,7 +52,6 @@ export default function DateField({
             onSelect={(value) => field.handleChange(formatDate(value))}
             className='rounded-lg border shadow-sm'
             id={field.name}
-            aria-invalid={isInvalid}
           />
         </PopoverContent>
       </Popover>

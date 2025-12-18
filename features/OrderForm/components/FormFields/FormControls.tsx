@@ -7,7 +7,7 @@ export default function FormControls({ id }: { id: string }) {
     <form.Subscribe
       selector={(state) => [state.canSubmit, state.isSubmitting]}
       children={([canSubmit, isSubmitting]) => (
-        <>
+        <div className='mt-5'>
           <Button
             type='submit'
             disabled={!canSubmit}
@@ -26,7 +26,7 @@ export default function FormControls({ id }: { id: string }) {
           >
             Reset
           </Button>
-        </>
+        </div>
       )}
     />
   );

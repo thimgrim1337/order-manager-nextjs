@@ -1,19 +1,29 @@
 import db from '@/db/db';
+import { getCitiesIds } from '@/lib/dal/cityDAL';
 import {
   getOrderByNumberAndCustomer,
   createOrder,
   addOrderPlaces,
 } from '@/lib/dal/ordersDAL';
 import { AppError } from '@/lib/error';
-import { getCitiesIds } from '@/lib/utils';
-import { OrderCreate as TOrderCreate } from '@/types/types';
+import { FormOrderCreate } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const requestBody = (await request.json()) as TOrderCreate;
-    const { orderNr, customerId, loadingPlaces, unloadingPlaces } = requestBody;
+    const requestBody = (await request.json()) as FormOrderCreate;
+    const {
+      orderNr,
+      customerId,
+      loadingPlaces,
+      unloadingPlaces,
+      currency,
+      priceCurrency,
+      currencyInfo,
+    } = requestBody;
+    let pricePLN: string;
+    let currencyRate: string = '1';
 
     const existingOrder = await getOrderByNumberAndCustomer(
       orderNr,
@@ -28,8 +38,21 @@ export async function POST(request: NextRequest) {
     if (!loadingCitiesIds.length || !unloadingPlacesIds.length)
       throw new AppError('Invalid places provided.', 400);
 
+    if (currency === 'EUR' && currencyInfo.rate) {
+      currencyRate = currencyInfo.rate;
+      pricePLN = String(+priceCurrency * +currencyRate);
+    } else {
+      pricePLN = priceCurrency;
+    }
+
+    const newOrder = {
+      ...requestBody,
+      pricePLN,
+      currencyRate,
+    };
+
     const createdOrder = await db.transaction(async (trx) => {
-      const order = await createOrder(requestBody, trx);
+      const order = await createOrder(newOrder, trx);
 
       await addOrderPlaces(order.id, loadingCitiesIds, 'loadingPlace', trx);
       await addOrderPlaces(order.id, unloadingPlacesIds, 'unloadingPlace', trx);
@@ -38,6 +61,7 @@ export async function POST(request: NextRequest) {
     });
 
     revalidatePath('/orders');
+
     return NextResponse.json({ success: true, createdOrder }, { status: 200 });
   } catch (e) {
     const { message, statusCode } =

@@ -15,13 +15,15 @@ export default function SelectField({
   label,
   placeholder,
   Icon,
-  ...props
+  children,
 }: {
   label: string;
   placeholder: string;
   Icon?: ReactNode;
+  children?: ReactNode;
 }) {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<string | 'EUR' | 'PLN'>();
+
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   const currencies = ['PLN', 'EUR'];
@@ -52,6 +54,7 @@ export default function SelectField({
         </SelectContent>
       </Select>
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      {children}
     </Field>
   );
 }

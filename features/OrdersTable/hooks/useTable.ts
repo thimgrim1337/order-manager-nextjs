@@ -20,8 +20,8 @@ export default function useTable<TData, TValue>({
 }: useTableProps<TData, TValue>) {
   const { filters, setFilters } = useFilters();
   const PaginationState = {
-    pageIndex: filters.pageIndex ?? DEFAULT_PAGE_INDEX,
-    pageSize: filters.pageSize ?? DEFAULT_PAGE_SIZE,
+    pageIndex: Number(filters.pageIndex ?? DEFAULT_PAGE_INDEX),
+    pageSize: Number(filters.pageSize ?? DEFAULT_PAGE_SIZE),
   };
   const sortState = sortToState(filters.sort);
 

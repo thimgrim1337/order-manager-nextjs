@@ -18,7 +18,6 @@ export default async function OrdersPage({
   searchParams?: Promise<SearchParams>;
 }) {
   const sort = (await searchParams)?.sort || '';
-  ``;
   const globalFilters = (await searchParams)?.globalFilters || '';
   const pageIndex =
     Number((await searchParams)?.pageIndex) || DEFAULT_PAGE_INDEX;
@@ -41,15 +40,15 @@ export default async function OrdersPage({
         title='Zlecenia'
         subText='System zarządzania zleceniami transportowymi'
       />
-      <CreateOrder
-        customers={customers}
-        cities={cities}
-        drivers={drivers}
-        trucks={trucks}
-        countries={countries}
-      />
 
       <Suspense fallback={<p>Loading...</p>}>
+        <CreateOrder
+          customers={customers}
+          cities={cities}
+          drivers={drivers}
+          trucks={trucks}
+          countries={countries}
+        />
         <OrdersTable orders={orders} rowCount={rowCount[0].count} />
       </Suspense>
     </>
