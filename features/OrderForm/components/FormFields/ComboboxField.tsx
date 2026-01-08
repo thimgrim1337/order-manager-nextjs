@@ -2,7 +2,7 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { useFieldContext } from '../../context/form-context';
 import { ReactNode } from 'react';
 import { Combobox } from '@/components/ui/combobox';
-import { Data } from '@/types/types';
+import { ComboboxData } from '@/types/types';
 
 export default function ComboboxField({
   data,
@@ -11,7 +11,7 @@ export default function ComboboxField({
   placeholder,
   Icon,
 }: {
-  data: Data[];
+  data: ComboboxData[];
   onSearch?: (value: string) => void;
   label: string;
   placeholder: string;

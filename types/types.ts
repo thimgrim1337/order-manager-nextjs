@@ -81,14 +81,9 @@ export const SearchParams = z.object({
 });
 export type SearchParams = z.infer<typeof SearchParams>;
 
-export type Data = {
+export type ComboboxData = {
   id: number;
   value: string | number;
-};
-
-export type ApiError = {
-  error: string;
-  status: number;
 };
 
 export type ApiResult<TData = unknown> =

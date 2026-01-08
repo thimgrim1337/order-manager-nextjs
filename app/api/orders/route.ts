@@ -5,6 +5,7 @@ import {
   createOrder,
   addOrderPlaces,
 } from '@/lib/dal/ordersDAL';
+import { updateTruckAssignedDriver } from '@/lib/dal/truckDAL';
 import { AppError } from '@/lib/error';
 import { FormOrderCreate } from '@/types/types';
 import { revalidatePath } from 'next/cache';
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
       currency,
       priceCurrency,
       currencyInfo,
+      truckId,
+      driverId,
     } = requestBody;
     let pricePLN: string;
     let currencyRate: string = '1';
@@ -56,6 +59,7 @@ export async function POST(request: NextRequest) {
 
       await addOrderPlaces(order.id, loadingCitiesIds, 'loadingPlace', trx);
       await addOrderPlaces(order.id, unloadingPlacesIds, 'unloadingPlace', trx);
+      await updateTruckAssignedDriver(truckId, driverId, trx);
 
       return order;
     });

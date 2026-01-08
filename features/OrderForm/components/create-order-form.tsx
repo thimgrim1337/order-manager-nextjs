@@ -59,14 +59,12 @@ export default function CreateOrderForm({
     },
   });
 
-  const endDate = useStore(form.store, (state) => state.values.endDate);
-  const currencyInfo = useStore(
+  const { endDate, currencyInfo, currency } = useStore(
     form.store,
-    (state) => state.values.currencyInfo
+    (state) => state.values
   );
-  const currency = useStore(form.store, (state) => state.values.currency);
 
-  const { rate, isRateLoading, isRateError, rateErrorMsg } =
+  const { rate, isRateLoading, isRateError, rateError } =
     useCurrencyInfo(endDate);
 
   useEffect(() => {
@@ -208,7 +206,7 @@ export default function CreateOrderForm({
                   if (isRateError) {
                     return {
                       message:
-                        rateErrorMsg?.message ||
+                        rateError?.message ||
                         'Brak kursu waluty dla wybranej daty.',
                     };
                   }
@@ -233,6 +231,30 @@ export default function CreateOrderForm({
         </FieldGroup>
         <FieldGroup className={fieldGroupStyle}>
           <form.AppField
+            name='truckId'
+            listeners={{
+              onChange: ({ value }) => {
+                const assignedDriver = trucks.filter(
+                  (truck) => truck.id === value
+                )[0]?.driverId;
+
+                if (assignedDriver)
+                  form.setFieldValue('driverId', assignedDriver);
+              },
+            }}
+            children={(field) => (
+              <field.ComboboxField
+                data={trucks.map((truck) => ({
+                  id: truck.id,
+                  value: truck.plate,
+                }))}
+                label='Pojazd'
+                placeholder='Wybierz pojazd'
+                Icon={<TruckIcon />}
+              />
+            )}
+          />
+          <form.AppField
             name='driverId'
             children={(field) => (
               <field.ComboboxField
@@ -243,20 +265,6 @@ export default function CreateOrderForm({
                 label='Kierowca'
                 placeholder='Wybierz kierowcę'
                 Icon={<User />}
-              />
-            )}
-          />
-          <form.AppField
-            name='truckId'
-            children={(field) => (
-              <field.ComboboxField
-                data={trucks.map((truck) => ({
-                  id: truck.id,
-                  value: truck.plate,
-                }))}
-                label='Pojazd'
-                placeholder='Wybierz pojazd'
-                Icon={<TruckIcon />}
               />
             )}
           />

@@ -17,7 +17,7 @@ export default function useCurrencyInfo(date: string) {
     data: rate,
     isLoading: isRateLoading,
     isError: isRateError,
-    error: rateErrorMsg,
+    error: rateError,
   } = useQuery({
     queryKey: ['currencyRate', validDate],
     queryFn: () => getCurrencyRate(validDate),
@@ -38,6 +38,6 @@ export default function useCurrencyInfo(date: string) {
     rate,
     isRateLoading,
     isRateError,
-    rateErrorMsg,
+    rateError,
   };
 }

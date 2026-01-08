@@ -9,7 +9,7 @@ import { Suspense } from 'react';
 import { getAllCustomers } from '@/lib/dal/customersDAL';
 import { getAllCities } from '@/lib/dal/cityDAL';
 import getAllDrivers from '@/lib/dal/driverDAL';
-import getAllTrucks from '@/lib/dal/truckDAL';
+import { getAllTrucks } from '@/lib/dal/truckDAL';
 import getAllCountries from '@/lib/dal/countriesDAL';
 
 export default async function OrdersPage({

@@ -20,10 +20,10 @@ import {
 import { Updater } from '@tanstack/react-form';
 import { HTMLAttributes, useEffect, useState } from 'react';
 import useDebouce from '@/features/OrderForm/hooks/useDebouce';
-import { Data } from '@/types/types';
+import { ComboboxData } from '@/types/types';
 
 type ComboboxProps = {
-  data: Data[];
+  data: ComboboxData[];
   placeholder: string;
   onChange: (updater: Updater<number>) => void;
   value: number;
