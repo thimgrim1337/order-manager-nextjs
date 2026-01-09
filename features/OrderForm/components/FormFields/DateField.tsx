@@ -48,6 +48,8 @@ export default function DateField({
           <Calendar
             mode='single'
             defaultMonth={new Date(Date.now())}
+            showWeekNumber
+            weekStartsOn={1}
             selected={parseDate(selectedDate)}
             onSelect={(value) => field.handleChange(formatDate(value))}
             className='rounded-lg border shadow-sm'

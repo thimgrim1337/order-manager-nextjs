@@ -1,7 +1,7 @@
 import { SortingState } from '@tanstack/react-table';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { formatDate, getYesterday } from './dates';
+import { getYesterday } from './dates';
 import { isFuture, isWeekend } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
@@ -69,14 +69,16 @@ export function getValidCurrencyDate(
   date: string,
   holidays: { endDate: string }[]
 ) {
-  const yesterday = formatDate(getYesterday(date));
+  try {
+    const yesterday = getYesterday(date);
 
-  // TODO: Sprawdź godzinę. Kurs z danego dnia jest ogłaszany po 11.
+    const isHoliday = holidays.some((day) => day.endDate === yesterday);
 
-  const isHoliday = holidays.some((day) => day.endDate === yesterday);
+    if (!isWeekend(yesterday) && !isFuture(yesterday) && !isHoliday)
+      return yesterday;
 
-  if (!isWeekend(yesterday) && !isFuture(yesterday) && !isHoliday)
-    return yesterday;
-
-  return getValidCurrencyDate(yesterday, holidays);
+    return getValidCurrencyDate(yesterday, holidays);
+  } catch (error) {
+    return date;
+  }
 }

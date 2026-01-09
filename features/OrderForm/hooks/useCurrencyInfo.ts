@@ -3,15 +3,18 @@ import { getHolidays } from '@/lib/dal/openHolidaysApiDAL';
 import { getToday } from '@/lib/dates';
 import { getValidCurrencyDate } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
 
 export default function useCurrencyInfo(date: string) {
-  const [validDate, setValidDate] = useState<string>(getToday());
-
-  const holidays = useQuery({
+  const { data: holidays = [], isLoading: isHolidaysLoading } = useQuery({
     queryKey: ['holidays'],
     queryFn: () => getHolidays(),
   });
+
+  const validDate = holidays.length
+    ? getValidCurrencyDate(date, holidays)
+    : isHolidaysLoading
+    ? getToday()
+    : date;
 
   const {
     data: rate,
@@ -22,21 +25,12 @@ export default function useCurrencyInfo(date: string) {
     queryKey: ['currencyRate', validDate],
     queryFn: () => getCurrencyRate(validDate),
     retry: false,
-    enabled: !!validDate,
+    enabled: !!validDate && !isHolidaysLoading,
   });
-
-  useEffect(() => {
-    if (holidays.data?.length) {
-      const validDate = getValidCurrencyDate(date, holidays.data);
-      setValidDate(validDate);
-    } else if (!holidays.isLoading) {
-      setValidDate(date);
-    }
-  }, [date]);
 
   return {
     rate,
-    isRateLoading,
+    isRateLoading: isRateLoading || isHolidaysLoading,
     isRateError,
     rateError,
   };

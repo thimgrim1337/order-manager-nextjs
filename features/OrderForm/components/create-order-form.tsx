@@ -27,7 +27,7 @@ import {
   TruckIcon,
   User,
 } from 'lucide-react';
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
 import CurrencyInfo from '@/features/OrderForm/components/FormFields/CurrencyInfo';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
@@ -50,6 +50,7 @@ export default function CreateOrderForm({
 }) {
   const { setFilters, resetFilters } = useFilters();
   const { refresh } = useRouter();
+
   const form = useAppForm({
     ...orderFormOptions,
     onSubmit: ({ value }) => handleSubmit(value),
@@ -59,7 +60,7 @@ export default function CreateOrderForm({
     },
   });
 
-  const { endDate, currencyInfo, currency } = useStore(
+  const { endDate, currency, currencyInfo } = useStore(
     form.store,
     (state) => state.values
   );
@@ -67,24 +68,26 @@ export default function CreateOrderForm({
   const { rate, isRateLoading, isRateError, rateError } =
     useCurrencyInfo(endDate);
 
-  useEffect(() => {
-    if (!rate || currency !== 'EUR') return;
-
-    if (currencyInfo?.date) return;
-
-    form.setFieldValue('currencyInfo', {
-      date: rate.rates[0].effectiveDate,
-      rate: rate.rates[0].mid.toString(),
-      table: rate.rates[0].no,
-    });
-  }, [rate, form, currencyInfo, currency]);
+  const calculatedCurrencyInfo =
+    !rate || currency !== 'EUR' || currencyInfo?.date
+      ? null
+      : {
+          date: rate.rates[0].effectiveDate,
+          rate: rate.rates[0].mid.toString(),
+          table: rate.rates[0].no,
+        };
 
   async function handleSubmit(order: FormOrderCreate) {
     try {
+      const finalOrder =
+        calculatedCurrencyInfo && !order.currencyInfo.date
+          ? { ...order, currencyInfo: calculatedCurrencyInfo }
+          : order;
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(order),
+        body: JSON.stringify(finalOrder),
       });
 
       const result = await response.json();
@@ -199,18 +202,12 @@ export default function CreateOrderForm({
               onChangeAsync: async ({ value }) => {
                 if (value !== 'EUR') return null;
 
-                if (!currencyInfo) {
-                  if (isRateLoading) {
-                    return { message: 'Trwa pobieranie kursu waluty...' };
-                  }
-                  if (isRateError) {
-                    return {
-                      message:
-                        rateError?.message ||
-                        'Brak kursu waluty dla wybranej daty.',
-                    };
-                  }
-                }
+                if (isRateError)
+                  return {
+                    message:
+                      rateError?.message ||
+                      'Wystąpił błąd podczas pobierania kursu.',
+                  };
                 return null;
               },
             }}
@@ -222,8 +219,8 @@ export default function CreateOrderForm({
               >
                 <CurrencyInfo
                   isLoading={isRateLoading}
-                  selectedCurrency={field.state.value}
-                  currencyInfo={currencyInfo}
+                  selectedCurrency={currency}
+                  currencyInfo={calculatedCurrencyInfo}
                 />
               </field.SelectField>
             )}

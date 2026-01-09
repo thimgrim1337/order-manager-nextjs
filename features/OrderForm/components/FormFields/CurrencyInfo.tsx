@@ -1,5 +1,5 @@
 import { CurrencyInfo as TCurrencyInfo } from '@/types/types';
-import { CircleIcon } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export default function CurrencyInfo({
   selectedCurrency,
@@ -8,20 +8,27 @@ export default function CurrencyInfo({
 }: {
   selectedCurrency: 'EUR' | 'PLN' | string;
   isLoading: boolean;
-  currencyInfo?: TCurrencyInfo;
+  currencyInfo?: TCurrencyInfo | null;
 }) {
-  if (selectedCurrency === 'EUR' && currencyInfo) {
-    const { date, rate, table } = currencyInfo;
+  if (selectedCurrency !== 'EUR') return null;
 
-    return (
-      <div className='text-xs font-normal text-muted-foreground'>
-        {isLoading && <CircleIcon className='animate-spin' />}
-        {currencyInfo && (
-          <span>
-            Tabela nr {table} z dnia {date}, 1 EUR = {rate} PLN
-          </span>
-        )}
-      </div>
-    );
-  }
+  const content = isLoading ? (
+    <>
+      <Loader2 className='h-3 w-3 animate-spin' />
+      <span>Pobieranie kursu waluty...</span>
+    </>
+  ) : currencyInfo ? (
+    <span>
+      Tabela nr {currencyInfo.table} z dnia {currencyInfo.date}, 1 EUR ={' '}
+      {currencyInfo.rate} PLN
+    </span>
+  ) : null;
+
+  if (!content) return null;
+
+  return (
+    <div className='flex items-center gap-2 text-xs font-normal text-muted-foreground'>
+      {content}
+    </div>
+  );
 }

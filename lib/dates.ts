@@ -10,9 +10,10 @@ export const formatDate = (
   return format(date, dateFormat, { locale: pl });
 };
 
-export const parseDate = (date: string) =>
-  parse(date, 'yyyy-MM-dd', new Date());
+export const parseDate = (date: string, dateFormat: string = 'yyyy-MM-dd') =>
+  parse(date, dateFormat, new Date());
 
 export const getToday = () => formatDate(Date.now());
 export const getTomorrow = () => formatDate(addDays(getToday(), 1));
-export const getYesterday = (date: Date | string) => subDays(date, 1);
+export const getYesterday = (date: Date | string) =>
+  formatDate(subDays(date, 1));
