@@ -1,6 +1,8 @@
+import { validateServer } from '@/lib/actions';
 import { getToday, getTomorrow } from '@/lib/dates';
-import { City, orderSchema } from '@/types/types';
-import { formOptions, revalidateLogic } from '@tanstack/react-form-nextjs';
+import { CityDto as City } from '@/lib/dto/city.dto';
+import { createOrderFormSchema } from '@/lib/dto/order.dto';
+import { formOptions } from '@tanstack/react-form-nextjs';
 import { isAfter, isBefore } from 'date-fns';
 
 export const orderFormOptions = formOptions({
@@ -23,10 +25,11 @@ export const orderFormOptions = formOptions({
     },
   },
   validators: {
-    onChange: orderSchema,
-    onSubmit: ({ value }) => {
+    onChange: createOrderFormSchema,
+    onSubmitAsync: async ({ value }) => {
       const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
       const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
+      const [error] = await validateServer(value);
 
       if (isLoadingDateAfter || isUnloadingDateBefore) {
         return {
@@ -47,6 +50,21 @@ export const orderFormOptions = formOptions({
                   },
                 }
               : {}),
+          },
+        };
+      }
+
+      if (error && error.details) {
+        const errors = Object.fromEntries(
+          Object.entries(error.details).map(([field, errors]) => [
+            field,
+            { message: errors?.[0] ?? '' },
+          ]),
+        );
+
+        return {
+          fields: {
+            ...errors,
           },
         };
       }

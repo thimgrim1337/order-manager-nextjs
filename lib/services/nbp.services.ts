@@ -1,5 +1,3 @@
-'use server';
-
 import { Currencies } from '@/types/types';
 import { apiCall } from '../helpers';
 
@@ -12,19 +10,19 @@ export type NBPApiResponse = {
       no: string;
       effectiveDate: string;
       mid: number;
-    }
+    },
   ];
 };
 
 export async function getCurrencyRate(
   date: string,
   table: 'A' | 'B' | 'C' = 'A',
-  code: Currencies = 'EUR'
+  code: Currencies = 'EUR',
 ) {
   if (code === 'PLN' || !date) return null;
 
   const result = await apiCall<NBPApiResponse>(
-    `https://api.nbp.pl/api/exchangerates/rates/${table}/${code}/${date}/?format=json`
+    `https://api.nbp.pl/api/exchangerates/rates/${table}/${code}/${date}/?format=json`,
   );
 
   if (result.type === 'error') {

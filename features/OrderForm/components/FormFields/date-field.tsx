@@ -1,6 +1,5 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useFieldContext } from '../../context/form-context';
-import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Calendar } from '@/components/ui/calendar';
 import { parseDate, formatDate } from '@/lib/dates';
 import {
@@ -10,27 +9,17 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { ChevronDownIcon } from 'lucide-react';
+import FormBase, { FormControlProps } from './form-base';
 
-export default function DateField({
-  label,
-  Icon,
-}: {
-  label: string;
-  Icon?: ReactNode;
-}) {
+export default function DateField(props: FormControlProps) {
   const [open, setOpen] = useState(false);
   const field = useFieldContext<string>();
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   const selectedDate = field.state.value;
 
   return (
-    <Field aria-invalid={isInvalid}>
-      <FieldLabel htmlFor={field.name}>
-        {Icon}
-        {label}
-      </FieldLabel>
-
+    <FormBase {...props}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -57,8 +46,6 @@ export default function DateField({
           />
         </PopoverContent>
       </Popover>
-
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
+    </FormBase>
   );
 }

@@ -1,12 +1,12 @@
 'use client';
 
-import { Order } from '@/types/types';
 import useTable from '../hooks/useTable';
 import { columns } from '../columns';
 import OrderTableFilter from './orders-table-filter';
 import { OrdersTableBody } from './orders-table-body';
 import { OrdersTablePagination } from './orders-table-pagination';
 import { use } from 'react';
+import { OrderDto as Order } from '@/lib/dto/order.dto';
 
 interface OrdersTableProps {
   orders: Promise<Order[]>;

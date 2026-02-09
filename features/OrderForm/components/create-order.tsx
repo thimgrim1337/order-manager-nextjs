@@ -1,5 +1,8 @@
 'use client';
 
+import { use, useState } from 'react';
+import { City, Country, Customer, Driver, Truck } from '@/types/types';
+import CreateOrderForm from './create-order-form';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -10,9 +13,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
-import CreateOrderForm from './create-order-form';
-import { City, Country, Customer, Driver, Truck } from '@/types/types';
-import { use, useState } from 'react';
 
 export default function CreateOrder({
   customers,

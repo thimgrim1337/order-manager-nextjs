@@ -1,16 +1,16 @@
+import { Suspense } from 'react';
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/lib/consts';
 import { SearchParams } from '@/types/types';
 import { sortToState } from '@/lib/utils';
-import { getAllOrders, getOrderCount } from '@/lib/dal/ordersDAL';
 import OrdersTable from '@/features/OrdersTable/components/orders-table';
 import PageHeader from '@/components/ui/page-header';
 import CreateOrder from '@/features/OrderForm/components/create-order';
-import { Suspense } from 'react';
-import { getAllCustomers } from '@/lib/dal/customersDAL';
-import { getAllCities } from '@/lib/dal/cityDAL';
-import getAllDrivers from '@/lib/dal/driverDAL';
-import { getAllTrucks } from '@/lib/dal/truckDAL';
-import getAllCountries from '@/lib/dal/countriesDAL';
+import { getAllCustomers } from '@/lib/dal/customer.dal.';
+import { getAllDrivers } from '@/lib/dal/driver.dal';
+import { getAllTrucks } from '@/lib/dal/truck.dal';
+import { getAllCountries } from '@/lib/dal/country.dal';
+import { getAllOrders, getOrderCount } from '@/lib/dal/order.dal';
+import { getAllCities } from '@/lib/dal/city.dal';
 
 export default async function OrdersPage({
   searchParams,

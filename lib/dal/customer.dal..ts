@@ -1,5 +1,3 @@
-'use server';
-
 import db from '@/db/db';
 import { customer } from '@/db/schemas';
 import { and, ilike, or } from 'drizzle-orm';
@@ -21,7 +19,7 @@ export async function getAllCustomers(filters?: string) {
 
   if (whereConditions.length > 0) query.where(and(...whereConditions));
 
-  const data = await query.orderBy(customer.name).limit(10);
+  const dbCustomers = await query.orderBy(customer.name).limit(10);
 
-  return data;
+  return dbCustomers;
 }

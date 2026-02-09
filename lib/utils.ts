@@ -67,7 +67,7 @@ export const stateToSort = (sorting: SortingState | undefined) => {
 
 export function getValidCurrencyDate(
   date: string,
-  holidays: { endDate: string }[]
+  holidays: { endDate: string }[],
 ) {
   try {
     const yesterday = getYesterday(date);

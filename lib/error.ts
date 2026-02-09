@@ -1,7 +1,11 @@
-export class AppError extends Error {
-  statusCode: number;
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-  }
+type Result<S, E extends { reason: string }> = [E, null] | [null, S];
+
+export function ok<S>(data: S): Result<S, never> {
+  return [null, data];
+}
+
+export function error<const R extends string, E extends { reason: R }>(
+  error: E,
+): Result<never, E> {
+  return [error, null];
 }

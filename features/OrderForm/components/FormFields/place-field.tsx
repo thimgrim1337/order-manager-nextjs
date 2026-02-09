@@ -1,8 +1,7 @@
 import { useFieldContext } from '../../context/form-context';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import {
   Popover,
   PopoverContent,
@@ -18,18 +17,18 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { City, Country } from '@/types/types';
+import FormBase, { FormControlProps } from './form-base';
 
-export default function PlaceField({
-  label,
-  cities,
-  countries,
-  Icon,
-}: {
-  label: string;
+type PlaceFieldProps = {
   cities: City[];
   countries: Country[];
-  Icon?: ReactNode;
-}) {
+};
+
+export default function PlaceField({
+  cities,
+  countries,
+  ...props
+}: FormControlProps & PlaceFieldProps) {
   const [open, setOpen] = useState(false);
 
   const field = useFieldContext<City[]>();
@@ -39,7 +38,7 @@ export default function PlaceField({
 
   function handleSelect(city: City) {
     const index = selectedCities.findIndex(
-      (selectedCity) => selectedCity.name === city.name
+      (selectedCity) => selectedCity.name === city.name,
     );
 
     if (index > -1) {
@@ -50,11 +49,7 @@ export default function PlaceField({
   }
 
   return (
-    <Field>
-      <FieldLabel htmlFor={field.name}>
-        {Icon}
-        {label}
-      </FieldLabel>
+    <FormBase {...props}>
       <ul className='bg-neutral-100 p-2 rounded'>
         {selectedCities.map((city, i) => {
           return (
@@ -123,10 +118,10 @@ export default function PlaceField({
                       className={cn(
                         'ml-auto',
                         selectedCities.find(
-                          (selectedCity) => selectedCity.name === city.name
+                          (selectedCity) => selectedCity.name === city.name,
                         )
                           ? 'opacity-100'
-                          : 'opacity-0'
+                          : 'opacity-0',
                       )}
                     />
                   </CommandItem>
@@ -136,7 +131,6 @@ export default function PlaceField({
           </Command>
         </PopoverContent>
       </Popover>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
+    </FormBase>
   );
 }

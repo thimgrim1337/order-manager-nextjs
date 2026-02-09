@@ -1,7 +1,7 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import DebouncedInput from '../../OrderForm/components/debounced-input';
+import DebouncedInput from '../../../components/ui/debounced-input';
 import { Button } from '../../../components/ui/button';
 import { useFilters } from '../hooks/useFilters';
 

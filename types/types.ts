@@ -1,63 +1,19 @@
-import {
-  city,
-  country,
-  customer,
-  driver,
-  order,
-  ordersWithDetailsView,
-  truck,
-} from '@/db/schemas';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { CityDto } from '@/lib/dto/city.dto';
+import { CountryDto } from '@/lib/dto/country.dto';
+import { CustomerDto } from '@/lib/dto/customer.dto';
+import { DriverDto } from '@/lib/dto/driver.dto';
+import { OrderDto } from '@/lib/dto/order.dto';
+import { TruckDto } from '@/lib/dto/truck.dto';
 import z from 'zod';
 
-export const Order = createSelectSchema(ordersWithDetailsView);
-export type Order = z.infer<typeof Order>;
-
-const OrderCreate = createInsertSchema(order);
-export type OrderCreate = z.infer<typeof OrderCreate>;
-
-const City = createSelectSchema(city, { id: z.number().optional() });
-export type City = z.infer<typeof City>;
-
-const Customer = createSelectSchema(customer);
-export type Customer = z.infer<typeof Customer>;
-
-const Driver = createSelectSchema(driver);
-export type Driver = z.infer<typeof Driver>;
-
-const Truck = createSelectSchema(truck);
-export type Truck = z.infer<typeof Truck>;
-
-const Country = createSelectSchema(country);
-export type Country = z.infer<typeof Country>;
+export type Order = OrderDto;
+export type City = CityDto;
+export type Country = CountryDto;
+export type Customer = CustomerDto;
+export type Driver = DriverDto;
+export type Truck = TruckDto;
 
 export type Currencies = 'PLN' | 'EUR';
-
-export const orderSchema = z.object({
-  orderNr: z.string().min(1, { error: 'Numer zlecenia nie może być pusty.' }),
-  startDate: z.string(),
-  endDate: z.string(),
-  statusId: z.number().min(1).max(3),
-  truckId: z.number().min(1, { error: 'Wybierz pojazd.' }),
-  driverId: z.number().min(1, { error: 'Wyberz kierowcę.' }),
-  customerId: z.number().min(1, { error: 'Wybierz zleceniodawcę.' }),
-  currency: z.string(),
-  priceCurrency: z.string().refine((val) => Number(val) > 0, {
-    error: 'Cena musi być wyższa od zera.',
-  }),
-  loadingPlaces: z
-    .array(City)
-    .min(1, { error: 'Wybierz co najmniej 1 miejsce załadunku.' }),
-  unloadingPlaces: z
-    .array(City)
-    .min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
-  currencyInfo: z.object({
-    rate: z.string(),
-    table: z.string(),
-    date: z.string(),
-  }),
-});
-export type FormOrderCreate = z.infer<typeof orderSchema>;
 
 export type CurrencyInfo = {
   date: string;
@@ -81,7 +37,7 @@ export const SearchParams = z.object({
 });
 export type SearchParams = z.infer<typeof SearchParams>;
 
-export type ComboboxData = {
+export type ComboboxFieldData = {
   id: number;
   value: string | number;
 };
@@ -89,3 +45,7 @@ export type ComboboxData = {
 export type ApiResult<TData = unknown> =
   | { type: 'success'; data: TData; status: number }
   | { type: 'error'; error: string; status: number };
+
+export type FormActionResult<T extends Record<string, any>> =
+  | { success: true; data: T }
+  | { success: false; errors: Partial<Record<keyof T, string[]>> };

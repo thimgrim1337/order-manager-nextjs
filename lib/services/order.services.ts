@@ -1,0 +1,63 @@
+import db from '@/db/db';
+import z from 'zod';
+import { createOrderFormSchema, selectOrderSchema } from '../dto/order.dto';
+import { error, ok } from '../error';
+import {
+  addOrderPlaces,
+  checkIfOrderExist,
+  createOrder,
+} from '../dal/order.dal';
+
+export async function createOrderService(rawData: unknown) {
+  const validatedData = createOrderFormSchema.safeParse(rawData);
+
+  if (!validatedData.success)
+    return error({
+      reason: 'InvalidData',
+      details: z.prettifyError(validatedData.error),
+    });
+
+  const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } =
+    validatedData.data;
+
+  const isOrderExist = await checkIfOrderExist(order.orderNr, order.customerId);
+
+  if (isOrderExist)
+    return error({
+      reason: 'OrderExist',
+    });
+
+  let pricePLN: string;
+  let currencyRate: string = '1';
+
+  if (order.currency === 'EUR' && currencyInfo.rate) {
+    currencyRate = currencyInfo.rate;
+    pricePLN = String(+order.priceCurrency * +currencyRate);
+  } else {
+    pricePLN = order.priceCurrency;
+  }
+
+  const newOrder = {
+    ...order,
+    pricePLN,
+    currencyRate,
+  };
+
+  try {
+    const dbOrder = await db.transaction(async (trx) => {
+      const order = await createOrder(newOrder, trx);
+
+      await addOrderPlaces(order.id, loadingPlaces, 'loadingPlace', trx);
+      await addOrderPlaces(order.id, unloadingPlaces, 'unloadingPlace', trx);
+
+      return order;
+    });
+
+    return ok(selectOrderSchema.parse(dbOrder));
+  } catch (err) {
+    return error({
+      reason: `UnexpectedError`,
+      details: err,
+    });
+  }
+}

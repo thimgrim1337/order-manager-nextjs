@@ -1,5 +1,3 @@
-'use server';
-
 import db, { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 import { eq } from 'drizzle-orm';
@@ -17,14 +15,13 @@ export async function getTruck(truckId: number) {
 export async function updateTruckAssignedDriver(
   truckId: number,
   driverId: number,
-  trx: dbTransaction
+  trx: dbTransaction,
 ) {
-  const result = await getTruck(truckId);
-
-  if (result?.driverId === driverId) return;
-
-  await trx
+  const dbTruck = await trx
     .update(truck)
     .set({ driverId: driverId })
-    .where(eq(truck.id, truckId));
+    .where(eq(truck.id, truckId))
+    .returning();
+
+  return dbTruck;
 }

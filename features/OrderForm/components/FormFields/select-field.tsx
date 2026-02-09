@@ -1,6 +1,4 @@
-import { ReactNode } from 'react';
 import { useFieldContext } from '../../context/form-context';
-import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -10,51 +8,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import FormBase, { FormControlProps } from './form-base';
+import { ReactNode } from 'react';
+
+export type SelectFieldProps = {
+  data: string[];
+  placeholder: string;
+  children?: ReactNode;
+};
 
 export default function SelectField({
-  label,
+  data,
   placeholder,
-  Icon,
   children,
-}: {
-  label: string;
-  placeholder: string;
-  Icon?: ReactNode;
-  children?: ReactNode;
-}) {
-  const field = useFieldContext<string | 'EUR' | 'PLN'>();
+  ...props
+}: FormControlProps & SelectFieldProps) {
+  const field = useFieldContext<string>();
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
-  const currencies = ['PLN', 'EUR'];
-
   return (
-    <Field aria-invalid={isInvalid}>
-      <FieldLabel htmlFor={field.name}>
-        {Icon}
-        {label}
-      </FieldLabel>
+    <FormBase {...props}>
       <Select
         onValueChange={field.handleChange}
         name={field.name}
         value={field.state.value}
       >
-        <SelectTrigger className='w-[180px]' aria-invalid={isInvalid}>
+        <SelectTrigger className='w-45' aria-invalid={isInvalid}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>{placeholder}</SelectLabel>
-            {currencies.map((currency) => (
-              <SelectItem value={currency} key={currency}>
-                {currency}
+            {data.map((d) => (
+              <SelectItem value={d} key={d}>
+                {d}
               </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
       </Select>
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
       {children}
-    </Field>
+    </FormBase>
   );
 }

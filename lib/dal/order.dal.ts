@@ -1,5 +1,3 @@
-'use server';
-
 import db, { dbTransaction } from '@/db/db';
 import {
   loadingPlace,
@@ -7,15 +5,31 @@ import {
   ordersWithDetailsView,
   unloadingPlace,
 } from '@/db/schemas';
-import { and, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
-import { OrderCreate, SortOptions } from '@/types/types';
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  InferSelectModel,
+  InferSelectViewModel,
+  or,
+  sql,
+} from 'drizzle-orm';
+import { SortOptions } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
+import { CityDto } from '../dto/city.dto';
+import { CreateOrderDto } from '../dto/order.dto';
+
+export type DbOrderView = InferSelectViewModel<typeof ordersWithDetailsView>;
+export type DbOrder = InferSelectModel<typeof order>;
 
 export async function getAllOrders(
   pageIndex: number,
   pageSize: number,
   sortOptions?: SortOptions,
-  filters?: string
+  filters?: string,
 ) {
   const sortField = sortOptions?.id;
   const sortOrder = sortOptions?.desc === true ? desc : asc;
@@ -66,14 +80,14 @@ export async function getAllOrders(
         } AND ${numericValue + 1}`,
         sql`${ordersWithDetailsView.priceCurrency}::numeric BETWEEN ${
           numericValue - 1
-        } AND ${numericValue + 1}`
+        } AND ${numericValue + 1}`,
       );
     }
 
     if (isDate) {
       searchConditions.push(
         eq(sql`DATE(${ordersWithDetailsView.startDate})`, normalizedDate),
-        eq(sql`DATE(${ordersWithDetailsView.endDate})`, normalizedDate)
+        eq(sql`DATE(${ordersWithDetailsView.endDate})`, normalizedDate),
       );
     }
 
@@ -84,41 +98,47 @@ export async function getAllOrders(
     query.where(and(...whereConditions));
   }
 
-  return query
+  const dbOrders = await query
     .orderBy(sortOrder(getSortColumn(sortField)))
     .limit(pageSize)
     .offset(pageIndex * pageSize);
+
+  return dbOrders;
 }
 
 export async function getOrderCount() {
   return db.select({ count: count() }).from(order);
 }
 
-export async function getOrderByNumberAndCustomer(
+export async function checkIfOrderExist(
   orderNumber: string,
-  customerId: number
+  customerId: number,
 ) {
-  return db.query.order.findFirst({
+  const dbOrder = await db.query.order.findFirst({
     where: (order) =>
       and(eq(order.orderNr, orderNumber), eq(order.customerId, customerId)),
   });
+
+  return dbOrder ? true : false;
 }
 
-export async function createOrder(newOrder: OrderCreate, trx: dbTransaction) {
-  const query = await trx.insert(order).values(newOrder).returning();
-  return query[0];
+export async function createOrder(dto: CreateOrderDto, trx: dbTransaction) {
+  const [newOrder] = await trx.insert(order).values(dto).returning();
+  return newOrder;
 }
 
 export async function addOrderPlaces(
   orderId: number,
-  placesIds: number[],
+  cities: CityDto[],
   placeType: 'loadingPlace' | 'unloadingPlace',
-  trx: dbTransaction
+  trx: dbTransaction,
 ) {
-  const places = placesIds.map((placeId) => ({
+  const places = cities.map((city) => ({
     orderId,
-    placeId,
+    placeId: city.id,
   }));
   const table = placeType === 'loadingPlace' ? loadingPlace : unloadingPlace;
-  return trx.insert(table).values(places);
+  const dbPlaces = await trx.insert(table).values(places).returning();
+
+  return dbPlaces;
 }

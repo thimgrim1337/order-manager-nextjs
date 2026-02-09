@@ -1,6 +1,6 @@
-import { getCurrencyRate } from '@/lib/dal/nbpApiDAL';
-import { getHolidays } from '@/lib/dal/openHolidaysApiDAL';
 import { getToday } from '@/lib/dates';
+import { getCurrencyRate } from '@/lib/services/nbp.services';
+import { getHolidays } from '@/lib/services/openHolidays.services';
 import { getValidCurrencyDate } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
@@ -13,8 +13,8 @@ export default function useCurrencyInfo(date: string) {
   const validDate = holidays.length
     ? getValidCurrencyDate(date, holidays)
     : isHolidaysLoading
-    ? getToday()
-    : date;
+      ? getToday()
+      : date;
 
   const {
     data: rate,
