@@ -1,6 +1,7 @@
 import db from '@/db/db';
 import { customer } from '@/db/schemas';
-import { and, ilike, or } from 'drizzle-orm';
+import { and, eq, ilike, or } from 'drizzle-orm';
+import { CreateCustomerDto } from '../dto/customer.dto';
 
 export async function getAllCustomers(filters?: string) {
   const searchTerm = `%${filters?.trim().toLowerCase()}%`;
@@ -22,4 +23,18 @@ export async function getAllCustomers(filters?: string) {
   const dbCustomers = await query.orderBy(customer.name).limit(10);
 
   return dbCustomers;
+}
+
+export async function checkIfCustomerExist(dto: CreateCustomerDto) {
+  const dbCustomer = await db.query.customer.findFirst({
+    where: (customer) =>
+      and(eq(customer.name, dto.name), eq(customer.tax, dto.tax)),
+  });
+
+  return dbCustomer ? true : false;
+}
+
+export async function createCustomer(dto: CreateCustomerDto) {
+  const [newCustomer] = await db.insert(customer).values(dto).returning();
+  return newCustomer;
 }

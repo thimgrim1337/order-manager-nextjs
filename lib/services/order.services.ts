@@ -9,16 +9,16 @@ import {
 } from '../dal/order.dal';
 
 export async function createOrderService(rawData: unknown) {
-  const validatedData = createOrderFormSchema.safeParse(rawData);
+  const validationResult = createOrderFormSchema.safeParse(rawData);
 
-  if (!validatedData.success)
+  if (!validationResult.success)
     return error({
       reason: 'InvalidData',
-      details: z.prettifyError(validatedData.error),
+      details: z.prettifyError(validationResult.error),
     });
 
   const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } =
-    validatedData.data;
+    validationResult.data;
 
   const isOrderExist = await checkIfOrderExist(order.orderNr, order.customerId);
 

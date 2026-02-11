@@ -27,6 +27,7 @@ import CurrencyInfo from './currency-info';
 import { orderFormOptions } from '../lib/order-form-options';
 import { createOrder } from '@/lib/actions';
 import { CreateOrderFormDto } from '@/lib/dto/order.dto';
+import CreateCustomer from './create-customer';
 
 export default function CreateOrderForm({
   customers,
@@ -41,7 +42,7 @@ export default function CreateOrderForm({
   drivers: Driver[];
   trucks: Truck[];
   countries: Country[];
-  onDialogOpenChange: Dispatch<SetStateAction<boolean>>;
+  onDialogOpenChange: (open: boolean) => void;
 }) {
   const { setFilters, resetFilters } = useFilters();
   const { refresh } = useRouter();
@@ -90,16 +91,16 @@ export default function CreateOrderForm({
   const fieldGroupStyle = 'grid grid-cols-2 pt-5';
 
   return (
-    <>
-      <form
-        id='create-order-form'
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <form.AppForm>
-          <FieldGroup className='grid grid-cols-2'>
+    <form
+      id='create-order-form'
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+    >
+      <form.AppForm>
+        <FieldGroup className='grid grid-cols-2'>
+          <div className='flex gap-2 items-end'>
             <form.AppField
               name='customerId'
               children={(field) => (
@@ -115,151 +116,153 @@ export default function CreateOrderForm({
                 />
               )}
             />
-            <form.AppField
-              name='orderNr'
-              children={(field) => (
-                <field.InputField label='Numer zlecenia' icon={<Hash />} />
-              )}
-            />
-          </FieldGroup>
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField
-              name='startDate'
-              children={(field) => (
-                <field.DateField
-                  label='Data załadunku'
-                  icon={<CalendarArrowDown />}
-                />
-              )}
-            />
-            <form.AppField
-              name='endDate'
-              children={(field) => (
-                <field.DateField
-                  label='Data rozładunku'
-                  icon={<CalendarArrowUp />}
-                />
-              )}
-            />
-          </FieldGroup>
+            <CreateCustomer />
+          </div>
 
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField
-              name='loadingPlaces'
-              mode='array'
-              children={(field) => {
-                return (
-                  <field.PlaceField
-                    label='Miejsca załadunku'
-                    cities={cities}
-                    countries={countries}
-                    icon={<MapPinCheck />}
-                  />
-                );
-              }}
-            />
-            <form.AppField
-              name='unloadingPlaces'
-              mode='array'
-              children={(field) => {
-                return (
-                  <field.PlaceField
-                    label='Miejsca rozładunku'
-                    cities={cities}
-                    countries={countries}
-                    icon={<MapPinX />}
-                  />
-                );
-              }}
-            />
-          </FieldGroup>
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField
-              name='priceCurrency'
-              children={(field) => (
-                <field.InputField
-                  label='Cena w walucie'
-                  icon={<Banknote />}
-                  type='number'
-                  min={0}
-                />
-              )}
-            />
-            <form.AppField
-              name='currency'
-              validators={{
-                onChangeAsync: async ({ value }) => {
-                  if (value !== 'EUR') return null;
+          <form.AppField
+            name='orderNr'
+            children={(field) => (
+              <field.InputField label='Numer zlecenia' icon={<Hash />} />
+            )}
+          />
+        </FieldGroup>
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField
+            name='startDate'
+            children={(field) => (
+              <field.DateField
+                label='Data załadunku'
+                icon={<CalendarArrowDown />}
+              />
+            )}
+          />
+          <form.AppField
+            name='endDate'
+            children={(field) => (
+              <field.DateField
+                label='Data rozładunku'
+                icon={<CalendarArrowUp />}
+              />
+            )}
+          />
+        </FieldGroup>
 
-                  if (isRateError)
-                    return {
-                      message:
-                        rateError?.message ||
-                        'Wystąpił błąd podczas pobierania kursu.',
-                    };
-                  return null;
-                },
-              }}
-              children={(field) => (
-                <field.SelectField
-                  label='Waluta'
-                  placeholder='Wybierz walutę'
-                  data={['EUR', 'PLN'] as const}
-                  icon={<Euro />}
-                >
-                  <CurrencyInfo
-                    isLoading={isRateLoading}
-                    selectedCurrency={currency}
-                    currencyInfo={currencyInfo}
-                  />
-                </field.SelectField>
-              )}
-            />
-          </FieldGroup>
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField
-              name='truckId'
-              listeners={{
-                onChange: ({ value }) => {
-                  const assignedDriver = trucks.filter(
-                    (truck) => truck.id === value,
-                  )[0]?.driverId;
-
-                  if (assignedDriver)
-                    form.setFieldValue('driverId', assignedDriver);
-                },
-              }}
-              children={(field) => (
-                <field.ComboboxField
-                  data={trucks.map((truck) => ({
-                    id: truck.id,
-                    value: truck.plate,
-                  }))}
-                  label='Pojazd'
-                  placeholder='Wybierz pojazd'
-                  icon={<TruckIcon />}
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField
+            name='loadingPlaces'
+            mode='array'
+            children={(field) => {
+              return (
+                <field.PlaceField
+                  label='Miejsca załadunku'
+                  cities={cities}
+                  countries={countries}
+                  icon={<MapPinCheck />}
                 />
-              )}
-            />
-            <form.AppField
-              name='driverId'
-              children={(field) => (
-                <field.ComboboxField
-                  data={drivers.map((driver) => ({
-                    id: driver.id,
-                    value: `${driver.firstName} ${driver.lastName}`,
-                  }))}
-                  label='Kierowca'
-                  placeholder='Wybierz kierowcę'
-                  icon={<User />}
+              );
+            }}
+          />
+          <form.AppField
+            name='unloadingPlaces'
+            mode='array'
+            children={(field) => {
+              return (
+                <field.PlaceField
+                  label='Miejsca rozładunku'
+                  cities={cities}
+                  countries={countries}
+                  icon={<MapPinX />}
                 />
-              )}
-            />
-          </FieldGroup>
+              );
+            }}
+          />
+        </FieldGroup>
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField
+            name='priceCurrency'
+            children={(field) => (
+              <field.InputField
+                label='Cena w walucie'
+                icon={<Banknote />}
+                type='number'
+                min={0}
+              />
+            )}
+          />
+          <form.AppField
+            name='currency'
+            validators={{
+              onChangeAsync: async ({ value }) => {
+                if (value !== 'EUR') return null;
 
-          <form.FormControls id={form.formId} />
-        </form.AppForm>
-      </form>
-    </>
+                if (isRateError)
+                  return {
+                    message:
+                      rateError?.message ||
+                      'Wystąpił błąd podczas pobierania kursu.',
+                  };
+                return null;
+              },
+            }}
+            children={(field) => (
+              <field.SelectField
+                label='Waluta'
+                placeholder='Wybierz walutę'
+                data={['EUR', 'PLN'] as const}
+                icon={<Euro />}
+              >
+                <CurrencyInfo
+                  isLoading={isRateLoading}
+                  selectedCurrency={currency}
+                  currencyInfo={currencyInfo}
+                />
+              </field.SelectField>
+            )}
+          />
+        </FieldGroup>
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField
+            name='truckId'
+            listeners={{
+              onChange: ({ value }) => {
+                const assignedDriver = trucks.filter(
+                  (truck) => truck.id === value,
+                )[0]?.driverId;
+
+                if (assignedDriver)
+                  form.setFieldValue('driverId', assignedDriver);
+              },
+            }}
+            children={(field) => (
+              <field.ComboboxField
+                data={trucks.map((truck) => ({
+                  id: truck.id,
+                  value: truck.plate,
+                }))}
+                label='Pojazd'
+                placeholder='Wybierz pojazd'
+                icon={<TruckIcon />}
+              />
+            )}
+          />
+          <form.AppField
+            name='driverId'
+            children={(field) => (
+              <field.ComboboxField
+                data={drivers.map((driver) => ({
+                  id: driver.id,
+                  value: `${driver.firstName} ${driver.lastName}`,
+                }))}
+                label='Kierowca'
+                placeholder='Wybierz kierowcę'
+                icon={<User />}
+              />
+            )}
+          />
+        </FieldGroup>
+
+        <form.FormControls id={form.formId} />
+      </form.AppForm>
+    </form>
   );
 }
