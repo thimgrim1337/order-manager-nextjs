@@ -1,10 +1,11 @@
+import z from 'zod';
 import { CityDto } from '@/lib/dto/city.dto';
 import { CountryDto } from '@/lib/dto/country.dto';
 import { CustomerDto } from '@/lib/dto/customer.dto';
 import { DriverDto } from '@/lib/dto/driver.dto';
 import { OrderDto } from '@/lib/dto/order.dto';
 import { TruckDto } from '@/lib/dto/truck.dto';
-import z from 'zod';
+import { ReactNode } from 'react';
 
 export type Order = OrderDto;
 export type City = CityDto;
@@ -37,9 +38,10 @@ export const SearchParams = z.object({
 });
 export type SearchParams = z.infer<typeof SearchParams>;
 
-export type ComboboxFieldData = {
-  id: number;
-  value: string | number;
+export type FieldData = {
+  id?: number;
+  value: string;
+  icon?: ReactNode;
 };
 
 export type ApiResult<TData = unknown> =

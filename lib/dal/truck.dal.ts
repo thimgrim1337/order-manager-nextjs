@@ -3,13 +3,15 @@ import { truck } from '@/db/schemas';
 import { eq } from 'drizzle-orm';
 
 export async function getAllTrucks() {
-  return await db.query.truck.findMany();
+  const dbTrucks = await db.query.truck.findMany();
+  return dbTrucks;
 }
 
 export async function getTruck(truckId: number) {
-  return await db.query.truck.findFirst({
+  const dbTruck = await db.query.truck.findFirst({
     where: (truck) => eq(truck.id, truckId),
   });
+  return dbTruck;
 }
 
 export async function updateTruckAssignedDriver(
@@ -19,7 +21,7 @@ export async function updateTruckAssignedDriver(
 ) {
   const dbTruck = await trx
     .update(truck)
-    .set({ driverId: driverId })
+    .set({ driverId })
     .where(eq(truck.id, truckId))
     .returning();
 

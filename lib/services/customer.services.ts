@@ -1,23 +1,20 @@
-import z from 'zod';
 import {
   createCustomerSchema,
   selectCustomerSchema,
 } from '../dto/customer.dto';
 import { error, ok } from '../error';
 import { checkIfCustomerExist, createCustomer } from '../dal/customer.dal.';
+import z from 'zod';
 
 export async function createCustomerService(rawData: unknown) {
   const validationResult = createCustomerSchema.safeParse(rawData);
-
-  if (!validationResult.success) {
+  if (!validationResult.success)
     return error({
       reason: 'InvalidData',
       details: z.prettifyError(validationResult.error),
     });
-  }
-  const dto = validationResult.data;
 
-  const isCustomerExist = await checkIfCustomerExist(dto);
+  const isCustomerExist = await checkIfCustomerExist(validationResult.data);
 
   if (isCustomerExist)
     return error({
@@ -25,7 +22,7 @@ export async function createCustomerService(rawData: unknown) {
     });
 
   try {
-    const dbCustomer = await createCustomer(dto);
+    const dbCustomer = await createCustomer(validationResult.data);
 
     return ok(selectCustomerSchema.parse(dbCustomer));
   } catch (err) {

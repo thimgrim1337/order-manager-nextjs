@@ -7,18 +7,20 @@ import {
   checkIfOrderExist,
   createOrder,
 } from '../dal/order.dal';
+import { updateTruckAssignedDriver } from '../dal/truck.dal';
 
 export async function createOrderService(rawData: unknown) {
   const validationResult = createOrderFormSchema.safeParse(rawData);
-
   if (!validationResult.success)
     return error({
       reason: 'InvalidData',
       details: z.prettifyError(validationResult.error),
     });
 
+  const validatedData = validationResult.data;
+
   const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } =
-    validationResult.data;
+    validatedData;
 
   const isOrderExist = await checkIfOrderExist(order.orderNr, order.customerId);
 
@@ -49,6 +51,7 @@ export async function createOrderService(rawData: unknown) {
 
       await addOrderPlaces(order.id, loadingPlaces, 'loadingPlace', trx);
       await addOrderPlaces(order.id, unloadingPlaces, 'unloadingPlace', trx);
+      await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
 
       return order;
     });

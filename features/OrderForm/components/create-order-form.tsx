@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@tanstack/react-form';
 import { City, Country, Customer, Driver, Truck } from '@/types/types';
@@ -9,25 +9,14 @@ import { useFilters } from '../../OrdersTable/hooks/useFilters';
 
 import { toast } from 'sonner';
 import { FieldGroup } from '@/components/ui/field';
-import {
-  Banknote,
-  Briefcase,
-  CalendarArrowDown,
-  CalendarArrowUp,
-  Euro,
-  Hash,
-  MapPinCheck,
-  MapPinX,
-  TruckIcon,
-  User,
-} from 'lucide-react';
-
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
 import CurrencyInfo from './currency-info';
 import { orderFormOptions } from '../lib/order-form-options';
 import { createOrder } from '@/lib/actions';
 import { CreateOrderFormDto } from '@/lib/dto/order.dto';
 import CreateCustomer from './create-customer';
+import CreateCity from './create-city';
+import { CURRENCIES } from '@/lib/consts';
 
 export default function CreateOrderForm({
   customers,
@@ -35,14 +24,14 @@ export default function CreateOrderForm({
   drivers,
   trucks,
   countries,
-  onDialogOpenChange,
+  onDialogClose,
 }: {
   customers: Customer[];
   cities: City[];
   drivers: Driver[];
   trucks: Truck[];
   countries: Country[];
-  onDialogOpenChange: (open: boolean) => void;
+  onDialogClose: () => void;
 }) {
   const { setFilters, resetFilters } = useFilters();
   const { refresh } = useRouter();
@@ -79,7 +68,7 @@ export default function CreateOrderForm({
       });
     }
 
-    onDialogOpenChange(false);
+    onDialogClose();
     resetFilters();
     refresh();
     return toast.success(`Pomyślnie utworzono nowe zlecenie`, {
@@ -112,7 +101,6 @@ export default function CreateOrderForm({
                   onSearch={(value) => setFilters({ customer: value })}
                   label='Zleceniodawca'
                   placeholder='Wybierz zleceniodawcę'
-                  icon={<Briefcase />}
                 />
               )}
             />
@@ -121,47 +109,38 @@ export default function CreateOrderForm({
 
           <form.AppField
             name='orderNr'
-            children={(field) => (
-              <field.InputField label='Numer zlecenia' icon={<Hash />} />
-            )}
+            children={(field) => <field.InputField label='Numer zlecenia' />}
           />
         </FieldGroup>
         <FieldGroup className={fieldGroupStyle}>
           <form.AppField
             name='startDate'
-            children={(field) => (
-              <field.DateField
-                label='Data załadunku'
-                icon={<CalendarArrowDown />}
-              />
-            )}
+            children={(field) => <field.DateField label='Data załadunku' />}
           />
+
           <form.AppField
             name='endDate'
-            children={(field) => (
-              <field.DateField
-                label='Data rozładunku'
-                icon={<CalendarArrowUp />}
-              />
-            )}
+            children={(field) => <field.DateField label='Data rozładunku' />}
           />
         </FieldGroup>
 
         <FieldGroup className={fieldGroupStyle}>
-          <form.AppField
-            name='loadingPlaces'
-            mode='array'
-            children={(field) => {
-              return (
-                <field.PlaceField
-                  label='Miejsca załadunku'
-                  cities={cities}
-                  countries={countries}
-                  icon={<MapPinCheck />}
-                />
-              );
-            }}
-          />
+          <div className='flex gap-2 items-end'>
+            <form.AppField
+              name='loadingPlaces'
+              mode='array'
+              children={(field) => {
+                return (
+                  <field.PlaceField
+                    label='Miejsca załadunku'
+                    cities={cities}
+                    countries={countries}
+                  />
+                );
+              }}
+            />
+            <CreateCity countries={countries} />
+          </div>
           <form.AppField
             name='unloadingPlaces'
             mode='array'
@@ -171,7 +150,6 @@ export default function CreateOrderForm({
                   label='Miejsca rozładunku'
                   cities={cities}
                   countries={countries}
-                  icon={<MapPinX />}
                 />
               );
             }}
@@ -181,12 +159,7 @@ export default function CreateOrderForm({
           <form.AppField
             name='priceCurrency'
             children={(field) => (
-              <field.InputField
-                label='Cena w walucie'
-                icon={<Banknote />}
-                type='number'
-                min={0}
-              />
+              <field.InputField label='Cena w walucie' type='number' min={0} />
             )}
           />
           <form.AppField
@@ -208,8 +181,9 @@ export default function CreateOrderForm({
               <field.SelectField
                 label='Waluta'
                 placeholder='Wybierz walutę'
-                data={['EUR', 'PLN'] as const}
-                icon={<Euro />}
+                data={CURRENCIES.map((currency) => ({
+                  value: currency,
+                }))}
               >
                 <CurrencyInfo
                   isLoading={isRateLoading}
@@ -241,7 +215,6 @@ export default function CreateOrderForm({
                 }))}
                 label='Pojazd'
                 placeholder='Wybierz pojazd'
-                icon={<TruckIcon />}
               />
             )}
           />
@@ -255,7 +228,6 @@ export default function CreateOrderForm({
                 }))}
                 label='Kierowca'
                 placeholder='Wybierz kierowcę'
-                icon={<User />}
               />
             )}
           />

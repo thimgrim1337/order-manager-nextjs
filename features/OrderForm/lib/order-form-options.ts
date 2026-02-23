@@ -1,4 +1,3 @@
-import { validateServer } from '@/lib/actions';
 import { getToday, getTomorrow } from '@/lib/dates';
 import { CityDto as City } from '@/lib/dto/city.dto';
 import { createOrderFormSchema } from '@/lib/dto/order.dto';
@@ -29,7 +28,7 @@ export const orderFormOptions = formOptions({
     onSubmitAsync: async ({ value }) => {
       const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
       const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
-      const [error] = await validateServer(value);
+      const { error } = createOrderFormSchema.safeParse(value);
 
       if (isLoadingDateAfter || isUnloadingDateBefore) {
         return {
@@ -54,9 +53,9 @@ export const orderFormOptions = formOptions({
         };
       }
 
-      if (error && error.details) {
+      if (error && error) {
         const errors = Object.fromEntries(
-          Object.entries(error.details).map(([field, errors]) => [
+          Object.entries(error).map(([field, errors]) => [
             field,
             { message: errors?.[0] ?? '' },
           ]),

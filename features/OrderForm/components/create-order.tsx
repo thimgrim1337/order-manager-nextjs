@@ -1,11 +1,11 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use } from 'react';
 import { City, Country, Customer, Driver, Truck } from '@/types/types';
 import CreateOrderForm from './create-order-form';
-import { Button } from '@/components/ui/button';
 import Dialog from '@/components/dialog';
-import { Plus } from 'lucide-react';
+import { FilePlus } from 'lucide-react';
+import useToggle from '../hooks/useToggle';
 
 export default function CreateOrder({
   customers,
@@ -20,7 +20,8 @@ export default function CreateOrder({
   trucks: Promise<Truck[]>;
   countries: Promise<Country[]>;
 }) {
-  const [open, setOpen] = useState(false);
+  const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] =
+    useToggle();
   const customersData = use(customers);
   const citiesData = use(cities);
   const driversData = use(drivers);
@@ -29,15 +30,15 @@ export default function CreateOrder({
 
   return (
     <Dialog
-      isOpen={open}
-      onOpenChange={setOpen}
-      title='Dodaj nowe zlecenie'
-      description='Wypełnij wszystkie pola aby dodać nowe zlecenie.'
-      trigger={
-        <Button className='group'>
-          <Plus className='transition-transform group-hover:rotate-45 group-hover:scale-125' />
-        </Button>
+      isOpen={isModalOpen}
+      onOpenChange={toggleModal}
+      title={
+        <>
+          <FilePlus />
+          Dodaj nowe zlecenie
+        </>
       }
+      description='Wypełnij wszystkie pola aby dodać nowe zlecenie.'
       className='min-w-250 max-w-1/2'
     >
       <CreateOrderForm
@@ -46,7 +47,7 @@ export default function CreateOrder({
         drivers={driversData}
         trucks={trucksData}
         countries={countryData}
-        onDialogOpenChange={setOpen}
+        onDialogClose={closeModal}
       />
     </Dialog>
   );

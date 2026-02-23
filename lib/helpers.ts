@@ -1,9 +1,11 @@
 import { ApiResult } from '@/types/types';
+import z, { ZodObject } from 'zod';
+import { error, ok } from './error';
 
 export async function apiCall<TData>(
   url: string,
   payload?: string | object,
-  method: 'POST' | 'GET' = 'GET'
+  method: 'POST' | 'GET' = 'GET',
 ): Promise<ApiResult<TData>> {
   try {
     const fetchOptions =

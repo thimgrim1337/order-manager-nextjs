@@ -59,7 +59,7 @@ export default function PlaceField({
             >
               <span className='font-medium '>{city.name}</span>
               <span className='text-muted-foreground grow text-right mr-2 text-xs'>
-                {countries[city.countryId].code} {city.postal}
+                {countries[city.countryId - 1].code} {city.postal}
               </span>
               <Button
                 aria-label={`Usuń miejsce ${city.name}`}

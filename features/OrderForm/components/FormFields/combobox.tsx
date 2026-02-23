@@ -1,10 +1,10 @@
 import { useFieldContext } from '../../context/form-context';
 import { Combobox } from '@/components/ui/combobox';
 import FormBase, { FormControlProps } from './form-base';
-import { ComboboxFieldData } from '@/types/types';
+import { FieldData } from '@/types/types';
 
 type ComboboxFieldProps = {
-  data: ComboboxFieldData[];
+  data: FieldData[];
   placeholder: string;
   onSearch?: (value: string) => void;
 };

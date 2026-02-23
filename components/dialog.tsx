@@ -7,9 +7,10 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Button } from './ui/button';
+import { Plus } from 'lucide-react';
 
 export default function Dialog({
-  trigger,
   title,
   description,
   isOpen,
@@ -17,9 +18,9 @@ export default function Dialog({
   className,
   children,
 }: {
-  title: string;
+  title: ReactNode;
   description: string;
-  trigger: ReactNode;
+
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   children: ReactNode;
@@ -27,11 +28,15 @@ export default function Dialog({
 }) {
   return (
     <DialogWrapper open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>
+        <Button className='group'>
+          <Plus className='transition-transform group-hover:rotate-45 group-hover:scale-125' />
+        </Button>
+      </DialogTrigger>
 
       <DialogContent className={className}>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className='flex items-center gap-2'>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {children}

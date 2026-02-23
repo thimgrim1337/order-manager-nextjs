@@ -7,12 +7,11 @@ import { FieldGroup } from '@/components/ui/field';
 import { createCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction } from 'react';
 
 export default function CreateCustomerForm({
-  onDialogOpenChange,
+  onModalClose,
 }: {
-  onDialogOpenChange: Dispatch<SetStateAction<boolean>>;
+  onModalClose: () => void;
 }) {
   const { refresh } = useRouter();
   const form = useAppForm({
@@ -37,9 +36,9 @@ export default function CreateCustomerForm({
     }
 
     refresh();
-    onDialogOpenChange(false);
+    onModalClose();
     return toast.success('Pomyślnie utworzono zleceniodawcę', {
-      description: `Utworzono zleceniowawcę ${response.data.name} o numerze NIP: ${response.data.tax}`,
+      description: `Utworzono zleceniodawcę ${response?.data?.name} o numerze NIP: ${response?.data?.tax}`,
       richColors: true,
     });
   }

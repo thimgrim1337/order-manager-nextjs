@@ -20,10 +20,10 @@ import {
 import { Updater } from '@tanstack/react-form';
 import { HTMLAttributes, useEffect, useState } from 'react';
 import useDebouce from '@/features/OrderForm/hooks/useDebouce';
-import { ComboboxData } from '@/types/types';
+import { FieldData } from '@/types/types';
 
 type ComboboxProps = {
-  data: ComboboxData[];
+  data: FieldData[];
   placeholder: string;
   onChange: (updater: Updater<number>) => void;
   value: number;
@@ -87,7 +87,7 @@ export function Combobox({
                   <Check
                     className={cn(
                       'ml-auto',
-                      value === d.id ? 'opacity-100' : 'opacity-0'
+                      value === d.id ? 'opacity-100' : 'opacity-0',
                     )}
                   />
                 </CommandItem>
