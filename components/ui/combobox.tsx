@@ -17,7 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Updater } from '@tanstack/react-form';
 import { HTMLAttributes, useEffect, useState } from 'react';
 import useDebouce from '@/features/OrderForm/hooks/useDebouce';
 import { FieldData } from '@/types/types';
@@ -25,8 +24,8 @@ import { FieldData } from '@/types/types';
 type ComboboxProps = {
   data: FieldData[];
   placeholder: string;
-  onChange: (updater: Updater<number>) => void;
-  value: number;
+  onChange: (value: number | string) => void;
+  value: number | string;
   onSearch?: (value: string) => void;
 } & Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>;
 
@@ -79,7 +78,7 @@ export function Combobox({
                   key={d.id}
                   value={d.value.toString()}
                   onSelect={() => {
-                    onChange(d.id);
+                    onChange(d.id || d.value);
                     setOpen(false);
                   }}
                 >

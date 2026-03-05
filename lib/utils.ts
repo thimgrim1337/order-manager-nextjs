@@ -1,8 +1,7 @@
 import { SortingState } from '@tanstack/react-table';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { getYesterday } from './dates';
-import { isFuture, isWeekend } from 'date-fns';
+import { getYesterday, isFuture, isWeekend } from '@/lib/dates';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

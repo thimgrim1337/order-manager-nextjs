@@ -14,7 +14,7 @@ export default function FormControls({ id }: { id: string }) {
             form={id}
             onClick={form.handleSubmit}
           >
-            {isSubmitting ? 'Wysyłanie' : 'Wyślij'}
+            {isSubmitting ? 'Wysyłanie' : 'Dodaj'}
           </Button>
           <Button
             type='reset'

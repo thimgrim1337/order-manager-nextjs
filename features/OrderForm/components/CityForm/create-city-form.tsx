@@ -1,10 +1,9 @@
-import { CreateCityDto, createCitySchema } from '@/lib/dto/city.dto';
-import { useAppForm } from '../hooks/useAppForm';
+import { createCitySchema } from '@/lib/dto/city.dto';
+import { useAppForm } from '../../hooks/useAppForm';
 import { FieldGroup } from '@/components/ui/field';
 import { Country } from '@/types/types';
 import { createCity } from '@/lib/actions';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import useFormSubmit from '../../hooks/useFormSubmit';
 import 'country-flag-icons/3x2/flags.css';
 
 export default function CreateCityForm({
@@ -14,7 +13,7 @@ export default function CreateCityForm({
   countries: Country[];
   onDialogClose: () => void;
 }) {
-  const { refresh } = useRouter();
+  const { submitForm } = useFormSubmit({ action: createCity, onDialogClose });
 
   const form = useAppForm({
     defaultValues: {
@@ -25,30 +24,18 @@ export default function CreateCityForm({
     validators: {
       onChange: createCitySchema,
     },
-    onSubmit: async ({ value }) => handleSubmit(value),
+    onSubmit: async ({ value }) =>
+      submitForm(value, {
+        errorTitle: 'Nie udało się utworzyć miejscowości.',
+        successTitle: 'Pomyślnie utworzono miejsowość',
+        successDescription: `Pomyślnie utworzono nową miejscowość: ${value.name}`,
+      }),
   });
-
-  async function handleSubmit(city: CreateCityDto) {
-    const response = await createCity(city);
-
-    if (!response.success) {
-      return toast.error('Nie udało się utworzyć miejscowości.', {
-        description: response.message,
-        richColors: true,
-      });
-    }
-
-    refresh();
-    onDialogClose();
-    return toast.success('Pomyślnie utworzono miejsowość', {
-      description: `Utworzono miejsowość ${response?.data?.name}.`,
-      richColors: true,
-    });
-  }
 
   return (
     <form
       id='create-city-form'
+      data-testid='create-city-form'
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();

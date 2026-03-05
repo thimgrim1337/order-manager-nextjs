@@ -8,6 +8,11 @@ import { createCustomerService } from './services/customer.services';
 import { CreateCityDto } from './dto/city.dto';
 import { createCityService } from './services/city.services';
 
+export type ActionResponse<T> = Promise<
+  | { success: true; data: T; message?: string }
+  | { message?: string; details?: unknown }
+>;
+
 export async function createOrder(formData: CreateOrderFormDto) {
   const [error, order] = await createOrderService(formData);
 
@@ -59,17 +64,20 @@ export async function createCustomer(formData: CreateCustomerDto) {
   switch (reason) {
     case 'InvalidData': {
       return {
+        success: false,
         message: 'Nieprawidłowe dane.',
         details: error.details,
       };
     }
     case 'CustomerExist': {
       return {
+        success: false,
         message: 'Ten zleceniodawca już istnieje.',
       };
     }
     case 'UnexpectedError': {
       return {
+        success: false,
         message: 'Wystąpił nieznany błąd.',
         details: error.details,
       };
@@ -95,17 +103,21 @@ export async function createCity(formData: CreateCityDto) {
   switch (reason) {
     case 'InvalidData': {
       return {
+        success: false,
+
         message: 'Nieprawidłowe dane.',
         details: error.details,
       };
     }
     case 'CityExist': {
       return {
+        success: false,
         message: 'Ta miejscowość już istnieje.',
       };
     }
     case 'UnexpectedError': {
       return {
+        success: false,
         message: 'Wystąpił nieznany błąd.',
         details: error.details,
       };

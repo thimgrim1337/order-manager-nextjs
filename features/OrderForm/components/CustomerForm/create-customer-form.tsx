@@ -1,19 +1,19 @@
-import {
-  CreateCustomerDto,
-  createCustomerSchema,
-} from '@/lib/dto/customer.dto';
-import { useAppForm } from '../hooks/useAppForm';
+import { createCustomerSchema } from '@/lib/dto/customer.dto';
+import { useAppForm } from '../../hooks/useAppForm';
 import { FieldGroup } from '@/components/ui/field';
+import useFormSubmit from '../../hooks/useFormSubmit';
 import { createCustomer } from '@/lib/actions';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 export default function CreateCustomerForm({
-  onModalClose,
+  onDialogClose,
 }: {
-  onModalClose: () => void;
+  onDialogClose: () => void;
 }) {
-  const { refresh } = useRouter();
+  const { submitForm } = useFormSubmit({
+    action: createCustomer,
+    onDialogClose,
+  });
+
   const form = useAppForm({
     defaultValues: {
       name: '',
@@ -22,26 +22,13 @@ export default function CreateCustomerForm({
     validators: {
       onChange: createCustomerSchema,
     },
-    onSubmit: async ({ value }) => handleSubmit(value),
+    onSubmit: async ({ value }) =>
+      submitForm(value, {
+        errorTitle: 'Nie udało się utworzyć zleceniodawcy',
+        successTitle: 'Pomyślnie utworzono zleceniodawcę',
+        successDescription: `Pomyślnie utworzono nowego zleceniodawcę: ${value.name}`,
+      }),
   });
-
-  async function handleSubmit(customer: CreateCustomerDto) {
-    const response = await createCustomer(customer);
-
-    if (!response.success) {
-      return toast.error('Nie udało się utworzyć zleceniodawcy', {
-        description: response.message,
-        richColors: true,
-      });
-    }
-
-    refresh();
-    onModalClose();
-    return toast.success('Pomyślnie utworzono zleceniodawcę', {
-      description: `Utworzono zleceniodawcę ${response?.data?.name} o numerze NIP: ${response?.data?.tax}`,
-      richColors: true,
-    });
-  }
 
   return (
     <form

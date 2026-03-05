@@ -1,9 +1,9 @@
-import { addDays, format, parse, subDays } from 'date-fns';
+import { addDays, format, parse, subDays, isWeekend, isFuture } from 'date-fns';
 import { pl } from 'date-fns/locale';
 
 export const formatDate = (
   date: Date | number | string | undefined,
-  dateFormat: string = 'yyyy-MM-dd'
+  dateFormat: string = 'yyyy-MM-dd',
 ) => {
   if (!date) return '';
 
@@ -17,3 +17,4 @@ export const getToday = () => formatDate(Date.now());
 export const getTomorrow = () => formatDate(addDays(getToday(), 1));
 export const getYesterday = (date: Date | string) =>
   formatDate(subDays(date, 1));
+export { isWeekend, isFuture };

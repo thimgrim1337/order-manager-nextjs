@@ -13,5 +13,5 @@ export const db = drizzle({
 });
 
 export type db = typeof db;
-export default db;
 export type dbTransaction = PostgresJsDatabase<typeof schema>;
+export default db;

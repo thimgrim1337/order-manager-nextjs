@@ -43,11 +43,3 @@ export type FieldData = {
   value: string;
   icon?: ReactNode;
 };
-
-export type ApiResult<TData = unknown> =
-  | { type: 'success'; data: TData; status: number }
-  | { type: 'error'; error: string; status: number };
-
-export type FormActionResult<T extends Record<string, any>> =
-  | { success: true; data: T }
-  | { success: false; errors: Partial<Record<keyof T, string[]>> };

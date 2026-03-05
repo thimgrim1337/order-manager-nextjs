@@ -4,7 +4,7 @@ import { MapPinPlus } from 'lucide-react';
 import Dialog from '@/components/dialog';
 import CreateCityForm from './create-city-form';
 import { Country } from '@/types/types';
-import useToggle from '../hooks/useToggle';
+import useToggle from '../../hooks/useToggle';
 
 export default function CreateCity({ countries }: { countries: Country[] }) {
   const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] =

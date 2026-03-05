@@ -12,7 +12,7 @@ type ComboboxFieldProps = {
 export default function ComboboxField(
   props: FormControlProps & ComboboxFieldProps,
 ) {
-  const field = useFieldContext<number>();
+  const field = useFieldContext<number | string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   const selectedValue = field.state.value;

@@ -1,22 +1,19 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useStore } from '@tanstack/react-form';
 import { City, Country, Customer, Driver, Truck } from '@/types/types';
 import { useAppForm } from '../hooks/useAppForm';
-import { useFilters } from '../../OrdersTable/hooks/useFilters';
-
-import { toast } from 'sonner';
 import { FieldGroup } from '@/components/ui/field';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
 import CurrencyInfo from './currency-info';
 import { orderFormOptions } from '../lib/order-form-options';
-import { createOrder } from '@/lib/actions';
-import { CreateOrderFormDto } from '@/lib/dto/order.dto';
-import CreateCustomer from './create-customer';
-import CreateCity from './create-city';
+import CreateCity from './CityForm/create-city';
 import { CURRENCIES } from '@/lib/consts';
+import CreateCustomer from './CustomerForm/create-customer';
+import { createOrder } from '@/lib/actions';
+import useFormSubmit from '../hooks/useFormSubmit';
+import { useFilters } from '@/features/OrdersTable/hooks/useFilters';
 
 export default function CreateOrderForm({
   customers,
@@ -34,11 +31,18 @@ export default function CreateOrderForm({
   onDialogClose: () => void;
 }) {
   const { setFilters, resetFilters } = useFilters();
-  const { refresh } = useRouter();
+  const { submitForm } = useFormSubmit({ action: createOrder, onDialogClose });
 
   const form = useAppForm({
     ...orderFormOptions,
-    onSubmit: async ({ value }) => handleSubmit(value),
+    onSubmit: async ({ value }) => {
+      submitForm(value, {
+        errorTitle: 'Nie udało się utworzyć zlecenia',
+        successTitle: 'Pomyślnie utworzono nowe zlecenie',
+        successDescription: `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
+      });
+      resetFilters();
+    },
   });
 
   const { endDate, currency, currencyInfo } = useStore(
@@ -57,25 +61,6 @@ export default function CreateOrderForm({
         table: rate.rates[0].no,
       });
   }, [currency, rate, form]);
-
-  async function handleSubmit(order: CreateOrderFormDto) {
-    const response = await createOrder(order);
-
-    if (!response.success) {
-      return toast.error('Nie udało się utworzyć nowego zlecenia', {
-        description: response.message,
-        richColors: true,
-      });
-    }
-
-    onDialogClose();
-    resetFilters();
-    refresh();
-    return toast.success(`Pomyślnie utworzono nowe zlecenie`, {
-      description: `Utworzono nowe zlecenie o numerze: ${response.data.orderNr}`,
-      richColors: true,
-    });
-  }
 
   const fieldGroupStyle = 'grid grid-cols-2 pt-5';
 

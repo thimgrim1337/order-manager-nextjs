@@ -1,6 +1,6 @@
-import { ApiResult } from '@/types/types';
-import z, { ZodObject } from 'zod';
-import { error, ok } from './error';
+type ApiResult<TData = unknown> =
+  | { type: 'success'; data: TData; status: number }
+  | { type: 'error'; error: string; status: number };
 
 export async function apiCall<TData>(
   url: string,
