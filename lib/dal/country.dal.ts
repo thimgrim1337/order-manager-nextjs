@@ -1,5 +1,5 @@
-import db from '@/db/db';
+import db from "@/db/db";
 
 export async function getAllCountries() {
-  return await db.query.country.findMany();
+	return await db.query.country.findMany();
 }

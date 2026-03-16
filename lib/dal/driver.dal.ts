@@ -1,5 +1,5 @@
-import db from '@/db/db';
+import db from "@/db/db";
 
 export async function getAllDrivers() {
-  return await db.query.driver.findMany();
+	return await db.query.driver.findMany();
 }

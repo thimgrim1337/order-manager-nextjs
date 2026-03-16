@@ -1,37 +1,37 @@
-import { getToday } from '@/lib/dates';
-import { getCurrencyRate } from '@/lib/services/nbp.services';
-import { getHolidays } from '@/lib/services/openHolidays.services';
-import { getValidCurrencyDate } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
+import { getToday } from "@/lib/dates";
+import { getCurrencyRate } from "@/lib/services/nbp.services";
+import { getHolidays } from "@/lib/services/openHolidays.services";
+import { getValidCurrencyDate } from "@/lib/utils";
 
 export default function useCurrencyInfo(date: string) {
-  const { data: holidays = [], isLoading: isHolidaysLoading } = useQuery({
-    queryKey: ['holidays'],
-    queryFn: () => getHolidays(),
-  });
+	const { data: holidays = [], isLoading: isHolidaysLoading } = useQuery({
+		queryKey: ["holidays"],
+		queryFn: () => getHolidays(),
+	});
 
-  const validDate = holidays.length
-    ? getValidCurrencyDate(date, holidays)
-    : isHolidaysLoading
-      ? getToday()
-      : date;
+	const validDate = holidays.length
+		? getValidCurrencyDate(date, holidays)
+		: isHolidaysLoading
+			? getToday()
+			: date;
 
-  const {
-    data: rate,
-    isLoading: isRateLoading,
-    isError: isRateError,
-    error: rateError,
-  } = useQuery({
-    queryKey: ['currencyRate', validDate],
-    queryFn: () => getCurrencyRate(validDate),
-    retry: false,
-    enabled: !!validDate && !isHolidaysLoading,
-  });
+	const {
+		data: rate,
+		isLoading: isRateLoading,
+		isError: isRateError,
+		error: rateError,
+	} = useQuery({
+		queryKey: ["currencyRate", validDate],
+		queryFn: () => getCurrencyRate(validDate),
+		retry: false,
+		enabled: !!validDate && !isHolidaysLoading,
+	});
 
-  return {
-    rate,
-    isRateLoading: isRateLoading || isHolidaysLoading,
-    isRateError,
-    rateError,
-  };
+	return {
+		rate,
+		isRateLoading: isRateLoading || isHolidaysLoading,
+		isRateError,
+		rateError,
+	};
 }

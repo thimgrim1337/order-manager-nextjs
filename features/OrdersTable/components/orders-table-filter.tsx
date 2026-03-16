@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { Search } from 'lucide-react';
-import DebouncedInput from '../../../components/ui/debounced-input';
-import { Button } from '../../../components/ui/button';
-import { useFilters } from '../hooks/useFilters';
+import { Search } from "lucide-react";
+import { Button } from "../../../components/ui/button";
+import DebouncedInput from "../../../components/ui/debounced-input";
+import { useFilters } from "../hooks/useFilters";
 
 export default function OrderTableFilter() {
-  const { filters, setFilters, resetFilters } = useFilters();
+	const { filters, setFilters, resetFilters } = useFilters();
 
-  return (
-    <div className='flex gap-2 items-center'>
-      <Search className='text-muted-foreground' />
-      <DebouncedInput
-        className='max-w-sm border-none'
-        onChange={(value) =>
-          setFilters({
-            globalFilters: typeof value === 'string' ? value : value.toString(),
-          })
-        }
-        placeholder={`Szukaj zleceń....`}
-        value={filters.globalFilters || ''}
-      />
-      <Button onClick={() => resetFilters()} variant={'outline'}>
-        Reset
-      </Button>
-    </div>
-  );
+	return (
+		<div className="flex gap-2 items-center">
+			<Search className="text-muted-foreground" />
+			<DebouncedInput
+				className="max-w-sm border-none"
+				onChange={(value) =>
+					setFilters({
+						globalFilters: typeof value === "string" ? value : value.toString(),
+					})
+				}
+				placeholder={`Szukaj zleceń....`}
+				value={filters.globalFilters || ""}
+			/>
+			<Button onClick={() => resetFilters()} variant={"outline"}>
+				Reset
+			</Button>
+		</div>
+	);
 }

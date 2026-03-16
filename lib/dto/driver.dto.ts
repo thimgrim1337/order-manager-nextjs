@@ -1,6 +1,6 @@
-import { driver } from '@/db/schemas';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import z from 'zod';
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import z from "zod";
+import { driver } from "@/db/schemas";
 
 export const createDriverSchema = createInsertSchema(driver);
 export const selectDriverSchema = createSelectSchema(driver);

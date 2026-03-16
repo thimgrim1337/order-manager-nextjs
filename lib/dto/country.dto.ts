@@ -1,6 +1,6 @@
-import { country } from '@/db/schemas';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import z from 'zod';
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import z from "zod";
+import { country } from "@/db/schemas";
 
 export const createCountrySchema = createInsertSchema(country);
 export const selectCountrySchema = createSelectSchema(country);

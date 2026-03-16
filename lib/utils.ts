@@ -1,83 +1,84 @@
-import { SortingState } from '@tanstack/react-table';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { getYesterday, isFuture, isWeekend } from '@/lib/dates';
+import { SortingState } from "@tanstack/react-table";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { getYesterday, isFuture, isWeekend } from "@/lib/dates";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+	return twMerge(clsx(inputs));
 }
 
 export function analyzeGlobalFiltering(value: string) {
-  const trimmed = value.trim();
+	const trimmed = value.trim();
 
-  const numericValue = Number(trimmed);
-  const isNumeric = !isNaN(numericValue) && trimmed !== '';
+	const numericValue = Number(trimmed);
+	const isNumeric = !isNaN(numericValue) && trimmed !== "";
 
-  // Sprawdź czy to data (formaty: YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY, DD.MM.YYYY)
-  const datePatterns = [
-    /^\d{4}-\d{2}-\d{2}$/, // YYYY-MM-DD
-    /^\d{2}-\d{2}-\d{4}$/, // DD-MM-YYYY
-    /^\d{2}\/\d{2}\/\d{4}$/, // DD/MM/YYYY
-    /^\d{2}\.\d{2}\.\d{4}$/, // DD.MM.YYYY
-  ];
+	// Sprawdź czy to data (formaty: YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY, DD.MM.YYYY)
+	const datePatterns = [
+		/^\d{4}-\d{2}-\d{2}$/, // YYYY-MM-DD
+		/^\d{2}-\d{2}-\d{4}$/, // DD-MM-YYYY
+		/^\d{2}\/\d{2}\/\d{4}$/, // DD/MM/YYYY
+		/^\d{2}\.\d{2}\.\d{4}$/, // DD.MM.YYYY
+	];
 
-  const isDate = datePatterns.some((pattern) => pattern.test(trimmed));
+	const isDate = datePatterns.some((pattern) => pattern.test(trimmed));
 
-  // Konwersja daty do formatu YYYY-MM-DD
-  let normalizedDate = '';
-  if (isDate) {
-    if (trimmed.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      normalizedDate = trimmed;
-    } else if (trimmed.match(/^\d{2}-\d{2}-\d{4}$/)) {
-      const [day, month, year] = trimmed.split('-');
-      normalizedDate = `${year}-${month}-${day}`;
-    } else if (trimmed.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
-      const [day, month, year] = trimmed.split('/');
-      normalizedDate = `${year}-${month}-${day}`;
-    } else if (trimmed.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
-      const [day, month, year] = trimmed.split('.');
-      normalizedDate = `${year}-${month}-${day}`;
-    }
-  }
+	// Konwersja daty do formatu YYYY-MM-DD
+	let normalizedDate = "";
+	if (isDate) {
+		if (trimmed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+			normalizedDate = trimmed;
+		} else if (trimmed.match(/^\d{2}-\d{2}-\d{4}$/)) {
+			const [day, month, year] = trimmed.split("-");
+			normalizedDate = `${year}-${month}-${day}`;
+		} else if (trimmed.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+			const [day, month, year] = trimmed.split("/");
+			normalizedDate = `${year}-${month}-${day}`;
+		} else if (trimmed.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
+			const [day, month, year] = trimmed.split(".");
+			normalizedDate = `${year}-${month}-${day}`;
+		}
+	}
 
-  return {
-    isNumeric,
-    isDate,
-    numericValue,
-    normalizedDate,
-    searchTerm: `%${trimmed.toLowerCase()}%`,
-  };
+	return {
+		isNumeric,
+		isDate,
+		numericValue,
+		normalizedDate,
+		searchTerm: `%${trimmed.toLowerCase()}%`,
+	};
 }
 
 export function sortToState(sortString: string | undefined): SortingState {
-  if (!sortString) return [];
+	if (!sortString) return [];
 
-  const [id, desc] = sortString.split('.');
-  return [{ id, desc: desc === 'desc' }];
+	const [id, desc] = sortString.split(".");
+	return [{ id, desc: desc === "desc" }];
 }
 
 export const stateToSort = (sorting: SortingState | undefined) => {
-  if (!sorting || sorting.length == 0) return undefined;
+	if (!sorting || sorting.length == 0) return undefined;
 
-  const sort = sorting[0];
+	const sort = sorting[0];
 
-  return `${sort.id}.${sort.desc ? 'desc' : 'asc'}` as const;
+	return `${sort.id}.${sort.desc ? "desc" : "asc"}` as const;
 };
 
 export function getValidCurrencyDate(
-  date: string,
-  holidays: { endDate: string }[],
+	date: string,
+	holidays: { endDate: string }[],
 ) {
-  try {
-    const yesterday = getYesterday(date);
+	try {
+		const yesterday = getYesterday(date);
 
-    const isHoliday = holidays.some((day) => day.endDate === yesterday);
+		const isHoliday = holidays.some((day) => day.endDate === yesterday);
 
-    if (!isWeekend(yesterday) && !isFuture(yesterday) && !isHoliday)
-      return yesterday;
+		if (!isWeekend(yesterday) && !isFuture(yesterday) && !isHoliday)
+			return yesterday;
 
-    return getValidCurrencyDate(yesterday, holidays);
-  } catch (error) {
-    return date;
-  }
+		return getValidCurrencyDate(yesterday, holidays);
+	} catch (error) {
+		console.log(error);
+		return date;
+	}
 }
