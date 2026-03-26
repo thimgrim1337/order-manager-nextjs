@@ -3,7 +3,7 @@
 import { useStore } from "@tanstack/react-form";
 import { useEffect } from "react";
 import { FieldGroup } from "@/components/ui/field";
-import { useFilters } from "@/features/OrdersTable/hooks/useFilters";
+import useFilters from "@/features/shared/hooks/useFilters";
 import { createOrder } from "@/lib/actions";
 import { CURRENCIES } from "@/lib/consts";
 import { City, Country, Customer, Driver, Truck } from "@/types/types";

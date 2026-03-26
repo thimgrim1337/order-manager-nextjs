@@ -10,7 +10,8 @@
 			"complexity": { "noUselessTypeConstraint": "error" },
 			"correctness": {
 				"noNextAsyncClientComponent": "warn",
-				"noUnusedVariables": "error"
+				"noUnusedVariables": "error",
+				"useExhaustiveDependencies": "error"
 			},
 			"performance": {
 				"noImgElement": "warn",

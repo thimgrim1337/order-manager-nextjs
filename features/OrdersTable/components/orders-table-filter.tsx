@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import DebouncedInput from "../../../components/ui/debounced-input";
-import { useFilters } from "../hooks/useFilters";
+import useFilters from "../../shared/hooks/useFilters";
 
 export default function OrderTableFilter() {
 	const { filters, setFilters, resetFilters } = useFilters();

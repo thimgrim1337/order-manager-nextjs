@@ -1,5 +1,5 @@
+import { apiCall } from "@/lib/helpers";
 import { Currencies } from "@/types/types";
-import { apiCall } from "../helpers";
 
 export type NBPApiResponse = {
 	table: string;

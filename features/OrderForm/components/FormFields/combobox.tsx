@@ -26,6 +26,7 @@ export default function ComboboxField(
 				value={selectedValue}
 				onSearch={props.onSearch}
 				aria-invalid={isInvalid}
+				id={field.name}
 			/>
 		</FormBase>
 	);

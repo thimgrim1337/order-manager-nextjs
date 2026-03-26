@@ -1,7 +1,6 @@
 import { SortingState } from "@tanstack/react-table";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { getYesterday, isFuture, isWeekend } from "@/lib/dates";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -63,22 +62,3 @@ export const stateToSort = (sorting: SortingState | undefined) => {
 
 	return `${sort.id}.${sort.desc ? "desc" : "asc"}` as const;
 };
-
-export function getValidCurrencyDate(
-	date: string,
-	holidays: { endDate: string }[],
-) {
-	try {
-		const yesterday = getYesterday(date);
-
-		const isHoliday = holidays.some((day) => day.endDate === yesterday);
-
-		if (!isWeekend(yesterday) && !isFuture(yesterday) && !isHoliday)
-			return yesterday;
-
-		return getValidCurrencyDate(yesterday, holidays);
-	} catch (error) {
-		console.log(error);
-		return date;
-	}
-}

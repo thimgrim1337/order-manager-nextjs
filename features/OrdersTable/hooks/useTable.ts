@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-table";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@/lib/consts";
 import { sortToState, stateToSort } from "@/lib/utils";
-import { useFilters } from "./useFilters";
+import useFilters from "../../shared/hooks/useFilters";
 
 type useTableProps<TData, TValue> = {
 	columns: ColumnDef<TData, TValue>[];

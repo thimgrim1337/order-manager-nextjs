@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { getToday } from "@/lib/dates";
-import { getCurrencyRate } from "@/lib/services/nbp.services";
-import { getHolidays } from "@/lib/services/openHolidays.services";
-import { getValidCurrencyDate } from "@/lib/utils";
+import { getValidCurrencyDate } from "../lib/utils";
+import { getCurrencyRate } from "../services/nbp.services";
+import { getHolidays } from "../services/openHolidays.services";
 
 export default function useCurrencyInfo(date: string) {
 	const { data: holidays = [], isLoading: isHolidaysLoading } = useQuery({

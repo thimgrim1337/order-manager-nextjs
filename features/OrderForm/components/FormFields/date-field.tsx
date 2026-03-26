@@ -24,7 +24,7 @@ export default function DateField(props: FormControlProps) {
 				<PopoverTrigger asChild>
 					<Button
 						variant="outline"
-						id="date"
+						id={field.name}
 						className="w-48 justify-between font-normal"
 						aria-invalid={isInvalid}
 					>

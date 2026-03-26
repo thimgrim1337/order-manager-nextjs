@@ -36,7 +36,11 @@ export default function SelectField({
 				name={field.name}
 				value={value === "0" ? "" : value}
 			>
-				<SelectTrigger className="w-45" aria-invalid={isInvalid}>
+				<SelectTrigger
+					className="w-45"
+					aria-invalid={isInvalid}
+					id={field.name}
+				>
 					<SelectValue placeholder={placeholder} />
 				</SelectTrigger>
 				<SelectContent>

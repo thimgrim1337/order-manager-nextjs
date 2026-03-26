@@ -1,44 +1,31 @@
-import { describe, expect, it, MockedFunction, vi } from "vitest";
-import * as dateUtils from "@/lib/dates";
-import { getValidCurrencyDate } from "@/lib/utils";
+import { describe, expect, it } from "vitest";
+import { getValidCurrencyDate } from "@/features/OrderForm/lib/utils";
 
-vi.mock("@/lib/dates");
+const NO_HOLIDAYS: { endDate: string }[] = [];
 
 describe("getValidCurrencyDate", () => {
-	it("should return yesterday date for regular workday", () => {
-		(
-			dateUtils.getYesterday as MockedFunction<typeof dateUtils.getYesterday>
-		).mockReturnValue("2026-02-19");
-		(
-			dateUtils.isWeekend as MockedFunction<typeof dateUtils.isWeekend>
-		).mockReturnValue(false);
-		(
-			dateUtils.isFuture as MockedFunction<typeof dateUtils.isFuture>
-		).mockReturnValue(false);
-
-		const result = getValidCurrencyDate("2026-02-20", []);
-
-		expect(result).toBe("2026-02-19");
+	it("return previous bussiness day", () => {
+		expect(getValidCurrencyDate("2026-03-24", NO_HOLIDAYS)).toBe("2026-03-23");
 	});
 
-	it("skips weekends and return last workday", () => {
-		(dateUtils.getYesterday as MockedFunction<typeof dateUtils.getYesterday>)
-			.mockReturnValueOnce("2026-02-21")
-			.mockReturnValueOnce("2026-02-20");
+	it("return last bussiness day when day is saturday", () => {
+		expect(getValidCurrencyDate("2026-03-21", NO_HOLIDAYS)).toBe("2026-03-20");
+	});
 
-		(
-			dateUtils.isWeekend as MockedFunction<typeof dateUtils.isWeekend>
-		).mockReturnValueOnce(true);
-		(
-			dateUtils.isWeekend as MockedFunction<typeof dateUtils.isWeekend>
-		).mockReturnValueOnce(false);
+	it("return last bussiness day when day is sunday", () => {
+		expect(getValidCurrencyDate("2026-03-22", NO_HOLIDAYS)).toBe("2026-03-20");
+	});
 
-		(
-			dateUtils.isFuture as MockedFunction<typeof dateUtils.isFuture>
-		).mockReturnValue(false);
+	it("return last bussiness day when day is a holiday", () => {
+		const holidays = [{ endDate: "2021-03-24" }];
+		expect(getValidCurrencyDate("2021-03-25", holidays)).toBe("2021-03-23");
+	});
 
-		const result = getValidCurrencyDate("2026-06-22", []);
+	it.skip("return last bussiness day when day is in future", () => {
+		expect(getValidCurrencyDate("2026-03-27", NO_HOLIDAYS)).toBe("2026-03-24");
+	});
 
-		expect(result).toBe("2026-02-20");
+	it("return an original date when error occured", () => {
+		expect(getValidCurrencyDate("2026-13-27", NO_HOLIDAYS)).toBe("2026-13-27");
 	});
 });

@@ -16,7 +16,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import useDebouce from "@/features/OrderForm/hooks/useDebouce";
+import useDebouce from "@/features/shared/hooks/useDebouce";
 import { cn } from "@/lib/utils";
 import { FieldData } from "@/types/types";
 
@@ -40,9 +40,10 @@ export function Combobox({
 	const [search, setSearch] = useState("");
 	const debounced = useDebouce(search, 300);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <We want to only reneder on debounced value change>
 	useEffect(() => {
 		if (onSearch) onSearch(debounced);
-	}, [debounced, onSearch]);
+	}, [debounced]);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen} modal>

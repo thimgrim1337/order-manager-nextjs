@@ -2,8 +2,8 @@
 
 import { use } from "react";
 import { OrderDto as Order } from "@/lib/dto/order.dto";
-import { columns } from "../columns";
 import useTable from "../hooks/useTable";
+import { columns } from "../lib/columns";
 import { OrdersTableBody } from "./orders-table-body";
 import OrderTableFilter from "./orders-table-filter";
 import { OrdersTablePagination } from "./orders-table-pagination";

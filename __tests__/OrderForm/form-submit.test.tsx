@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import { beforeEach, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import useFormSubmit from "@/features/OrderForm/hooks/useFormSubmit";
 
 const toastSuccessMock = vi.hoisted(() => vi.fn());
@@ -21,71 +21,75 @@ beforeEach(() => {
 	vi.clearAllMocks();
 });
 
-it("success case", async () => {
-	const onDialogClose = vi.fn();
-	const customer = { tax: "PL7743241555", name: "DEVIL" };
+describe("useFormSubmit", () => {
+	it("success case", async () => {
+		const onDialogClose = vi.fn();
+		const customer = { tax: "PL7743241555", name: "DEVIL" };
 
-	const actionMock = vi.fn().mockResolvedValueOnce({
-		success: true,
-		data: { name: customer.name },
-	});
-
-	const { result } = renderHook(() =>
-		useFormSubmit({
-			action: actionMock,
-			onDialogClose,
-		}),
-	);
-
-	await act(async () => {
-		await result.current.submitForm(customer, {
-			errorTitle: "Nie udało się zapisać.",
-			successTitle: "OK",
+		const actionMock = vi.fn().mockResolvedValueOnce({
+			success: true,
+			data: { name: customer.name },
 		});
-	});
 
-	expect(actionMock).toBeCalledWith(customer);
-	expect(toastSuccessMock).toBeCalledWith(
-		"OK",
-		expect.objectContaining({
-			richColors: true,
-		}),
-	);
-	expect(refreshMock).toBeCalled();
-	expect(onDialogClose).toBeCalled();
-});
+		const { result } = renderHook(() =>
+			useFormSubmit({
+				action: actionMock,
+				onDialogClose,
+			}),
+		);
 
-it("error case", async () => {
-	const onDialogClose = vi.fn();
-
-	const actionMock = vi.fn().mockResolvedValueOnce({
-		message: "API Error",
-	});
-
-	const { result } = renderHook(() =>
-		useFormSubmit({
-			action: actionMock,
-			onDialogClose,
-		}),
-	);
-
-	await act(async () => {
-		await result.current.submitForm({ foo: "bar" } as unknown, {
-			errorTitle: "Nie udało się zapisać.",
-			successTitle: "OK",
+		await act(async () => {
+			await result.current.submitForm(customer, {
+				errorTitle: "Nie udało się zapisać.",
+				successTitle: "OK",
+				successDescription: "Zlecenie zapisane",
+			});
 		});
+
+		expect(actionMock).toHaveBeenCalledWith(customer);
+		expect(toastSuccessMock).toHaveBeenCalledWith(
+			"OK",
+			expect.objectContaining({
+				description: "Zlecenie zapisane",
+				richColors: true,
+			}),
+		);
+		expect(refreshMock).toHaveBeenCalled();
+		expect(onDialogClose).toHaveBeenCalled();
 	});
 
-	expect(actionMock).toBeCalledWith({ foo: "bar" });
+	it("error case", async () => {
+		const onDialogClose = vi.fn();
 
-	expect(toastErrorMock).toBeCalledWith(
-		"Nie udało się zapisać.",
-		expect.objectContaining({
-			description: "API Error",
-			richColors: true,
-		}),
-	);
+		const actionMock = vi.fn().mockResolvedValueOnce({
+			message: "API Error",
+		});
 
-	expect(onDialogClose).not.toBeCalled();
-	expect(refreshMock).not.toBeCalled();
+		const { result } = renderHook(() =>
+			useFormSubmit({
+				action: actionMock,
+				onDialogClose,
+			}),
+		);
+
+		await act(async () => {
+			await result.current.submitForm({ foo: "bar" } as unknown, {
+				errorTitle: "Nie udało się zapisać.",
+				successTitle: "OK",
+			});
+		});
+
+		expect(actionMock).toHaveBeenCalledWith({ foo: "bar" });
+
+		expect(toastErrorMock).toHaveBeenCalledWith(
+			"Nie udało się zapisać.",
+			expect.objectContaining({
+				description: "API Error",
+				richColors: true,
+			}),
+		);
+
+		expect(onDialogClose).not.toHaveBeenCalled();
+		expect(refreshMock).not.toHaveBeenCalled();
+	});
 });

@@ -1,6 +1,6 @@
-import { apiCall } from "../helpers";
+import { apiCall } from "@/lib/helpers";
 
-type OpenHolidaysResponse = {
+export type OpenHolidaysResponse = {
 	comment: [{ language: string; text: string }];
 	endDate: string;
 	id: string;

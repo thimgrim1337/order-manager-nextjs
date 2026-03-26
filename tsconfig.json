@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "ES2017",
+		"types": ["@testing-library/jest-dom"],
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
@@ -12,6 +13,11 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx",
+		"allowUnreachableCode": false,
+		"erasableSyntaxOnly": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitAny": true,
 		"incremental": true,
 		"plugins": [
 			{

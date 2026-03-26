@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeAll, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import CreateCityForm from "@/features/OrderForm/components/CityForm/create-city-form";
 
 const submitFormMock = vi.hoisted(() => vi.fn());
@@ -10,31 +10,59 @@ vi.mock("@/features/OrderForm/hooks/useFormSubmit", () => ({
 
 const onDialogClose = vi.fn();
 
-beforeAll(() => {
-	render(
-		<CreateCityForm
-			countries={[{ id: 1, code: "PL", name: "Poland" }]}
-			onDialogClose={onDialogClose}
-		/>,
-	);
+beforeEach(() => {
+	vi.clearAllMocks();
 });
 
-it("render form with inputs", async () => {
-	screen.getByLabelText("Nazwa miejscowości");
-	screen.getByLabelText("Kod pocztowy");
-	screen.getByRole("combobox");
-});
-
-it("fire submitForm when button is clicked", async () => {
+describe("CreateCityForm", () => {
 	const user = userEvent.setup();
 
-	await user.click(screen.getByRole("combobox"));
-	await user.click(screen.getByRole("option", { name: "PL Poland" }));
+	describe("render", () => {
+		it("render form with inputs and buttons", async () => {
+			render(
+				<CreateCityForm
+					countries={[{ id: 1, code: "PL", name: "Poland" }]}
+					onDialogClose={onDialogClose}
+				/>,
+			);
 
-	await user.type(screen.getByLabelText("Nazwa miejscowości"), "Kraków");
-	await user.type(screen.getByLabelText("Kod pocztowy"), "30-001");
+			screen.getByLabelText("Nazwa miejscowości");
+			screen.getByLabelText("Kod pocztowy");
+			screen.getByRole("combobox");
+			screen.getByRole("button", { name: "Dodaj" });
+		});
+	});
+	describe("submit", () => {
+		it("call submitForm when button is clicked", async () => {
+			render(
+				<CreateCityForm
+					countries={[{ id: 1, code: "PL", name: "Poland" }]}
+					onDialogClose={onDialogClose}
+				/>,
+			);
 
-	await user.click(screen.getByRole("button", { name: "Dodaj" }));
+			await user.click(screen.getByRole("combobox"));
+			await user.click(screen.getByRole("option", { name: "PL Poland" }));
 
-	expect(submitFormMock).toHaveBeenCalledTimes(1);
+			await user.type(screen.getByLabelText("Nazwa miejscowości"), "Kraków");
+			await user.type(screen.getByLabelText("Kod pocztowy"), "30-001");
+
+			await user.click(screen.getByRole("button", { name: "Dodaj" }));
+
+			expect(submitFormMock).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	it("not call submitForm when no or uncorrect data are provided", async () => {
+		render(
+			<CreateCityForm
+				countries={[{ id: 1, code: "PL", name: "Poland" }]}
+				onDialogClose={onDialogClose}
+			/>,
+		);
+
+		await user.click(screen.getByRole("button", { name: "Dodaj" }));
+
+		expect(submitFormMock).not.toHaveBeenCalled();
+	});
 });

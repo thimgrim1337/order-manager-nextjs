@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeAll, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import CreateCustomerForm from "@/features/OrderForm/components/CustomerForm/create-customer-form";
 
 const submitFormMock = vi.hoisted(() => vi.fn());
@@ -8,27 +8,44 @@ vi.mock("@/features/OrderForm/hooks/useFormSubmit", () => ({
 	default: () => ({ submitForm: submitFormMock }),
 }));
 
-beforeAll(() => {
-	render(<CreateCustomerForm onDialogClose={vi.fn()} />);
+beforeEach(() => {
+	vi.clearAllMocks();
 });
 
-it("render form with inputs and button", () => {
-	screen.getByLabelText("NIP");
-	screen.getByLabelText("Nazwa zleceniodawcy");
-	screen.getByRole("button", { name: "Dodaj" });
-});
-
-it("fire submitForm when click on button", async () => {
+describe("CreateCustomerForm", () => {
 	const user = userEvent.setup();
 
-	const taxInput = screen.getByLabelText("NIP");
-	const nameInput = screen.getByLabelText("Nazwa zleceniodawcy");
-	const submitButton = screen.getByRole("button", { name: "Dodaj" });
+	describe("render", () => {
+		it("render form with inputs and button", () => {
+			render(<CreateCustomerForm onDialogClose={vi.fn()} />);
+			screen.getByLabelText("NIP");
+			screen.getByLabelText("Nazwa zleceniodawcy");
+			screen.getByRole("button", { name: "Dodaj" });
+		});
+	});
 
-	await user.type(taxInput, "PL7743241555");
-	await user.type(nameInput, "DEVIL");
+	describe("submit", () => {
+		it("call submitForm when click on button", async () => {
+			render(<CreateCustomerForm onDialogClose={vi.fn()} />);
 
-	await user.click(submitButton);
+			const taxInput = screen.getByLabelText("NIP");
+			const nameInput = screen.getByLabelText("Nazwa zleceniodawcy");
+			const submitButton = screen.getByRole("button", { name: "Dodaj" });
 
-	expect(submitFormMock).toHaveBeenCalledOnce();
+			await user.type(taxInput, "PL7743241555");
+			await user.type(nameInput, "DEVIL");
+
+			await user.click(submitButton);
+
+			expect(submitFormMock).toHaveBeenCalledOnce();
+		});
+	});
+
+	it("not call submitForm when no or uncorrect data are provided", async () => {
+		render(<CreateCustomerForm onDialogClose={vi.fn()} />);
+
+		await user.click(screen.getByRole("button", { name: "Dodaj" }));
+
+		expect(submitFormMock).not.toHaveBeenCalled();
+	});
 });

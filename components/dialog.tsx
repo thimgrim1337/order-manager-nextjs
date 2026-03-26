@@ -11,6 +11,7 @@ import {
 import { Button } from "./ui/button";
 
 export default function Dialog({
+	titleIcon,
 	title,
 	description,
 	isOpen,
@@ -18,9 +19,9 @@ export default function Dialog({
 	className,
 	children,
 }: {
-	title: ReactNode;
+	titleIcon: ReactNode;
+	title: string;
 	description: string;
-
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	children: ReactNode;
@@ -29,14 +30,16 @@ export default function Dialog({
 	return (
 		<DialogWrapper open={isOpen} onOpenChange={onOpenChange}>
 			<DialogTrigger asChild>
-				<Button className="group">
+				<Button className="group" aria-label={title}>
 					<Plus className="transition-transform group-hover:rotate-45 group-hover:scale-125" />
 				</Button>
 			</DialogTrigger>
 
 			<DialogContent className={className}>
 				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2">{title}</DialogTitle>
+					<DialogTitle className="flex items-center gap-2">
+						{titleIcon} {title}
+					</DialogTitle>
 					<DialogDescription>{description}</DialogDescription>
 				</DialogHeader>
 				{children}
