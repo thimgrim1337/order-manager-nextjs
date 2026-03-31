@@ -74,7 +74,7 @@ export default function CreateOrderForm({
 		>
 			<form.AppForm>
 				<FieldGroup className="grid grid-cols-2">
-					<div className="flex gap-2 items-end">
+					<div className="flex gap-2 items-end max-w-max">
 						<form.AppField name="customerId">
 							{(field) => (
 								<field.ComboboxField

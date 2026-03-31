@@ -6,9 +6,11 @@ loadEnvConfig(process.cwd());
 const EnvSchema = z.object({
 	NODE_ENV: z
 		.union([
+			z.literal("dev"),
 			z.literal("development"),
-			z.literal("testing"),
+			z.literal("test"),
 			z.literal("production"),
+			z.literal("prod"),
 		])
 		.default("development"),
 	DB_HOST: z.string(),

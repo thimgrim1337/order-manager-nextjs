@@ -67,7 +67,7 @@ export function Combobox({
 				<Command>
 					<CommandInput
 						placeholder={`Szukaj ${placeholder.split(" ")[1]}...`}
-						className="h-9"
+						className="h-9 "
 						onValueChange={setSearch}
 					/>
 					<CommandList>

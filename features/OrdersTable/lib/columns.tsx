@@ -84,12 +84,11 @@ export const columns: ColumnDef<Order>[] = [
 			);
 		},
 	},
-	{
-		id: "actions",
-		cell: ({ row }) => {
-			const _order = row.original;
-
-			//   return <OrderOptions order={order} />;
-		},
-	},
+	//   {
+	//     id: 'actions',
+	//     cell: ({ row }) => {
+	//       // const _order = row.original;
+	//       //   return <OrderOptions order={order} />;
+	//     },
+	//   },
 ];

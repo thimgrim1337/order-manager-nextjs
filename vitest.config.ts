@@ -17,5 +17,7 @@ export default defineConfig({
 			provider: playwright(),
 			instances: [{ browser: "chromium" }],
 		},
+		include: ["__tests__/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
+		exclude: ["node_modules", "dist", "e2e"],
 	},
 });
