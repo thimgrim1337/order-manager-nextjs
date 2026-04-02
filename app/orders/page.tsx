@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import PageHeader from "@/components/ui/page-header";
 import CreateOrder from "@/features/OrderForm/components/create-order";
 import OrdersTable from "@/features/OrdersTable/components/orders-table";
+import OrderTableFilter from "@/features/OrdersTable/components/orders-table-filter";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@/lib/consts";
 import { getAllCities } from "@/lib/dal/city.dal";
 import { getAllCountries } from "@/lib/dal/country.dal";
@@ -35,22 +36,26 @@ export default async function OrdersPage({
 	const countries = getAllCountries();
 
 	return (
-		<>
+		<div className="w-[90%] m-auto my-5">
 			<PageHeader
 				title="Zlecenia"
 				subText="System zarządzania zleceniami transportowymi"
 			/>
 
 			<Suspense fallback={<p>Loading...</p>}>
-				<CreateOrder
-					customers={customers}
-					cities={cities}
-					drivers={drivers}
-					trucks={trucks}
-					countries={countries}
-				/>
+				<div className="flex gap-2 justify-between border rounded-md py-2 px-4 my-5">
+					<OrderTableFilter />
+					<CreateOrder
+						customers={customers}
+						cities={cities}
+						drivers={drivers}
+						trucks={trucks}
+						countries={countries}
+					/>
+				</div>
+
 				<OrdersTable orders={orders} rowCount={rowCount[0].count} />
 			</Suspense>
-		</>
+		</div>
 	);
 }

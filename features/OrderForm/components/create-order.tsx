@@ -36,6 +36,7 @@ export default function CreateOrder({
 			title={"Dodaj nowe zlecenie"}
 			description="Wypełnij wszystkie pola aby dodać nowe zlecenie."
 			className="min-w-250 max-w-1/2"
+			isTextButton={true}
 		>
 			<CreateOrderForm
 				customers={customersData}

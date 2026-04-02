@@ -9,10 +9,9 @@ export default function OrderTableFilter() {
 	const { filters, setFilters, resetFilters } = useFilters();
 
 	return (
-		<div className="flex gap-2 items-center">
-			<Search className="text-muted-foreground" />
+		<div className="flex-1 flex gap-2 items-center">
 			<DebouncedInput
-				className="max-w-sm border-none"
+				className=" border rounded-md"
 				onChange={(value) =>
 					setFilters({
 						globalFilters: typeof value === "string" ? value : value.toString(),
@@ -20,6 +19,7 @@ export default function OrderTableFilter() {
 				}
 				placeholder={`Szukaj zleceń....`}
 				value={filters.globalFilters || ""}
+				icon={<Search className="text-muted-foreground" size={"1.5rem"} />}
 			/>
 			<Button onClick={() => resetFilters()} variant={"outline"}>
 				Reset

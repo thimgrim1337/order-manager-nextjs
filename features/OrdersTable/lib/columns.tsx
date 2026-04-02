@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/lib/dates";
 import { OrderDto as Order } from "@/lib/dto/order.dto";
+import StatusBadge from "../components/status-bagde";
 
 export const columns: ColumnDef<Order>[] = [
 	{
@@ -32,8 +33,9 @@ export const columns: ColumnDef<Order>[] = [
 		cell: ({ row }) => {
 			const statusId = row.getValue("statusId") as number;
 
-			return statusId;
-			// <StatusBadge statusID={statusID}> {row.original.status}</StatusBadge>
+			return (
+				<StatusBadge statusId={statusId}>{row.original.status}</StatusBadge>
+			);
 		},
 		header: "Status",
 	},

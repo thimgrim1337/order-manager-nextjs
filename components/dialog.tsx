@@ -16,6 +16,7 @@ export default function Dialog({
 	description,
 	isOpen,
 	onOpenChange,
+	isTextButton = false,
 	className,
 	children,
 }: {
@@ -25,12 +26,17 @@ export default function Dialog({
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	children: ReactNode;
+	isTextButton: boolean;
 	className?: string;
 }) {
 	return (
 		<DialogWrapper open={isOpen} onOpenChange={onOpenChange}>
 			<DialogTrigger asChild>
-				<Button className="group" aria-label={title}>
+				<Button
+					className="group font-medium flex items-center"
+					aria-label={title}
+				>
+					{isTextButton && title}
 					<Plus className="transition-transform group-hover:rotate-45 group-hover:scale-125" />
 				</Button>
 			</DialogTrigger>

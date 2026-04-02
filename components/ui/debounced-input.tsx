@@ -5,14 +5,14 @@ type DebouncedInputProps = {
 	value: string;
 	onChange: (value: string | number) => void;
 	debounce?: number;
-	children?: ReactNode;
+	icon?: ReactNode;
 };
 
 export default function DebouncedInput({
 	value: initialValue,
 	onChange,
 	debounce = 200,
-	children,
+	icon,
 	...props
 }: DebouncedInputProps &
 	Omit<InputHTMLAttributes<HTMLInputElement>, "onChange">) {
@@ -34,6 +34,7 @@ export default function DebouncedInput({
 
 	return (
 		<>
+			{icon}
 			<Input
 				{...props}
 				value={value ?? ""}
@@ -46,7 +47,6 @@ export default function DebouncedInput({
 					}
 				}}
 			/>
-			{children}
 		</>
 	);
 }
