@@ -8,8 +8,8 @@ type SubmitForm<T> = {
 };
 
 type ToastMessage = {
-	errorTitle: string;
-	successTitle: string;
+	errorTitle?: string;
+	successTitle?: string;
 	successDescription?: string;
 };
 
@@ -26,7 +26,7 @@ export default function useFormSubmit<T>({
 		const response = await action(formData);
 
 		if (!("success" in response)) {
-			return toast.error(errorTitle, {
+			return toast.error(errorTitle || "Niepowodzenie", {
 				description: response?.message,
 				richColors: true,
 			});
@@ -35,7 +35,7 @@ export default function useFormSubmit<T>({
 		onDialogClose();
 		refresh();
 
-		return toast.success(successTitle, {
+		return toast.success(successTitle || "Sukces", {
 			description: successDescription,
 			richColors: true,
 		});

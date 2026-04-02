@@ -24,8 +24,6 @@ export default function CreateCustomerForm({
 		},
 		onSubmit: async ({ value }) =>
 			submitForm(value, {
-				errorTitle: "Nie udało się utworzyć zleceniodawcy",
-				successTitle: "Pomyślnie utworzono zleceniodawcę",
 				successDescription: `Pomyślnie utworzono nowego zleceniodawcę: ${value.name}`,
 			}),
 	});

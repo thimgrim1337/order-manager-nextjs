@@ -22,6 +22,7 @@ import FormBase, { FormControlProps } from "./form-base";
 type PlaceFieldProps = {
 	cities: City[];
 	countries: Country[];
+	comboboxWidth?: string;
 };
 
 export default function PlaceField({
@@ -90,7 +91,7 @@ export default function PlaceField({
 						<ChevronsUpDown className="opacity-50" />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="p-0">
+				<PopoverContent className={cn(`p-0 ${props.comboboxWidth}`)}>
 					<Command>
 						<CommandInput
 							placeholder={`Szukaj ${"miejsc"}...`}

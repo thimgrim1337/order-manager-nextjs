@@ -26,6 +26,8 @@ export async function getCurrencyRate(
 	);
 
 	if (result.type === "error") {
+		if (result.status === 404)
+			throw new Error("Nie znaleziono kursu dla wskazanej daty.");
 		throw new Error("Nie udało się pobrać kursu walut.");
 	}
 

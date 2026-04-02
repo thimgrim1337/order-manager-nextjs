@@ -17,4 +17,4 @@ export const getToday = () => formatDate(Date.now());
 export const getTomorrow = () => formatDate(addDays(getToday(), 1));
 export const getYesterday = (date: Date | string) =>
 	formatDate(subDays(date, 1));
-export { isFuture, isWeekend };
+export { isFuture, isWeekend, subDays };

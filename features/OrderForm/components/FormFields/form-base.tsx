@@ -24,6 +24,7 @@ export default function FormBase({
 		<Field
 			aria-invalid={isInvalid}
 			orientation={horizontal ? "horizontal" : undefined}
+			className="min-w-0 flex-1"
 		>
 			<FieldLabel htmlFor={field.name}>
 				{icon}

@@ -7,6 +7,7 @@ type ComboboxFieldProps = {
 	data: FieldData[];
 	placeholder: string;
 	onSearch?: (value: string) => void;
+	comboboxWidth?: string;
 };
 
 export default function ComboboxField(
@@ -27,6 +28,7 @@ export default function ComboboxField(
 				onSearch={props.onSearch}
 				aria-invalid={isInvalid}
 				id={field.name}
+				comboboxWidth={props.comboboxWidth}
 			/>
 		</FormBase>
 	);

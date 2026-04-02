@@ -1,12 +1,18 @@
 import { OpenHolidaysResponse } from "@/features/OrderForm/services/openHolidays.services";
-import { getYesterday, isFuture, isWeekend } from "@/lib/dates";
+import { getYesterday, isFuture, isWeekend, subDays } from "@/lib/dates";
 
 export function getValidCurrencyDate(
 	date: string,
 	holidays: Pick<OpenHolidaysResponse, "endDate">[],
 ) {
 	try {
-		const yesterday = getYesterday(date);
+		let yesterday;
+
+		if (isFuture(date)) {
+			yesterday = getYesterday(subDays(date, 1));
+		} else {
+			yesterday = getYesterday(date);
+		}
 
 		const isHoliday = holidays.some((day) => day.endDate === yesterday);
 

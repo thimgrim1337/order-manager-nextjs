@@ -26,6 +26,7 @@ type ComboboxProps = {
 	onChange: (value: number | string) => void;
 	value: number | string;
 	onSearch?: (value: string) => void;
+	comboboxWidth?: string;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue">;
 
 export function Combobox({
@@ -56,14 +57,14 @@ export function Combobox({
 					aria-invalid={props["aria-invalid"]}
 					className="flex justify-between aria-invalid:border-destructive"
 				>
-					<span className="overflow-hidden">
+					<span className="truncate">
 						{value ? data.find((d) => d.id === value)?.value : `${placeholder}`}
 					</span>
 
 					<ChevronsUpDown className="opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="p-0">
+			<PopoverContent className={cn(`p-0 ${props.comboboxWidth} `)}>
 				<Command>
 					<CommandInput
 						placeholder={`Szukaj ${placeholder.split(" ")[1]}...`}

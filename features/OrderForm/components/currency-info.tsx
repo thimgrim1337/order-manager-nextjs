@@ -17,7 +17,7 @@ export default function CurrencyInfo({
 			<Loader2 className="h-3 w-3 animate-spin" />
 			<span>Pobieranie kursu waluty...</span>
 		</>
-	) : currencyInfo ? (
+	) : currencyInfo?.rate ? (
 		<span>
 			Tabela nr {currencyInfo.table} z dnia {currencyInfo.date}, 1 EUR ={" "}
 			{currencyInfo.rate} PLN

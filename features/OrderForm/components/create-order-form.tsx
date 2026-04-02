@@ -37,8 +37,6 @@ export default function CreateOrderForm({
 		...orderFormOptions,
 		onSubmit: async ({ value }) => {
 			submitForm(value, {
-				errorTitle: "Nie udało się utworzyć zlecenia",
-				successTitle: "Pomyślnie utworzono nowe zlecenie",
 				successDescription: `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
 			});
 			resetFilters();
@@ -62,7 +60,7 @@ export default function CreateOrderForm({
 			});
 	}, [currency, rate, form]);
 
-	const fieldGroupStyle = "grid grid-cols-2 pt-5";
+	const fieldGroupStyle = "flex-row pt-5";
 
 	return (
 		<form
@@ -73,8 +71,8 @@ export default function CreateOrderForm({
 			}}
 		>
 			<form.AppForm>
-				<FieldGroup className="grid grid-cols-2">
-					<div className="flex gap-2 items-end max-w-max">
+				<FieldGroup className="flex-row justify-between">
+					<div className="flex-1 flex gap-2 items-end min-w-0">
 						<form.AppField name="customerId">
 							{(field) => (
 								<field.ComboboxField
@@ -85,6 +83,7 @@ export default function CreateOrderForm({
 									onSearch={(value) => setFilters({ customer: value })}
 									label="Zleceniodawca"
 									placeholder="Wybierz zleceniodawcę"
+									comboboxWidth="w-103"
 								/>
 							)}
 						</form.AppField>
@@ -106,7 +105,7 @@ export default function CreateOrderForm({
 				</FieldGroup>
 
 				<FieldGroup className={fieldGroupStyle}>
-					<div className="flex gap-2 items-end">
+					<div className="flex-1 flex gap-2 items-end">
 						<form.AppField name="loadingPlaces" mode="array">
 							{(field) => {
 								return (
@@ -114,6 +113,7 @@ export default function CreateOrderForm({
 										label="Miejsca załadunku"
 										cities={cities}
 										countries={countries}
+										comboboxWidth="w-104"
 									/>
 								);
 							}}
@@ -127,6 +127,7 @@ export default function CreateOrderForm({
 									label="Miejsca rozładunku"
 									cities={cities}
 									countries={countries}
+									comboboxWidth="w-115"
 								/>
 							);
 						}}
@@ -193,6 +194,7 @@ export default function CreateOrderForm({
 								}))}
 								label="Pojazd"
 								placeholder="Wybierz pojazd"
+								comboboxWidth="w-115"
 							/>
 						)}
 					</form.AppField>
@@ -205,6 +207,7 @@ export default function CreateOrderForm({
 								}))}
 								label="Kierowca"
 								placeholder="Wybierz kierowcę"
+								comboboxWidth="w-115"
 							/>
 						)}
 					</form.AppField>
