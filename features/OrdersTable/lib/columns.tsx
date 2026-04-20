@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/lib/dates";
 import { OrderDto as Order } from "@/lib/dto/order.dto";
+import OrdersTableRowActions from "../components/orders-table-actions";
 import StatusBadge from "../components/status-bagde";
 
 export const columns: ColumnDef<Order>[] = [
@@ -86,11 +87,14 @@ export const columns: ColumnDef<Order>[] = [
 			);
 		},
 	},
-	//   {
-	//     id: 'actions',
-	//     cell: ({ row }) => {
-	//       // const _order = row.original;
-	//       //   return <OrderOptions order={order} />;
-	//     },
-	//   },
+	{
+		id: "actions",
+		cell: ({ row }) => {
+			return (
+				<div className="opacity-0 transition-opacity group-hover:opacity-100">
+					<OrdersTableRowActions order={row.original} />
+				</div>
+			);
+		},
+	},
 ];

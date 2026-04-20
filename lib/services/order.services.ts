@@ -1,12 +1,20 @@
+import { DrizzleQueryError } from "drizzle-orm";
 import z from "zod";
 import db from "@/db/db";
 import {
 	addOrderPlaces,
 	checkIfOrderExist,
 	createOrder,
+	deleteOrder,
+	deleteOrderPlaces,
+	updateOrder,
 } from "../dal/order.dal";
 import { updateTruckAssignedDriver } from "../dal/truck.dal";
-import { createOrderFormSchema, selectOrderSchema } from "../dto/order.dto";
+import {
+	createOrderFormSchema,
+	selectOrderSchema,
+	updateOrderSchema,
+} from "../dto/order.dto";
 import { error, ok } from "../error";
 
 export async function createOrderService(rawData: unknown) {
@@ -58,6 +66,65 @@ export async function createOrderService(rawData: unknown) {
 
 		return ok(selectOrderSchema.parse(dbOrder));
 	} catch (err) {
+		if (err instanceof DrizzleQueryError) {
+			return error({
+				reason: "DrizzleError",
+				details: err.cause,
+			});
+		}
+		return error({
+			reason: `UnexpectedError`,
+			details: err,
+		});
+	}
+}
+
+export async function updateOrderService(orderId: number, rawData: unknown) {
+	const validationResult = updateOrderSchema.safeParse(rawData);
+	if (!validationResult.success)
+		return error({
+			reason: "InvalidData",
+			details: z.prettifyError(validationResult.error),
+		});
+
+	const validatedData = validationResult.data;
+
+	try {
+		const dbOrder = await updateOrder(orderId, validatedData);
+
+		return ok(selectOrderSchema.parse(dbOrder));
+	} catch (err) {
+		if (err instanceof DrizzleQueryError) {
+			return error({
+				reason: "DrizzleError",
+				details: err.cause,
+			});
+		}
+		return error({
+			reason: `UnexpectedError`,
+			details: err,
+		});
+	}
+}
+
+export async function deleteOrderService(orderId: number) {
+	try {
+		const dbOrder = await db.transaction(async (trx) => {
+			await deleteOrderPlaces(orderId, "loadingPlace", trx);
+			await deleteOrderPlaces(orderId, "unloadingPlace", trx);
+			const order = await deleteOrder(orderId, trx);
+
+			return order;
+		});
+
+		return ok(selectOrderSchema.parse(dbOrder));
+	} catch (err) {
+		if (err instanceof DrizzleQueryError) {
+			return error({
+				reason: "DrizzleError",
+				details: err.cause,
+			});
+		}
 		return error({
 			reason: `UnexpectedError`,
 			details: err,

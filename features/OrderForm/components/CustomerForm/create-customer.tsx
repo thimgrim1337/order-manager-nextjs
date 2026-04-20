@@ -1,8 +1,9 @@
 "use client";
 
 import { HousePlus } from "lucide-react";
-import Dialog from "@/components/dialog";
+
 import useToggle from "../../../shared/hooks/useToggle";
+import FormDialog from "../ui/form-dialog";
 import CreateCustomerForm from "./create-customer-form";
 
 export default function CreateCustomer() {
@@ -10,14 +11,15 @@ export default function CreateCustomer() {
 		useToggle();
 
 	return (
-		<Dialog
+		<FormDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			titleIcon={<HousePlus />}
-			title={"Dodawanie nowego zleceniodawcy"}
+			modalIcon={<HousePlus />}
+			modalTitle={"Dodawanie nowego zleceniodawcy"}
 			description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
+			hideTriggerTitle
 		>
 			<CreateCustomerForm onDialogClose={closeModal} />
-		</Dialog>
+		</FormDialog>
 	);
 }

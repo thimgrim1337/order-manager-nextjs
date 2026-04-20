@@ -2,10 +2,10 @@
 
 import { FilePlus } from "lucide-react";
 import { use } from "react";
-import Dialog from "@/components/dialog";
 import { City, Country, Customer, Driver, Truck } from "@/types/types";
 import useToggle from "../../shared/hooks/useToggle";
 import CreateOrderForm from "./create-order-form";
+import FormDialog from "./ui/form-dialog";
 
 export default function CreateOrder({
 	customers,
@@ -29,14 +29,12 @@ export default function CreateOrder({
 	const countryData = use(countries);
 
 	return (
-		<Dialog
+		<FormDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			titleIcon={<FilePlus />}
-			title={"Dodaj nowe zlecenie"}
+			modalIcon={<FilePlus />}
+			modalTitle={"Dodaj nowe zlecenie"}
 			description="Wypełnij wszystkie pola aby dodać nowe zlecenie."
-			className="min-w-250 max-w-1/2"
-			isTextButton={true}
 		>
 			<CreateOrderForm
 				customers={customersData}
@@ -46,6 +44,6 @@ export default function CreateOrder({
 				countries={countryData}
 				onDialogClose={closeModal}
 			/>
-		</Dialog>
+		</FormDialog>
 	);
 }

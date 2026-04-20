@@ -1,3 +1,4 @@
+import { getTableName, sql } from "drizzle-orm";
 import db from "@/db/db";
 import {
 	city as cities,
@@ -42,22 +43,29 @@ export async function seedTestData() {
 		})
 		.returning();
 
-	const [city] = await db
+	const dbCities = await db
 		.insert(cities)
-		.values({
-			name: "Warszawa",
-			postal: "00-001",
-			countryId: country.id,
-		})
+		.values([
+			{
+				name: "Warszawa",
+				postal: "00-001",
+				countryId: country.id,
+			},
+			{
+				name: "Płock",
+				postal: "09-400",
+				countryId: country.id,
+			},
+		])
 		.returning();
 
-	return { customer, driver, truck, city };
+	return { customer, driver, truck, dbCities };
 }
 
 export async function cleanupTestData() {
-	await db.delete(trucks);
-	await db.delete(drivers);
-	await db.delete(cities);
-	await db.delete(customers);
-	await db.delete(countries);
+	for (const table of [cities, countries, customers, drivers, trucks]) {
+		await db.execute(
+			sql.raw(`TRUNCATE TABLE ${getTableName(table)} RESTART IDENTITY CASCADE`),
+		);
+	}
 }

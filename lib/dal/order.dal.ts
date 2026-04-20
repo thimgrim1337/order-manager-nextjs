@@ -18,9 +18,9 @@ import {
 	ordersWithDetailsView,
 	unloadingPlace,
 } from "@/db/schemas";
-import { SortOptions } from "@/types/types";
+import { PlaceType, SortOptions } from "@/types/types";
 import { CityDto } from "../dto/city.dto";
-import { CreateOrderDto } from "../dto/order.dto";
+import { CreateOrderDto, UpdateOrderDto } from "../dto/order.dto";
 import { analyzeGlobalFiltering } from "../utils";
 
 export type DbOrderView = InferSelectViewModel<typeof ordersWithDetailsView>;
@@ -124,7 +124,7 @@ export async function createOrder(dto: CreateOrderDto, trx: dbTransaction) {
 export async function addOrderPlaces(
 	orderId: number,
 	cities: CityDto[],
-	placeType: "loadingPlace" | "unloadingPlace",
+	placeType: PlaceType,
 	trx: dbTransaction,
 ) {
 	const places = cities.map((city) => ({
@@ -135,4 +135,37 @@ export async function addOrderPlaces(
 	const dbPlaces = await trx.insert(table).values(places).returning();
 
 	return dbPlaces;
+}
+
+export async function deleteOrderPlaces(
+	orderId: number,
+	placeType: PlaceType,
+	trx: dbTransaction,
+) {
+	const table = placeType === "loadingPlace" ? loadingPlace : unloadingPlace;
+	const dbPlaces = await trx
+		.delete(table)
+		.where(eq(table.orderId, orderId))
+		.returning();
+
+	return dbPlaces;
+}
+
+export async function updateOrder(orderId: number, dto: UpdateOrderDto) {
+	const [dbOrder] = await db
+		.update(order)
+		.set(dto)
+		.where(eq(order.id, orderId))
+		.returning();
+
+	return dbOrder;
+}
+
+export async function deleteOrder(orderId: number, trx: dbTransaction) {
+	const [dbOrder] = await trx
+		.delete(order)
+		.where(eq(order.id, orderId))
+		.returning();
+
+	return dbOrder;
 }

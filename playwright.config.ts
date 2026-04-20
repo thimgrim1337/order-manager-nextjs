@@ -18,7 +18,7 @@ export default defineConfig({
 	testDir: "./__tests__/e2e",
 	outputDir: "./__tests__/e2e/test-results",
 	/* Run tests in files in parallel */
-	fullyParallel: true,
+	fullyParallel: false,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */

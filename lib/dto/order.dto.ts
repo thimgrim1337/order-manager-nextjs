@@ -1,4 +1,8 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import {
+	createInsertSchema,
+	createSelectSchema,
+	createUpdateSchema,
+} from "drizzle-zod";
 import z from "zod";
 import { order, ordersWithDetailsView } from "@/db/schemas";
 import { ZOD_ERROR_MESSAGES } from "../consts";
@@ -44,7 +48,9 @@ export const createOrderFormSchema = z.object({
 export const createOrderSchema = createInsertSchema(order);
 export const selectOrderViewSchema = createSelectSchema(ordersWithDetailsView);
 export const selectOrderSchema = createSelectSchema(order);
+export const updateOrderSchema = createUpdateSchema(order);
 
 export type CreateOrderFormDto = z.infer<typeof createOrderFormSchema>;
 export type CreateOrderDto = z.infer<typeof createOrderSchema>;
 export type OrderDto = z.infer<typeof selectOrderViewSchema>;
+export type UpdateOrderDto = z.infer<typeof updateOrderSchema>;

@@ -14,6 +14,7 @@
 /coverage
 __screenshots__
 .vitest-attachments
+test-results
 
 # next.js
 /.next/

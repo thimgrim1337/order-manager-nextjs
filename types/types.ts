@@ -15,6 +15,7 @@ export type Driver = DriverDto;
 export type Truck = TruckDto;
 
 export type Currencies = "PLN" | "EUR";
+export type PlaceType = "loadingPlace" | "unloadingPlace";
 
 export type CurrencyInfo = {
 	date: string;

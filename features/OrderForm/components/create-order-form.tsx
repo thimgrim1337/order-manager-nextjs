@@ -13,7 +13,7 @@ import useFormSubmit from "../hooks/useFormSubmit";
 import { orderFormOptions } from "../lib/order-form-options";
 import CreateCity from "./CityForm/create-city";
 import CreateCustomer from "./CustomerForm/create-customer";
-import CurrencyInfo from "./currency-info";
+import CurrencyInfo from "./ui/currency-info";
 
 export default function CreateOrderForm({
 	customers,

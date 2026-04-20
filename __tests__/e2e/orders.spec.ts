@@ -1,12 +1,13 @@
 import { expect, test } from "@playwright/test";
 import { cleanupTestData, seedTestData } from "./helpers/seed";
 
-test.describe("Order create", () => {
-	test.beforeEach(async () => {
+test.describe("Order test", () => {
+	test.beforeAll(async () => {
+		await cleanupTestData();
 		await seedTestData();
 	});
 
-	test.afterEach(async () => {
+	test.afterAll(async () => {
 		await cleanupTestData();
 	});
 
@@ -21,16 +22,24 @@ test.describe("Order create", () => {
 		await page.getByLabel("Numer zlecenia").fill("E2E-001");
 
 		await page.getByLabel("Data załadunku").click();
+		await expect(page.getByRole("gridcell", { name: "12" })).toBeVisible();
 		await page.getByRole("gridcell", { name: "12" }).click();
+		await page.keyboard.press("Escape");
+		await expect(page.getByRole("gridcell", { name: "12" })).not.toBeVisible();
 
 		await page.getByLabel("Data rozładunku").click();
+		await expect(page.getByRole("gridcell", { name: "13" })).toBeVisible();
 		await page.getByRole("gridcell", { name: "13" }).click();
+		await page.keyboard.press("Escape");
+		await expect(page.getByRole("gridcell", { name: "13" })).not.toBeVisible();
 
 		await page.getByLabel("Miejsca załadunku").click();
 		await page.getByRole("option", { name: "Warszawa" }).click();
+		await page.keyboard.press("Escape");
 
 		await page.getByLabel("Miejsca rozładunku").click();
-		await page.getByRole("option", { name: "Warszawa" }).click();
+		await page.getByRole("option", { name: "Płock" }).click();
+		await page.keyboard.press("Escape");
 
 		await page.getByLabel("Cena w walucie").fill("1000");
 
@@ -39,7 +48,51 @@ test.describe("Order create", () => {
 
 		// submit
 		await page.getByRole("button", { name: "Dodaj" }).click();
+		await page.keyboard.press("Escape");
 
-		await expect(page.getByText("E2E-001")).toBeVisible();
+		await expect(
+			page.getByRole("heading", { name: "Dodaj nowe zlecenie" }),
+		).not.toBeVisible();
+
+		await expect(page.getByRole("cell", { name: "E2E-001" })).toBeVisible();
+	});
+
+	test("Change status order to finished", async ({ page }) => {
+		await page.goto("/orders");
+
+		await expect(page.getByRole("cell", { name: "w trakcie" })).toBeVisible();
+
+		await page.getByRole("menu", { name: "order actions" }).click();
+		await page.getByRole("button", { name: "order status" }).click();
+
+		await expect(
+			page.getByRole("heading", { name: "Zmiana statusu zlecenia" }),
+		).toBeVisible();
+
+		await page.getByRole("button", { name: "status-delivered" }).click();
+		await page.keyboard.press("Escape");
+
+		await expect(
+			page.getByRole("heading", { name: "Zmiana statusu zlecenia" }),
+		).not.toBeVisible();
+
+		await expect(page.getByText("zakończone")).toBeVisible();
+	});
+
+	test("Delete order", async ({ page }) => {
+		await page.goto("/orders");
+
+		await expect(page.getByRole("cell", { name: "E2E-001" })).toBeVisible();
+
+		await page.getByRole("menu", { name: "order actions" }).click();
+		await page.getByRole("button", { name: "order remove" }).click();
+
+		await expect(
+			page.getByRole("heading", { name: "Czy jesteś pewny ? " }),
+		).toBeVisible();
+
+		await page.getByRole("button", { name: "Usuń" }).click();
+
+		await expect(page.getByRole("cell", { name: "E2E-001" })).not.toBeVisible();
 	});
 });
