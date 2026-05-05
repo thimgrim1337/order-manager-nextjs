@@ -1,7 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { act, Suspense } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CreateOrderForm from "@/features/OrderForm/components/create-order-form";
+import { OrderDataProvider } from "@/features/shared/context/order-context";
 
 const submitFormMock = vi.hoisted(() => vi.fn());
 vi.mock("@/features/OrderForm/hooks/useFormSubmit", () => ({
@@ -19,6 +21,13 @@ vi.mock("@/features/shared/hooks/useFilters", () => ({
 const mockUseCurrencyInfo = vi.hoisted(() => vi.fn());
 vi.mock("@/features/OrderForm/hooks/useCurrencyInfo", () => ({
 	default: (...args: unknown[]) => mockUseCurrencyInfo(...args),
+}));
+
+vi.mock("@/lib/actions", () => ({
+	searchCustomers: vi.fn(),
+	createCity: vi.fn(),
+	createCustomer: vi.fn(),
+	createOrder: vi.fn(),
 }));
 
 const mockRate = {
@@ -41,20 +50,60 @@ beforeEach(() => {
 	});
 });
 
+const dataPromiseMock = {
+	cities: Promise.resolve([
+		{
+			id: 1,
+			name: "Płock",
+			postal: "09-410",
+			countryId: 39,
+		},
+	]),
+	customers: Promise.resolve([
+		{
+			id: 1,
+			name: "DEVIL",
+			tax: "7743241555",
+		},
+	]),
+	drivers: Promise.resolve([
+		{
+			id: 1,
+			firstName: "Jan",
+			lastName: "Kowalski",
+		},
+	]),
+	trucks: Promise.resolve([
+		{
+			id: 1,
+			plate: "WND0997C",
+			insuranceEndAt: "2026-06-01",
+			serviceEndAt: "2026-06-01",
+			driverId: 1,
+		},
+	]),
+	countries: Promise.resolve([
+		{
+			id: 1,
+			name: "Poland",
+			code: "PL",
+		},
+	]),
+};
+
 describe("CreateOrderForm", () => {
 	const user = userEvent.setup({ pointerEventsCheck: 0 });
 	describe("render", () => {
-		it("render form with inputs, labels and buttons", () => {
-			render(
-				<CreateOrderForm
-					cities={[]}
-					countries={[]}
-					customers={[]}
-					drivers={[]}
-					trucks={[]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+		it("render form with inputs, labels and buttons", async () => {
+			await act(async () => {
+				render(
+					<OrderDataProvider dataPromise={dataPromiseMock}>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 
 			screen.getByLabelText("Zleceniodawca");
 			screen.getByLabelText("Numer zlecenia");
@@ -82,16 +131,15 @@ describe("CreateOrderForm", () => {
 				rateError: null,
 			});
 
-			render(
-				<CreateOrderForm
-					cities={[]}
-					countries={[]}
-					customers={[]}
-					drivers={[]}
-					trucks={[]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+			await act(async () => {
+				render(
+					<OrderDataProvider dataPromise={dataPromiseMock}>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 
 			await user.click(screen.getByLabelText("Waluta"));
 			await user.click(screen.getByRole("option", { name: "EUR" }));
@@ -104,16 +152,15 @@ describe("CreateOrderForm", () => {
 		});
 
 		it("not show currencyInfo when currency is PLN", async () => {
-			render(
-				<CreateOrderForm
-					cities={[]}
-					countries={[]}
-					customers={[]}
-					drivers={[]}
-					trucks={[]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+			await act(async () => {
+				render(
+					<OrderDataProvider dataPromise={dataPromiseMock}>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 
 			await user.click(screen.getByLabelText("Waluta"));
 			await user.click(screen.getByRole("option", { name: "PLN" }));
@@ -129,16 +176,15 @@ describe("CreateOrderForm", () => {
 				rateError: null,
 			});
 
-			render(
-				<CreateOrderForm
-					cities={[]}
-					countries={[]}
-					customers={[]}
-					drivers={[]}
-					trucks={[]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+			await act(async () => {
+				render(
+					<OrderDataProvider dataPromise={dataPromiseMock}>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 
 			await user.click(screen.getByLabelText("Waluta"));
 			await user.click(screen.getByRole("option", { name: "EUR" }));
@@ -149,102 +195,73 @@ describe("CreateOrderForm", () => {
 
 	describe("auto-assign driver", () => {
 		it("auto-assign driver when truck is selected", async () => {
-			render(
-				<CreateOrderForm
-					cities={[]}
-					countries={[]}
-					customers={[]}
-					drivers={[{ id: 1, firstName: "Dawid", lastName: "Dygner" }]}
-					trucks={[
-						{
-							id: 1,
-							plate: "WP0997C",
-							driverId: 1,
-							insuranceEndAt: "2026-03-30",
-							serviceEndAt: "2026-03-30",
-						},
-					]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+			await act(async () => {
+				render(
+					<OrderDataProvider dataPromise={dataPromiseMock}>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 
 			expect(screen.getByLabelText("Kierowca")).toHaveTextContent(
 				"Wybierz kierowcę",
 			);
 			await user.click(screen.getByLabelText("Pojazd"));
-			await user.click(screen.getByRole("option", { name: "WP0997C" }));
-			await waitFor(() => screen.getByText("Dawid Dygner"));
+			await user.click(screen.getByRole("option", { name: "WND0997C" }));
+			await waitFor(() => screen.getByText("Jan Kowalski"));
 		});
 
 		it("do nothing when when is no driver assigned before", async () => {
-			render(
-				<CreateOrderForm
-					cities={[]}
-					countries={[]}
-					customers={[]}
-					drivers={[{ id: 1, firstName: "Dawid", lastName: "Dygner" }]}
-					trucks={[
-						{
-							id: 1,
-							plate: "WP0997C",
-							driverId: null,
-							insuranceEndAt: "2026-03-30",
-							serviceEndAt: "2026-03-30",
-						},
-					]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+			await act(async () => {
+				render(
+					<OrderDataProvider
+						dataPromise={{
+							...dataPromiseMock,
+							trucks: Promise.resolve([
+								{
+									id: 1,
+									plate: "WND0997C",
+									insuranceEndAt: "2026-06-01",
+									serviceEndAt: "2026-06-01",
+									driverId: null,
+								},
+							]),
+						}}
+					>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 
 			await user.click(screen.getByLabelText("Pojazd"));
-			await user.click(screen.getByRole("option", { name: "WP0997C" }));
+			await user.click(screen.getByRole("option", { name: "WND0997C" }));
 
 			await waitFor(() =>
-				expect(screen.queryByText("Dawid Dygner")).not.toBeInTheDocument(),
+				expect(screen.queryByText("Jan Kowalski")).not.toBeInTheDocument(),
 			);
 		});
 	});
 
 	describe("submit", () => {
-		beforeEach(() => {
-			render(
-				<CreateOrderForm
-					cities={[
-						{ countryId: 1, id: 1, name: "Płock", postal: "09-400" },
-						{ countryId: 1, id: 2, name: "Braniewo", postal: "14-500" },
-					]}
-					countries={[
-						{
-							code: "PL",
-							id: 1,
-							name: "Poland",
-						},
-					]}
-					customers={[
-						{
-							id: 1,
-							name: "test",
-							tax: "PL123456789",
-						},
-					]}
-					drivers={[{ id: 1, firstName: "Dawid", lastName: "Dygner" }]}
-					trucks={[
-						{
-							id: 1,
-							plate: "WP0997C",
-							driverId: 1,
-							insuranceEndAt: "2026-03-30",
-							serviceEndAt: "2026-03-30",
-						},
-					]}
-					onDialogClose={vi.fn()}
-				/>,
-			);
+		beforeEach(async () => {
+			await act(async () => {
+				render(
+					<OrderDataProvider dataPromise={dataPromiseMock}>
+						<Suspense fallback={"Loading..."}>
+							<CreateOrderForm onDialogClose={vi.fn()} />
+						</Suspense>
+					</OrderDataProvider>,
+				);
+			});
 		});
 
 		it("call submitForm and resetFilters when correct data are provided", async () => {
 			await user.click(screen.getByLabelText("Zleceniodawca"));
-			await user.click(screen.getByRole("option", { name: "test" }));
+			await user.click(screen.getByRole("option", { name: "DEVIL" }));
 
 			await user.type(screen.getByLabelText("Numer zlecenia"), "12345");
 
@@ -258,12 +275,12 @@ describe("CreateOrderForm", () => {
 			await user.click(screen.getByRole("option", { name: "Płock" }));
 
 			await user.click(screen.getByLabelText("Miejsca rozładunku"));
-			await user.click(screen.getByRole("option", { name: "Braniewo" }));
+			await user.click(screen.getByRole("option", { name: "Płock" }));
 
 			await user.type(screen.getByLabelText("Cena w walucie"), "1000");
 
 			await user.click(screen.getByLabelText("Pojazd"));
-			await user.click(screen.getByRole("option", { name: "WP0997C" }));
+			await user.click(screen.getByRole("option", { name: "WND0997C" }));
 
 			await user.click(screen.getByRole("button", { name: "Dodaj" }));
 

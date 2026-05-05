@@ -53,6 +53,10 @@ export default function PlaceField({
 		<FormBase {...props}>
 			<ul className="bg-neutral-100 p-2 rounded">
 				{selectedCities.map((city, i) => {
+					const country = countries.find(
+						(country) => country.id === city.countryId,
+					)?.code;
+
 					return (
 						<li
 							key={i}
@@ -60,7 +64,7 @@ export default function PlaceField({
 						>
 							<span className="font-medium ">{city.name}</span>
 							<span className="text-muted-foreground grow text-right mr-2 text-xs">
-								{countries[city.countryId - 1].code} {city.postal}
+								{country} {city.postal}
 							</span>
 							<Button
 								aria-label={`Usuń miejsce ${city.name}`}

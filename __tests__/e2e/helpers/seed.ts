@@ -5,6 +5,7 @@ import {
 	country as countries,
 	customer as customers,
 	driver as drivers,
+	status as statuses,
 	truck as trucks,
 } from "@/db/schemas";
 
@@ -59,11 +60,31 @@ export async function seedTestData() {
 		])
 		.returning();
 
-	return { customer, driver, truck, dbCities };
+	const [status] = await db
+		.insert(statuses)
+		.values([
+			{
+				name: "w trakcie",
+			},
+			{ name: "anulowane" },
+			{
+				name: "zakończone",
+			},
+		])
+		.returning();
+
+	return { customer, driver, truck, dbCities, status };
 }
 
 export async function cleanupTestData() {
-	for (const table of [cities, countries, customers, drivers, trucks]) {
+	for (const table of [
+		cities,
+		trucks,
+		drivers,
+		customers,
+		countries,
+		statuses,
+	]) {
 		await db.execute(
 			sql.raw(`TRUNCATE TABLE ${getTableName(table)} RESTART IDENTITY CASCADE`),
 		);

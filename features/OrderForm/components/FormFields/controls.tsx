@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useFormContext } from "../../context/form-context";
 
-export default function FormControls({ id }: { id: string }) {
+export default function FormControls({
+	id,
+	isEditButton,
+}: {
+	id: string;
+	isEditButton?: boolean;
+}) {
 	const form = useFormContext();
 	return (
 		<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
@@ -13,7 +19,7 @@ export default function FormControls({ id }: { id: string }) {
 						form={id}
 						onClick={form.handleSubmit}
 					>
-						{isSubmitting ? "Wysyłanie" : "Dodaj"}
+						{isSubmitting ? "Wysyłanie" : isEditButton ? "Edytuj" : "Dodaj"}
 					</Button>
 					<Button
 						type="reset"

@@ -1,10 +1,8 @@
-// import Dialog from '@/components/dialog';
-
 import { Ban, CheckCircle, ClockCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useToggle from "@/features/shared/hooks/useToggle";
-import { updateOrder } from "@/lib/actions";
-import { OrderDto } from "@/lib/dto/order.dto";
+import { patchOrder } from "@/lib/actions";
+import { OrderWithDetailsDto } from "@/lib/dto/order.dto";
 import { cn } from "@/lib/utils";
 import OrderActionDialog from "./order-action-dialog";
 
@@ -29,12 +27,16 @@ const statusConfig = {
 	},
 };
 
-export default function OrderActionStatus({ order }: { order: OrderDto }) {
+export default function OrderStatusMenu({
+	order,
+}: {
+	order: OrderWithDetailsDto;
+}) {
 	const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] =
 		useToggle();
 
 	async function handleClick(orderId: number, statusId: number) {
-		await updateOrder(orderId, { statusId: statusId });
+		await patchOrder(orderId, { statusId: statusId });
 		closeModal();
 	}
 

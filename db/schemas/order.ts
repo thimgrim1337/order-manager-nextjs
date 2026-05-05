@@ -10,7 +10,7 @@ import {
 	text,
 	timestamp,
 } from "drizzle-orm/pg-core";
-import { City } from "@/types/types";
+import { City, Customer, Driver, Status, Truck } from "@/types/types";
 import {
 	customer,
 	driver,
@@ -109,12 +109,16 @@ export const ordersWithDetailsView = pgView("orders_with_details", {
 		.references(() => customer.id),
 
 	// Joined data
-	customer: text("customer_name").notNull(),
-	driver: text("driver_name").notNull(),
-	truck: text("truck_plate").notNull(),
-	status: text("status_name").notNull(),
+	customer_name: text("customer_name").notNull(),
+	driver_fullname: text("driver_fullname").notNull(),
+	truck_plate: text("truck_plate").notNull(),
+	status_name: text("status_name").notNull(),
 
 	// JSON aggregated data
+	customer: json("customer").$type<Customer>().notNull(),
+	driver: json("driver").$type<Driver>().notNull(),
+	truck: json("truck").$type<Truck>().notNull(),
+	status: json("status").$type<Status>().notNull(),
 	loadingPlaces: json("loading_places").$type<City[]>().notNull(),
 	unloadingPlaces: json("unloading_places").$type<City[]>().notNull(),
 

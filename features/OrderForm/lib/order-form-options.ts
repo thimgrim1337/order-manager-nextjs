@@ -1,8 +1,8 @@
 import { formOptions } from "@tanstack/react-form-nextjs";
 import { isAfter, isBefore } from "date-fns";
 import { getToday, getTomorrow } from "@/lib/dates";
-import { CityDto as City } from "@/lib/dto/city.dto";
-import { createOrderFormSchema } from "@/lib/dto/order.dto";
+import { OrderFormSchema } from "@/lib/dto/order.dto";
+import { City } from "@/types/types";
 
 export const orderFormOptions = formOptions({
 	defaultValues: {
@@ -24,11 +24,11 @@ export const orderFormOptions = formOptions({
 		},
 	},
 	validators: {
-		onChange: createOrderFormSchema,
+		onChange: OrderFormSchema,
 		onSubmitAsync: async ({ value }) => {
 			const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
 			const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
-			const { error } = createOrderFormSchema.safeParse(value);
+			const { error } = OrderFormSchema.safeParse(value);
 
 			if (isLoadingDateAfter || isUnloadingDateBefore) {
 				return {

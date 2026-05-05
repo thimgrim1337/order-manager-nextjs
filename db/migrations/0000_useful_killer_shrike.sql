@@ -16,9 +16,9 @@ CREATE TABLE "countries" (
 --> statement-breakpoint
 CREATE TABLE "customers" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "customers_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"tax_nr" text NOT NULL,
+	"tax" text NOT NULL,
 	"name" text NOT NULL,
-	CONSTRAINT "customers_tax_nr_unique" UNIQUE("tax_nr"),
+	CONSTRAINT "customers_tax_unique" UNIQUE("tax"),
 	CONSTRAINT "customers_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
@@ -60,8 +60,8 @@ CREATE TABLE "statuses" (
 CREATE TABLE "trucks" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "trucks_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"plate" text NOT NULL,
-	"insurance_endAt" date NOT NULL,
-	"service_endAt" date NOT NULL,
+	"insurance_end_at" date NOT NULL,
+	"service_end_at" date NOT NULL,
 	"driver_id" integer,
 	CONSTRAINT "trucks_plate_unique" UNIQUE("plate")
 );

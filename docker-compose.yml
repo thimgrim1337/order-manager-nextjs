@@ -25,6 +25,4 @@ services:
 
 volumes:
   my_pgdata:
-    name: my_pgdata
-    external: true
   my_pgdata_test:

@@ -14,8 +14,8 @@ const trucks = pgTable(
 	{
 		id: integer().primaryKey().generatedAlwaysAsIdentity(),
 		plate: text().unique().notNull(),
-		insuranceEndAt: date("insurance_endAt").notNull(),
-		serviceEndAt: date("service_endAt").notNull(),
+		insuranceEndAt: date("insurance_end_at").notNull(),
+		serviceEndAt: date("service_end_at").notNull(),
 		driverId: integer("driver_id").references((): AnyPgColumn => driver.id),
 	},
 	(table) => [

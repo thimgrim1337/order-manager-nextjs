@@ -8,7 +8,7 @@ import { order, ordersWithDetailsView } from "@/db/schemas";
 import { ZOD_ERROR_MESSAGES } from "../consts";
 import { selectCitySchema as City } from "./city.dto";
 
-export const createOrderFormSchema = z.object({
+export const OrderFormSchema = z.object({
 	orderNr: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(1, { error: "Numer zlecenia nie może być pusty." }),
@@ -45,12 +45,14 @@ export const createOrderFormSchema = z.object({
 		{ error: ZOD_ERROR_MESSAGES.FieldRequired },
 	),
 });
+
 export const createOrderSchema = createInsertSchema(order);
 export const selectOrderViewSchema = createSelectSchema(ordersWithDetailsView);
 export const selectOrderSchema = createSelectSchema(order);
 export const updateOrderSchema = createUpdateSchema(order);
 
-export type CreateOrderFormDto = z.infer<typeof createOrderFormSchema>;
+export type OrderFormDto = z.infer<typeof OrderFormSchema>;
 export type CreateOrderDto = z.infer<typeof createOrderSchema>;
-export type OrderDto = z.infer<typeof selectOrderViewSchema>;
+export type OrderWithDetailsDto = z.infer<typeof selectOrderViewSchema>;
+export type OrderDto = z.infer<typeof selectOrderSchema>;
 export type UpdateOrderDto = z.infer<typeof updateOrderSchema>;

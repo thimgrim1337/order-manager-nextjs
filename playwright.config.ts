@@ -77,9 +77,9 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: "pnpm start -p 3001",
+		command: "pnpm build && pnpm start -p 3001",
 		url: "http://localhost:3001",
-		reuseExistingServer: false,
+		reuseExistingServer: true,
 		env: {
 			NODE_ENV: "test",
 			DB_URL: process.env.DB_URL!,

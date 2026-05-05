@@ -7,11 +7,16 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { OrderDto } from "@/lib/dto/order.dto";
+import { OrderWithDetailsDto } from "@/lib/dto/order.dto";
+import OrderActionEdit from "./order-action-edit";
 import OrderActionRemove from "./order-action-remove";
-import OrderActionStatus from "./orders-action-status";
+import OrderStatusMenu from "./order-status-menu";
 
-export default function OrdersTableRowActions({ order }: { order: OrderDto }) {
+export default function OrderActionMenu({
+	order,
+}: {
+	order: OrderWithDetailsDto;
+}) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -21,11 +26,10 @@ export default function OrdersTableRowActions({ order }: { order: OrderDto }) {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuItem asChild>
-					<OrderActionStatus order={order} />
+					<OrderStatusMenu order={order} />
 				</DropdownMenuItem>
-				<DropdownMenuItem>
-					<Pen />
-					Edytuj
+				<DropdownMenuItem asChild>
+					<OrderActionEdit order={order} />
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>

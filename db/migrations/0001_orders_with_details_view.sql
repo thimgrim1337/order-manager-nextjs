@@ -15,67 +15,49 @@ SELECT
   o.truck_id,
   o.driver_id,
   o.customer_id,
-  
-  -- Joined data
+
+  -- Flat columns (dla sortowania/filtrowania)
   c.name as customer_name,
-  CONCAT(d.first_name, ' ', d.last_name) as driver_name,
+  CONCAT(d.first_name, ' ', d.last_name) as driver_fullname,
   t.plate as truck_plate,
   s.name as status_name,
-  
-  -- Loading places as JSON
+
+  -- JSON objects (bezpośrednio z JOINów)
+  JSON_BUILD_OBJECT('id', c.id, 'name', c.name, 'tax', c.tax) as customer,
+  JSON_BUILD_OBJECT('id', d.id, 'firstName', d.first_name, 'lastName', d.last_name) as driver,
+  JSON_BUILD_OBJECT('id', t.id, 'plate', t.plate, 'insuranceEndAt', t.insurance_end_at, 'serviceEndAt', t.service_end_at, 'driverId', t.driver_id) as truck,
+  JSON_BUILD_OBJECT('id', s.id, 'name', s.name) as status,
+
+  -- Loading/unloading places (subquery potrzebne bo relacja 1:N)
   (
     SELECT COALESCE(
-      JSON_AGG(
-        JSON_BUILD_OBJECT(
-          'id', lc.id,
-          'name', lc.name,
-          'postal', lc.postal,
-          'countryID', lc.country_id
-        ) 
-      ), 
+      JSON_AGG(JSON_BUILD_OBJECT('id', lc.id, 'name', lc.name, 'postal', lc.postal, 'countryId', lc.country_id)),
       '[]'::json
     )
-    FROM order_loading_places lp 
-    JOIN cities lc ON lp.place_id = lc.id 
-    WHERE lp.order_id = o.id
-  ) as loading_places,
-  
-  -- Unloading places as JSON
-  (
-    SELECT COALESCE(
-      JSON_AGG(
-        JSON_BUILD_OBJECT(
-          'id', uc.id,
-          'name', uc.name,
-          'postal', uc.postal,
-          'countryID', uc.country_id
-        ) 
-      ), 
-      '[]'::json
-    )
-    FROM order_unloading_places up 
-    JOIN cities uc ON up.place_id = uc.id 
-    WHERE up.order_id = o.id
-  ) as unloading_places,
-  
-  -- First loading city for sorting
-  (
-    SELECT lc.name
     FROM order_loading_places lp
     JOIN cities lc ON lp.place_id = lc.id
     WHERE lp.order_id = o.id
-    ORDER BY lc.id
-    LIMIT 1
-  ) as loading_city,
-  
-  -- Last unloading city for sorting
+  ) as loading_places,
   (
-    SELECT uc.name
+    SELECT COALESCE(
+      JSON_AGG(JSON_BUILD_OBJECT('id', uc.id, 'name', uc.name, 'postal', uc.postal, 'countryId', uc.country_id)),
+      '[]'::json
+    )
     FROM order_unloading_places up
     JOIN cities uc ON up.place_id = uc.id
     WHERE up.order_id = o.id
-    ORDER BY uc.id DESC
-    LIMIT 1
+  ) as unloading_places,
+
+  -- Sorting helpers
+  (
+    SELECT lc.name FROM order_loading_places lp
+    JOIN cities lc ON lp.place_id = lc.id
+    WHERE lp.order_id = o.id ORDER BY lc.id LIMIT 1
+  ) as loading_city,
+  (
+    SELECT uc.name FROM order_unloading_places up
+    JOIN cities uc ON up.place_id = uc.id
+    WHERE up.order_id = o.id ORDER BY uc.id DESC LIMIT 1
   ) as unloading_city
 
 FROM orders o

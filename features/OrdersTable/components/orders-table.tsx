@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { OrderDto as Order } from "@/lib/dto/order.dto";
+import { OrderWithDetailsDto as Order } from "@/lib/dto/order.dto";
 import useTable from "../hooks/useTable";
 import { columns } from "../lib/columns";
 import { OrdersTableBody } from "./orders-table-body";

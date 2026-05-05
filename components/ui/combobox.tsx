@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronsUpDown } from "lucide-react";
-import { HTMLAttributes, useEffect, useState } from "react";
+import { HTMLAttributes, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -16,7 +16,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import useDebouce from "@/features/shared/hooks/useDebouce";
 import { cn } from "@/lib/utils";
 import { FieldData } from "@/types/types";
 
@@ -38,13 +37,6 @@ export function Combobox({
 	...props
 }: ComboboxProps) {
 	const [open, setOpen] = useState(false);
-	const [search, setSearch] = useState("");
-	const debounced = useDebouce(search, 300);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <We want to only reneder on debounced value change>
-	useEffect(() => {
-		if (onSearch) onSearch(debounced);
-	}, [debounced]);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen} modal>
@@ -69,7 +61,7 @@ export function Combobox({
 					<CommandInput
 						placeholder={`Szukaj ${placeholder.split(" ")[1]}...`}
 						className="h-9 "
-						onValueChange={setSearch}
+						onValueChange={onSearch}
 					/>
 					<CommandList>
 						<CommandEmpty>Nie znaleziono.</CommandEmpty>

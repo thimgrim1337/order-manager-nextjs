@@ -13,7 +13,7 @@ export default function CreateCityForm({
 	countries: Country[];
 	onDialogClose: () => void;
 }) {
-	const { submitForm } = useFormSubmit({ action: createCity, onDialogClose });
+	const { submitForm } = useFormSubmit(createCity, onDialogClose);
 
 	const form = useAppForm({
 		defaultValues: {

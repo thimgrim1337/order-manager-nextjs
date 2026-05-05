@@ -9,10 +9,7 @@ export default function CreateCustomerForm({
 }: {
 	onDialogClose: () => void;
 }) {
-	const { submitForm } = useFormSubmit({
-		action: createCustomer,
-		onDialogClose,
-	});
+	const { submitForm } = useFormSubmit(createCustomer, onDialogClose);
 
 	const form = useAppForm({
 		defaultValues: {

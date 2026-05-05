@@ -60,14 +60,16 @@ export async function getAllOrders(
 			analyzeGlobalFiltering(filters);
 
 		const searchConditions = [
-			ilike(ordersWithDetailsView.orderNr, searchTerm),
-			ilike(ordersWithDetailsView.customer, searchTerm),
-			ilike(ordersWithDetailsView.driver, searchTerm),
-			ilike(ordersWithDetailsView.truck, searchTerm),
-			ilike(ordersWithDetailsView.status, searchTerm),
-			ilike(ordersWithDetailsView.currency, searchTerm),
-			ilike(ordersWithDetailsView.loadingCity, searchTerm),
-			ilike(ordersWithDetailsView.unloadingCity, searchTerm),
+			or(
+				ilike(ordersWithDetailsView.orderNr, searchTerm),
+				ilike(ordersWithDetailsView.customer_name, searchTerm),
+				ilike(ordersWithDetailsView.driver_fullname, searchTerm),
+				ilike(ordersWithDetailsView.truck_plate, searchTerm),
+				ilike(ordersWithDetailsView.status, searchTerm),
+				ilike(ordersWithDetailsView.currency, searchTerm),
+				ilike(ordersWithDetailsView.loadingCity, searchTerm),
+				ilike(ordersWithDetailsView.unloadingCity, searchTerm),
+			),
 		];
 
 		if (isNumeric) {
@@ -90,7 +92,7 @@ export async function getAllOrders(
 
 		whereConditions = or(...searchConditions);
 	}
-	2;
+
 	return db
 		.select()
 		.from(ordersWithDetailsView)
@@ -151,8 +153,12 @@ export async function deleteOrderPlaces(
 	return dbPlaces;
 }
 
-export async function updateOrder(orderId: number, dto: UpdateOrderDto) {
-	const [dbOrder] = await db
+export async function updateOrder(
+	orderId: number,
+	dto: UpdateOrderDto,
+	trx?: dbTransaction,
+) {
+	const [dbOrder] = await (trx ? trx : db)
 		.update(order)
 		.set(dto)
 		.where(eq(order.id, orderId))

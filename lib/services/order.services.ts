@@ -11,14 +11,15 @@ import {
 } from "../dal/order.dal";
 import { updateTruckAssignedDriver } from "../dal/truck.dal";
 import {
-	createOrderFormSchema,
+	OrderFormSchema,
 	selectOrderSchema,
 	updateOrderSchema,
 } from "../dto/order.dto";
 import { error, ok } from "../error";
 
 export async function createOrderService(rawData: unknown) {
-	const validationResult = createOrderFormSchema.safeParse(rawData);
+	const validationResult = OrderFormSchema.safeParse(rawData);
+
 	if (!validationResult.success)
 		return error({
 			reason: "InvalidData",
@@ -72,6 +73,7 @@ export async function createOrderService(rawData: unknown) {
 				details: err.cause,
 			});
 		}
+
 		return error({
 			reason: `UnexpectedError`,
 			details: err,
@@ -80,7 +82,45 @@ export async function createOrderService(rawData: unknown) {
 }
 
 export async function updateOrderService(orderId: number, rawData: unknown) {
+	const validationResult = OrderFormSchema.safeParse(rawData);
+	if (!validationResult.success)
+		return error({
+			reason: "InvalidData",
+			details: z.prettifyError(validationResult.error),
+		});
+
+	const { loadingPlaces, unloadingPlaces, ...order } = validationResult.data;
+
+	try {
+		const dbOrder = await db.transaction(async (trx) => {
+			const updatedOrder = updateOrder(orderId, order, trx);
+			await deleteOrderPlaces(orderId, "loadingPlace", trx);
+			await deleteOrderPlaces(orderId, "unloadingPlace", trx);
+			await addOrderPlaces(orderId, loadingPlaces, "loadingPlace", trx);
+			await addOrderPlaces(orderId, unloadingPlaces, "unloadingPlace", trx);
+			await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
+
+			return updatedOrder;
+		});
+
+		return ok(selectOrderSchema.parse(dbOrder));
+	} catch (err) {
+		if (err instanceof DrizzleQueryError) {
+			return error({
+				reason: "DrizzleError",
+				details: err.cause,
+			});
+		}
+		return error({
+			reason: `UnexpectedError`,
+			details: err,
+		});
+	}
+}
+
+export async function patchOrderService(orderId: number, rawData: unknown) {
 	const validationResult = updateOrderSchema.safeParse(rawData);
+
 	if (!validationResult.success)
 		return error({
 			reason: "InvalidData",

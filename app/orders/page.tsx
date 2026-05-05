@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import PageHeader from "@/components/ui/page-header";
-import CreateOrder from "@/features/OrderForm/components/create-order";
+import CreateOrderForm from "@/features/OrderForm/components/create-order";
 import OrdersTable from "@/features/OrdersTable/components/orders-table";
 import OrderTableFilter from "@/features/OrdersTable/components/orders-table-filter";
+import { OrderDataProvider } from "@/features/shared/context/order-context";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@/lib/consts";
 import { getAllCities } from "@/lib/dal/city.dal";
 import { getAllCountries } from "@/lib/dal/country.dal";
@@ -23,13 +24,12 @@ export default async function OrdersPage({
 	const pageIndex =
 		Number((await searchParams)?.pageIndex) || DEFAULT_PAGE_INDEX;
 	const pageSize = Number((await searchParams)?.pageSize) || DEFAULT_PAGE_SIZE;
-	const customerSearch = (await searchParams)?.customer || "";
 
 	const sortOptions = sortToState(sort)[0];
 	const rowCount = await getOrderCount();
 
 	const orders = getAllOrders(pageIndex, pageSize, sortOptions, globalFilters);
-	const customers = getAllCustomers(customerSearch);
+	const customers = getAllCustomers();
 	const cities = getAllCities();
 	const drivers = getAllDrivers();
 	const trucks = getAllTrucks();
@@ -43,18 +43,22 @@ export default async function OrdersPage({
 			/>
 
 			<Suspense fallback={<p>Loading...</p>}>
-				<div className="flex gap-2 justify-between border rounded-md py-2 px-4 my-5">
-					<OrderTableFilter />
-					<CreateOrder
-						customers={customers}
-						cities={cities}
-						drivers={drivers}
-						trucks={trucks}
-						countries={countries}
-					/>
-				</div>
+				<OrderDataProvider
+					dataPromise={{
+						customers,
+						cities,
+						drivers,
+						trucks,
+						countries,
+					}}
+				>
+					<div className="flex gap-2 justify-between border rounded-md py-2 px-4 my-5">
+						<OrderTableFilter />
+						<CreateOrderForm />
+					</div>
 
-				<OrdersTable orders={orders} rowCount={rowCount[0].count} />
+					<OrdersTable orders={orders} rowCount={rowCount[0].count} />
+				</OrderDataProvider>
 			</Suspense>
 		</div>
 	);

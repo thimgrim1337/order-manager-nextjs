@@ -34,7 +34,7 @@ export default function OrderActionDialog(props: ActionDialogProps) {
 					{props.triggerTitle}
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className={props.className}>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						{props.modalIcon}

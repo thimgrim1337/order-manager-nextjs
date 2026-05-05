@@ -4,7 +4,8 @@ import { cleanupTestData, seedTestData } from "./helpers/seed";
 test.describe("Order test", () => {
 	test.beforeAll(async () => {
 		await cleanupTestData();
-		await seedTestData();
+		const data = await seedTestData();
+		console.log("SEED DATA:", JSON.stringify(data));
 	});
 
 	test.afterAll(async () => {
@@ -92,6 +93,7 @@ test.describe("Order test", () => {
 		).toBeVisible();
 
 		await page.getByRole("button", { name: "Usuń" }).click();
+		await page.keyboard.press("Escape");
 
 		await expect(page.getByRole("cell", { name: "E2E-001" })).not.toBeVisible();
 	});

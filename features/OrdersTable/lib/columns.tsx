@@ -2,9 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/lib/dates";
-import { OrderDto as Order } from "@/lib/dto/order.dto";
-import OrdersTableRowActions from "../components/orders-table-actions";
-import StatusBadge from "../components/status-bagde";
+import { OrderWithDetailsDto as Order } from "@/lib/dto/order.dto";
+import OrderActionMenu from "../components/OrdersAction/order-action-menu";
+import StatusBadge from "../components/ui/status-bagde";
 
 export const columns: ColumnDef<Order>[] = [
 	{
@@ -35,24 +35,26 @@ export const columns: ColumnDef<Order>[] = [
 			const statusId = row.getValue("statusId") as number;
 
 			return (
-				<StatusBadge statusId={statusId}>{row.original.status}</StatusBadge>
+				<StatusBadge statusId={statusId}>
+					{row.original.status_name}
+				</StatusBadge>
 			);
 		},
 		header: "Status",
 	},
 	{
 		accessorKey: "truckId",
-		accessorFn: (order) => order.truck,
+		accessorFn: (order) => order.truck_plate,
 		header: "Pojazd",
 	},
 	{
 		accessorKey: "driverId",
-		accessorFn: (order) => order.driver,
+		accessorFn: (order) => order.driver_fullname,
 		header: "Kierowca",
 	},
 	{
 		accessorKey: "customerId",
-		accessorFn: (order) => order.customer,
+		accessorFn: (order) => order.customer_name,
 		header: "Klient",
 	},
 	{
@@ -92,7 +94,7 @@ export const columns: ColumnDef<Order>[] = [
 		cell: ({ row }) => {
 			return (
 				<div className="opacity-0 transition-opacity group-hover:opacity-100">
-					<OrdersTableRowActions order={row.original} />
+					<OrderActionMenu order={row.original} />
 				</div>
 			);
 		},

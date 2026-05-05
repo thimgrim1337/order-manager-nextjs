@@ -6,7 +6,7 @@ const customer = pgTable(
 	"customers",
 	{
 		id: integer().primaryKey().generatedAlwaysAsIdentity(),
-		tax: text("tax_nr").notNull().unique(),
+		tax: text("tax").notNull().unique(),
 		name: text().notNull().unique(),
 	},
 	(table) => [

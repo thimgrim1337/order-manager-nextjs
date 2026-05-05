@@ -5,8 +5,9 @@ import { use, useEffect } from "react";
 import { FieldGroup } from "@/components/ui/field";
 import { useOrderData } from "@/features/shared/context/order-context";
 import useFilters from "@/features/shared/hooks/useFilters";
-import { createOrder } from "@/lib/actions";
+import { updateOrder } from "@/lib/actions";
 import { CURRENCIES } from "@/lib/consts";
+import { Order } from "@/types/types";
 import { useAppForm } from "../hooks/useAppForm";
 import useCurrencyInfo from "../hooks/useCurrencyInfo";
 import useFormSubmit from "../hooks/useFormSubmit";
@@ -16,27 +17,50 @@ import CreateCustomer from "./CustomerForm/create-customer";
 import CustomersComboboxField from "./FormFields/customers-combobox";
 import CurrencyInfo from "./ui/currency-info";
 
-export default function CreateOrderForm({
+export default function EditOrderForm({
+	order,
 	onDialogClose,
 }: {
+	order: Order;
 	onDialogClose: () => void;
 }) {
 	const data = useOrderData();
-	const customers = use(data.customers);
 	const cities = use(data.cities);
 	const drivers = use(data.drivers);
 	const trucks = use(data.trucks);
 	const countries = use(data.countries);
 
 	const { resetFilters } = useFilters();
-	const { submitForm } = useFormSubmit(createOrder, onDialogClose);
+	const { submitForm } = useFormSubmit(updateOrder, onDialogClose);
 
 	const form = useAppForm({
 		...orderFormOptions,
+		defaultValues: {
+			orderNr: order.orderNr,
+			startDate: order.startDate,
+			endDate: order.endDate,
+			customerId: order.customerId,
+			driverId: order.driverId,
+			truckId: order.truckId,
+			statusId: order.statusId,
+			priceCurrency: order.priceCurrency,
+			currency: order.currency,
+			loadingPlaces: order.loadingPlaces,
+			unloadingPlaces: order.unloadingPlaces,
+			currencyInfo: {
+				table: "",
+				rate: "",
+				date: "",
+			},
+		},
 		onSubmit: async ({ value }) => {
-			submitForm(value, {
-				successDescription: `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
-			});
+			submitForm(
+				value,
+				{
+					successDescription: `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`,
+				},
+				order.id,
+			);
 			resetFilters();
 		},
 	});
@@ -72,7 +96,7 @@ export default function CreateOrderForm({
 				<FieldGroup className="flex-row justify-between">
 					<div className="flex-1 flex gap-2 items-end min-w-0">
 						<form.AppField name="customerId">
-							{() => <CustomersComboboxField customers={customers} />}
+							{() => <CustomersComboboxField customers={[order.customer]} />}
 						</form.AppField>
 						<CreateCustomer />
 					</div>
@@ -200,7 +224,7 @@ export default function CreateOrderForm({
 					</form.AppField>
 				</FieldGroup>
 
-				<form.FormControls id={form.formId} />
+				<form.FormControls id={form.formId} isEditButton />
 			</form.AppForm>
 		</form>
 	);
