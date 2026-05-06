@@ -14,8 +14,8 @@ export default function CreateCity({ countries }: { countries: Country[] }) {
 		<FormDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			modalIcon={<MapPinPlus />}
-			modalTitle={"	Dodawanie nowego miejsca"}
+			icon={<MapPinPlus />}
+			title={"	Dodawanie nowego miejsca"}
 			description="Wypełnij wszystkie pola aby dodać nowe miejsce."
 			hideTriggerTitle
 		>

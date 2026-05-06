@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import PageHeader from "@/components/ui/page-header";
-import CreateOrderForm from "@/features/OrderForm/components/create-order";
+import CreateOrder from "@/features/OrderForm/components/create-order";
 import OrdersTable from "@/features/OrdersTable/components/orders-table";
 import OrderTableFilter from "@/features/OrdersTable/components/orders-table-filter";
 import { OrderDataProvider } from "@/features/shared/context/order-context";
@@ -54,7 +54,7 @@ export default async function OrdersPage({
 				>
 					<div className="flex gap-2 justify-between border rounded-md py-2 px-4 my-5">
 						<OrderTableFilter />
-						<CreateOrderForm />
+						<CreateOrder />
 					</div>
 
 					<OrdersTable orders={orders} rowCount={rowCount[0].count} />

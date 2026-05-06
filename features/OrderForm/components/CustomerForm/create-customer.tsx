@@ -14,8 +14,8 @@ export default function CreateCustomer() {
 		<FormDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			modalIcon={<HousePlus />}
-			modalTitle={"Dodawanie nowego zleceniodawcy"}
+			icon={<HousePlus />}
+			title={"Dodawanie nowego zleceniodawcy"}
 			description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
 			hideTriggerTitle
 		>

@@ -44,8 +44,8 @@ export default function OrderStatusMenu({
 		<OrderActionDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			modalIcon={<ClockCheck />}
-			modalTitle="Zmiana statusu zlecenia"
+			icon={<ClockCheck />}
+			title="Zmiana statusu zlecenia"
 			description={`Wybierz status dla zlecenia nr ${order?.orderNr}`}
 			triggerTitle="Status"
 		>

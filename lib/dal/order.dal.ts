@@ -65,7 +65,7 @@ export async function getAllOrders(
 				ilike(ordersWithDetailsView.customer_name, searchTerm),
 				ilike(ordersWithDetailsView.driver_fullname, searchTerm),
 				ilike(ordersWithDetailsView.truck_plate, searchTerm),
-				ilike(ordersWithDetailsView.status, searchTerm),
+				ilike(ordersWithDetailsView.status_name, searchTerm),
 				ilike(ordersWithDetailsView.currency, searchTerm),
 				ilike(ordersWithDetailsView.loadingCity, searchTerm),
 				ilike(ordersWithDetailsView.unloadingCity, searchTerm),

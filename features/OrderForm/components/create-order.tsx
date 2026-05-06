@@ -13,9 +13,10 @@ export default function CreateOrder() {
 		<FormDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			modalIcon={<FilePlus />}
-			modalTitle={"Dodaj nowe zlecenie"}
+			icon={<FilePlus />}
+			title={"Dodaj nowe zlecenie"}
 			description="Wypełnij wszystkie pola aby dodać nowe zlecenie."
+			className="min-w-5xl"
 		>
 			<CreateOrderForm onDialogClose={closeModal} />
 		</FormDialog>

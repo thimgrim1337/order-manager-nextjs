@@ -1,49 +1,26 @@
-import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { FormDialogProps } from "@/features/OrderForm/components/ui/form-dialog";
+import Dialog from "@/features/shared/components/ui/dialog";
 
-type ActionDialogProps = {
-	modalIcon: ReactNode;
-	modalTitle: string;
-	description: string;
-	isOpen: boolean;
-	onOpenChange: (open: boolean) => void;
-	children: ReactNode;
-	triggerIcon?: ReactNode;
-	triggerTitle?: string;
-	className?: string;
-};
+type ActionDialogProps = FormDialogProps;
+
+// TODO: Podmienić na nowy dialog
 
 export default function OrderActionDialog(props: ActionDialogProps) {
+	const trigger = (
+		<Button
+			variant={"ghost"}
+			className="w-full justify-start"
+			aria-label={`order ${props.triggerTitle}`.toLowerCase()}
+		>
+			{props.icon}
+			{props.triggerTitle}
+		</Button>
+	);
+
 	return (
-		<Dialog onOpenChange={props.onOpenChange} open={props.isOpen}>
-			<DialogTrigger asChild>
-				<Button
-					variant={"ghost"}
-					className="w-full justify-start"
-					aria-label={`order ${props.triggerTitle}`.toLowerCase()}
-				>
-					{props.modalIcon || props.triggerIcon}
-					{props.triggerTitle}
-				</Button>
-			</DialogTrigger>
-			<DialogContent className={props.className}>
-				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2">
-						{props.modalIcon}
-						{props.modalTitle}
-					</DialogTitle>
-					<DialogDescription>{props.description}</DialogDescription>
-				</DialogHeader>
-				{props.children}
-			</DialogContent>
+		<Dialog {...props} trigger={trigger}>
+			{props.children}
 		</Dialog>
 	);
 }

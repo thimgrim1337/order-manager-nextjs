@@ -1,4 +1,4 @@
-import { Pen, SquarePen } from "lucide-react";
+import { SquarePen } from "lucide-react";
 import EditOrderForm from "@/features/OrderForm/components/edit-order-form";
 import useToggle from "@/features/shared/hooks/useToggle";
 import { Order } from "@/types/types";
@@ -12,9 +12,8 @@ export default function OrderActionEdit({ order }: { order: Order }) {
 		<OrderActionDialog
 			isOpen={isModalOpen}
 			onOpenChange={toggleModal}
-			modalIcon={<SquarePen />}
-			triggerIcon={<Pen />}
-			modalTitle="Edycja danych zlecenia"
+			icon={<SquarePen />}
+			title="Edycja danych zlecenia"
 			description={`Wprowadź dane aby edytować zlecenie nr ${order.orderNr}`}
 			triggerTitle="Edycja"
 			className="min-w-5xl"
