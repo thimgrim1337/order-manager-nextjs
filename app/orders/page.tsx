@@ -7,6 +7,7 @@ import { OrderDataProvider } from "@/features/shared/context/order-context";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@/lib/consts";
 import { getAllCities } from "@/lib/dal/city.dal";
 import { getAllCountries } from "@/lib/dal/country.dal";
+import { getAllCurrencies } from "@/lib/dal/currency.dal";
 import { getAllCustomers } from "@/lib/dal/customer.dal.";
 import { getAllDrivers } from "@/lib/dal/driver.dal";
 import { getAllOrders, getOrderCount } from "@/lib/dal/order.dal";
@@ -34,6 +35,7 @@ export default async function OrdersPage({
 	const drivers = getAllDrivers();
 	const trucks = getAllTrucks();
 	const countries = getAllCountries();
+	const currencies = getAllCurrencies();
 
 	return (
 		<div className="w-[90%] m-auto my-5">
@@ -50,6 +52,7 @@ export default async function OrdersPage({
 						drivers,
 						trucks,
 						countries,
+						currencies,
 					}}
 				>
 					<div className="flex gap-2 justify-between border rounded-md py-2 px-4 my-5">

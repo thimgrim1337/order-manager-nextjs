@@ -45,7 +45,7 @@ export async function getAllOrders(
 			endDate: ordersWithDetailsView.endDate,
 			pricePLN: ordersWithDetailsView.pricePLN,
 			priceCurrency: ordersWithDetailsView.priceCurrency,
-			currency: ordersWithDetailsView.currency,
+			currency: ordersWithDetailsView.currency_code,
 		};
 
 		return (
@@ -66,7 +66,7 @@ export async function getAllOrders(
 				ilike(ordersWithDetailsView.driver_fullname, searchTerm),
 				ilike(ordersWithDetailsView.truck_plate, searchTerm),
 				ilike(ordersWithDetailsView.status_name, searchTerm),
-				ilike(ordersWithDetailsView.currency, searchTerm),
+				ilike(ordersWithDetailsView.currency_code, searchTerm),
 				ilike(ordersWithDetailsView.loadingCity, searchTerm),
 				ilike(ordersWithDetailsView.unloadingCity, searchTerm),
 			),

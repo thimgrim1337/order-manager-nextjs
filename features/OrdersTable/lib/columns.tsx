@@ -68,10 +68,10 @@ export const columns: ColumnDef<Order>[] = [
 	},
 
 	{
-		accessorKey: "currency",
+		accessorKey: "currency_code",
 		header: "Waluta",
 		cell: ({ row }) => (
-			<div className="text-right font-medium">{row.getValue("currency")}</div>
+			<div className="text-right">{row.original.currency_code}</div>
 		),
 	},
 	{

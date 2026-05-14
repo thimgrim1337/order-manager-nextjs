@@ -14,6 +14,12 @@ CREATE TABLE "countries" (
 	CONSTRAINT "countries_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
+CREATE TABLE "currencies" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "currencies_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"code" varchar(3) NOT NULL,
+	CONSTRAINT "currencies_code_unique" UNIQUE("code")
+);
+--> statement-breakpoint
 CREATE TABLE "customers" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "customers_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"tax" text NOT NULL,
@@ -44,7 +50,7 @@ CREATE TABLE "orders" (
 	"status_id" integer DEFAULT 1 NOT NULL,
 	"price_currency" numeric(10, 2) NOT NULL,
 	"price_pln" numeric(10, 2) NOT NULL,
-	"currency" text DEFAULT 'PLN' NOT NULL,
+	"currency_id" integer NOT NULL,
 	"currency_rate" numeric(5, 4) DEFAULT '1' NOT NULL,
 	"truck_id" integer NOT NULL,
 	"driver_id" integer NOT NULL,
@@ -85,6 +91,7 @@ ALTER TABLE "cities" ADD CONSTRAINT "cities_country_id_countries_id_fk" FOREIGN 
 ALTER TABLE "order_loading_places" ADD CONSTRAINT "order_loading_places_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "order_loading_places" ADD CONSTRAINT "order_loading_places_place_id_cities_id_fk" FOREIGN KEY ("place_id") REFERENCES "public"."cities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "orders" ADD CONSTRAINT "orders_status_id_statuses_id_fk" FOREIGN KEY ("status_id") REFERENCES "public"."statuses"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "orders" ADD CONSTRAINT "orders_currency_id_currencies_id_fk" FOREIGN KEY ("currency_id") REFERENCES "public"."currencies"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "orders" ADD CONSTRAINT "orders_truck_id_trucks_id_fk" FOREIGN KEY ("truck_id") REFERENCES "public"."trucks"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "orders" ADD CONSTRAINT "orders_driver_id_drivers_id_fk" FOREIGN KEY ("driver_id") REFERENCES "public"."drivers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "orders" ADD CONSTRAINT "orders_customer_id_customers_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

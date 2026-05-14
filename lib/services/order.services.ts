@@ -41,7 +41,7 @@ export async function createOrderService(rawData: unknown) {
 	let pricePLN: string;
 	let currencyRate: string = "1";
 
-	if (order.currency === "EUR" && currencyInfo.rate) {
+	if (order.currencyId !== 1 && currencyInfo.rate) {
 		currencyRate = currencyInfo.rate;
 		pricePLN = String(+order.priceCurrency * +currencyRate);
 	} else {

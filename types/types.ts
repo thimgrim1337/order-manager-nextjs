@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import z from "zod";
 import { CityDto } from "@/lib/dto/city.dto";
 import { CountryDto } from "@/lib/dto/country.dto";
+import { CurrencyDto } from "@/lib/dto/currency.dto";
 import { CustomerDto } from "@/lib/dto/customer.dto";
 import { DriverDto } from "@/lib/dto/driver.dto";
 import { OrderWithDetailsDto } from "@/lib/dto/order.dto";
@@ -15,6 +16,7 @@ export type Customer = CustomerDto;
 export type Driver = DriverDto;
 export type Truck = TruckDto;
 export type Status = StatusDto;
+export type Currency = CurrencyDto;
 
 export type Currencies = "PLN" | "EUR";
 export type PlaceType = "loadingPlace" | "unloadingPlace";

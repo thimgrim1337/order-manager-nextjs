@@ -28,6 +28,7 @@ async function seed() {
 		schema.country,
 		schema.city,
 		schema.customer,
+		schema.currency,
 		schema.order,
 		schema.loadingPlace,
 		schema.unloadingPlace,
@@ -39,6 +40,7 @@ async function seed() {
 	await seeds.driver(db);
 	await seeds.truck(db);
 	await seeds.status(db);
+	await seeds.currency(db);
 	await seeds.country(db);
 
 	console.log("Seeds finished.");

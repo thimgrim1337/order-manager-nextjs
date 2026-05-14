@@ -6,11 +6,11 @@ export default function CurrencyInfo({
 	isLoading,
 	currencyInfo,
 }: {
-	selectedCurrency: "EUR" | "PLN" | string;
+	selectedCurrency: number;
 	isLoading: boolean;
 	currencyInfo?: TCurrencyInfo | null;
 }) {
-	if (selectedCurrency !== "EUR") return null;
+	if (selectedCurrency === 1) return null;
 
 	const content = isLoading ? (
 		<>

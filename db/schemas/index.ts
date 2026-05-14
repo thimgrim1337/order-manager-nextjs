@@ -1,5 +1,6 @@
 export { cityRelations, default as city } from "./city";
 export { countryRelations, default as country } from "./country";
+export { default as currency } from "./currencies";
 export { customerRelations, default as customer } from "./customer";
 export { default as driver, driversRelations } from "./driver";
 export { default as loadingPlace, loadingPlaceRelations } from "./loadingPlace";

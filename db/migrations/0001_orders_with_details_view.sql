@@ -1,4 +1,4 @@
--- Custom SQL migration file, put your code below! --
+-- Custom SQL migration file, put your code below! ---- Custom SQL migration file, put your code below! ---- Custom SQL migration file, put your code below! --
 CREATE VIEW orders_with_details AS
 SELECT 
   o.id,
@@ -10,7 +10,7 @@ SELECT
   o.status_id,
   o.price_currency,
   o.price_pln,
-  o.currency,
+  o.currency_id,
   o.currency_rate,
   o.truck_id,
   o.driver_id,
@@ -21,6 +21,7 @@ SELECT
   CONCAT(d.first_name, ' ', d.last_name) as driver_fullname,
   t.plate as truck_plate,
   s.name as status_name,
+  cs.code as currency_code,
 
   -- JSON objects (bezpośrednio z JOINów)
   JSON_BUILD_OBJECT('id', c.id, 'name', c.name, 'tax', c.tax) as customer,
@@ -64,4 +65,5 @@ FROM orders o
 LEFT JOIN customers c ON o.customer_id = c.id
 LEFT JOIN drivers d ON o.driver_id = d.id
 LEFT JOIN trucks t ON o.truck_id = t.id
-LEFT JOIN statuses s ON o.status_id = s.id;
+LEFT JOIN statuses s ON o.status_id = s.id
+LEFT JOIN currencies cs ON o.currency_id = cs.id;

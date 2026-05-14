@@ -24,7 +24,9 @@ export const OrderFormSchema = z.object({
 	customerId: z
 		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(1, { error: "Wybierz zleceniodawcę." }),
-	currency: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
+	currencyId: z
+		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
+		.min(1, { error: "Wybierz walutę" }),
 	priceCurrency: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.refine((val) => Number(val) > 0, {

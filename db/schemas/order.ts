@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { City, Customer, Driver, Status, Truck } from "@/types/types";
 import {
+	currency,
 	customer,
 	driver,
 	loadingPlace,
@@ -45,7 +46,9 @@ const order = pgTable(
 			precision: 10,
 			scale: 2,
 		}).notNull(),
-		currency: text("currency").notNull().default("PLN"),
+		currencyId: integer("currency_id")
+			.notNull()
+			.references(() => currency.id),
 		currencyRate: numeric("currency_rate", {
 			precision: 5,
 			scale: 4,
@@ -93,7 +96,9 @@ export const ordersWithDetailsView = pgView("orders_with_details", {
 		scale: 2,
 	}).notNull(),
 	pricePLN: numeric("price_pln", { precision: 10, scale: 2 }).notNull(),
-	currency: text("currency").notNull().default("PLN"),
+	currencyId: integer("currency_id")
+		.notNull()
+		.references(() => currency.id),
 	currencyRate: numeric("currency_rate", {
 		precision: 5,
 		scale: 4,
@@ -113,6 +118,7 @@ export const ordersWithDetailsView = pgView("orders_with_details", {
 	driver_fullname: text("driver_fullname").notNull(),
 	truck_plate: text("truck_plate").notNull(),
 	status_name: text("status_name").notNull(),
+	currency_code: text("currency_code").notNull(),
 
 	// JSON aggregated data
 	customer: json("customer").$type<Customer>().notNull(),
@@ -143,6 +149,10 @@ export const orderRelations = relations(order, ({ one, many }) => ({
 	customer: one(customer, {
 		fields: [order.customerId],
 		references: [customer.id],
+	}),
+	currency: one(currency, {
+		fields: [order.currencyId],
+		references: [currency.id],
 	}),
 	loadingPlaces: many(loadingPlace),
 	unloadingPlaces: many(unloadingPlace),

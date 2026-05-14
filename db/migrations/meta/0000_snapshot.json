@@ -1,5 +1,5 @@
 {
-  "id": "e36e906e-6db1-4a0c-a454-eb73895bbc45",
+  "id": "02a3f38e-c22a-40d7-b010-5e55637d7bbe",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -139,6 +139,50 @@
         },
         "countries_code_unique": {
           "name": "countries_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.currencies": {
+      "name": "currencies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "currencies_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "currencies_code_unique": {
+          "name": "currencies_code_unique",
           "nullsNotDistinct": false,
           "columns": [
             "code"
@@ -414,12 +458,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "currency": {
-          "name": "currency",
-          "type": "text",
+        "currency_id": {
+          "name": "currency_id",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'PLN'"
+          "notNull": true
         },
         "currency_rate": {
           "name": "currency_rate",
@@ -501,6 +544,19 @@
           "tableTo": "statuses",
           "columnsFrom": [
             "status_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orders_currency_id_currencies_id_fk": {
+          "name": "orders_currency_id_currencies_id_fk",
+          "tableFrom": "orders",
+          "tableTo": "currencies",
+          "columnsFrom": [
+            "currency_id"
           ],
           "columnsTo": [
             "id"
@@ -923,12 +979,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "currency": {
-          "name": "currency",
-          "type": "text",
+        "currency_id": {
+          "name": "currency_id",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'PLN'"
+          "notNull": true
         },
         "currency_rate": {
           "name": "currency_rate",
@@ -978,26 +1033,32 @@
           "primaryKey": false,
           "notNull": true
         },
-        "customers": {
-          "name": "customers",
+        "currency_code": {
+          "name": "currency_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customer": {
+          "name": "customer",
           "type": "json",
           "primaryKey": false,
           "notNull": true
         },
-        "drivers": {
-          "name": "drivers",
+        "driver": {
+          "name": "driver",
           "type": "json",
           "primaryKey": false,
           "notNull": true
         },
-        "trucks": {
-          "name": "trucks",
+        "truck": {
+          "name": "truck",
           "type": "json",
           "primaryKey": false,
           "notNull": true
         },
-        "statuses": {
-          "name": "statuses",
+        "status": {
+          "name": "status",
           "type": "json",
           "primaryKey": false,
           "notNull": true

@@ -1,7 +1,14 @@
 "use client";
 
 import { createContext, ReactNode, use } from "react";
-import { City, Country, Customer, Driver, Truck } from "@/types/types";
+import {
+	City,
+	Country,
+	Currency,
+	Customer,
+	Driver,
+	Truck,
+} from "@/types/types";
 
 type OrderDataContextType = {
 	customers: Promise<Customer[]>;
@@ -9,6 +16,7 @@ type OrderDataContextType = {
 	drivers: Promise<Driver[]>;
 	trucks: Promise<Truck[]>;
 	countries: Promise<Country[]>;
+	currencies: Promise<Currency[]>;
 };
 
 const OrderDataContext = createContext<OrderDataContextType | null>(null);
