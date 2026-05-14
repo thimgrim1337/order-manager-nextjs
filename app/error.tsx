@@ -30,9 +30,11 @@ export default function Error({
 					<Button className="w-full" onClick={reset}>
 						Try again
 					</Button>
-					<Button asChild className="w-full" variant="outline">
-						<Link href={"/"}>Return to homepage</Link>
-					</Button>
+					<Button
+						className="w-full"
+						variant="outline"
+						render={<Link href={"/"}>Return to homepage</Link>}
+					/>
 					{isDev ? (
 						<div className="rounded-md bg-muted p-4">
 							<h3 className="mb-2 font-semibold">Error Message:</h3>

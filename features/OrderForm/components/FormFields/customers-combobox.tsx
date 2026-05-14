@@ -2,12 +2,16 @@ import useSearchQuery from "@/features/shared/hooks/useSearchQuery";
 import { searchCustomers } from "@/lib/actions";
 import { Customer } from "@/types/types";
 import ComboboxField from "./combobox";
+import { FormControlProps } from "./form-base";
 
-export default function CustomersComboboxField({
-	customers: initialData,
-}: {
+type CustomerComboboxFieldProps = FormControlProps & {
 	customers: Customer[];
-}) {
+};
+
+export default function CustomerComboboField({
+	customers: initialData,
+	...props
+}: CustomerComboboxFieldProps) {
 	const { data: customers, setQuery } = useSearchQuery(
 		searchCustomers,
 		initialData,
@@ -15,14 +19,13 @@ export default function CustomersComboboxField({
 
 	return (
 		<ComboboxField
-			data={customers?.map((customer) => ({
-				id: customer.id,
-				value: customer.name,
+			{...props}
+			data={customers.map((customer) => ({
+				label: customer.name,
+				value: customer.id,
 			}))}
-			label="Zleceniodawca"
 			placeholder="Wybierz zleceniodawcę"
-			comboboxWidth="w-103"
-			onSearch={(value) => setQuery(value)}
+			onSearch={setQuery}
 		/>
 	);
 }

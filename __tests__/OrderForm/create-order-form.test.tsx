@@ -1,9 +1,10 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { act, Suspense } from "react";
+import { Suspense } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CreateOrderForm from "@/features/OrderForm/components/create-order-form";
 import { OrderDataProvider } from "@/features/shared/context/order-context";
+import { searchCustomers } from "@/lib/actions";
 
 const submitFormMock = vi.hoisted(() => vi.fn());
 vi.mock("@/features/OrderForm/hooks/useFormSubmit", () => ({
@@ -42,6 +43,10 @@ const mockRate = {
 
 beforeEach(() => {
 	vi.clearAllMocks();
+	vi.mocked(searchCustomers).mockResolvedValue([
+		{ id: 1, name: "DEVIL", tax: "7743241555" },
+	]);
+
 	mockUseCurrencyInfo.mockReturnValue({
 		rate: null,
 		isRateLoading: false,
@@ -89,22 +94,32 @@ const dataPromiseMock = {
 			code: "PL",
 		},
 	]),
+	currencies: Promise.resolve([
+		{ id: 1, code: "PLN" },
+		{ id: 2, code: "EUR" },
+	]),
+};
+
+const setup = async (customData?: Partial<typeof dataPromiseMock>) => {
+	const user = userEvent.setup({ pointerEventsCheck: 0 });
+
+	await act(async () => {
+		render(
+			<OrderDataProvider dataPromise={{ ...dataPromiseMock, ...customData }}>
+				<Suspense fallback={"Loading..."}>
+					<CreateOrderForm onDialogClose={vi.fn()} />
+				</Suspense>
+			</OrderDataProvider>,
+		);
+	});
+
+	return { user };
 };
 
 describe("CreateOrderForm", () => {
-	const user = userEvent.setup({ pointerEventsCheck: 0 });
 	describe("render", () => {
 		it("render form with inputs, labels and buttons", async () => {
-			await act(async () => {
-				render(
-					<OrderDataProvider dataPromise={dataPromiseMock}>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
-			});
-
+			await setup();
 			screen.getByLabelText("Zleceniodawca");
 			screen.getByLabelText("Numer zlecenia");
 			screen.getByLabelText("Data załadunku");
@@ -126,23 +141,16 @@ describe("CreateOrderForm", () => {
 		it("set and show currencyInfo when EUR currency is picked", async () => {
 			mockUseCurrencyInfo.mockReturnValue({
 				rate: mockRate,
-				isRateLoading: false,
-				isRateError: false,
-				rateError: null,
+				isLoading: false,
+				isError: false,
+				error: null,
 			});
 
-			await act(async () => {
-				render(
-					<OrderDataProvider dataPromise={dataPromiseMock}>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
-			});
+			const { user } = await setup();
 
-			await user.click(screen.getByLabelText("Waluta"));
-			await user.click(screen.getByRole("option", { name: "EUR" }));
+			await user.click(screen.getByText("Waluta"));
+			const eurOption = await screen.findByRole("option", { name: "EUR" }); // findBy waits
+			await user.click(eurOption);
 
 			await waitFor(() =>
 				screen.getByText(
@@ -152,18 +160,11 @@ describe("CreateOrderForm", () => {
 		});
 
 		it("not show currencyInfo when currency is PLN", async () => {
-			await act(async () => {
-				render(
-					<OrderDataProvider dataPromise={dataPromiseMock}>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
-			});
+			const { user } = await setup();
 
 			await user.click(screen.getByLabelText("Waluta"));
-			await user.click(screen.getByRole("option", { name: "PLN" }));
+			const plnOption = await screen.findByRole("option", { name: "PLN" }); // findBy waits
+			await user.click(plnOption);
 
 			expect(screen.queryByText(/Tabela nr/i)).not.toBeInTheDocument();
 		});
@@ -171,23 +172,16 @@ describe("CreateOrderForm", () => {
 		it("show spinner when currency is loading", async () => {
 			mockUseCurrencyInfo.mockReturnValue({
 				rate: mockRate,
-				isRateLoading: true,
-				isRateError: false,
-				rateError: null,
+				isLoading: true,
+				isError: false,
+				error: null,
 			});
 
-			await act(async () => {
-				render(
-					<OrderDataProvider dataPromise={dataPromiseMock}>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
-			});
+			const { user } = await setup();
 
 			await user.click(screen.getByLabelText("Waluta"));
-			await user.click(screen.getByRole("option", { name: "EUR" }));
+			const eurOption = await screen.findByRole("option", { name: "EUR" }); // findBy waits
+			await user.click(eurOption);
 
 			await waitFor(() => screen.getByText("Pobieranie kursu waluty..."));
 		});
@@ -195,80 +189,49 @@ describe("CreateOrderForm", () => {
 
 	describe("auto-assign driver", () => {
 		it("auto-assign driver when truck is selected", async () => {
-			await act(async () => {
-				render(
-					<OrderDataProvider dataPromise={dataPromiseMock}>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
-			});
+			const { user } = await setup();
 
-			expect(screen.getByLabelText("Kierowca")).toHaveTextContent(
-				"Wybierz kierowcę",
-			);
+			expect(screen.getByPlaceholderText("Wybierz kierowcę"));
 			await user.click(screen.getByLabelText("Pojazd"));
 			await user.click(screen.getByRole("option", { name: "WND0997C" }));
-			await waitFor(() => screen.getByText("Jan Kowalski"));
+			await waitFor(() => screen.getByDisplayValue("Jan Kowalski"));
 		});
 
 		it("do nothing when when is no driver assigned before", async () => {
-			await act(async () => {
-				render(
-					<OrderDataProvider
-						dataPromise={{
-							...dataPromiseMock,
-							trucks: Promise.resolve([
-								{
-									id: 1,
-									plate: "WND0997C",
-									insuranceEndAt: "2026-06-01",
-									serviceEndAt: "2026-06-01",
-									driverId: null,
-								},
-							]),
-						}}
-					>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
+			const { user } = await setup({
+				trucks: Promise.resolve([
+					{
+						id: 1,
+						plate: "WND0997C",
+						insuranceEndAt: "2026-06-01",
+						serviceEndAt: "2026-06-01",
+						driverId: 0,
+					},
+				]),
 			});
 
 			await user.click(screen.getByLabelText("Pojazd"));
 			await user.click(screen.getByRole("option", { name: "WND0997C" }));
 
-			await waitFor(() =>
-				expect(screen.queryByText("Jan Kowalski")).not.toBeInTheDocument(),
-			);
+			expect(screen.queryByText("Jan Kowalski")).not.toBeInTheDocument();
 		});
 	});
 
 	describe("submit", () => {
-		beforeEach(async () => {
-			await act(async () => {
-				render(
-					<OrderDataProvider dataPromise={dataPromiseMock}>
-						<Suspense fallback={"Loading..."}>
-							<CreateOrderForm onDialogClose={vi.fn()} />
-						</Suspense>
-					</OrderDataProvider>,
-				);
-			});
-		});
-
 		it("call submitForm and resetFilters when correct data are provided", async () => {
+			const { user } = await setup();
+
 			await user.click(screen.getByLabelText("Zleceniodawca"));
 			await user.click(screen.getByRole("option", { name: "DEVIL" }));
 
 			await user.type(screen.getByLabelText("Numer zlecenia"), "12345");
 
 			await user.click(screen.getByLabelText("Data załadunku"));
+
 			await user.click(screen.getByRole("gridcell", { name: "12" }));
 
 			await user.click(screen.getByLabelText("Data rozładunku"));
+
 			await user.click(screen.getByRole("gridcell", { name: "13" }));
 
 			await user.click(screen.getByLabelText("Miejsca załadunku"));
@@ -289,6 +252,8 @@ describe("CreateOrderForm", () => {
 		});
 
 		it("not call submitForm and resetFilters when no or uncorrect data are provided", async () => {
+			const { user } = await setup();
+
 			await user.click(screen.getByRole("button", { name: "Dodaj" }));
 
 			expect(submitFormMock).not.toHaveBeenCalled();
@@ -296,6 +261,8 @@ describe("CreateOrderForm", () => {
 		});
 
 		it("reset form when click reset button", async () => {
+			const { user } = await setup();
+
 			await user.type(screen.getByLabelText("Numer zlecenia"), "12345");
 
 			await user.click(screen.getByRole("button", { name: "Reset" }));

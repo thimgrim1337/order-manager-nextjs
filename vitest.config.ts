@@ -16,6 +16,7 @@ export default defineConfig({
 			headless: true,
 			provider: playwright(),
 			instances: [{ browser: "chromium" }],
+			viewport: { width: 1920, height: 1080 },
 		},
 		include: ["__tests__/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
 		exclude: ["node_modules", "dist", "e2e"],

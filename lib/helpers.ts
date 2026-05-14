@@ -4,58 +4,30 @@ type ApiResult<TData = unknown> =
 
 export async function apiCall<TData>(
 	url: string,
-	payload?: string | object,
-	method: "POST" | "GET" = "GET",
+	init?: RequestInit,
 ): Promise<ApiResult<TData>> {
-	try {
-		const fetchOptions =
-			method === "POST"
-				? {
-						method,
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body:
-							typeof payload === "string" ? payload : JSON.stringify(payload),
-					}
-				: { method: "GET" };
+	const response = await fetch(url, init);
 
-		const response = await fetch(url, fetchOptions);
-		const status = response.status;
+	if (!response.ok) {
+		let message = "An error occurred when fetching data.";
 
-		if (!response.ok) {
-			let message = "An error occured when fetching data.";
-			try {
-				const errorBody = await response.json();
-				if (typeof errorBody?.message === "string") {
-					message = errorBody.message;
-				}
-			} catch (error) {
-				console.log(error);
+		try {
+			const erroBody = await response.json();
+			if (typeof erroBody?.message === "string") {
+				message = erroBody.message;
 			}
+		} catch {}
 
-			return {
-				type: "error",
-				error: message,
-				status,
-			};
-		}
-
-		const data = (await response.json()) as TData;
-
-		return {
-			type: "success",
-			data,
-			status,
-		};
-	} catch (error) {
 		return {
 			type: "error",
-			error:
-				error instanceof Error
-					? error.message
-					: "Network error when fetching data.",
-			status: 0,
+			error: message,
+			status: response.status,
 		};
 	}
+
+	return {
+		type: "success",
+		data: response.json() as TData,
+		status: response.status,
+	};
 }

@@ -14,7 +14,7 @@ export const orderFormOptions = formOptions({
 		truckId: 0,
 		statusId: 1,
 		priceCurrency: "1",
-		currency: "PLN",
+		currencyId: 1,
 		loadingPlaces: [] as City[] | [],
 		unloadingPlaces: [] as City[] | [],
 		currencyInfo: {

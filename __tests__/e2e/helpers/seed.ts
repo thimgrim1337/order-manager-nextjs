@@ -3,6 +3,7 @@ import db from "@/db/db";
 import {
 	city as cities,
 	country as countries,
+	currency as currencies,
 	customer as customers,
 	driver as drivers,
 	status as statuses,
@@ -73,7 +74,11 @@ export async function seedTestData() {
 		])
 		.returning();
 
-	return { customer, driver, truck, dbCities, status };
+	const currency = await db
+		.insert(currencies)
+		.values([{ code: "PLN" }, { code: "EUR" }]);
+
+	return { customer, driver, truck, dbCities, status, currency };
 }
 
 export async function cleanupTestData() {
@@ -84,6 +89,7 @@ export async function cleanupTestData() {
 		customers,
 		countries,
 		statuses,
+		currencies,
 	]) {
 		await db.execute(
 			sql.raw(`TRUNCATE TABLE ${getTableName(table)} RESTART IDENTITY CASCADE`),

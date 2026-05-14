@@ -49,8 +49,8 @@ export default function CreateCityForm({
 								label="Kod kraju"
 								placeholder="Wybierz kraj"
 								data={countries?.map((country) => ({
-									id: country.id,
-									value: `${country.code} ${country.name}`,
+									label: `${country.code} ${country.name}`,
+									value: country.id,
 									icon: <span className={`flag:${country.code}`}></span>,
 								}))}
 							/>

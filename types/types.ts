@@ -19,6 +19,7 @@ export type Status = StatusDto;
 export type Currency = CurrencyDto;
 
 export type Currencies = "PLN" | "EUR";
+export type CurrencyTable = "A" | "B" | "C";
 export type PlaceType = "loadingPlace" | "unloadingPlace";
 
 export type CurrencyInfo = {

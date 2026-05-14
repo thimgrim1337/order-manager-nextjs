@@ -1,5 +1,5 @@
 import { apiCall } from "@/lib/helpers";
-import { Currencies } from "@/types/types";
+import { Currencies, CurrencyTable } from "@/types/types";
 
 export type NBPApiResponse = {
 	table: string;
@@ -16,8 +16,8 @@ export type NBPApiResponse = {
 
 export async function getCurrencyRate(
 	date: string,
-	table: "A" | "B" | "C" = "A",
 	code: Currencies = "EUR",
+	table: CurrencyTable = "A",
 ) {
 	if (code === "PLN" || !date) return null;
 

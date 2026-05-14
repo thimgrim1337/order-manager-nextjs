@@ -17,7 +17,7 @@ test.describe("Order test", () => {
 
 		await page.getByRole("button", { name: "Dodaj nowe zlecenie " }).click();
 
-		await page.getByLabel("Zleceniodawca").click();
+		await page.getByLabel("Zleceniodawca").fill("Test");
 		await page.getByRole("option", { name: "Test Firma" }).click();
 
 		await page.getByLabel("Numer zlecenia").fill("E2E-001");
@@ -34,17 +34,15 @@ test.describe("Order test", () => {
 		await page.keyboard.press("Escape");
 		await expect(page.getByRole("gridcell", { name: "13" })).not.toBeVisible();
 
-		await page.getByLabel("Miejsca załadunku").click();
+		await page.getByLabel("Miejsca załadunku").fill("Warszawa");
 		await page.getByRole("option", { name: "Warszawa" }).click();
-		await page.keyboard.press("Escape");
 
-		await page.getByLabel("Miejsca rozładunku").click();
+		await page.getByLabel("Miejsca rozładunku").fill("Płock");
 		await page.getByRole("option", { name: "Płock" }).click();
-		await page.keyboard.press("Escape");
 
 		await page.getByLabel("Cena w walucie").fill("1000");
 
-		await page.getByLabel("Pojazd").click();
+		await page.getByLabel("Pojazd").fill("WP0997C");
 		await page.getByRole("option", { name: "WP0997C" }).click();
 
 		// submit

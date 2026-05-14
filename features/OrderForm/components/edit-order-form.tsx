@@ -6,7 +6,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { useOrderData } from "@/features/shared/context/order-context";
 import useFilters from "@/features/shared/hooks/useFilters";
 import { updateOrder } from "@/lib/actions";
-import { CURRENCIES } from "@/lib/consts";
+
 import { Order } from "@/types/types";
 import { useAppForm } from "../hooks/useAppForm";
 import useCurrencyInfo from "../hooks/useCurrencyInfo";
@@ -14,7 +14,6 @@ import useFormSubmit from "../hooks/useFormSubmit";
 import { orderFormOptions } from "../lib/order-form-options";
 import CreateCity from "./CityForm/create-city";
 import CreateCustomer from "./CustomerForm/create-customer";
-import CustomersComboboxField from "./FormFields/customers-combobox";
 import CurrencyInfo from "./ui/currency-info";
 
 export default function EditOrderForm({
@@ -29,6 +28,7 @@ export default function EditOrderForm({
 	const drivers = use(data.drivers);
 	const trucks = use(data.trucks);
 	const countries = use(data.countries);
+	const currencies = use(data.currencies);
 
 	const { resetFilters } = useFilters();
 	const { submitForm } = useFormSubmit(updateOrder, onDialogClose);
@@ -44,7 +44,7 @@ export default function EditOrderForm({
 			truckId: order.truckId,
 			statusId: order.statusId,
 			priceCurrency: order.priceCurrency,
-			currency: order.currency,
+			currencyId: order.currencyId,
 			loadingPlaces: order.loadingPlaces,
 			unloadingPlaces: order.unloadingPlaces,
 			currencyInfo: {
@@ -65,22 +65,26 @@ export default function EditOrderForm({
 		},
 	});
 
-	const { endDate, currency, currencyInfo } = useStore(
+	const { endDate, currencyId, currencyInfo } = useStore(
 		form.store,
 		(state) => state.values,
 	);
 
-	const { rate, isRateLoading, isRateError, rateError } =
-		useCurrencyInfo(endDate);
+	const {
+		rate,
+		isLoading: isRateLoading,
+		isRateError,
+		rateError,
+	} = useCurrencyInfo(endDate);
 
 	useEffect(() => {
-		if (currency === "EUR" && rate?.rates[0])
+		if (currencyId === 2 && rate?.rates[0])
 			form.setFieldValue("currencyInfo", {
 				date: rate.rates[0].effectiveDate,
 				rate: rate.rates[0].mid.toString(),
 				table: rate.rates[0].no,
 			});
-	}, [currency, rate, form]);
+	}, [currencyId, rate, form]);
 
 	const fieldGroupStyle = "flex-row pt-5";
 
@@ -96,7 +100,12 @@ export default function EditOrderForm({
 				<FieldGroup className="flex-row justify-between">
 					<div className="flex-1 flex gap-2 items-end min-w-0">
 						<form.AppField name="customerId">
-							{() => <CustomersComboboxField customers={[order.customer]} />}
+							{(field) => (
+								<field.CustomersComboboxField
+									customers={[order.customer]}
+									label="Zleceniodawca"
+								/>
+							)}
 						</form.AppField>
 						<CreateCustomer />
 					</div>
@@ -118,30 +127,24 @@ export default function EditOrderForm({
 				<FieldGroup className={fieldGroupStyle}>
 					<div className="flex-1 flex gap-2 items-end">
 						<form.AppField name="loadingPlaces" mode="array">
-							{(field) => {
-								return (
-									<field.PlaceField
-										label="Miejsca załadunku"
-										cities={cities}
-										countries={countries}
-										comboboxWidth="w-104"
-									/>
-								);
-							}}
+							{(field) => (
+								<field.PlacesComboboxField
+									cities={cities}
+									countries={countries}
+									label="Miejsca załadunku"
+								/>
+							)}
 						</form.AppField>
 						<CreateCity countries={countries} />
 					</div>
 					<form.AppField name="unloadingPlaces" mode="array">
-						{(field) => {
-							return (
-								<field.PlaceField
-									label="Miejsca rozładunku"
-									cities={cities}
-									countries={countries}
-									comboboxWidth="w-115"
-								/>
-							);
-						}}
+						{(field) => (
+							<field.PlacesComboboxField
+								cities={cities}
+								countries={countries}
+								label="Miejsca rozaładunku"
+							/>
+						)}
 					</form.AppField>
 				</FieldGroup>
 				<FieldGroup className={fieldGroupStyle}>
@@ -151,10 +154,10 @@ export default function EditOrderForm({
 						)}
 					</form.AppField>
 					<form.AppField
-						name="currency"
+						name="currencyId"
 						validators={{
 							onChangeAsync: async ({ value }) => {
-								if (value !== "EUR") return null;
+								if (value !== 2) return null;
 
 								if (isRateError)
 									return {
@@ -170,13 +173,14 @@ export default function EditOrderForm({
 							<field.SelectField
 								label="Waluta"
 								placeholder="Wybierz walutę"
-								data={CURRENCIES.map((currency) => ({
-									value: currency,
+								data={currencies.map((currency) => ({
+									label: currency.code,
+									value: currency.id,
 								}))}
 							>
 								<CurrencyInfo
 									isLoading={isRateLoading}
-									selectedCurrency={currency}
+									selectedCurrency={currencyId}
 									currencyInfo={currencyInfo}
 								/>
 							</field.SelectField>
@@ -200,12 +204,11 @@ export default function EditOrderForm({
 						{(field) => (
 							<field.ComboboxField
 								data={trucks.map((truck) => ({
-									id: truck.id,
-									value: truck.plate,
+									value: truck.id,
+									label: truck.plate,
 								}))}
 								label="Pojazd"
 								placeholder="Wybierz pojazd"
-								comboboxWidth="w-115"
 							/>
 						)}
 					</form.AppField>
@@ -213,12 +216,11 @@ export default function EditOrderForm({
 						{(field) => (
 							<field.ComboboxField
 								data={drivers.map((driver) => ({
-									id: driver.id,
-									value: `${driver.firstName} ${driver.lastName}`,
+									value: driver.id,
+									label: `${driver.firstName} ${driver.lastName}`,
 								}))}
 								label="Kierowca"
 								placeholder="Wybierz kierowcę"
-								comboboxWidth="w-115"
 							/>
 						)}
 					</form.AppField>

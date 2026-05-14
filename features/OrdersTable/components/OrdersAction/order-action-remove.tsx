@@ -25,16 +25,18 @@ export default function OrderActionRemove({
 
 	return (
 		<AlertDialog>
-			<AlertDialogTrigger asChild>
-				<Button
-					variant="ghost"
-					className="w-full justify-start text-destructive"
-					aria-label="order remove"
-				>
-					<Trash />
-					Usuń
-				</Button>
-			</AlertDialogTrigger>
+			<AlertDialogTrigger
+				render={
+					<Button
+						variant="ghost"
+						className="w-full justify-start text-destructive"
+						aria-label="order remove"
+					>
+						<Trash />
+						Usuń
+					</Button>
+				}
+			/>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Czy jesteś pewny ?</AlertDialogTitle>

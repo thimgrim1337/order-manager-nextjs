@@ -8,8 +8,6 @@ export default function useSearchQuery<T>(
 	const [query, setQuery] = useState("");
 	const [data, setData] = useState<T[]>(initialData);
 
-	console.log(query);
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <It's ok>
 	useEffect(() => {
 		if (!query) return setData(initialData);

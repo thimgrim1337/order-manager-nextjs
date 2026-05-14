@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 import {
 	DialogContent,
 	DialogDescription,
@@ -15,7 +15,7 @@ export type DialogProps = {
 	description: string;
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	trigger: ReactNode;
+	trigger: ReactElement;
 	children: ReactNode;
 	className?: string;
 };
@@ -23,13 +23,8 @@ export type DialogProps = {
 export default function Dialog(props: DialogProps) {
 	return (
 		<DialogPrimitive open={props.isOpen} onOpenChange={props.onOpenChange}>
-			<DialogTrigger asChild>{props.trigger}</DialogTrigger>
-			<DialogContent
-				className={cn(props.className)}
-				onInteractOutside={(e) => {
-					e.preventDefault();
-				}}
-			>
+			<DialogTrigger render={props.trigger} />
+			<DialogContent className={cn(props.className)}>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						{props.icon} {props.title}

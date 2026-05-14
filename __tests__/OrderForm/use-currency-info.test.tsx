@@ -12,10 +12,10 @@ describe("useCurrencyInfo", async () => {
 			wrapper: createWrapper(),
 		});
 
-		await waitFor(() => expect(result.current.isRateLoading).toBe(false));
+		await waitFor(() => expect(result.current.isLoading).toBe(false));
 
 		expect(result.current.rate).toEqual(mockRate);
-		expect(result.current.isRateError).toBe(false);
+		expect(result.current.isError).toBe(false);
 	});
 
 	it("use recieved holidays", async () => {
@@ -30,7 +30,7 @@ describe("useCurrencyInfo", async () => {
 		});
 
 		await waitFor(() => {
-			expect(result.current.isRateLoading).toBe(false);
+			expect(result.current.isLoading).toBe(false);
 		});
 
 		expect(result.current.rate).toEqual(mockRate);
@@ -41,7 +41,7 @@ describe("useCurrencyInfo", async () => {
 			wrapper: createWrapper(),
 		});
 
-		expect(result.current.isRateLoading).toBe(true);
+		expect(result.current.isLoading).toBe(true);
 	});
 
 	it("return isRateError: true when error occured", async () => {
@@ -56,7 +56,7 @@ describe("useCurrencyInfo", async () => {
 			wrapper: createWrapper(),
 		});
 
-		await waitFor(() => expect(result.current.isRateError).toBe(true));
+		await waitFor(() => expect(result.current.isError).toBe(true));
 
 		expect(result.current.rate).toBeUndefined();
 	});

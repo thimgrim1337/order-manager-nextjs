@@ -13,7 +13,8 @@ vi.mock("@/lib/actions", () => ({
 	deleteOrder: vi.fn(),
 	createCity: vi.fn(),
 	createCustomer: vi.fn(),
-	// dodaj pozostałe akcje których używasz
+	searchCustomers: vi.fn(),
+	revalidatePath: vi.fn(),
 }));
 
 vi.mock("next/cache", () => ({
@@ -34,7 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.head.appendChild(style);
 });
 
-beforeAll(() => worker.start({ onUnhandledRequest: "error" }));
+beforeAll(async () => {
+	await worker.start({
+		onUnhandledRequest: "error",
+		serviceWorker: {
+			url: "/mockServiceWorker.js", // make sure this file exists in /public
+		},
+	});
+});
 
 afterEach(() => {
 	worker.resetHandlers();

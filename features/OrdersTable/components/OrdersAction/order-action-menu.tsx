@@ -19,22 +19,24 @@ export default function OrderActionMenu({
 }) {
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="outline" role="menu" aria-label="order actions">
-					<Pen />
-				</Button>
-			</DropdownMenuTrigger>
+			<DropdownMenuTrigger
+				render={
+					<Button variant="outline" role="menu" aria-label="order actions">
+						<Pen />
+					</Button>
+				}
+			></DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem asChild>
-					<OrderStatusMenu order={order} />
-				</DropdownMenuItem>
-				<DropdownMenuItem asChild>
-					<OrderActionEdit order={order} />
-				</DropdownMenuItem>
+				<DropdownMenuItem
+					render={<OrderStatusMenu order={order} />}
+				></DropdownMenuItem>
+				<DropdownMenuItem
+					render={<OrderActionEdit order={order} />}
+				></DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem asChild>
-					<OrderActionRemove order={order} />
-				</DropdownMenuItem>
+				<DropdownMenuItem
+					render={<OrderActionRemove order={order} />}
+				></DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

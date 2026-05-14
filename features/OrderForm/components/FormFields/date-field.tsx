@@ -21,18 +21,20 @@ export default function DateField(props: FormControlProps) {
 	return (
 		<FormBase {...props}>
 			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger asChild>
-					<Button
-						variant="outline"
-						id={field.name}
-						className="w-48 justify-between font-normal"
-						aria-invalid={isInvalid}
-					>
-						{selectedDate ? selectedDate : "Wybierz datę"}
+				<PopoverTrigger
+					render={
+						<Button
+							variant="outline"
+							id={field.name}
+							className="w-48 justify-between font-normal"
+							aria-invalid={isInvalid}
+						>
+							{selectedDate ? selectedDate : "Wybierz datę"}
 
-						<ChevronDownIcon />
-					</Button>
-				</PopoverTrigger>
+							<ChevronDownIcon />
+						</Button>
+					}
+				></PopoverTrigger>
 				<PopoverContent className="w-auto overflow-hidden p-0" align="start">
 					<Calendar
 						mode="single"
