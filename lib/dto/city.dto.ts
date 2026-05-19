@@ -9,13 +9,15 @@ export const createCitySchema = createInsertSchema(city, {
 		.min(1, { error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.max(20, {
 			error: "Nazwa miejscowości nie może być dłuższa niż 20 znaków.",
-		}),
+		})
+		.trim(),
 	postal: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(1, { error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.max(6, {
 			error: "Kod pocztowy nie może być dłuższy niż 6 znaków.",
-		}),
+		})
+		.trim(),
 	countryId: z
 		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(1, { error: ZOD_ERROR_MESSAGES.FieldRequired }),

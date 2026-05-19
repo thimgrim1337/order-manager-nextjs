@@ -7,11 +7,13 @@ export const createCustomerSchema = createInsertSchema(customer, {
 	name: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(1, { error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.max(100),
+		.max(100)
+		.trim(),
 	tax: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(12, { error: "NIP powinien mieć conajmniej 12 znaków." })
-		.max(20),
+		.max(20)
+		.trim(),
 });
 export const selectCustomerSchema = createSelectSchema(customer);
 

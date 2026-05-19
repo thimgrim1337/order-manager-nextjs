@@ -11,7 +11,8 @@ import { selectCitySchema as City } from "./city.dto";
 export const OrderFormSchema = z.object({
 	orderNr: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Numer zlecenia nie może być pusty." }),
+		.min(1, { error: "Numer zlecenia nie może być pusty." })
+		.trim(),
 	startDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
 	endDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
 	statusId: z.number({ error: ZOD_ERROR_MESSAGES.FieldRequired }).min(1).max(3),
@@ -31,7 +32,8 @@ export const OrderFormSchema = z.object({
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.refine((val) => Number(val) > 0, {
 			error: "Cena musi być wyższa od zera.",
-		}),
+		})
+		.trim(),
 	loadingPlaces: z
 		.array(City, { error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.min(1, { error: "Wybierz co najmniej 1 miejsce załadunku." }),
