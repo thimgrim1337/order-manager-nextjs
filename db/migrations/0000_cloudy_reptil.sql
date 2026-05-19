@@ -31,7 +31,8 @@ CREATE TABLE "customers" (
 CREATE TABLE "drivers" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "drivers_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"first_name" text NOT NULL,
-	"last_name" text NOT NULL
+	"last_name" text NOT NULL,
+	CONSTRAINT "drivers_first_name_last_name_unique" UNIQUE("first_name","last_name")
 );
 --> statement-breakpoint
 CREATE TABLE "order_loading_places" (
@@ -54,7 +55,8 @@ CREATE TABLE "orders" (
 	"currency_rate" numeric(5, 4) DEFAULT '1' NOT NULL,
 	"truck_id" integer NOT NULL,
 	"driver_id" integer NOT NULL,
-	"customer_id" integer NOT NULL
+	"customer_id" integer NOT NULL,
+	CONSTRAINT "orders_customer_id_order_nr_unique" UNIQUE("customer_id","order_nr")
 );
 --> statement-breakpoint
 CREATE TABLE "statuses" (

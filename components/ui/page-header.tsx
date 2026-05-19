@@ -6,10 +6,10 @@ type PageHeaderProps = {
 export default function PageHeader({ title, subText }: PageHeaderProps) {
 	return (
 		<header>
-			<h2 className="scroll-m-20 pb-2 text-3xl tracking-tight first:mt-0 font-medium border-b">
+			<h2 className="pb-2 text-3xl tracking-tight font-medium border-b ">
 				{title}
 			</h2>
-			<p className="text-muted-foreground">{subText}</p>
+			<p className="text-muted-foreground tracking-tight">{subText}</p>
 		</header>
 	);
 }

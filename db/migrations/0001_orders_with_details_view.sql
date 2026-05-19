@@ -1,4 +1,4 @@
--- Custom SQL migration file, put your code below! ---- Custom SQL migration file, put your code below! ---- Custom SQL migration file, put your code below! --
+-- Custom SQL migration file, put your code below! --
 CREATE VIEW orders_with_details AS
 SELECT 
   o.id,

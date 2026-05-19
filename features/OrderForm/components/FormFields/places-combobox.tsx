@@ -40,14 +40,17 @@ export default function PlacesComboboxField(
 				<ComboboxChips
 					ref={anchor}
 					aria-invalid={isInvalid}
-					className={"flex-col items-start"}
+					className={"flex-col items-start p-2 [&_button]:hover:text-primary"}
 				>
 					{selectedCities.map((city) => {
 						const country = props.countries.find(
 							(country) => country.id === city.countryId,
 						)?.code;
 						return (
-							<ComboboxChip key={city.id} className={"w-full justify-between"}>
+							<ComboboxChip
+								key={city.id}
+								className={"w-full justify-between p-4"}
+							>
 								<div className="flex gap-2 text-[.9rem]">
 									<span>{country}</span>
 									<span>{city.postal}</span>

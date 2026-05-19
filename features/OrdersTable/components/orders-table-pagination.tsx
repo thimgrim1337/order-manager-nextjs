@@ -23,11 +23,7 @@ export function OrdersTablePagination<TData>({
 	table,
 }: DataTablePagination<TData>) {
 	return (
-		<div className="flex items-center justify-between p-2">
-			<div className="flex-1 text-sm text-muted-foreground">
-				{table.getFilteredSelectedRowModel().rows.length} {" z "}
-				{table.getFilteredRowModel().rows.length} wiersz(y) zaznaczono.
-			</div>
+		<div className="flex items-center justify-end p-2">
 			<div className="flex items-center space-x-6 lg:space-x-8">
 				<div className="flex items-center space-x-2">
 					<p className="text-sm font-medium">Wierszy na stronę</p>

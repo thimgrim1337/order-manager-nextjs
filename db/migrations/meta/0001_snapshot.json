@@ -1,6 +1,6 @@
 {
-  "id": "f6290389-37e9-425e-827a-8a285fa03c0f",
-  "prevId": "02a3f38e-c22a-40d7-b010-5e55637d7bbe",
+  "id": "b9ad441d-e4b4-4240-8039-236d28ff1b64",
+  "prevId": "b781d15a-731b-4f33-8bc1-a9f361191592",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -303,7 +303,16 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "drivers_first_name_last_name_unique": {
+          "name": "drivers_first_name_last_name_unique",
+          "columns": [
+            "first_name",
+            "last_name"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -605,7 +614,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "orders_customer_id_order_nr_unique": {
+          "name": "orders_customer_id_order_nr_unique",
+          "columns": [
+            "customer_id",
+            "order_nr"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

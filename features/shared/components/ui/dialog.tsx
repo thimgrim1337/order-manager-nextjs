@@ -22,7 +22,11 @@ export type DialogProps = {
 
 export default function Dialog(props: DialogProps) {
 	return (
-		<DialogPrimitive open={props.isOpen} onOpenChange={props.onOpenChange}>
+		<DialogPrimitive
+			open={props.isOpen}
+			onOpenChange={props.onOpenChange}
+			disablePointerDismissal
+		>
 			<DialogTrigger render={props.trigger} />
 			<DialogContent className={cn(props.className)}>
 				<DialogHeader>

@@ -38,10 +38,10 @@ export default async function OrdersPage({
 	const currencies = getAllCurrencies();
 
 	return (
-		<div className="w-[90%] m-auto my-5">
+		<div className="w-[90%] m-auto my-5 px-5">
 			<PageHeader
 				title="Zlecenia"
-				subText="System zarządzania zleceniami transportowymi"
+				subText="System zarządzania zleceniami transportowymi."
 			/>
 
 			<Suspense fallback={<p>Loading...</p>}>
