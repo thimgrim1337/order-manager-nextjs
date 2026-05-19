@@ -106,18 +106,6 @@ export async function getOrderCount() {
 	return db.select({ count: count() }).from(order);
 }
 
-export async function checkIfOrderExist(
-	orderNumber: string,
-	customerId: number,
-) {
-	const dbOrder = await db.query.order.findFirst({
-		where: (order) =>
-			and(eq(order.orderNr, orderNumber), eq(order.customerId, customerId)),
-	});
-
-	return dbOrder ? true : false;
-}
-
 export async function createOrder(dto: CreateOrderDto, trx: dbTransaction) {
 	const [newOrder] = await trx.insert(order).values(dto).returning();
 	return newOrder;

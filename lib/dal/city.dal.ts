@@ -1,4 +1,4 @@
-import { eq, InferSelectModel, ilike } from "drizzle-orm";
+import { InferSelectModel, ilike } from "drizzle-orm";
 import db from "@/db/db";
 import { city } from "@/db/schemas";
 import { CreateCityDto } from "../dto/city.dto";
@@ -24,14 +24,6 @@ export async function getCityByName(cityName: string) {
 	});
 
 	return dbCity ? dbCity : null;
-}
-
-export async function checkIfCityExist(dto: CreateCityDto) {
-	const dbCity = await db.query.city.findFirst({
-		where: (city) => eq(city.name, dto.name),
-	});
-
-	return dbCity ? true : false;
 }
 
 export async function createCity(dto: CreateCityDto) {

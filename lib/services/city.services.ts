@@ -1,8 +1,10 @@
+import { DrizzleQueryError } from "drizzle-orm";
+import { DatabaseError } from "pg";
 import z from "zod";
-import { checkIfCityExist, createCity } from "../dal/city.dal";
+import { createCity } from "../dal/city.dal";
 import { createCitySchema, selectCitySchema } from "../dto/city.dto";
-// import { serverValidation } from '../actions';
 import { error, ok } from "../error";
+import { getErrorDetails } from "../helpers";
 
 export async function createCityService(rawData: unknown) {
 	const validationResult = createCitySchema.safeParse(rawData);
@@ -12,21 +14,29 @@ export async function createCityService(rawData: unknown) {
 			details: z.prettifyError(validationResult.error),
 		});
 
-	const isCityExist = await checkIfCityExist(validationResult.data);
-
-	if (isCityExist)
-		return error({
-			reason: "CityExist",
-		});
-
 	try {
 		const dbCity = await createCity(validationResult.data);
 
 		return ok(selectCitySchema.parse(dbCity));
 	} catch (err) {
+		if (err instanceof DrizzleQueryError) {
+			const cause = err.cause as DatabaseError | undefined;
+
+			if (cause?.code === "23505") {
+				return error({
+					reason: "CityExist",
+				});
+			}
+
+			return error({
+				reason: "DrizzleError",
+				details: getErrorDetails(err),
+			});
+		}
+
 		return error({
 			reason: "UnexpectedError",
-			details: err,
+			details: getErrorDetails(err),
 		});
 	}
 }

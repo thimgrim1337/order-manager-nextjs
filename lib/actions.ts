@@ -102,6 +102,12 @@ export async function updateOrder(
 				details: error.details,
 			};
 		}
+		case "OrderExist": {
+			return {
+				success: false,
+				message: "Zlecenie o tym numerze już istnieje.",
+			};
+		}
 		case "UnexpectedError": {
 			return {
 				success: false,
@@ -143,6 +149,12 @@ export async function patchOrder(
 				success: false,
 				message: "Wystąpił błąd bazy danych",
 				details: error.details,
+			};
+		}
+		case "OrderExist": {
+			return {
+				success: false,
+				message: "Zlecenie o tym numerze już istnieje.",
 			};
 		}
 		case "UnexpectedError": {
@@ -225,6 +237,13 @@ export async function createCustomer(
 				message: "Ten zleceniodawca już istnieje.",
 			};
 		}
+		case "DrizzleError": {
+			return {
+				success: false,
+				message: "Wystąpił błąd bazy danych",
+				details: error.details,
+			};
+		}
 		case "UnexpectedError": {
 			return {
 				success: false,
@@ -264,6 +283,13 @@ export async function createCity(
 			return {
 				success: false,
 				message: "Ta miejscowość już istnieje.",
+			};
+		}
+		case "DrizzleError": {
+			return {
+				success: false,
+				message: "Wystąpił błąd bazy danych",
+				details: error.details,
 			};
 		}
 		case "UnexpectedError": {

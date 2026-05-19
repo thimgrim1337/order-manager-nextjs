@@ -1,9 +1,9 @@
 import { DrizzleQueryError } from "drizzle-orm";
+import { DatabaseError } from "pg";
 import z from "zod";
 import db from "@/db/db";
 import {
 	addOrderPlaces,
-	checkIfOrderExist,
 	createOrder,
 	deleteOrder,
 	deleteOrderPlaces,
@@ -16,6 +16,7 @@ import {
 	updateOrderSchema,
 } from "../dto/order.dto";
 import { error, ok } from "../error";
+import { getErrorDetails } from "../helpers";
 
 export async function createOrderService(rawData: unknown) {
 	const validationResult = OrderFormSchema.safeParse(rawData);
@@ -30,13 +31,6 @@ export async function createOrderService(rawData: unknown) {
 
 	const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } =
 		validatedData;
-
-	const isOrderExist = await checkIfOrderExist(order.orderNr, order.customerId);
-
-	if (isOrderExist)
-		return error({
-			reason: "OrderExist",
-		});
 
 	let pricePLN: string;
 	let currencyRate: string = "1";
@@ -68,15 +62,23 @@ export async function createOrderService(rawData: unknown) {
 		return ok(selectOrderSchema.parse(dbOrder));
 	} catch (err) {
 		if (err instanceof DrizzleQueryError) {
+			const cause = err.cause as DatabaseError | undefined;
+
+			if (cause?.code === "23505") {
+				return error({
+					reason: "OrderExist",
+				});
+			}
+
 			return error({
 				reason: "DrizzleError",
-				details: err.cause,
+				details: getErrorDetails(err),
 			});
 		}
 
 		return error({
-			reason: `UnexpectedError`,
-			details: err,
+			reason: "UnexpectedError",
+			details: getErrorDetails(err),
 		});
 	}
 }
@@ -106,14 +108,23 @@ export async function updateOrderService(orderId: number, rawData: unknown) {
 		return ok(selectOrderSchema.parse(dbOrder));
 	} catch (err) {
 		if (err instanceof DrizzleQueryError) {
+			const cause = err.cause as DatabaseError | undefined;
+
+			if (cause?.code === "23505") {
+				return error({
+					reason: "OrderExist",
+				});
+			}
+
 			return error({
 				reason: "DrizzleError",
-				details: err.cause,
+				details: getErrorDetails(err),
 			});
 		}
+
 		return error({
-			reason: `UnexpectedError`,
-			details: err,
+			reason: "UnexpectedError",
+			details: getErrorDetails(err),
 		});
 	}
 }
@@ -135,14 +146,23 @@ export async function patchOrderService(orderId: number, rawData: unknown) {
 		return ok(selectOrderSchema.parse(dbOrder));
 	} catch (err) {
 		if (err instanceof DrizzleQueryError) {
+			const cause = err.cause as DatabaseError | undefined;
+
+			if (cause?.code === "23505") {
+				return error({
+					reason: "OrderExist",
+				});
+			}
+
 			return error({
 				reason: "DrizzleError",
-				details: err.cause,
+				details: getErrorDetails(err),
 			});
 		}
+
 		return error({
-			reason: `UnexpectedError`,
-			details: err,
+			reason: "UnexpectedError",
+			details: getErrorDetails(err),
 		});
 	}
 }
@@ -162,12 +182,13 @@ export async function deleteOrderService(orderId: number) {
 		if (err instanceof DrizzleQueryError) {
 			return error({
 				reason: "DrizzleError",
-				details: err.cause,
+				details: getErrorDetails(err),
 			});
 		}
+
 		return error({
-			reason: `UnexpectedError`,
-			details: err,
+			reason: "UnexpectedError",
+			details: getErrorDetails(err),
 		});
 	}
 }
