@@ -9,6 +9,7 @@ import {
 	pgView,
 	text,
 	timestamp,
+	unique,
 } from "drizzle-orm/pg-core";
 import { City, Customer, Driver, Status, Truck } from "@/types/types";
 import {
@@ -66,6 +67,7 @@ const order = pgTable(
 			.references(() => customer.id),
 	},
 	(table) => [
+		unique().on(table.customerId, table.orderNr),
 		index("idx_orders_order_nr_lower").using(
 			"btree",
 			sql`LOWER(${table.orderNr})`,
