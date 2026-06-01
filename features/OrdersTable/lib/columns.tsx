@@ -54,7 +54,9 @@ export const columns: ColumnDef<Order>[] = [
 	},
 	{
 		accessorKey: "customerId",
-		accessorFn: (order) => order.customer_name,
+		cell: ({ row }) => (
+			<div className="w-40 truncate">{row.original.customer_name}</div>
+		),
 		header: "Klient",
 	},
 	{
