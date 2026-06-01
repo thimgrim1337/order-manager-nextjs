@@ -1,5 +1,6 @@
 "use client";
 import {
+	ChevronsLeftRight,
 	ClipboardList,
 	Columns2,
 	Settings,
@@ -8,6 +9,8 @@ import {
 	User,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
 	Sidebar,
@@ -24,8 +27,10 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AppSidebar() {
+	const currentPath = usePathname();
+
 	return (
-		<Sidebar>
+		<Sidebar collapsible="icon">
 			<SidebarHeader className="flex-row items-center">
 				<div className="w-15 flex justify-center bg-sidebar-accent rounded p-2">
 					<Image
@@ -35,7 +40,11 @@ export function AppSidebar() {
 						height={50}
 					/>
 				</div>
-				<span className="text- text-xl font-semibold">DevXFlow</span>
+				<span
+					className={`text- text-xl font-semibold group-data-[collapsible=icon]:hidden`}
+				>
+					DevXFlow
+				</span>
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
@@ -43,28 +52,51 @@ export function AppSidebar() {
 					<SidebarGroupContent>
 						<SidebarMenu>
 							<SidebarMenuItem>
-								<SidebarMenuButton className="font-medium">
-									<ClipboardList />
-									Zlecenia
-								</SidebarMenuButton>
+								<SidebarMenuButton
+									className="font-medium"
+									render={
+										<Link
+											href={"/orders"}
+											className={`w-full ${currentPath === "/orders" ? "font-bold" : undefined}`}
+										>
+											<ClipboardList />
+											Zlecenia
+										</Link>
+									}
+								/>
 							</SidebarMenuItem>
 							<SidebarMenuItem>
-								<SidebarMenuButton className="font-medium">
-									<TableOfContents />
-									Tablica
-								</SidebarMenuButton>
+								<SidebarMenuButton
+									className="font-medium"
+									render={
+										<Link href={"/board"}>
+											<TableOfContents />
+											Tablica
+										</Link>
+									}
+								/>
 							</SidebarMenuItem>
 							<SidebarMenuItem>
-								<SidebarMenuButton className="font-medium">
-									<User />
-									Kierowcy
-								</SidebarMenuButton>
+								<SidebarMenuButton
+									className="font-medium"
+									render={
+										<Link href={"/drivers"}>
+											<User />
+											Kierowcy
+										</Link>
+									}
+								/>
 							</SidebarMenuItem>
 							<SidebarMenuItem>
-								<SidebarMenuButton className="font-medium">
-									<Truck />
-									Pojazdy
-								</SidebarMenuButton>
+								<SidebarMenuButton
+									className="font-medium"
+									render={
+										<Link href={"/trucks"}>
+											<Truck />
+											Pojazdy
+										</Link>
+									}
+								/>
 							</SidebarMenuItem>
 						</SidebarMenu>
 					</SidebarGroupContent>
@@ -74,10 +106,15 @@ export function AppSidebar() {
 					<SidebarGroupContent>
 						<SidebarMenu>
 							<SidebarMenuItem>
-								<SidebarMenuButton className="font-medium">
-									<Settings />
-									Ustawienia
-								</SidebarMenuButton>
+								<SidebarMenuButton
+									className="font-medium"
+									render={
+										<Link href={"/settings"}>
+											<Settings />
+											Ustawienia
+										</Link>
+									}
+								/>
 							</SidebarMenuItem>
 						</SidebarMenu>
 					</SidebarGroupContent>
@@ -92,8 +129,12 @@ export function SidebarTrigger() {
 	const { toggleSidebar } = useSidebar();
 
 	return (
-		<Button onClick={toggleSidebar} variant={"ghost"}>
-			<Columns2 />
+		<Button
+			onClick={toggleSidebar}
+			variant={"ghost"}
+			className={"min-h-screen"}
+		>
+			<ChevronsLeftRight />
 		</Button>
 	);
 }
