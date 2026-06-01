@@ -26,8 +26,7 @@ export default function CreateCityForm({
 		},
 		onSubmit: async ({ value }) =>
 			submitForm(value, {
-				// errorTitle: "Nie udało się utworzyć miejscowości.",
-				// successTitle: "Pomyślnie utworzono miejsowość",
+				errorTitle: "Nie udało się utworzyć miejscowości.",
 				successDescription: `Pomyślnie utworzono nową miejscowość: ${value.name}`,
 			}),
 	});
