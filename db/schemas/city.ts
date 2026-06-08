@@ -9,7 +9,7 @@ const city = pgTable(
 	"cities",
 	{
 		id: integer().primaryKey().generatedAlwaysAsIdentity(),
-		name: text().notNull(),
+		name: text().notNull().unique(),
 		postal: text().notNull(),
 		countryId: integer("country_id")
 			.notNull()
