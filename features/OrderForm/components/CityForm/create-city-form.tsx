@@ -4,7 +4,6 @@ import { createCitySchema } from "@/lib/dto/city.dto";
 import { Country } from "@/types/types";
 import { useAppForm } from "../../hooks/useAppForm";
 import useFormSubmit from "../../hooks/useFormSubmit";
-import "country-flag-icons/3x2/flags.css";
 
 export default function CreateCityForm({
 	countries,
@@ -19,7 +18,7 @@ export default function CreateCityForm({
 		defaultValues: {
 			name: "",
 			postal: "",
-			countryId: 0,
+			countryId: 25,
 		},
 		validators: {
 			onChange: createCitySchema,
@@ -43,17 +42,7 @@ export default function CreateCityForm({
 			<form.AppForm>
 				<FieldGroup>
 					<form.AppField name="countryId">
-						{(field) => (
-							<field.SelectField
-								label="Kod kraju"
-								placeholder="Wybierz kraj"
-								data={countries?.map((country) => ({
-									label: `${country.code} ${country.name}`,
-									value: country.id,
-									icon: <span className={`flag:${country.code}`}></span>,
-								}))}
-							/>
-						)}
+						{(field) => <field.CountrySelectField countries={countries} />}
 					</form.AppField>
 					<form.AppField name="postal">
 						{(field) => <field.InputField label="Kod pocztowy" />}

@@ -10,7 +10,7 @@ type ToastMessage = {
 
 export default function useFormSubmit<TInput, TResponse = TInput>(
 	action: (formData: TInput, id?: number) => Promise<ActionResponse<TResponse>>,
-	onDialogClose: () => void,
+	onDialogClose?: () => void,
 ) {
 	const { refresh } = useRouter();
 
@@ -29,7 +29,7 @@ export default function useFormSubmit<TInput, TResponse = TInput>(
 				});
 			}
 
-			onDialogClose();
+			onDialogClose?.();
 			refresh();
 
 			return toast.success(successTitle || "Sukces", {
