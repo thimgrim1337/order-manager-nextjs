@@ -58,5 +58,9 @@ export const updateOrderSchema = createUpdateSchema(order);
 export type OrderFormDto = z.infer<typeof OrderFormSchema>;
 export type CreateOrderDto = z.infer<typeof createOrderSchema>;
 export type OrderWithDetailsDto = z.infer<typeof selectOrderViewSchema>;
+export type OrderTableDto = Omit<
+	OrderWithDetailsDto,
+	"createdAt" | "updatedAt" | "driver" | "truck"
+>;
 export type OrderDto = z.infer<typeof selectOrderSchema>;
 export type UpdateOrderDto = z.infer<typeof updateOrderSchema>;

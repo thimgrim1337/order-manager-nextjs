@@ -1,10 +1,10 @@
 import { SquarePen } from "lucide-react";
 import EditOrderForm from "@/features/OrderForm/components/edit-order-form";
 import useToggle from "@/features/shared/hooks/useToggle";
-import { Order } from "@/types/types";
+import { OrderTable } from "@/types/types";
 import OrderActionDialog from "./order-action-dialog";
 
-export default function OrderActionEdit({ order }: { order: Order }) {
+export default function OrderActionEdit({ order }: { order: OrderTable }) {
 	const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] =
 		useToggle();
 

@@ -1,14 +1,14 @@
 "use client";
 
 import { use } from "react";
-import { OrderWithDetailsDto as Order } from "@/lib/dto/order.dto";
+import { OrderTable } from "@/types/types";
 import useTable from "../hooks/useTable";
 import { columns } from "../lib/columns";
 import { OrdersTableBody } from "./orders-table-body";
 import { OrdersTablePagination } from "./orders-table-pagination";
 
 interface OrdersTableProps {
-	orders: Promise<Order[]>;
+	orders: Promise<OrderTable[]>;
 	rowCount: number;
 }
 

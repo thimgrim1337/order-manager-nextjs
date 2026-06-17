@@ -12,13 +12,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { deleteOrder } from "@/lib/actions";
-import { OrderWithDetailsDto } from "@/lib/dto/order.dto";
+import { OrderTable } from "@/types/types";
 
-export default function OrderActionRemove({
-	order,
-}: {
-	order: OrderWithDetailsDto;
-}) {
+export default function OrderActionRemove({ order }: { order: OrderTable }) {
 	async function handleClick(orderId: number) {
 		await deleteOrder(orderId);
 	}

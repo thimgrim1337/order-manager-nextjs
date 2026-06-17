@@ -116,11 +116,11 @@ export const ordersWithDetailsView = pgView("orders_with_details", {
 		.references(() => customer.id),
 
 	// Joined data
-	customer_name: text("customer_name").notNull(),
-	driver_fullname: text("driver_fullname").notNull(),
-	truck_plate: text("truck_plate").notNull(),
-	status_name: text("status_name").notNull(),
-	currency_code: text("currency_code").notNull(),
+	customerName: text("customer_name").notNull(),
+	driverFullname: text("driver_fullname").notNull(),
+	truckPlate: text("truck_plate").notNull(),
+	statusName: text("status_name").notNull(),
+	currencyCode: text("currency_code").notNull(),
 
 	// JSON aggregated data
 	customer: json("customer").$type<Customer>().notNull(),

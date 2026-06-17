@@ -1,5 +1,4 @@
 import {
-	and,
 	asc,
 	count,
 	desc,
@@ -45,7 +44,7 @@ export async function getAllOrders(
 			endDate: ordersWithDetailsView.endDate,
 			pricePLN: ordersWithDetailsView.pricePLN,
 			priceCurrency: ordersWithDetailsView.priceCurrency,
-			currency: ordersWithDetailsView.currency_code,
+			currency: ordersWithDetailsView.currencyCode,
 		};
 
 		return (
@@ -62,11 +61,11 @@ export async function getAllOrders(
 		const searchConditions = [
 			or(
 				ilike(ordersWithDetailsView.orderNr, searchTerm),
-				ilike(ordersWithDetailsView.customer_name, searchTerm),
-				ilike(ordersWithDetailsView.driver_fullname, searchTerm),
-				ilike(ordersWithDetailsView.truck_plate, searchTerm),
-				ilike(ordersWithDetailsView.status_name, searchTerm),
-				ilike(ordersWithDetailsView.currency_code, searchTerm),
+				ilike(ordersWithDetailsView.customerName, searchTerm),
+				ilike(ordersWithDetailsView.driverFullname, searchTerm),
+				ilike(ordersWithDetailsView.truckPlate, searchTerm),
+				ilike(ordersWithDetailsView.statusName, searchTerm),
+				ilike(ordersWithDetailsView.currencyCode, searchTerm),
 				ilike(ordersWithDetailsView.loadingCity, searchTerm),
 				ilike(ordersWithDetailsView.unloadingCity, searchTerm),
 			),

@@ -2,11 +2,11 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/lib/dates";
-import { OrderWithDetailsDto as Order } from "@/lib/dto/order.dto";
+import { OrderTable } from "@/types/types";
 import OrderActionMenu from "../components/OrdersAction/order-action-menu";
 import StatusBadge from "../components/ui/status-bagde";
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<OrderTable>[] = [
 	{
 		accessorKey: "orderNr",
 		header: "Nr zlecenia",
@@ -35,27 +35,25 @@ export const columns: ColumnDef<Order>[] = [
 			const statusId = row.getValue("statusId") as number;
 
 			return (
-				<StatusBadge statusId={statusId}>
-					{row.original.status_name}
-				</StatusBadge>
+				<StatusBadge statusId={statusId}>{row.original.statusName}</StatusBadge>
 			);
 		},
 		header: "Status",
 	},
 	{
 		accessorKey: "truckId",
-		accessorFn: (order) => order.truck_plate,
+		accessorFn: (order) => order.truckPlate,
 		header: "Pojazd",
 	},
 	{
 		accessorKey: "driverId",
-		accessorFn: (order) => order.driver_fullname,
+		accessorFn: (order) => order.driverFullname,
 		header: "Kierowca",
 	},
 	{
 		accessorKey: "customerId",
 		cell: ({ row }) => (
-			<div className="w-40 truncate">{row.original.customer_name}</div>
+			<div className="w-40 truncate">{row.original.customerName}</div>
 		),
 		header: "Klient",
 	},
@@ -73,7 +71,7 @@ export const columns: ColumnDef<Order>[] = [
 		accessorKey: "currency_code",
 		header: "Waluta",
 		cell: ({ row }) => (
-			<div className="text-right">{row.original.currency_code}</div>
+			<div className="text-right">{row.original.currencyCode}</div>
 		),
 	},
 	{

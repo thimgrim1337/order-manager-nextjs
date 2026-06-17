@@ -7,7 +7,7 @@ import { useOrderData } from "@/features/shared/context/order-context";
 import useFilters from "@/features/shared/hooks/useFilters";
 import { updateOrder } from "@/lib/actions";
 
-import { Order } from "@/types/types";
+import { OrderTable } from "@/types/types";
 import { useAppForm } from "../hooks/useAppForm";
 import useCurrencyInfo from "../hooks/useCurrencyInfo";
 import useFormSubmit from "../hooks/useFormSubmit";
@@ -20,7 +20,7 @@ export default function EditOrderForm({
 	order,
 	onDialogClose,
 }: {
-	order: Order;
+	order: OrderTable;
 	onDialogClose: () => void;
 }) {
 	const data = useOrderData();
@@ -73,8 +73,8 @@ export default function EditOrderForm({
 	const {
 		rate,
 		isLoading: isRateLoading,
-		isRateError,
-		rateError,
+		isError: isRateError,
+		error: rateError,
 	} = useCurrencyInfo(endDate);
 
 	useEffect(() => {

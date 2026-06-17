@@ -2,8 +2,8 @@ import { Ban, CheckCircle, ClockCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useToggle from "@/features/shared/hooks/useToggle";
 import { patchOrder } from "@/lib/actions";
-import { OrderWithDetailsDto } from "@/lib/dto/order.dto";
 import { cn } from "@/lib/utils";
+import { OrderTable } from "@/types/types";
 import OrderActionDialog from "./order-action-dialog";
 
 const statusConfig = {
@@ -27,11 +27,7 @@ const statusConfig = {
 	},
 };
 
-export default function OrderStatusMenu({
-	order,
-}: {
-	order: OrderWithDetailsDto;
-}) {
+export default function OrderStatusMenu({ order }: { order: OrderTable }) {
 	const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] =
 		useToggle();
 

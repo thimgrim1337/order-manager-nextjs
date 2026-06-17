@@ -1,4 +1,4 @@
-import { DrizzleError, DrizzleQueryError } from "drizzle-orm";
+import { DrizzleQueryError } from "drizzle-orm";
 import { DatabaseError } from "pg";
 
 type ApiResult<TData = unknown> =
@@ -80,4 +80,15 @@ export function getErrorDetails(error: unknown) {
 		message: "Uknown trown value",
 		raw: String(error),
 	};
+}
+
+export function omit<T extends object, K extends keyof T>(
+	obj: T,
+	keys: K[],
+): Omit<T, K> {
+	const keysToOmit = new Set(keys as string[]);
+
+	return Object.fromEntries(
+		Object.entries(obj).filter(([key]) => !keysToOmit.has(key)),
+	) as Omit<T, K>;
 }

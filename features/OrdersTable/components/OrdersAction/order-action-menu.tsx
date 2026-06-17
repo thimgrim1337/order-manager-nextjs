@@ -7,16 +7,12 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { OrderWithDetailsDto } from "@/lib/dto/order.dto";
+import { OrderTable } from "@/types/types";
 import OrderActionEdit from "./order-action-edit";
 import OrderActionRemove from "./order-action-remove";
 import OrderStatusMenu from "./order-status-menu";
 
-export default function OrderActionMenu({
-	order,
-}: {
-	order: OrderWithDetailsDto;
-}) {
+export default function OrderActionMenu({ order }: { order: OrderTable }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger
