@@ -5,12 +5,17 @@ import { CountryDto } from "@/lib/dto/country.dto";
 import { CurrencyDto } from "@/lib/dto/currency.dto";
 import { CustomerDto } from "@/lib/dto/customer.dto";
 import { DriverDto } from "@/lib/dto/driver.dto";
-import { OrderTableDto, OrderWithDetailsDto } from "@/lib/dto/order.dto";
+import {
+	OrderTableDto,
+	OrderTimelineDto,
+	OrderWithDetailsDto,
+} from "@/lib/dto/order.dto";
 import { StatusDto } from "@/lib/dto/status.dto";
 import { TruckDto } from "@/lib/dto/truck.dto";
 
 export type Order = OrderWithDetailsDto;
 export type OrderTable = OrderTableDto;
+export type OrderTimeline = OrderTimelineDto;
 export type City = CityDto;
 export type Country = CountryDto;
 export type Customer = CustomerDto;
@@ -33,6 +38,14 @@ export type SortOptions = {
 	id: string;
 	desc: boolean;
 };
+
+const OrderFilters = z.object({
+	globalFilters: z.string().optional(),
+	truckId: z.number().min(1).optional(),
+	startDate: z.iso.date().optional(),
+	endDate: z.iso.date().optional(),
+});
+export type OrderFilters = z.infer<typeof OrderFilters>;
 
 export const SearchParams = z.object({
 	sort: z

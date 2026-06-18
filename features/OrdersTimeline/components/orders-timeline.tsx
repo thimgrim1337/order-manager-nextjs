@@ -1,8 +1,20 @@
+"use client";
+
+import { use } from "react";
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getToday, getWeekDays } from "@/lib/dates";
+import { OrderTimeline } from "@/types/types";
 
-export default function OrdersTimeline() {
+export default function OrdersTimeline({
+	orders,
+}: {
+	orders: Promise<OrderTimeline[]>;
+}) {
 	const weekdays = getWeekDays(getToday());
+	const ordersData = use(orders);
+
+	//zmapotać do OrderTimelineDto
+	console.log("timeline", ordersData);
 
 	return (
 		<Table>

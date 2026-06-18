@@ -7,7 +7,6 @@ import {
 	InferSelectViewModel,
 	ilike,
 	or,
-	SQL,
 	sql,
 } from "drizzle-orm";
 import db, { dbTransaction } from "@/db/db";
@@ -17,7 +16,7 @@ import {
 	ordersWithDetailsView,
 	unloadingPlace,
 } from "@/db/schemas";
-import { PlaceType, SortOptions } from "@/types/types";
+import { OrderFilters, PlaceType, SortOptions } from "@/types/types";
 import { CityDto } from "../dto/city.dto";
 import { CreateOrderDto, UpdateOrderDto } from "../dto/order.dto";
 import { analyzeGlobalFiltering } from "../utils";
@@ -29,7 +28,7 @@ export async function getAllOrders(
 	pageIndex: number,
 	pageSize: number,
 	sortOptions?: SortOptions,
-	filters?: string,
+	filters?: OrderFilters,
 ) {
 	const sortOrder = sortOptions?.desc === true ? desc : asc;
 
@@ -53,23 +52,21 @@ export async function getAllOrders(
 		);
 	};
 
-	let whereConditions: SQL | undefined;
-	if (filters) {
+	const searchConditions = [];
+	if (filters?.globalFilters) {
 		const { searchTerm, isNumeric, numericValue, isDate, normalizedDate } =
-			analyzeGlobalFiltering(filters);
+			analyzeGlobalFiltering(filters.globalFilters);
 
-		const searchConditions = [
-			or(
-				ilike(ordersWithDetailsView.orderNr, searchTerm),
-				ilike(ordersWithDetailsView.customerName, searchTerm),
-				ilike(ordersWithDetailsView.driverFullname, searchTerm),
-				ilike(ordersWithDetailsView.truckPlate, searchTerm),
-				ilike(ordersWithDetailsView.statusName, searchTerm),
-				ilike(ordersWithDetailsView.currencyCode, searchTerm),
-				ilike(ordersWithDetailsView.loadingCity, searchTerm),
-				ilike(ordersWithDetailsView.unloadingCity, searchTerm),
-			),
-		];
+		searchConditions.push(
+			ilike(ordersWithDetailsView.orderNr, searchTerm),
+			ilike(ordersWithDetailsView.customerName, searchTerm),
+			ilike(ordersWithDetailsView.driverFullname, searchTerm),
+			ilike(ordersWithDetailsView.truckPlate, searchTerm),
+			ilike(ordersWithDetailsView.statusName, searchTerm),
+			ilike(ordersWithDetailsView.currencyCode, searchTerm),
+			ilike(ordersWithDetailsView.loadingCity, searchTerm),
+			ilike(ordersWithDetailsView.unloadingCity, searchTerm),
+		);
 
 		if (isNumeric) {
 			searchConditions.push(
@@ -88,9 +85,13 @@ export async function getAllOrders(
 				eq(sql`DATE(${ordersWithDetailsView.endDate})`, normalizedDate),
 			);
 		}
-
-		whereConditions = or(...searchConditions);
 	}
+
+	if (filters?.truckId) {
+		searchConditions.push(eq(ordersWithDetailsView.truckId, filters.truckId));
+	}
+
+	const whereConditions = or(...searchConditions);
 
 	return db
 		.select()

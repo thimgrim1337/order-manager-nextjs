@@ -63,4 +63,16 @@ export type OrderTableDto = Omit<
 	"createdAt" | "updatedAt" | "driver" | "truck"
 >;
 export type OrderDto = z.infer<typeof selectOrderSchema>;
+export type OrderTimelineDto = Pick<
+	OrderWithDetailsDto,
+	| "id"
+	| "startDate"
+	| "endDate"
+	| "truckPlate"
+	| "truckId"
+	| "driverId"
+	| "driverFullname"
+	| "customerName"
+	| "status"
+>;
 export type UpdateOrderDto = z.infer<typeof updateOrderSchema>;

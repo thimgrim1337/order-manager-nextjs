@@ -14,20 +14,22 @@ import { getAllOrders, getOrderCount } from "@/lib/dal/order.dal";
 import { getAllTrucks } from "@/lib/dal/truck.dal";
 import { omit } from "@/lib/helpers";
 import { sortToState } from "@/lib/utils";
-import { OrderTable, SearchParams, SortOptions } from "@/types/types";
+import {
+	OrderFilters,
+	OrderTable,
+	SearchParams,
+	SortOptions,
+} from "@/types/types";
 
 async function getOrders(
 	pageIndex: number,
 	pageSize: number,
 	sortOptions?: SortOptions,
-	globalFilters?: string,
+	globalFilters?: OrderFilters["globalFilters"],
 ): Promise<OrderTable[]> {
-	const orders = await getAllOrders(
-		pageIndex,
-		pageSize,
-		sortOptions,
+	const orders = await getAllOrders(pageIndex, pageSize, sortOptions, {
 		globalFilters,
-	);
+	});
 
 	return orders.map((order) =>
 		omit(order, ["createdAt", "updatedAt", "driver", "truck"]),
