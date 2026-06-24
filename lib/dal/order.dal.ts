@@ -16,7 +16,7 @@ import {
 	ordersWithDetailsView,
 	unloadingPlace,
 } from "@/db/schemas";
-import { OrderFilters, PlaceType, SortOptions } from "@/types/types";
+import { OrderFilters, PlaceType, SortParams } from "@/types/types";
 import { CityDto } from "../dto/city.dto";
 import { CreateOrderDto, UpdateOrderDto } from "../dto/order.dto";
 import { analyzeGlobalFiltering } from "../utils";
@@ -27,12 +27,10 @@ export type DbOrder = InferSelectModel<typeof order>;
 export async function getAllOrders(
 	pageIndex: number,
 	pageSize: number,
-	sortOptions?: SortOptions,
+	sortParams?: SortParams[],
 	filters?: OrderFilters,
 ) {
-	const sortOrder = sortOptions?.desc === true ? desc : asc;
-
-	const getSortColumn = (field?: string) => {
+	const getSortColumn = (sortParams?: SortParams[]) => {
 		const sortMappings = {
 			statusId: ordersWithDetailsView.statusId,
 			truckId: ordersWithDetailsView.truckId,
@@ -43,14 +41,20 @@ export async function getAllOrders(
 			endDate: ordersWithDetailsView.endDate,
 			pricePLN: ordersWithDetailsView.pricePLN,
 			priceCurrency: ordersWithDetailsView.priceCurrency,
-			currency: ordersWithDetailsView.currencyCode,
+			currencyId: ordersWithDetailsView.currencyId,
+			customerId: ordersWithDetailsView.customerId,
+			driverId: ordersWithDetailsView.driverId,
 		};
 
 		return (
-			sortMappings[field as keyof typeof sortMappings] ??
-			ordersWithDetailsView.id
+			sortParams?.map((param) => {
+				const col = sortMappings[param.id as keyof typeof sortMappings];
+				return param.desc ? desc(col) : asc(col);
+			}) || [ordersWithDetailsView.id]
 		);
 	};
+
+	const sortColumn = getSortColumn(sortParams);
 
 	const searchConditions = [];
 	if (filters?.globalFilters) {
@@ -97,7 +101,7 @@ export async function getAllOrders(
 		.select()
 		.from(ordersWithDetailsView)
 		.where(whereConditions)
-		.orderBy(sortOrder(getSortColumn(sortOptions?.id)))
+		.orderBy(...sortColumn)
 		.limit(pageSize)
 		.offset(pageIndex * pageSize);
 }

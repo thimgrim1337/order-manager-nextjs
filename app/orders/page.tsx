@@ -18,16 +18,16 @@ import {
 	OrderFilters,
 	OrderTable,
 	SearchParams,
-	SortOptions,
+	SortParams,
 } from "@/types/types";
 
 async function getOrders(
 	pageIndex: number,
 	pageSize: number,
-	sortOptions?: SortOptions,
+	sortParams?: SortParams[],
 	globalFilters?: OrderFilters["globalFilters"],
 ): Promise<OrderTable[]> {
-	const orders = await getAllOrders(pageIndex, pageSize, sortOptions, {
+	const orders = await getAllOrders(pageIndex, pageSize, sortParams, {
 		globalFilters,
 	});
 
@@ -41,16 +41,20 @@ export default async function OrdersPage({
 }: {
 	searchParams?: Promise<SearchParams>;
 }) {
-	const sort = (await searchParams)?.sort || "";
-	const sortOptions = sortToState(sort)[0];
-	const pageIndex =
-		Number((await searchParams)?.pageIndex) || DEFAULT_PAGE_INDEX;
-	const pageSize = Number((await searchParams)?.pageSize) || DEFAULT_PAGE_SIZE;
-	const globalFilters = (await searchParams)?.globalFilters || "";
+	const validatedSearchParams = await SearchParams.parseAsync(
+		await searchParams,
+	);
+	console.log(validatedSearchParams);
+
+	const sort = validatedSearchParams?.sort || "";
+	const sortParams = sortToState(sort);
+	const pageIndex = validatedSearchParams?.pageIndex || DEFAULT_PAGE_INDEX;
+	const pageSize = validatedSearchParams?.pageSize || DEFAULT_PAGE_SIZE;
+	const globalFilters = validatedSearchParams?.globalFilters || "";
 
 	const rowCount = await getOrderCount();
 
-	const orders = getOrders(pageIndex, pageSize, sortOptions, globalFilters);
+	const orders = getOrders(pageIndex, pageSize, sortParams, globalFilters);
 	const customers = getAllCustomers();
 	const cities = getAllCities();
 	const drivers = getAllDrivers();

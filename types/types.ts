@@ -33,8 +33,27 @@ export type CurrencyInfo = {
 	table: string;
 	rate: string;
 };
+const ALLOWED_SORT_FIELDS = [
+	"statusId",
+	"truckId",
+	"loadingCity",
+	"unloadingCity",
+	"orderNr",
+	"startDate",
+	"endDate",
+	"pricePLN",
+	"priceCurrency",
+	"currencyId",
+	"customerId",
+];
 
-export type SortOptions = {
+const AllowedSortField = z.templateLiteral([
+	z.enum(ALLOWED_SORT_FIELDS),
+	".",
+	z.enum(["desc", "asc"]),
+]);
+
+export type SortParams = {
 	id: string;
 	desc: boolean;
 };
@@ -48,12 +67,10 @@ const OrderFilters = z.object({
 export type OrderFilters = z.infer<typeof OrderFilters>;
 
 export const SearchParams = z.object({
-	sort: z
-		.templateLiteral([z.string(), ".", z.enum(["asc", "desc"])])
-		.optional(),
+	sort: z.string().pipe(AllowedSortField).optional().catch(undefined),
 	globalFilters: z.string().optional(),
-	pageIndex: z.number().min(0).default(0).optional(),
-	pageSize: z.number().min(10).max(100).default(10).optional(),
+	pageIndex: z.coerce.number().min(0).default(0).optional().catch(0),
+	pageSize: z.coerce.number().min(10).max(100).default(10).optional().catch(10),
 });
 export type SearchParams = z.infer<typeof SearchParams>;
 
