@@ -31,13 +31,7 @@ export const columns: ColumnDef<OrderTable>[] = [
 	},
 	{
 		accessorKey: "statusId",
-		cell: ({ row }) => {
-			const statusId = row.getValue("statusId") as number;
-
-			return (
-				<StatusBadge statusId={statusId}>{row.original.statusName}</StatusBadge>
-			);
-		},
+		cell: ({ row }) => <StatusBadge status={row.original.status} />,
 		header: "Status",
 	},
 	{
@@ -68,7 +62,7 @@ export const columns: ColumnDef<OrderTable>[] = [
 	},
 
 	{
-		accessorKey: "currency_code",
+		accessorKey: "currencyId",
 		header: "Waluta",
 		cell: ({ row }) => (
 			<div className="text-right">{row.original.currencyCode}</div>

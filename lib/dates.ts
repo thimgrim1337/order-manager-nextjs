@@ -32,7 +32,7 @@ export const getWeekDays = (date: string) =>
 		start: startOfWeek(date, { weekStartsOn: 1 }),
 		end: endOfWeek(date, { weekStartsOn: 1 }),
 	}).map((date) => {
-		const day = formatDate(date, "dd.MM iii").split(" ");
+		const day = formatDate(date, "yyyy-MM-dd iii").split(" ");
 
 		return {
 			date: day[0],

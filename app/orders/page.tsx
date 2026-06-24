@@ -44,7 +44,6 @@ export default async function OrdersPage({
 	const validatedSearchParams = await SearchParams.parseAsync(
 		await searchParams,
 	);
-	console.log(validatedSearchParams);
 
 	const sort = validatedSearchParams?.sort || "";
 	const sortParams = sortToState(sort);

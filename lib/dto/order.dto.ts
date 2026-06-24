@@ -74,5 +74,9 @@ export type OrderTimelineDto = Pick<
 	| "driverFullname"
 	| "customerName"
 	| "status"
+	| "loadingPlaces"
+	| "unloadingPlaces"
+	| "loadingCity"
+	| "unloadingCity"
 >;
 export type UpdateOrderDto = z.infer<typeof updateOrderSchema>;
