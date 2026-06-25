@@ -79,3 +79,8 @@ export type FieldData = {
 	value: string;
 	icon?: ReactNode;
 };
+
+export type Day = {
+	date: string;
+	name: string;
+};

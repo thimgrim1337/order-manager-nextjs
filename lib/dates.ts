@@ -10,6 +10,7 @@ import {
 	subDays,
 } from "date-fns";
 import { pl } from "date-fns/locale";
+import { Day } from "@/types/types";
 
 export const formatDate = (
 	date: Date | number | string | undefined,
@@ -27,7 +28,7 @@ export const getToday = () => formatDate(Date.now());
 export const getTomorrow = () => formatDate(addDays(getToday(), 1));
 export const getYesterday = (date: Date | string) =>
 	formatDate(subDays(date, 1));
-export const getWeekDays = (date: string) =>
+export const getWeekDays = (date: string): Day[] =>
 	eachDayOfInterval({
 		start: startOfWeek(date, { weekStartsOn: 1 }),
 		end: endOfWeek(date, { weekStartsOn: 1 }),

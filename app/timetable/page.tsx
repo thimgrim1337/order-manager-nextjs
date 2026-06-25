@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import PageHeader from "@/components/ui/page-header";
-import OrdersTimeline from "@/features/OrdersTimeline/components/orders-timeline";
+import OrdersTimeline from "@/features/OrdersTimeline/components/timeline";
 import { getAllCountries } from "@/lib/dal/country.dal";
 import { getAllOrders } from "@/lib/dal/order.dal";
 import { pick } from "@/lib/helpers";
