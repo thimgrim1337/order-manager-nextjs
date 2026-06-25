@@ -4,6 +4,14 @@ import { cn } from "@/lib/utils";
 import { Country, Day, OrderTimeline } from "@/types/types";
 import TimelinePlaceCell from "./timeline-place";
 
+const borderColors = [
+	"border-chart-1",
+	"border-chart-2",
+	"border-chart-3",
+	"border-chart-4",
+	"border-chart-5",
+];
+
 export default function OrdersTimelineBody({
 	weekdays,
 	orders,
@@ -15,6 +23,15 @@ export default function OrdersTimelineBody({
 }) {
 	const getCountryCode = (countryId: number) =>
 		countries.find((country) => country.id === countryId)?.code;
+
+	const borderColorsMap = orders.reduce(
+		(acc, order, index) => {
+			const color = borderColors[index];
+			acc[order.id] = color;
+			return acc;
+		},
+		{} as Record<string, string>,
+	);
 
 	return (
 		<TableBody>
@@ -39,7 +56,7 @@ export default function OrdersTimelineBody({
 								key={day.date}
 								className={cn(
 									day.date === order.startDate || day.date === order.endDate
-										? "border-b-4 border-b-orange-800 relative"
+										? `border-b-4 ${borderColorsMap[order.id]} relative`
 										: undefined,
 								)}
 							>
