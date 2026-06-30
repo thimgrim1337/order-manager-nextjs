@@ -1,7 +1,6 @@
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import StatusBadge from "@/features/OrdersTable/components/ui/status-bagde";
-import { cn } from "@/lib/utils";
+import { TableBody, TableRow } from "@/components/ui/table";
 import { Country, Day, OrderTimeline } from "@/types/types";
+import TimelineDetailsCell from "./timeline-details";
 import TimelinePlaceCell from "./timeline-place";
 
 const borderColors = [
@@ -21,9 +20,6 @@ export default function OrdersTimelineBody({
 	orders: OrderTimeline[];
 	countries: Country[];
 }) {
-	const getCountryCode = (countryId: number) =>
-		countries.find((country) => country.id === countryId)?.code;
-
 	const borderColorsMap = orders.reduce(
 		(acc, order, index) => {
 			const color = borderColors[index];
@@ -37,48 +33,16 @@ export default function OrdersTimelineBody({
 		<TableBody>
 			{orders.map((order) => (
 				<TableRow key={order.id}>
-					<TableCell className="flex flex-col justify-center ">
-						<span className="">{order.truckPlate}</span>
-						<span className="text-xs text-muted-foreground mb-1">
-							{order.driverFullname}
-						</span>
-						<StatusBadge status={order.status} />
-					</TableCell>
-					{weekdays.map((day) => {
-						const loadingCountryCode = getCountryCode(
-							order.loadingPlaces[0].countryId,
-						);
-						const unloadingCountryCode = getCountryCode(
-							order.unloadingPlaces[order.unloadingPlaces.length - 1].countryId,
-						);
-						return (
-							<TableCell
-								key={day.date}
-								className={cn(
-									day.date === order.startDate || day.date === order.endDate
-										? `border-b-4 ${borderColorsMap[order.id]} relative`
-										: undefined,
-								)}
-							>
-								{day.date === order.startDate ? (
-									<>
-										<TimelinePlaceCell
-											cityName={order.loadingCity}
-											countryCode={loadingCountryCode}
-										/>
-										<span className="text-[.8rem] text-muted-foreground absolute bottom-1 max-w-75 truncate">
-											{order.customerName}
-										</span>
-									</>
-								) : day.date === order.endDate ? (
-									<TimelinePlaceCell
-										cityName={order.unloadingCity}
-										countryCode={unloadingCountryCode}
-									/>
-								) : null}
-							</TableCell>
-						);
-					})}
+					<TimelineDetailsCell key={order.id} order={order} />
+					{weekdays.map((day) => (
+						<TimelinePlaceCell
+							key={day.date}
+							order={order}
+							countries={countries}
+							date={day.date}
+							borderColor={borderColorsMap[order.id]}
+						/>
+					))}
 				</TableRow>
 			))}
 		</TableBody>
