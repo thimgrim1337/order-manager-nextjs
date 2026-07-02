@@ -3,14 +3,20 @@ import PageHeader from "@/components/ui/page-header";
 import OrdersTimeline from "@/features/OrdersTimeline/components/timeline";
 import { getAllCountries } from "@/lib/dal/country.dal";
 import { getAllOrders } from "@/lib/dal/order.dal";
+import { getFirstDayOfWeek, getLastDayOfWeek, getToday } from "@/lib/dates";
 import { pick } from "@/lib/helpers";
-import { OrderTimeline } from "@/types/types";
+import { OrderFilters, OrderTimeline, SearchParams } from "@/types/types";
 
-async function getOrders(): Promise<OrderTimeline[]> {
-	const orders = await getAllOrders(0, 10, [
-		{ id: "truckId", desc: false },
-		{ id: "startDate", desc: false },
-	]);
+async function getOrders(filters?: OrderFilters): Promise<OrderTimeline[]> {
+	const orders = await getAllOrders(
+		0,
+		10,
+		[
+			{ id: "truckId", desc: false },
+			{ id: "startDate", desc: false },
+		],
+		filters,
+	);
 
 	return orders.map((order) =>
 		pick(order, [
@@ -31,8 +37,24 @@ async function getOrders(): Promise<OrderTimeline[]> {
 	);
 }
 
-export default function OrderTablePage() {
-	const orders = getOrders();
+export default async function OrderTablePage({
+	searchParams,
+}: {
+	searchParams?: Promise<SearchParams>;
+}) {
+	const validatedSearchParams = await SearchParams.parseAsync(
+		await searchParams,
+	);
+
+	const startDate =
+		validatedSearchParams.startDate || getFirstDayOfWeek(getToday());
+	const endDate = getLastDayOfWeek(startDate);
+
+	const orders = getOrders({
+		startDate,
+		endDate,
+	});
+
 	const countries = getAllCountries();
 
 	return (

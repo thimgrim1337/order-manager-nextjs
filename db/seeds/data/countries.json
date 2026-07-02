@@ -1,122 +1,122 @@
 [
-  {
-    "name": "Andora",
-    "code": "AD"
-  },
-  {
-    "name": "Albania",
-    "code": "AL"
-  },
-  {
-    "name": "Austria",
-    "code": "AT"
-  },
-  {
-    "name": "Belgia",
-    "code": "BE"
-  },
-  {
-    "name": "Bułgaria",
-    "code": "BG"
-  },
-  {
-    "name": "Szwajcaria",
-    "code": "CH"
-  },
-  {
-    "name": "Czechy",
-    "code": "CZ"
-  },
-  {
-    "name": "Niemcy",
-    "code": "DE"
-  },
-  {
-    "name": "Dania",
-    "code": "DK"
-  },
-  {
-    "name": "Estonia",
-    "code": "EE"
-  },
-  {
-    "name": "Hiszpania",
-    "code": "ES"
-  },
-  {
-    "name": "Finlandia",
-    "code": "FI"
-  },
-  {
-    "name": "Francja",
-    "code": "FR"
-  },
-  {
-    "name": "Wielka Brytania",
-    "code": "GB"
-  },
-  {
-    "name": "Grecja",
-    "code": "GR"
-  },
-  {
-    "name": "Chorwacja",
-    "code": "HR"
-  },
-  {
-    "name": "Węgry",
-    "code": "HU"
-  },
-  {
-    "name": "Włochy",
-    "code": "IT"
-  },
-  {
-    "name": "Lichtenstein",
-    "code": "LI"
-  },
-  {
-    "name": "Litwa",
-    "code": "LT"
-  },
-  {
-    "name": "Luxemburg",
-    "code": "LU"
-  },
-  {
-    "name": "Łotwa",
-    "code": "LV"
-  },
-  {
-    "name": "Holandia",
-    "code": "NL"
-  },
-  {
-    "name": "Norwegia",
-    "code": "NO"
-  },
-  {
-    "name": "Polska",
-    "code": "PL"
-  },
-  {
-    "name": "Portugalia",
-    "code": "PT"
-  },
-  {
-    "name": "Rumunia",
-    "code": "RO"
-  },
-  {
-    "name": "Szwecja",
-    "code": "SE"
-  },
-  {
-    "name": "Słowenia",
-    "code": "SI"
-  },
-  {
-    "name": "Słowacja",
-    "code": "SK"
-  }
+	{
+		"name": "Andora",
+		"code": "AD"
+	},
+	{
+		"name": "Albania",
+		"code": "AL"
+	},
+	{
+		"name": "Austria",
+		"code": "AT"
+	},
+	{
+		"name": "Belgia",
+		"code": "BE"
+	},
+	{
+		"name": "Bułgaria",
+		"code": "BG"
+	},
+	{
+		"name": "Szwajcaria",
+		"code": "CH"
+	},
+	{
+		"name": "Czechy",
+		"code": "CZ"
+	},
+	{
+		"name": "Niemcy",
+		"code": "DE"
+	},
+	{
+		"name": "Dania",
+		"code": "DK"
+	},
+	{
+		"name": "Estonia",
+		"code": "EE"
+	},
+	{
+		"name": "Hiszpania",
+		"code": "ES"
+	},
+	{
+		"name": "Finlandia",
+		"code": "FI"
+	},
+	{
+		"name": "Francja",
+		"code": "FR"
+	},
+	{
+		"name": "Wielka Brytania",
+		"code": "GB"
+	},
+	{
+		"name": "Grecja",
+		"code": "GR"
+	},
+	{
+		"name": "Chorwacja",
+		"code": "HR"
+	},
+	{
+		"name": "Węgry",
+		"code": "HU"
+	},
+	{
+		"name": "Włochy",
+		"code": "IT"
+	},
+	{
+		"name": "Lichtenstein",
+		"code": "LI"
+	},
+	{
+		"name": "Litwa",
+		"code": "LT"
+	},
+	{
+		"name": "Luxemburg",
+		"code": "LU"
+	},
+	{
+		"name": "Łotwa",
+		"code": "LV"
+	},
+	{
+		"name": "Holandia",
+		"code": "NL"
+	},
+	{
+		"name": "Norwegia",
+		"code": "NO"
+	},
+	{
+		"name": "Polska",
+		"code": "PL"
+	},
+	{
+		"name": "Portugalia",
+		"code": "PT"
+	},
+	{
+		"name": "Rumunia",
+		"code": "RO"
+	},
+	{
+		"name": "Szwecja",
+		"code": "SE"
+	},
+	{
+		"name": "Słowenia",
+		"code": "SI"
+	},
+	{
+		"name": "Słowacja",
+		"code": "SK"
+	}
 ]

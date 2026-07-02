@@ -1,4 +1,4 @@
-import { TableBody, TableRow } from "@/components/ui/table";
+import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Country, Day, OrderTimeline } from "@/types/types";
 import TimelineDetailsCell from "./timeline-details";
 import TimelinePlaceCell from "./timeline-place";
@@ -30,21 +30,34 @@ export default function OrdersTimelineBody({
 	);
 
 	return (
-		<TableBody>
-			{orders.map((order) => (
-				<TableRow key={order.id}>
-					<TimelineDetailsCell key={order.id} order={order} />
-					{weekdays.map((day) => (
-						<TimelinePlaceCell
-							key={day.date}
-							order={order}
-							countries={countries}
-							date={day.date}
-							borderColor={borderColorsMap[order.id]}
-						/>
-					))}
-				</TableRow>
-			))}
-		</TableBody>
+		<>
+			<TableBody>
+				{orders.length ? (
+					orders.map((order) => (
+						<TableRow key={order.id} onClick={() => console.log("work")}>
+							<TimelineDetailsCell key={order.id} order={order} />
+							{weekdays.map((day) => (
+								<TimelinePlaceCell
+									key={day.date}
+									order={order}
+									countries={countries}
+									date={day.date}
+									borderColor={borderColorsMap[order.id]}
+								/>
+							))}
+						</TableRow>
+					))
+				) : (
+					<TableRow>
+						<TableCell
+							colSpan={100}
+							className="text-center font-semibold py-4 "
+						>
+							Brak zleceń
+						</TableCell>
+					</TableRow>
+				)}
+			</TableBody>
+		</>
 	);
 }

@@ -1,11 +1,14 @@
 import {
+	and,
 	asc,
 	count,
 	desc,
 	eq,
+	gte,
 	InferSelectModel,
 	InferSelectViewModel,
 	ilike,
+	lte,
 	or,
 	sql,
 } from "drizzle-orm";
@@ -95,7 +98,21 @@ export async function getAllOrders(
 		searchConditions.push(eq(ordersWithDetailsView.truckId, filters.truckId));
 	}
 
-	const whereConditions = or(...searchConditions);
+	const andWhereConditions = [];
+
+	if (filters?.startDate) {
+		andWhereConditions.push(
+			gte(ordersWithDetailsView.startDate, filters.startDate),
+		);
+	}
+
+	if (filters?.endDate) {
+		andWhereConditions.push(
+			lte(ordersWithDetailsView.endDate, filters.endDate),
+		);
+	}
+
+	const whereConditions = or(...searchConditions, and(...andWhereConditions));
 
 	return db
 		.select()

@@ -3,7 +3,11 @@ import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Day } from "@/types/types";
 
-export default function OrderTimelineHeader({ weekdays }: { weekdays: Day[] }) {
+export default function OrdersTimelineHeader({
+	weekdays,
+}: {
+	weekdays: Day[];
+}) {
 	return (
 		<TableHeader>
 			<TableRow>
