@@ -1,6 +1,6 @@
 import { Ban, CheckCircle, ClockCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import useToggle from "@/features/shared/hooks/useToggle";
+import useToggle from "@/features/shared/hooks/use-toggle";
 import { patchOrder } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { OrderTable } from "@/types/types";

@@ -59,11 +59,18 @@ export type SortParams = {
 	desc: boolean;
 };
 
+export type RawSearchParams = Record<string, string | string[] | undefined>;
+
+export const TimetableFilters = z.object({
+	driverId: z.coerce.number().min(1).max(100).optional().catch(1),
+	startDate: z.iso.date().catch(getToday()),
+	endDate: z.iso.date().catch(getLastDayOfWeek(getToday())),
+});
+export type TimetableFilters = z.infer<typeof TimetableFilters>;
+
 const OrderFilters = z.object({
 	globalFilters: z.string().optional(),
-	driverId: z.coerce.number().min(1).max(100).optional().catch(1),
-	startDate: z.iso.date().optional().catch(getToday()),
-	endDate: z.iso.date().optional().catch(getLastDayOfWeek(getToday())),
+	...TimetableFilters.shape,
 });
 export type OrderFilters = z.infer<typeof OrderFilters>;
 
@@ -73,6 +80,7 @@ export const SearchParams = z.object({
 	pageSize: z.coerce.number().min(10).max(100).default(10).optional().catch(10),
 	...OrderFilters.shape,
 });
+
 export type SearchParams = z.infer<typeof SearchParams>;
 
 export type FieldData = {

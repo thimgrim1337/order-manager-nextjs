@@ -12,7 +12,7 @@ vi.mock("@/features/OrderForm/hooks/useFormSubmit", () => ({
 }));
 
 const resetFiltersMock = vi.hoisted(() => vi.fn());
-vi.mock("@/features/shared/hooks/useFilters", () => ({
+vi.mock("@/features/shared/hooks/use-filters", () => ({
 	default: () => ({
 		setFilters: vi.fn(),
 		resetFilters: resetFiltersMock,
@@ -30,7 +30,7 @@ vi.mock("@/lib/actions", () => ({
 	createCustomer: vi.fn(),
 	createOrder: vi.fn(),
 }));
-
+``;
 const mockRate = {
 	rates: [
 		{

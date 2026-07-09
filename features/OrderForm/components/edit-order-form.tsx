@@ -4,7 +4,7 @@ import { useStore } from "@tanstack/react-form";
 import { use, useEffect } from "react";
 import { FieldGroup } from "@/components/ui/field";
 import { useOrderData } from "@/features/shared/context/order-context";
-import useFilters from "@/features/shared/hooks/useFilters";
+import useFilters from "@/features/shared/hooks/use-filters";
 import { updateOrder } from "@/lib/actions";
 
 import { OrderTable } from "@/types/types";

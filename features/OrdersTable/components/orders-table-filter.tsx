@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import useFilters from "@/features/shared/hooks/useFilters";
+import useFilters from "@/features/shared/hooks/use-filters";
 import { Button } from "../../../components/ui/button";
 import DebouncedInput from "../../../components/ui/debounced-input";
 

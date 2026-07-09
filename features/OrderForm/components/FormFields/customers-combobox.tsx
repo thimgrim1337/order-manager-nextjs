@@ -1,4 +1,4 @@
-import useSearchQuery from "@/features/shared/hooks/useSearchQuery";
+import useSearchQuery from "@/features/shared/hooks/use-search-query";
 import { searchCustomers } from "@/lib/actions";
 import { Customer } from "@/types/types";
 import ComboboxField from "./combobox";

@@ -1,18 +1,21 @@
+import { use } from "react";
 import { TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Country, OrderTimeline } from "@/types/types";
+import { OrderTimeline } from "@/types/types";
+import { useTimelineData } from "../context/timeline-context";
 
 export default function TimelinePlaceCell({
 	order,
-	countries,
 	date,
 	borderColor,
 }: {
 	order: OrderTimeline;
-	countries: Country[];
 	date: string;
 	borderColor: string;
 }) {
+	const contextData = useTimelineData();
+	const countries = use(contextData.countries);
+
 	const getCountryCode = (countryId: number) =>
 		countries.find((country) => country.id === countryId)?.code;
 

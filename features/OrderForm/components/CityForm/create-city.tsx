@@ -2,7 +2,7 @@
 
 import { MapPinPlus } from "lucide-react";
 import { Country } from "@/types/types";
-import useToggle from "../../../shared/hooks/useToggle";
+import useToggle from "../../../shared/hooks/use-toggle";
 import FormDialog from "../ui/form-dialog";
 import CreateCityForm from "./create-city-form";
 

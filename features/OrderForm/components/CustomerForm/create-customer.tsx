@@ -2,7 +2,7 @@
 
 import { HousePlus } from "lucide-react";
 
-import useToggle from "../../../shared/hooks/useToggle";
+import useToggle from "../../../shared/hooks/use-toggle";
 import FormDialog from "../ui/form-dialog";
 import CreateCustomerForm from "./create-customer-form";
 

@@ -31,7 +31,7 @@ export async function getAllOrders(
 	pageIndex: number,
 	pageSize: number,
 	sortParams?: SortParams[],
-	filters?: OrderFilters,
+	filters?: Partial<OrderFilters>,
 ) {
 	const getSortColumn = (sortParams?: SortParams[]) => {
 		const sortMappings = {

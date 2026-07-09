@@ -1,11 +1,9 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { getAllCountries } from "@/lib/dal/country.dal";
 import { getAllOrders } from "@/lib/dal/order.dal";
 import { getFirstDayOfWeek, getLastDayOfWeek, getToday } from "@/lib/dates";
 import { pick } from "@/lib/helpers";
-import { Day, OrderFilters, OrderTimeline } from "@/types/types";
-import TimelineDetailsCell from "./timeline-details";
-import TimelinePlaceCell from "./timeline-place";
+import { OrderTimeline, TimetableFilters } from "@/types/types";
+import TimelineOrder from "./timeline-order";
 
 const borderColors = [
 	"border-chart-1",
@@ -15,7 +13,7 @@ const borderColors = [
 	"border-chart-5",
 ];
 
-async function getOrders(filters?: OrderFilters): Promise<OrderTimeline[]> {
+async function getOrders(filters?: TimetableFilters): Promise<OrderTimeline[]> {
 	const orders = await getAllOrders(
 		0,
 		10,
@@ -46,18 +44,15 @@ async function getOrders(filters?: OrderFilters): Promise<OrderTimeline[]> {
 }
 
 export default async function TimelineBody({
-	weekdays,
 	filters,
 }: {
-	weekdays: Day[];
-	filters?: OrderFilters;
+	filters?: TimetableFilters;
 }) {
 	const orders = await getOrders({
-		startDate: filters?.startDate || getFirstDayOfWeek(getToday()),
-		endDate: getLastDayOfWeek(filters?.startDate || getToday()),
+		startDate: getFirstDayOfWeek(filters?.startDate ?? getToday()),
+		endDate: getLastDayOfWeek(filters?.startDate ?? getToday()),
 		driverId: filters?.driverId,
 	});
-	const countries = await getAllCountries();
 
 	const borderColorsMap = orders.reduce(
 		(acc, order, index) => {
@@ -69,34 +64,22 @@ export default async function TimelineBody({
 	);
 
 	return (
-		<>
-			<TableBody>
-				{orders.length ? (
-					orders.map((order) => (
-						<TableRow key={order.id}>
-							<TimelineDetailsCell key={order.id} order={order} />
-							{weekdays.map((day) => (
-								<TimelinePlaceCell
-									key={day.date}
-									order={order}
-									countries={countries}
-									date={day.date}
-									borderColor={borderColorsMap[order.id]}
-								/>
-							))}
-						</TableRow>
-					))
-				) : (
-					<TableRow>
-						<TableCell
-							colSpan={100}
-							className="text-center font-semibold py-4 "
-						>
-							Brak zleceń
-						</TableCell>
-					</TableRow>
-				)}
-			</TableBody>
-		</>
+		<TableBody>
+			{orders.length ? (
+				orders.map((order) => (
+					<TimelineOrder
+						key={order.id}
+						order={order}
+						borderColor={borderColorsMap[order.id]}
+					/>
+				))
+			) : (
+				<TableRow>
+					<TableCell colSpan={100} className="text-center font-semibold py-4 ">
+						Brak zleceń
+					</TableCell>
+				</TableRow>
+			)}
+		</TableBody>
 	);
 }

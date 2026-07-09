@@ -1,6 +1,6 @@
 import { SquarePen } from "lucide-react";
 import EditOrderForm from "@/features/OrderForm/components/edit-order-form";
-import useToggle from "@/features/shared/hooks/useToggle";
+import useToggle from "@/features/shared/hooks/use-toggle";
 import { OrderTable } from "@/types/types";
 import OrderActionDialog from "./order-action-dialog";
 

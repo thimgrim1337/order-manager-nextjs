@@ -11,7 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import useFilters from "@/features/shared/hooks/useFilters";
+import useFilters from "@/features/shared/hooks/use-filters";
 import {
 	addDays,
 	getFirstDayOfWeek,
@@ -19,20 +19,13 @@ import {
 	getWeek,
 	subDays,
 } from "@/lib/dates";
-import { Day, Driver } from "@/types/types";
+import { Day } from "@/types/types";
+import { useTimelineData } from "../context/timeline-context";
 
-export default function TimelinePagination({
-	weekdays,
-	driversPromise,
-}: {
-	weekdays: Day[];
-	driversPromise: Promise<Driver[]>;
-}) {
-	const drivers = use(driversPromise);
-
+export default function TimelinePagination({ weekdays }: { weekdays: Day[] }) {
 	return (
 		<div className="flex items-center justify-between mt-2">
-			<TimelinePaginationDriverSelect drivers={drivers} />
+			<TimelinePaginationDriverSelect />
 			<TimelinePaginationWeekNavigation weekdays={weekdays} />
 		</div>
 	);
@@ -76,8 +69,10 @@ function TimelinePaginationWeekNavigation({ weekdays }: { weekdays: Day[] }) {
 	);
 }
 
-function TimelinePaginationDriverSelect({ drivers }: { drivers: Driver[] }) {
+function TimelinePaginationDriverSelect() {
 	const { setFilters } = useFilters();
+	const data = useTimelineData();
+	const drivers = use(data.drivers);
 
 	const driversItems = drivers.map((driver) => ({
 		label: `${driver.firstName} ${driver.lastName}`,
