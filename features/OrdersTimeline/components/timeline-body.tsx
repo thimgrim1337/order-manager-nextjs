@@ -1,5 +1,9 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Country, Day, OrderTimeline } from "@/types/types";
+import { getAllCountries } from "@/lib/dal/country.dal";
+import { getAllOrders } from "@/lib/dal/order.dal";
+import { getFirstDayOfWeek, getLastDayOfWeek, getToday } from "@/lib/dates";
+import { pick } from "@/lib/helpers";
+import { Day, OrderFilters, OrderTimeline } from "@/types/types";
 import TimelineDetailsCell from "./timeline-details";
 import TimelinePlaceCell from "./timeline-place";
 
@@ -11,15 +15,50 @@ const borderColors = [
 	"border-chart-5",
 ];
 
-export default function OrdersTimelineBody({
+async function getOrders(filters?: OrderFilters): Promise<OrderTimeline[]> {
+	const orders = await getAllOrders(
+		0,
+		10,
+		[
+			{ id: "truckId", desc: false },
+			{ id: "startDate", desc: false },
+		],
+		filters,
+	);
+
+	return orders.map((order) =>
+		pick(order, [
+			"id",
+			"startDate",
+			"endDate",
+			"status",
+			"truckId",
+			"truckPlate",
+			"customerName",
+			"driverId",
+			"driverFullname",
+			"loadingCity",
+			"unloadingCity",
+			"loadingPlaces",
+			"unloadingPlaces",
+		]),
+	);
+}
+
+export default async function TimelineBody({
 	weekdays,
-	orders,
-	countries,
+	filters,
 }: {
 	weekdays: Day[];
-	orders: OrderTimeline[];
-	countries: Country[];
+	filters?: OrderFilters;
 }) {
+	const orders = await getOrders({
+		startDate: filters?.startDate || getFirstDayOfWeek(getToday()),
+		endDate: getLastDayOfWeek(filters?.startDate || getToday()),
+		driverId: filters?.driverId,
+	});
+	const countries = await getAllCountries();
+
 	const borderColorsMap = orders.reduce(
 		(acc, order, index) => {
 			const color = borderColors[index];
@@ -34,7 +73,7 @@ export default function OrdersTimelineBody({
 			<TableBody>
 				{orders.length ? (
 					orders.map((order) => (
-						<TableRow key={order.id} onClick={() => console.log("work")}>
+						<TableRow key={order.id}>
 							<TimelineDetailsCell key={order.id} order={order} />
 							{weekdays.map((day) => (
 								<TimelinePlaceCell

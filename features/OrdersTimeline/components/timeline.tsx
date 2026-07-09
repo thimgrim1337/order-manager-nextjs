@@ -1,42 +1,40 @@
-"use client";
-
-import { use } from "react";
 import { Table } from "@/components/ui/table";
-import { getToday, getWeekDays } from "@/lib/dates";
-
-import { Country, OrderTimeline } from "@/types/types";
+import { SearchParams } from "@/types/types";
+import TimelineBody from "./timeline-body";
+import TimelineHead from "./timeline-head";
+import TimelinePagination from "./timeline-pagination";
 import "country-flag-icons/3x2/flags.css";
 
-import useFilters from "@/features/shared/hooks/useFilters";
-import OrdersTimelineBody from "./timeline-body";
-import OrdersTimelineHeader from "./timeline-header";
-import OrdersTimelinePagination from "./timeline-pagination";
+import { getAllDrivers } from "@/lib/dal/driver.dal";
+import { getFirstDayOfWeek, getToday, getWeekDays } from "@/lib/dates";
 
-export default function OrdersTimeline({
-	orders,
-	countries,
+export default async function Timeline({
+	searchParamsPromise,
 }: {
-	orders: Promise<OrderTimeline[]>;
-	countries: Promise<Country[]>;
+	searchParamsPromise?: Promise<SearchParams>;
 }) {
-	const { filters } = useFilters();
+	const rawSearchParams = await searchParamsPromise;
+	const {
+		success,
+		data: searchParams,
+		error,
+	} = SearchParams.safeParse(rawSearchParams);
 
-	const weekdays = getWeekDays(filters.startDate || getToday());
+	if (!success) {
+		return <p>Nieprawidłowe dane: {error.message}</p>;
+	}
 
-	const ordersData = use(orders);
-	const countriesData = use(countries);
+	const startDate = searchParams?.startDate || getFirstDayOfWeek(getToday());
+	const weekdays = getWeekDays(startDate);
+	const drivers = getAllDrivers();
 
 	return (
 		<>
 			<Table>
-				<OrdersTimelineHeader weekdays={weekdays} />
-				<OrdersTimelineBody
-					weekdays={weekdays}
-					orders={ordersData}
-					countries={countriesData}
-				/>
+				<TimelineHead weekdays={weekdays} />
+				<TimelineBody weekdays={weekdays} filters={searchParams} />
 			</Table>
-			<OrdersTimelinePagination weekdays={weekdays} />
+			<TimelinePagination weekdays={weekdays} driversPromise={drivers} />
 		</>
 	);
 }

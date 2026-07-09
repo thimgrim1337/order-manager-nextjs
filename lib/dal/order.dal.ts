@@ -94,10 +94,6 @@ export async function getAllOrders(
 		}
 	}
 
-	if (filters?.truckId) {
-		searchConditions.push(eq(ordersWithDetailsView.truckId, filters.truckId));
-	}
-
 	const andWhereConditions = [];
 
 	if (filters?.startDate) {
@@ -109,6 +105,12 @@ export async function getAllOrders(
 	if (filters?.endDate) {
 		andWhereConditions.push(
 			lte(ordersWithDetailsView.endDate, filters.endDate),
+		);
+	}
+
+	if (filters?.driverId) {
+		andWhereConditions.push(
+			eq(ordersWithDetailsView.driverId, filters.driverId),
 		);
 	}
 

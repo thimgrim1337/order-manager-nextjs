@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import z from "zod";
+import { getLastDayOfWeek, getToday } from "@/lib/dates";
 import { CityDto } from "@/lib/dto/city.dto";
 import { CountryDto } from "@/lib/dto/country.dto";
 import { CurrencyDto } from "@/lib/dto/currency.dto";
@@ -60,9 +61,9 @@ export type SortParams = {
 
 const OrderFilters = z.object({
 	globalFilters: z.string().optional(),
-	truckId: z.number().min(1).optional(),
-	startDate: z.iso.date().optional(),
-	endDate: z.iso.date().optional(),
+	driverId: z.coerce.number().min(1).max(100).optional().catch(1),
+	startDate: z.iso.date().optional().catch(getToday()),
+	endDate: z.iso.date().optional().catch(getLastDayOfWeek(getToday())),
 });
 export type OrderFilters = z.infer<typeof OrderFilters>;
 
