@@ -14,7 +14,11 @@ export default defineConfig({
 		browser: {
 			enabled: true,
 			headless: true,
-			provider: playwright(),
+			provider: playwright({
+				launchOptions: {
+					executablePath: "/usr/bin/chromium",
+				},
+			}),
 			instances: [{ browser: "chromium" }],
 			viewport: { width: 1920, height: 1080 },
 		},

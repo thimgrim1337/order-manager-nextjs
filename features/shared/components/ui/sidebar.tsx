@@ -68,7 +68,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   className='font-medium'
                   render={
-                    <Link href={'/timetable'}>
+                    <Link href={'/timeline'}>
                       <TableOfContents />
                       Tablica
                     </Link>

@@ -1,5 +1,6 @@
 import {
 	addDays as addDaysLib,
+	compareAsc,
 	eachDayOfInterval,
 	endOfWeek,
 	format,
@@ -69,4 +70,4 @@ export const getFirstDayOfWeek = (date: string | Date) =>
 		}),
 	);
 
-export { getWeek, isFuture, isWeekend };
+export { compareAsc, getWeek, isFuture, isWeekend };
