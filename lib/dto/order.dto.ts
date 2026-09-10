@@ -2,44 +2,44 @@ import {
 	createInsertSchema,
 	createSelectSchema,
 	createUpdateSchema,
-} from "drizzle-zod";
-import z from "zod";
-import { order, ordersWithDetailsView } from "@/db/schemas";
-import { ZOD_ERROR_MESSAGES } from "../consts";
-import { selectCitySchema as City } from "./city.dto";
+} from 'drizzle-zod';
+import z from 'zod';
+import { order, ordersWithDetailsView } from '@/db/schemas';
+import { ZOD_ERROR_MESSAGES } from '../consts';
+import { selectCitySchema as City } from './city.dto';
 
 export const OrderFormSchema = z.object({
 	orderNr: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Numer zlecenia nie może być pusty." })
+		.min(1, { error: 'Numer zlecenia nie może być pusty.' })
 		.trim(),
 	startDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
 	endDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
 	statusId: z.number({ error: ZOD_ERROR_MESSAGES.FieldRequired }).min(1).max(3),
 	truckId: z
 		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Wybierz pojazd." }),
+		.min(1, { error: 'Wybierz pojazd.' }),
 	driverId: z
 		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Wyberz kierowcę." }),
+		.min(1, { error: 'Wyberz kierowcę.' }),
 	customerId: z
 		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Wybierz zleceniodawcę." }),
+		.min(1, { error: 'Wybierz zleceniodawcę.' }),
 	currencyId: z
 		.number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Wybierz walutę" }),
+		.min(1, { error: 'Wybierz walutę' }),
 	priceCurrency: z
 		.string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
 		.refine((val) => Number(val) > 0, {
-			error: "Cena musi być wyższa od zera.",
+			error: 'Cena musi być wyższa od zera.',
 		})
 		.trim(),
 	loadingPlaces: z
 		.array(City, { error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Wybierz co najmniej 1 miejsce załadunku." }),
+		.min(1, { error: 'Wybierz co najmniej 1 miejsce załadunku.' }),
 	unloadingPlaces: z
 		.array(City, { error: ZOD_ERROR_MESSAGES.FieldRequired })
-		.min(1, { error: "Wybierz co najmniej 1 miejsce rozładunku." }),
+		.min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
 	currencyInfo: z.object(
 		{
 			rate: z.string(),
@@ -60,23 +60,7 @@ export type CreateOrderDto = z.infer<typeof createOrderSchema>;
 export type OrderWithDetailsDto = z.infer<typeof selectOrderViewSchema>;
 export type OrderTableDto = Omit<
 	OrderWithDetailsDto,
-	"createdAt" | "updatedAt" | "driver" | "truck"
+	'createdAt' | 'updatedAt' | 'driver' | 'truck'
 >;
 export type OrderDto = z.infer<typeof selectOrderSchema>;
-export type OrderTimelineDto = Pick<
-	OrderWithDetailsDto,
-	| "id"
-	| "startDate"
-	| "endDate"
-	| "truckPlate"
-	| "truckId"
-	| "driverId"
-	| "driverFullname"
-	| "customerName"
-	| "status"
-	| "loadingPlaces"
-	| "unloadingPlaces"
-	| "loadingCity"
-	| "unloadingCity"
->;
 export type UpdateOrderDto = z.infer<typeof updateOrderSchema>;

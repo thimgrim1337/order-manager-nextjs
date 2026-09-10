@@ -1,12 +1,8 @@
-import { TableCell } from "@/components/ui/table";
-import StatusBadge from "@/features/OrdersTable/components/ui/status-bagde";
-import { OrderTimeline } from "@/types/types";
+import { TableCell } from '@/components/ui/table';
+import StatusBadge from '@/features/OrdersTable/components/ui/status-bagde';
+import { Order } from '@/types/types';
 
-export default function TimelineDetailsCell({
-	order,
-}: {
-	order: OrderTimeline;
-}) {
+export default function TimelineDetailsCell({ order }: { order: Order }) {
 	return (
 		<TableCell className="flex flex-col justify-center ">
 			<span className="">{order.truckPlate}</span>

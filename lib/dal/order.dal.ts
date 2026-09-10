@@ -11,18 +11,19 @@ import {
 	lte,
 	or,
 	sql,
-} from "drizzle-orm";
-import db, { dbTransaction } from "@/db/db";
+} from 'drizzle-orm';
+import { cacheTag } from 'next/cache';
+import db, { dbTransaction } from '@/db/db';
 import {
 	loadingPlace,
 	order,
 	ordersWithDetailsView,
 	unloadingPlace,
-} from "@/db/schemas";
-import { OrderFilters, PlaceType, SortParams } from "@/types/types";
-import { CityDto } from "../dto/city.dto";
-import { CreateOrderDto, UpdateOrderDto } from "../dto/order.dto";
-import { analyzeGlobalFiltering } from "../utils";
+} from '@/db/schemas';
+import { OrderFilters, PlaceType, SortParams } from '@/types/types';
+import { CityDto } from '../dto/city.dto';
+import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
+import { analyzeGlobalFiltering } from '../utils';
 
 export type DbOrderView = InferSelectViewModel<typeof ordersWithDetailsView>;
 export type DbOrder = InferSelectModel<typeof order>;
@@ -33,6 +34,8 @@ export async function getAllOrders(
 	sortParams?: SortParams[],
 	filters?: Partial<OrderFilters>,
 ) {
+	'use cache';
+	cacheTag('orders');
 	const getSortColumn = (sortParams?: SortParams[]) => {
 		const sortMappings = {
 			statusId: ordersWithDetailsView.statusId,
@@ -144,7 +147,7 @@ export async function addOrderPlaces(
 		orderId,
 		placeId: city.id,
 	}));
-	const table = placeType === "loadingPlace" ? loadingPlace : unloadingPlace;
+	const table = placeType === 'loadingPlace' ? loadingPlace : unloadingPlace;
 	const dbPlaces = await trx.insert(table).values(places).returning();
 
 	return dbPlaces;
@@ -155,7 +158,7 @@ export async function deleteOrderPlaces(
 	placeType: PlaceType,
 	trx: dbTransaction,
 ) {
-	const table = placeType === "loadingPlace" ? loadingPlace : unloadingPlace;
+	const table = placeType === 'loadingPlace' ? loadingPlace : unloadingPlace;
 	const dbPlaces = await trx
 		.delete(table)
 		.where(eq(table.orderId, orderId))

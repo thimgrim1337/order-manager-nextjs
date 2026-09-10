@@ -1,4 +1,4 @@
-import { use } from "react";
+import { use } from 'react';
 import {
 	Select,
 	SelectContent,
@@ -6,9 +6,9 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { useOrderData } from "@/features/shared/context/order-context";
-import useFilters from "@/features/shared/hooks/use-filters";
+} from '@/components/ui/select';
+import { useOrderData } from '@/features/shared/context/order-context';
+import useFilters from '@/features/shared/hooks/use-filters';
 
 export default function TimelinePaginationDriverSelect() {
 	const { setFilters } = useFilters();
@@ -27,7 +27,7 @@ export default function TimelinePaginationDriverSelect() {
 				setFilters({ driverId: value ? +value : undefined })
 			}
 		>
-			<SelectTrigger className={"min-w-45"}>
+			<SelectTrigger className={'min-w-45'}>
 				<SelectValue placeholder="Wszyscy kierowcy"></SelectValue>
 			</SelectTrigger>
 			<SelectContent alignItemWithTrigger={false}>

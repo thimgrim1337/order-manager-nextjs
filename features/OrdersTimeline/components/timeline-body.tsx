@@ -1,56 +1,38 @@
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { getAllOrders } from "@/lib/dal/order.dal";
-import { getFirstDayOfWeek, getLastDayOfWeek, getToday } from "@/lib/dates";
-import { pick } from "@/lib/helpers";
-import { OrderTimeline, TimetableFilters } from "@/types/types";
-import TimelineOrder from "./timeline-order";
+import { TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { getAllOrders } from '@/lib/dal/order.dal';
+import { Order, TimelineFilters } from '@/types/types';
+import TimelineOrder from './timeline-order';
 
 const borderColors = [
-	"border-chart-1",
-	"border-chart-2",
-	"border-chart-3",
-	"border-chart-4",
-	"border-chart-5",
+	'border-chart-1',
+	'border-chart-2',
+	'border-chart-3',
+	'border-chart-4',
+	'border-chart-5',
 ];
 
-async function getOrders(filters?: TimetableFilters): Promise<OrderTimeline[]> {
+async function getOrders(filters?: TimelineFilters): Promise<Order[]> {
 	const orders = await getAllOrders(
 		0,
 		10,
 		[
-			{ id: "truckId", desc: false },
-			{ id: "startDate", desc: false },
+			{ id: 'truckId', desc: false },
+			{ id: 'startDate', desc: false },
 		],
 		filters,
 	);
 
-	return orders.map((order) =>
-		pick(order, [
-			"id",
-			"startDate",
-			"endDate",
-			"status",
-			"truckId",
-			"truckPlate",
-			"customerName",
-			"driverId",
-			"driverFullname",
-			"loadingCity",
-			"unloadingCity",
-			"loadingPlaces",
-			"unloadingPlaces",
-		]),
-	);
+	return orders;
 }
 
 export default async function TimelineBody({
 	filters,
 }: {
-	filters?: TimetableFilters;
+	filters: TimelineFilters;
 }) {
 	const orders = await getOrders({
-		startDate: getFirstDayOfWeek(filters?.startDate ?? getToday()),
-		endDate: getLastDayOfWeek(filters?.startDate ?? getToday()),
+		startDate: filters.startDate,
+		endDate: filters.endDate,
 		driverId: filters?.driverId,
 	});
 

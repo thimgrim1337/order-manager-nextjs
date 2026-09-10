@@ -5,9 +5,9 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import useFilters from "@/features/shared/hooks/use-filters";
-import { getWeeksStartDates } from "../../lib/helpers";
+} from '@/components/ui/select';
+import useFilters from '@/features/shared/hooks/use-filters';
+import { getWeeksStartDates } from '../../lib/helpers';
 
 export default function TimelinePaginationWeekSelect({
 	selectedWeekNumber,
@@ -38,7 +38,7 @@ export default function TimelinePaginationWeekSelect({
 			<SelectTrigger>
 				<SelectValue placeholder={selectedWeekNumber}></SelectValue>
 			</SelectTrigger>
-			<SelectContent alignItemWithTrigger={false} className={"min-w-15"}>
+			<SelectContent alignItemWithTrigger={false} className={'min-w-15'}>
 				<SelectGroup>
 					{weekItems.map((week) => (
 						<SelectItem key={week.value} value={week.value}>

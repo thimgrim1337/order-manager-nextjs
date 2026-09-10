@@ -1,18 +1,18 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import { getAllCustomers } from "./dal/customer.dal.";
-import { CityDto, CreateCityDto } from "./dto/city.dto";
-import { CreateCustomerDto, CustomerDto } from "./dto/customer.dto";
-import { OrderDto, OrderFormDto, UpdateOrderDto } from "./dto/order.dto";
-import { createCityService } from "./services/city.services";
-import { createCustomerService } from "./services/customer.services";
+import { refresh, revalidateTag } from 'next/cache';
+import { getAllCustomers } from './dal/customer.dal.';
+import { CityDto, CreateCityDto } from './dto/city.dto';
+import { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
+import { OrderDto, OrderFormDto, UpdateOrderDto } from './dto/order.dto';
+import { createCityService } from './services/city.services';
+import { createCustomerService } from './services/customer.services';
 import {
 	createOrderService,
 	deleteOrderService,
 	patchOrderService,
 	updateOrderService,
-} from "./services/order.services";
+} from './services/order.services';
 
 export type ActionResponse<T> =
 	| { success: true; data: T; message?: string }
@@ -24,7 +24,8 @@ export async function createOrder(
 	const [error, order] = await createOrderService(formData);
 
 	if (error === null) {
-		revalidatePath("/orders");
+		revalidateTag('orders', 'max');
+
 		return {
 			success: true,
 			data: order,
@@ -33,30 +34,30 @@ export async function createOrder(
 
 	const reason = error.reason;
 	switch (reason) {
-		case "InvalidData": {
+		case 'InvalidData': {
 			return {
 				success: false,
-				message: "Nieprawidłowe dane.",
+				message: 'Nieprawidłowe dane.',
 				details: String(error.details),
 			};
 		}
-		case "OrderExist": {
+		case 'OrderExist': {
 			return {
 				success: false,
-				message: "Zlecenie o tym numerze już istnieje.",
+				message: 'Zlecenie o tym numerze już istnieje.',
 			};
 		}
-		case "DrizzleError": {
+		case 'DrizzleError': {
 			return {
 				success: false,
-				message: "Wystąpił błąd bazy danych",
+				message: 'Wystąpił błąd bazy danych',
 				details: error.details,
 			};
 		}
-		case "UnexpectedError": {
+		case 'UnexpectedError': {
 			return {
 				success: false,
-				message: "Wystąpił nieznany błąd.",
+				message: 'Wystąpił nieznany błąd.',
 				details: error.details,
 			};
 		}
@@ -73,13 +74,14 @@ export async function updateOrder(
 	if (!orderId)
 		return {
 			success: false,
-			message: "Brak Id zlecenia",
+			message: 'Brak Id zlecenia',
 		};
 
 	const [error, order] = await updateOrderService(orderId, data);
 
 	if (error === null) {
-		revalidatePath("/orders");
+		revalidateTag('orders', 'max');
+
 		return {
 			success: true,
 			data: order,
@@ -88,30 +90,30 @@ export async function updateOrder(
 
 	const reason = error.reason;
 	switch (reason) {
-		case "InvalidData": {
+		case 'InvalidData': {
 			return {
 				success: false,
-				message: "Nieprawidłowe dane.",
+				message: 'Nieprawidłowe dane.',
 				details: error.details,
 			};
 		}
-		case "DrizzleError": {
+		case 'DrizzleError': {
 			return {
 				success: false,
-				message: "Wystąpił błąd bazy danych",
+				message: 'Wystąpił błąd bazy danych',
 				details: error.details,
 			};
 		}
-		case "OrderExist": {
+		case 'OrderExist': {
 			return {
 				success: false,
-				message: "Zlecenie o tym numerze już istnieje.",
+				message: 'Zlecenie o tym numerze już istnieje.',
 			};
 		}
-		case "UnexpectedError": {
+		case 'UnexpectedError': {
 			return {
 				success: false,
-				message: "Wystąpił nieznany błąd.",
+				message: 'Wystąpił nieznany błąd.',
 				details: error.details,
 			};
 		}
@@ -123,12 +125,13 @@ export async function updateOrder(
 
 export async function patchOrder(
 	orderId: number,
-	data: Pick<UpdateOrderDto, "statusId">,
+	data: Pick<UpdateOrderDto, 'statusId'>,
 ): Promise<ActionResponse<OrderDto>> {
 	const [error, order] = await patchOrderService(orderId, data);
 
 	if (error === null) {
-		revalidatePath("/orders");
+		revalidateTag('orders', 'max');
+
 		return {
 			success: true,
 			data: order,
@@ -137,30 +140,30 @@ export async function patchOrder(
 
 	const reason = error.reason;
 	switch (reason) {
-		case "InvalidData": {
+		case 'InvalidData': {
 			return {
 				success: false,
-				message: "Nieprawidłowe dane.",
+				message: 'Nieprawidłowe dane.',
 				details: error.details,
 			};
 		}
-		case "DrizzleError": {
+		case 'DrizzleError': {
 			return {
 				success: false,
-				message: "Wystąpił błąd bazy danych",
+				message: 'Wystąpił błąd bazy danych',
 				details: error.details,
 			};
 		}
-		case "OrderExist": {
+		case 'OrderExist': {
 			return {
 				success: false,
-				message: "Zlecenie o tym numerze już istnieje.",
+				message: 'Zlecenie o tym numerze już istnieje.',
 			};
 		}
-		case "UnexpectedError": {
+		case 'UnexpectedError': {
 			return {
 				success: false,
-				message: "Wystąpił nieznany błąd.",
+				message: 'Wystąpił nieznany błąd.',
 				details: error.details,
 			};
 		}
@@ -176,7 +179,8 @@ export async function deleteOrder(
 	const [error, order] = await deleteOrderService(orderId);
 
 	if (error === null) {
-		revalidatePath("/orders");
+		revalidateTag('orders', 'max');
+
 		return {
 			success: true,
 			data: order,
@@ -185,17 +189,17 @@ export async function deleteOrder(
 
 	const reason = error.reason;
 	switch (reason) {
-		case "UnexpectedError": {
+		case 'UnexpectedError': {
 			return {
 				success: false,
-				message: "Wystąpił nieznany błąd.",
+				message: 'Wystąpił nieznany błąd.',
 				details: error.details,
 			};
 		}
-		case "DrizzleError": {
+		case 'DrizzleError': {
 			return {
 				success: false,
-				message: "Wystąpił błąd bazy danych",
+				message: 'Wystąpił błąd bazy danych',
 				details: error.details,
 			};
 		}
@@ -215,7 +219,8 @@ export async function createCustomer(
 	const [error, customer] = await createCustomerService(formData);
 
 	if (error === null) {
-		revalidatePath("/orders");
+		revalidateTag('orders', 'max');
+
 		return {
 			success: true,
 			data: customer,
@@ -224,30 +229,30 @@ export async function createCustomer(
 
 	const reason = error.reason;
 	switch (reason) {
-		case "InvalidData": {
+		case 'InvalidData': {
 			return {
 				success: false,
-				message: "Nieprawidłowe dane.",
+				message: 'Nieprawidłowe dane.',
 				details: error.details,
 			};
 		}
-		case "CustomerExist": {
+		case 'CustomerExist': {
 			return {
 				success: false,
-				message: "Ten zleceniodawca już istnieje.",
+				message: 'Ten zleceniodawca już istnieje.',
 			};
 		}
-		case "DrizzleError": {
+		case 'DrizzleError': {
 			return {
 				success: false,
-				message: "Wystąpił błąd bazy danych",
+				message: 'Wystąpił błąd bazy danych',
 				details: error.details,
 			};
 		}
-		case "UnexpectedError": {
+		case 'UnexpectedError': {
 			return {
 				success: false,
-				message: "Wystąpił nieznany błąd.",
+				message: 'Wystąpił nieznany błąd.',
 				details: error.details,
 			};
 		}
@@ -263,7 +268,8 @@ export async function createCity(
 	const [error, customer] = await createCityService(formData);
 
 	if (error === null) {
-		revalidatePath("/orders");
+		revalidateTag('orders', 'max');
+
 		return {
 			success: true,
 			data: customer,
@@ -272,30 +278,30 @@ export async function createCity(
 
 	const reason = error.reason;
 	switch (reason) {
-		case "InvalidData": {
+		case 'InvalidData': {
 			return {
 				success: false,
-				message: "Nieprawidłowe dane.",
+				message: 'Nieprawidłowe dane.',
 				details: error.details,
 			};
 		}
-		case "CityExist": {
+		case 'CityExist': {
 			return {
 				success: false,
-				message: "Ta miejscowość już istnieje.",
+				message: 'Ta miejscowość już istnieje.',
 			};
 		}
-		case "DrizzleError": {
+		case 'DrizzleError': {
 			return {
 				success: false,
-				message: "Wystąpił błąd bazy danych",
+				message: 'Wystąpił błąd bazy danych',
 				details: error.details,
 			};
 		}
-		case "UnexpectedError": {
+		case 'UnexpectedError': {
 			return {
 				success: false,
-				message: "Wystąpił nieznany błąd.",
+				message: 'Wystąpił nieznany błąd.',
 				details: error.details,
 			};
 		}

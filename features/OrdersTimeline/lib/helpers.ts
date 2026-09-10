@@ -4,7 +4,7 @@ import {
 	getToday,
 	getWeek,
 	subDays,
-} from "@/lib/dates";
+} from '@/lib/dates';
 
 export function getWeeksStartDates() {
 	const weeksStartDates: {

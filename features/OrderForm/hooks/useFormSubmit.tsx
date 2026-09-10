@@ -1,6 +1,6 @@
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { ActionResponse } from "@/lib/actions";
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { ActionResponse } from '@/lib/actions';
 
 type ToastMessage = {
 	errorTitle?: string;
@@ -23,7 +23,7 @@ export default function useFormSubmit<TInput, TResponse = TInput>(
 			const response = await action(formData, id);
 
 			if (!response.success) {
-				return toast.error(errorTitle || "Niepowodzenie", {
+				return toast.error(errorTitle || 'Niepowodzenie', {
 					description: response.message,
 					richColors: true,
 				});
@@ -32,12 +32,12 @@ export default function useFormSubmit<TInput, TResponse = TInput>(
 			onDialogClose?.();
 			refresh();
 
-			return toast.success(successTitle || "Sukces", {
+			return toast.success(successTitle || 'Sukces', {
 				description: successDescription,
 				richColors: true,
 			});
 		} catch (error) {
-			return toast.error(errorTitle || "Niepowodzenie", {
+			return toast.error(errorTitle || 'Niepowodzenie', {
 				description: `Nieoczekiwany błąd ${error}`,
 				richColors: true,
 			});

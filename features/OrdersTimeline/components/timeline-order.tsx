@@ -1,33 +1,63 @@
-"use client";
+'use client';
 
-import { TableRow } from "@/components/ui/table";
-import useFilters from "@/features/shared/hooks/use-filters";
-import { getWeekDays } from "@/lib/dates";
-import { OrderTimeline } from "@/types/types";
-import TimelineDetailsCell from "./timeline-details";
-import TimelinePlaceCell from "./timeline-place";
+import { SquarePen } from 'lucide-react';
+import { TableRow } from '@/components/ui/table';
+import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
+import Dialog from '@/features/shared/components/ui/dialog';
+import useFilters from '@/features/shared/hooks/use-filters';
+import useToggle from '@/features/shared/hooks/use-toggle';
+import { getFirstDayOfWeek, getToday, getWeekDays } from '@/lib/dates';
+import { Order } from '@/types/types';
+import TimelineDetailsCell from './timeline-details';
+import TimelinePlaceCell from './timeline-place';
 
 export default function TimelineOrder({
 	order,
 	borderColor,
 }: {
-	order: OrderTimeline;
+	order: Order;
 	borderColor: string;
 }) {
 	const { filters } = useFilters();
-	const weekdays = getWeekDays(filters.startDate);
+
+	const weekdays = getWeekDays(
+		filters.startDate ?? getFirstDayOfWeek(getToday()),
+	);
+
+	const [
+		isModalOpen,
+		{ toggle: toggleModal, setFalse: closeModal, setTrue: openModal },
+	] = useToggle();
 
 	return (
-		<TableRow key={order.id} onClick={() => console.log("work")}>
-			<TimelineDetailsCell key={order.id} order={order} />
-			{weekdays.map((day) => (
-				<TimelinePlaceCell
-					key={day.date}
-					order={order}
-					date={day.date}
-					borderColor={borderColor}
-				/>
-			))}
-		</TableRow>
+		<>
+			<TableRow
+				key={order.id}
+				onClick={() => openModal()}
+				className="hover:cursor-pointer"
+			>
+				<TimelineDetailsCell key={order.id} order={order} />
+				{weekdays.map((day) => (
+					<TimelinePlaceCell
+						key={day.date}
+						order={order}
+						date={day.date}
+						borderColor={borderColor}
+					/>
+				))}
+			</TableRow>
+			{
+				<Dialog
+					isOpen={isModalOpen}
+					onOpenChange={toggleModal}
+					title="Edycja zlecenia"
+					description={`Wprowadź dane aby edytować zlecenie nr ${order.orderNr}`}
+					icon={<SquarePen />}
+					className="min-w-5xl"
+				>
+					<EditOrderForm onDialogClose={closeModal} order={order} />
+				</Dialog>
+			}
+		</>
 	);
 }

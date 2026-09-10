@@ -1,12 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { useFormContext } from "../../context/form-context";
+import { Dispatch, SetStateAction } from 'react';
+import { Button } from '@/components/ui/button';
+import { useFormContext } from '../../context/form-context';
 
 export default function FormControls({
 	id,
 	isEditButton,
+	isEditable = true,
+	onEditBtnClick,
 }: {
 	id: string;
 	isEditButton?: boolean;
+	isEditable?: boolean;
+	onEditBtnClick?: Dispatch<SetStateAction<boolean>>;
 }) {
 	const form = useFormContext();
 	return (
@@ -15,17 +20,25 @@ export default function FormControls({
 				<div className="mt-5 flex gap-2">
 					<Button
 						type="submit"
-						disabled={!canSubmit}
+						disabled={!canSubmit && isEditable}
 						form={id}
-						onClick={form.handleSubmit}
+						onClick={() => {
+							onEditBtnClick && onEditBtnClick(true);
+							if (canSubmit && isEditable) form.handleSubmit();
+						}}
 					>
-						{isSubmitting ? "Wysyłanie" : isEditButton ? "Edytuj" : "Dodaj"}
+						{isSubmitting
+							? 'Wysyłanie'
+							: isEditButton && !isEditable
+								? 'Edytuj'
+								: 'Zapisz'}
 					</Button>
 					<Button
 						type="reset"
-						variant={"secondary"}
+						variant={'secondary'}
 						onClick={(e) => {
 							e.preventDefault();
+							onEditBtnClick && onEditBtnClick(false);
 							form.reset();
 						}}
 					>

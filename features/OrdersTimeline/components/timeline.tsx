@@ -1,11 +1,9 @@
-import { Table } from "@/components/ui/table";
-import { RawSearchParams, TimetableFilters } from "@/types/types";
-import TimelineBody from "./timeline-body";
-import TimelineHead from "./timeline-head";
-import TimelinePagination from "./timeline-pagination";
-import "country-flag-icons/3x2/flags.css";
-import useValidatedSearchParams from "@/features/shared/lib/use-validated-search-params";
-import { getFirstDayOfWeek, getToday, getWeekDays } from "@/lib/dates";
+import { RawSearchParams, TimelineFilters } from '@/types/types';
+import TimelinePagination from './TimelinePagination/timeline-pagination';
+import 'country-flag-icons/3x2/flags.css';
+import useValidatedSearchParams from '@/features/shared/lib/use-validated-search-params';
+import { getWeekDays } from '@/lib/dates';
+import TimelineTable from './timeline-table';
 
 export default function Timeline({
 	searchParamsPromise,
@@ -15,22 +13,18 @@ export default function Timeline({
 	const {
 		success,
 		error,
-		data: searchParams,
-	} = useValidatedSearchParams(searchParamsPromise, TimetableFilters);
+		data: filters,
+	} = useValidatedSearchParams(searchParamsPromise, TimelineFilters);
 
 	if (!success) {
 		return <p>Nieprawidłowe dane: {error.message}</p>;
 	}
 
-	const startDate = searchParams?.startDate || getFirstDayOfWeek(getToday());
-	const weekdays = getWeekDays(startDate);
+	const weekdays = getWeekDays(filters.startDate);
 
 	return (
 		<>
-			<Table>
-				<TimelineHead weekdays={weekdays} />
-				<TimelineBody filters={searchParams} />
-			</Table>
+			<TimelineTable weekdays={weekdays} filters={filters} />
 			<TimelinePagination weekdays={weekdays} />
 		</>
 	);

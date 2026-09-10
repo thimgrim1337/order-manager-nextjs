@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Day } from "@/types/types";
-import TimelinePaginationDriverSelect from "./timeline-driver-select";
-import TimelinePaginationWeekNavigation from "./timeline-week-navigation";
+import { Day } from '@/types/types';
+import TimelinePaginationDriverSelect from './timeline-driver-select';
+import TimelinePaginationWeekNavigation from './timeline-week-navigation';
 
 export default function TimelinePagination({ weekdays }: { weekdays: Day[] }) {
 	return (

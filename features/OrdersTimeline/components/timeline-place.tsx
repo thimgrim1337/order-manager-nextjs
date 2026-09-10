@@ -1,19 +1,20 @@
-import { use } from "react";
-import { TableCell } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import { OrderTimeline } from "@/types/types";
-import { useTimelineData } from "../context/timeline-context";
+import { use } from 'react';
+import { TableCell } from '@/components/ui/table';
+import { useOrderData } from '@/features/shared/context/order-context';
+import { compareAsc } from '@/lib/dates';
+import { cn } from '@/lib/utils';
+import { Order } from '@/types/types';
 
 export default function TimelinePlaceCell({
 	order,
 	date,
 	borderColor,
 }: {
-	order: OrderTimeline;
+	order: Order;
 	date: string;
 	borderColor: string;
 }) {
-	const contextData = useTimelineData();
+	const contextData = useOrderData();
 	const countries = use(contextData.countries);
 
 	const getCountryCode = (countryId: number) =>
@@ -26,17 +27,20 @@ export default function TimelinePlaceCell({
 
 	const isLoadingDate = date === order.startDate;
 	const isUnloadingDate = date === order.endDate;
+	const isBeetween =
+		compareAsc(date, order.startDate) === 1 &&
+		compareAsc(date, order.endDate) === -1;
 
 	const cityName = isLoadingDate
 		? order.loadingCity
 		: isUnloadingDate
 			? order.unloadingCity
-			: "";
+			: '';
 
 	const border =
-		isLoadingDate || isUnloadingDate
+		isLoadingDate || isUnloadingDate || isBeetween
 			? `border-b-4 ${borderColor} relative`
-			: "";
+			: '';
 
 	return isLoadingDate || isUnloadingDate ? (
 		<TableCell className={border}>
@@ -53,6 +57,6 @@ export default function TimelinePlaceCell({
 			)}
 		</TableCell>
 	) : (
-		<TableCell />
+		<TableCell className={border} />
 	);
 }

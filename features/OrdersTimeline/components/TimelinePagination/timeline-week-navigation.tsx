@@ -1,6 +1,6 @@
-import { Calendar1, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import useFilters from "@/features/shared/hooks/use-filters";
+import { Calendar1, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import useFilters from '@/features/shared/hooks/use-filters';
 import {
 	addDays,
 	getFirstDayOfWeek,
@@ -8,9 +8,9 @@ import {
 	getToday,
 	getWeek,
 	subDays,
-} from "@/lib/dates";
-import { Day } from "@/types/types";
-import TimelinePaginationWeekSelect from "./timeline-week-select";
+} from '@/lib/dates';
+import { Day } from '@/types/types';
+import TimelinePaginationWeekSelect from './timeline-week-select';
 
 export default function TimelinePaginationWeekNavigation({
 	weekdays,
@@ -46,13 +46,13 @@ export default function TimelinePaginationWeekNavigation({
 	return (
 		<div className="flex gap-2 justify-end items-center">
 			<TimelinePaginationWeekSelect selectedWeekNumber={selectedWeekNumber} />
-			<Button variant={"outline"} onClick={handlePrevious}>
+			<Button variant={'outline'} onClick={handlePrevious}>
 				<ChevronLeft />
 			</Button>
-			<Button variant={"outline"} onClick={handlePresent}>
+			<Button variant={'outline'} onClick={handlePresent}>
 				<Calendar1 />
 			</Button>
-			<Button variant={"outline"} onClick={handleForward}>
+			<Button variant={'outline'} onClick={handleForward}>
 				<ChevronRight />
 			</Button>
 		</div>
