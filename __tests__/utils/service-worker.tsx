@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from 'react';
 
 export function StartServiceWorker({ children }: { children: ReactNode }) {
-	const [isMockReady, setMockReady] = useState(false);
+  const [isMockReady, setMockReady] = useState(false);
 
-	useEffect(() => {
-		async function enableMocks() {
-			if (process.env.NODE_ENV === "development") {
-				const { worker } = await import("@/__tests__/mocks/browser");
-				await worker.start();
-			}
-			setMockReady(true);
-		}
+  useEffect(() => {
+    async function enableMocks() {
+      if (process.env.NODE_ENV === 'development') {
+        const { worker } = await import('@/__tests__/mocks/browser');
+        await worker.start();
+      }
+      setMockReady(true);
+    }
 
-		enableMocks();
-	}, []);
+    enableMocks();
+  }, []);
 
-	if (!isMockReady) {
-		return <div>Loading mocks...</div>;
-	}
+  if (!isMockReady) {
+    return <div>Loading mocks...</div>;
+  }
 
-	return <>{children}</>;
+  return <>{children}</>;
 }

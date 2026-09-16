@@ -1,25 +1,24 @@
-"use client";
+'use client';
 
-import { HousePlus } from "lucide-react";
+import { HousePlus } from 'lucide-react';
 
-import useToggle from "../../../shared/hooks/use-toggle";
-import FormDialog from "../ui/form-dialog";
-import CreateCustomerForm from "./create-customer-form";
+import useToggle from '../../../shared/hooks/use-toggle';
+import FormDialog from '../ui/form-dialog';
+import CreateCustomerForm from './create-customer-form';
 
 export default function CreateCustomer() {
-	const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] =
-		useToggle();
+  const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] = useToggle();
 
-	return (
-		<FormDialog
-			isOpen={isModalOpen}
-			onOpenChange={toggleModal}
-			icon={<HousePlus />}
-			title={"Dodawanie nowego zleceniodawcy"}
-			description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
-			hideTriggerTitle
-		>
-			<CreateCustomerForm onDialogClose={closeModal} />
-		</FormDialog>
-	);
+  return (
+    <FormDialog
+      isOpen={isModalOpen}
+      onOpenChange={toggleModal}
+      icon={<HousePlus />}
+      title={'Dodawanie nowego zleceniodawcy'}
+      description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
+      hideTriggerTitle
+    >
+      <CreateCustomerForm onDialogClose={closeModal} />
+    </FormDialog>
+  );
 }

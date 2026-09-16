@@ -1,6 +1,6 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import z from "zod";
-import { truck } from "@/db/schemas";
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import type z from 'zod';
+import { truck } from '@/db/schemas';
 
 export const createTruckSchema = createInsertSchema(truck);
 export const selectTruckSchema = createSelectSchema(truck);

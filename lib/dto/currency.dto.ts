@@ -1,6 +1,6 @@
-import { createSelectSchema } from "drizzle-zod";
-import z from "zod";
-import { currency } from "@/db/schemas";
+import { createSelectSchema } from 'drizzle-zod';
+import type z from 'zod';
+import { currency } from '@/db/schemas';
 
 export const selectCurrencySchema = createSelectSchema(currency);
 

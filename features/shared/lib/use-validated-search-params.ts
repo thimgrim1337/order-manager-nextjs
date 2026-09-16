@@ -1,12 +1,12 @@
-import { use } from "react";
-import z from "zod";
-import { RawSearchParams } from "@/types/types";
+import { use } from 'react';
+import type z from 'zod';
+import type { RawSearchParams } from '@/types/types';
 
 export default function useValidatedSearchParams<T extends z.ZodType>(
-	searchParamsPromise: Promise<RawSearchParams>,
-	schema: T,
+  searchParamsPromise: Promise<RawSearchParams>,
+  schema: T,
 ) {
-	const raw = use(searchParamsPromise);
+  const raw = use(searchParamsPromise);
 
-	return schema.safeParse(raw);
+  return schema.safeParse(raw);
 }

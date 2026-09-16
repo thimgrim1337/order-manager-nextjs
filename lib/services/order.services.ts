@@ -1,194 +1,189 @@
-import { DrizzleQueryError } from "drizzle-orm";
-import { DatabaseError } from "pg";
-import z from "zod";
-import db from "@/db/db";
+import { DrizzleQueryError } from 'drizzle-orm';
+import type { DatabaseError } from 'pg';
+import z from 'zod';
+import db from '@/db/db';
 import {
-	addOrderPlaces,
-	createOrder,
-	deleteOrder,
-	deleteOrderPlaces,
-	updateOrder,
-} from "../dal/order.dal";
-import { updateTruckAssignedDriver } from "../dal/truck.dal";
-import {
-	OrderFormSchema,
-	selectOrderSchema,
-	updateOrderSchema,
-} from "../dto/order.dto";
-import { error, ok } from "../error";
-import { getErrorDetails } from "../helpers";
+  addOrderPlaces,
+  createOrder,
+  deleteOrder,
+  deleteOrderPlaces,
+  updateOrder,
+} from '../dal/order.dal';
+import { updateTruckAssignedDriver } from '../dal/truck.dal';
+import { OrderFormSchema, selectOrderSchema, updateOrderSchema } from '../dto/order.dto';
+import { error, ok } from '../error';
+import { getErrorDetails } from '../helpers';
 
 export async function createOrderService(rawData: unknown) {
-	const validationResult = OrderFormSchema.safeParse(rawData);
+  const validationResult = OrderFormSchema.safeParse(rawData);
 
-	if (!validationResult.success)
-		return error({
-			reason: "InvalidData",
-			details: z.prettifyError(validationResult.error),
-		});
+  if (!validationResult.success)
+    return error({
+      reason: 'InvalidData',
+      details: z.prettifyError(validationResult.error),
+    });
 
-	const validatedData = validationResult.data;
+  const validatedData = validationResult.data;
 
-	const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } =
-		validatedData;
+  const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } = validatedData;
 
-	let pricePLN: string;
-	let currencyRate: string = "1";
+  let pricePLN: string;
+  let currencyRate: string = '1';
 
-	if (order.currencyId !== 1 && currencyInfo.rate) {
-		currencyRate = currencyInfo.rate;
-		pricePLN = String(+order.priceCurrency * +currencyRate);
-	} else {
-		pricePLN = order.priceCurrency;
-	}
+  if (order.currencyId !== 1 && currencyInfo.rate) {
+    currencyRate = currencyInfo.rate;
+    pricePLN = String(+order.priceCurrency * +currencyRate);
+  } else {
+    pricePLN = order.priceCurrency;
+  }
 
-	const newOrder = {
-		...order,
-		pricePLN,
-		currencyRate,
-	};
+  const newOrder = {
+    ...order,
+    pricePLN,
+    currencyRate,
+  };
 
-	try {
-		const dbOrder = await db.transaction(async (trx) => {
-			const order = await createOrder(newOrder, trx);
+  try {
+    const dbOrder = await db.transaction(async (trx) => {
+      const order = await createOrder(newOrder, trx);
 
-			await addOrderPlaces(order.id, loadingPlaces, "loadingPlace", trx);
-			await addOrderPlaces(order.id, unloadingPlaces, "unloadingPlace", trx);
-			await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
+      await addOrderPlaces(order.id, loadingPlaces, 'loadingPlace', trx);
+      await addOrderPlaces(order.id, unloadingPlaces, 'unloadingPlace', trx);
+      await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
 
-			return order;
-		});
+      return order;
+    });
 
-		return ok(selectOrderSchema.parse(dbOrder));
-	} catch (err) {
-		if (err instanceof DrizzleQueryError) {
-			const cause = err.cause as DatabaseError | undefined;
+    return ok(selectOrderSchema.parse(dbOrder));
+  } catch (err) {
+    if (err instanceof DrizzleQueryError) {
+      const cause = err.cause as DatabaseError | undefined;
 
-			if (cause?.code === "23505") {
-				return error({
-					reason: "OrderExist",
-				});
-			}
+      if (cause?.code === '23505') {
+        return error({
+          reason: 'OrderExist',
+        });
+      }
 
-			return error({
-				reason: "DrizzleError",
-				details: getErrorDetails(err),
-			});
-		}
+      return error({
+        reason: 'DrizzleError',
+        details: getErrorDetails(err),
+      });
+    }
 
-		return error({
-			reason: "UnexpectedError",
-			details: getErrorDetails(err),
-		});
-	}
+    return error({
+      reason: 'UnexpectedError',
+      details: getErrorDetails(err),
+    });
+  }
 }
 
 export async function updateOrderService(orderId: number, rawData: unknown) {
-	const validationResult = OrderFormSchema.safeParse(rawData);
-	if (!validationResult.success)
-		return error({
-			reason: "InvalidData",
-			details: z.prettifyError(validationResult.error),
-		});
+  const validationResult = OrderFormSchema.safeParse(rawData);
+  if (!validationResult.success)
+    return error({
+      reason: 'InvalidData',
+      details: z.prettifyError(validationResult.error),
+    });
 
-	const { loadingPlaces, unloadingPlaces, ...order } = validationResult.data;
+  const { loadingPlaces, unloadingPlaces, ...order } = validationResult.data;
 
-	try {
-		const dbOrder = await db.transaction(async (trx) => {
-			const updatedOrder = updateOrder(orderId, order, trx);
-			await deleteOrderPlaces(orderId, "loadingPlace", trx);
-			await deleteOrderPlaces(orderId, "unloadingPlace", trx);
-			await addOrderPlaces(orderId, loadingPlaces, "loadingPlace", trx);
-			await addOrderPlaces(orderId, unloadingPlaces, "unloadingPlace", trx);
-			await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
+  try {
+    const dbOrder = await db.transaction(async (trx) => {
+      const updatedOrder = updateOrder(orderId, order, trx);
+      await deleteOrderPlaces(orderId, 'loadingPlace', trx);
+      await deleteOrderPlaces(orderId, 'unloadingPlace', trx);
+      await addOrderPlaces(orderId, loadingPlaces, 'loadingPlace', trx);
+      await addOrderPlaces(orderId, unloadingPlaces, 'unloadingPlace', trx);
+      await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
 
-			return updatedOrder;
-		});
+      return updatedOrder;
+    });
 
-		return ok(selectOrderSchema.parse(dbOrder));
-	} catch (err) {
-		if (err instanceof DrizzleQueryError) {
-			const cause = err.cause as DatabaseError | undefined;
+    return ok(selectOrderSchema.parse(dbOrder));
+  } catch (err) {
+    if (err instanceof DrizzleQueryError) {
+      const cause = err.cause as DatabaseError | undefined;
 
-			if (cause?.code === "23505") {
-				return error({
-					reason: "OrderExist",
-				});
-			}
+      if (cause?.code === '23505') {
+        return error({
+          reason: 'OrderExist',
+        });
+      }
 
-			return error({
-				reason: "DrizzleError",
-				details: getErrorDetails(err),
-			});
-		}
+      return error({
+        reason: 'DrizzleError',
+        details: getErrorDetails(err),
+      });
+    }
 
-		return error({
-			reason: "UnexpectedError",
-			details: getErrorDetails(err),
-		});
-	}
+    return error({
+      reason: 'UnexpectedError',
+      details: getErrorDetails(err),
+    });
+  }
 }
 
 export async function patchOrderService(orderId: number, rawData: unknown) {
-	const validationResult = updateOrderSchema.safeParse(rawData);
+  const validationResult = updateOrderSchema.safeParse(rawData);
 
-	if (!validationResult.success)
-		return error({
-			reason: "InvalidData",
-			details: z.prettifyError(validationResult.error),
-		});
+  if (!validationResult.success)
+    return error({
+      reason: 'InvalidData',
+      details: z.prettifyError(validationResult.error),
+    });
 
-	const validatedData = validationResult.data;
+  const validatedData = validationResult.data;
 
-	try {
-		const dbOrder = await updateOrder(orderId, validatedData);
+  try {
+    const dbOrder = await updateOrder(orderId, validatedData);
 
-		return ok(selectOrderSchema.parse(dbOrder));
-	} catch (err) {
-		if (err instanceof DrizzleQueryError) {
-			const cause = err.cause as DatabaseError | undefined;
+    return ok(selectOrderSchema.parse(dbOrder));
+  } catch (err) {
+    if (err instanceof DrizzleQueryError) {
+      const cause = err.cause as DatabaseError | undefined;
 
-			if (cause?.code === "23505") {
-				return error({
-					reason: "OrderExist",
-				});
-			}
+      if (cause?.code === '23505') {
+        return error({
+          reason: 'OrderExist',
+        });
+      }
 
-			return error({
-				reason: "DrizzleError",
-				details: getErrorDetails(err),
-			});
-		}
+      return error({
+        reason: 'DrizzleError',
+        details: getErrorDetails(err),
+      });
+    }
 
-		return error({
-			reason: "UnexpectedError",
-			details: getErrorDetails(err),
-		});
-	}
+    return error({
+      reason: 'UnexpectedError',
+      details: getErrorDetails(err),
+    });
+  }
 }
 
 export async function deleteOrderService(orderId: number) {
-	try {
-		const dbOrder = await db.transaction(async (trx) => {
-			await deleteOrderPlaces(orderId, "loadingPlace", trx);
-			await deleteOrderPlaces(orderId, "unloadingPlace", trx);
-			const order = await deleteOrder(orderId, trx);
+  try {
+    const dbOrder = await db.transaction(async (trx) => {
+      await deleteOrderPlaces(orderId, 'loadingPlace', trx);
+      await deleteOrderPlaces(orderId, 'unloadingPlace', trx);
+      const order = await deleteOrder(orderId, trx);
 
-			return order;
-		});
+      return order;
+    });
 
-		return ok(selectOrderSchema.parse(dbOrder));
-	} catch (err) {
-		if (err instanceof DrizzleQueryError) {
-			return error({
-				reason: "DrizzleError",
-				details: getErrorDetails(err),
-			});
-		}
+    return ok(selectOrderSchema.parse(dbOrder));
+  } catch (err) {
+    if (err instanceof DrizzleQueryError) {
+      return error({
+        reason: 'DrizzleError',
+        details: getErrorDetails(err),
+      });
+    }
 
-		return error({
-			reason: "UnexpectedError",
-			details: getErrorDetails(err),
-		});
-	}
+    return error({
+      reason: 'UnexpectedError',
+      details: getErrorDetails(err),
+    });
+  }
 }

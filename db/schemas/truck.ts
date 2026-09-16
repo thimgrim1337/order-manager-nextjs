@@ -1,34 +1,25 @@
-import { relations, sql } from "drizzle-orm";
-import {
-	AnyPgColumn,
-	date,
-	index,
-	integer,
-	pgTable,
-	text,
-} from "drizzle-orm/pg-core";
-import { driver, order } from ".";
+import { relations, sql } from 'drizzle-orm';
+import { type AnyPgColumn, date, index, integer, pgTable, text } from 'drizzle-orm/pg-core';
+import { driver, order } from '.';
 
 const trucks = pgTable(
-	"trucks",
-	{
-		id: integer().primaryKey().generatedAlwaysAsIdentity(),
-		plate: text().unique().notNull(),
-		insuranceEndAt: date("insurance_end_at").notNull(),
-		serviceEndAt: date("service_end_at").notNull(),
-		driverId: integer("driver_id").references((): AnyPgColumn => driver.id),
-	},
-	(table) => [
-		index("idx_trucks_plate_lower").using("btree", sql`LOWER(${table.plate})`),
-	],
+  'trucks',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    plate: text().unique().notNull(),
+    insuranceEndAt: date('insurance_end_at').notNull(),
+    serviceEndAt: date('service_end_at').notNull(),
+    driverId: integer('driver_id').references((): AnyPgColumn => driver.id),
+  },
+  (table) => [index('idx_trucks_plate_lower').using('btree', sql`LOWER(${table.plate})`)],
 );
 
 export const trucksRelations = relations(trucks, ({ one, many }) => ({
-	orders: many(order),
-	driver: one(driver, {
-		fields: [trucks.id],
-		references: [driver.id],
-	}),
+  orders: many(order),
+  driver: one(driver, {
+    fields: [trucks.id],
+    references: [driver.id],
+  }),
 }));
 
 export default trucks;

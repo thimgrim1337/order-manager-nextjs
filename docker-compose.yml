@@ -9,7 +9,7 @@ services:
     ports:
       - ${DB_PORT}:5432
     volumes:
-      - my_pgdata:/var/lib/postgresql/data
+      - my_pgdata:/var/lib/postgresql/data/18/main
 
   db-test:
     image: postgres:alpine
@@ -21,7 +21,7 @@ services:
     ports:
       - ${DB_TEST_PORT}:5432
     volumes:
-      - my_pgdata_test:/var/lib/postgresql/data
+      - my_pgdata_test:/var/lib/postgresql/data/18/main
 
 volumes:
   my_pgdata:

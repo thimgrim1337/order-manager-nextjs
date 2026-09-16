@@ -1,28 +1,28 @@
-import react from "@vitejs/plugin-react";
-import { playwright } from "@vitest/browser-playwright";
-import tsconfigPaths from "vite-tsconfig-paths";
-import { defineConfig } from "vitest/config";
+import react from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser-playwright';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-	plugins: [tsconfigPaths(), react()],
-	define: {
-		"process.env": {},
-	},
+  plugins: [tsconfigPaths(), react()],
+  define: {
+    'process.env': {},
+  },
 
-	test: {
-		setupFiles: ["./vitest.setup.ts"],
-		browser: {
-			enabled: true,
-			headless: true,
-			provider: playwright({
-				launchOptions: {
-					executablePath: "/usr/bin/chromium",
-				},
-			}),
-			instances: [{ browser: "chromium" }],
-			viewport: { width: 1920, height: 1080 },
-		},
-		include: ["__tests__/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
-		exclude: ["node_modules", "dist", "e2e"],
-	},
+  test: {
+    setupFiles: ['./vitest.setup.ts'],
+    browser: {
+      enabled: true,
+      headless: true,
+      provider: playwright({
+        launchOptions: {
+          executablePath: '/usr/bin/chromium',
+        },
+      }),
+      instances: [{ browser: 'chromium' }],
+      viewport: { width: 1920, height: 1080 },
+    },
+    include: ['__tests__/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
+    exclude: ['node_modules', 'dist', 'e2e'],
+  },
 });

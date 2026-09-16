@@ -1,39 +1,33 @@
-import { Pen } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Pen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { OrderTable } from "@/types/types";
-import OrderActionEdit from "./order-action-edit";
-import OrderActionRemove from "./order-action-remove";
-import OrderStatusMenu from "./order-status-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import type { Order } from '@/types/types';
+import OrderActionEdit from './order-action-edit';
+import OrderActionRemove from './order-action-remove';
+import OrderStatusMenu from './order-status-menu';
 
-export default function OrderActionMenu({ order }: { order: OrderTable }) {
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger
-				render={
-					<Button variant="outline" role="menu" aria-label="order actions">
-						<Pen />
-					</Button>
-				}
-			></DropdownMenuTrigger>
-			<DropdownMenuContent>
-				<DropdownMenuItem
-					render={<OrderStatusMenu order={order} />}
-				></DropdownMenuItem>
-				<DropdownMenuItem
-					render={<OrderActionEdit order={order} />}
-				></DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					render={<OrderActionRemove order={order} />}
-				></DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
-	);
+export default function OrderActionMenu({ order }: { order: Order }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" role="menu" aria-label="order actions">
+            <Pen />
+          </Button>
+        }
+      ></DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem render={<OrderStatusMenu order={order} />}></DropdownMenuItem>
+        <DropdownMenuItem render={<OrderActionEdit order={order} />}></DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem render={<OrderActionRemove order={order} />}></DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }

@@ -1,72 +1,67 @@
-import { formOptions } from "@tanstack/react-form-nextjs";
-import { isAfter, isBefore } from "date-fns";
-import { getToday, getTomorrow } from "@/lib/dates";
-import { OrderFormSchema } from "@/lib/dto/order.dto";
-import { City } from "@/types/types";
+import { formOptions } from '@tanstack/react-form-nextjs';
+import { isAfter, isBefore } from 'date-fns';
+import { getToday, getTomorrow } from '@/lib/dates';
+import { OrderFormSchema } from '@/lib/dto/order.dto';
+import type { City } from '@/types/types';
 
 export const orderFormOptions = formOptions({
-	defaultValues: {
-		orderNr: "",
-		startDate: getToday(),
-		endDate: getTomorrow(),
-		customerId: 0,
-		driverId: 0,
-		truckId: 0,
-		statusId: 1,
-		priceCurrency: "1",
-		currencyId: 1,
-		loadingPlaces: [] as City[] | [],
-		unloadingPlaces: [] as City[] | [],
-		currencyInfo: {
-			table: "",
-			rate: "",
-			date: "",
-		},
-	},
-	validators: {
-		onChange: OrderFormSchema,
-		onSubmitAsync: async ({ value }) => {
-			const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
-			const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
-			const { error } = OrderFormSchema.safeParse(value);
+  defaultValues: {
+    orderNr: '',
+    startDate: getToday(),
+    endDate: getTomorrow(),
+    customerId: 0,
+    driverId: 0,
+    truckId: 0,
+    statusId: 1,
+    priceCurrency: '1',
+    currencyId: 1,
+    loadingPlaces: [] as City[] | [],
+    unloadingPlaces: [] as City[] | [],
+    currencyInfo: {
+      table: '',
+      rate: '',
+      date: '',
+    },
+  },
+  validators: {
+    onChange: OrderFormSchema,
+    onSubmitAsync: async ({ value }) => {
+      const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
+      const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
+      const { error } = OrderFormSchema.safeParse(value);
 
-			if (isLoadingDateAfter || isUnloadingDateBefore) {
-				return {
-					fields: {
-						...(isLoadingDateAfter
-							? {
-									startDate: {
-										message:
-											"Data załadunku nie może być późniejsza niż data rozładunku.",
-									},
-								}
-							: {}),
-						...(isUnloadingDateBefore
-							? {
-									endDate: {
-										message:
-											"Data rozładunku nie może być wcześniejsza niż data załadunku.",
-									},
-								}
-							: {}),
-					},
-				};
-			}
+      if (isLoadingDateAfter || isUnloadingDateBefore) {
+        return {
+          fields: {
+            ...(isLoadingDateAfter
+              ? {
+                  startDate: {
+                    message: 'Data załadunku nie może być późniejsza niż data rozładunku.',
+                  },
+                }
+              : {}),
+            ...(isUnloadingDateBefore
+              ? {
+                  endDate: {
+                    message: 'Data rozładunku nie może być wcześniejsza niż data załadunku.',
+                  },
+                }
+              : {}),
+          },
+        };
+      }
 
-			if (error && error) {
-				const errors = Object.fromEntries(
-					Object.entries(error).map(([field, errors]) => [
-						field,
-						{ message: errors?.[0] ?? "" },
-					]),
-				);
+      if (error && error) {
+        const errors = Object.fromEntries(
+          Object.entries(error).map(([field, errors]) => [field, { message: errors?.[0] ?? '' }]),
+        );
 
-				return {
-					fields: {
-						...errors,
-					},
-				};
-			}
-		},
-	},
+        return {
+          fields: {
+            ...errors,
+          },
+        };
+      }
+    },
+  },
 });
