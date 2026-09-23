@@ -45,30 +45,30 @@ beforeEach(() => {
   });
 });
 
-const dataPromiseMock = {
-  cities: Promise.resolve([
+const dataMock = {
+  cities: [
     {
       id: 1,
       name: 'Płock',
       postal: '09-410',
       countryId: 39,
     },
-  ]),
-  customers: Promise.resolve([
+  ],
+  customers: [
     {
       id: 1,
       name: 'DEVIL',
       tax: '7743241555',
     },
-  ]),
-  drivers: Promise.resolve([
+  ],
+  drivers: [
     {
       id: 1,
       firstName: 'Jan',
       lastName: 'Kowalski',
     },
-  ]),
-  trucks: Promise.resolve([
+  ],
+  trucks: [
     {
       id: 1,
       plate: 'WND0997C',
@@ -76,26 +76,26 @@ const dataPromiseMock = {
       serviceEndAt: '2026-06-01',
       driverId: 1,
     },
-  ]),
-  countries: Promise.resolve([
+  ],
+  countries: [
     {
       id: 1,
       name: 'Poland',
       code: 'PL',
     },
-  ]),
-  currencies: Promise.resolve([
+  ],
+  currencies: [
     { id: 1, code: 'PLN' },
     { id: 2, code: 'EUR' },
-  ]),
+  ],
 };
 
-const setup = async (customData?: Partial<typeof dataPromiseMock>) => {
+const setup = async (customData?: Partial<typeof dataMock>) => {
   const user = userEvent.setup({ pointerEventsCheck: 0 });
 
   await act(async () => {
     render(
-      <OrderDataProvider dataPromise={{ ...dataPromiseMock, ...customData }}>
+      <OrderDataProvider data={{ ...dataMock, ...customData }}>
         <Suspense fallback={'Loading...'}>
           <CreateOrderForm onDialogClose={vi.fn()} />
         </Suspense>
@@ -187,7 +187,7 @@ describe('CreateOrderForm', () => {
 
     it('do nothing when when is no driver assigned before', async () => {
       const { user } = await setup({
-        trucks: Promise.resolve([
+        trucks: [
           {
             id: 1,
             plate: 'WND0997C',
@@ -195,7 +195,7 @@ describe('CreateOrderForm', () => {
             serviceEndAt: '2026-06-01',
             driverId: 0,
           },
-        ]),
+        ],
       });
 
       await user.click(screen.getByLabelText('Pojazd'));

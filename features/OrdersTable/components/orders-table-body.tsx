@@ -2,6 +2,7 @@
 
 import { type ColumnDef, flexRender, type Table } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import type { Order } from '@/types/types';
 import {
   TableBody,
   TableCell,
@@ -10,6 +11,7 @@ import {
   Table as TableMain,
   TableRow,
 } from '../../../components/ui/table';
+import OrdersContextMenu from './OrdersContextMenu/context-menu';
 
 interface OrdersTableBodyProps<TData, TValue> {
   table: Table<TData>;
@@ -27,11 +29,11 @@ export function OrdersTableBody<TData, TValue>({
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
               return (
-                <TableHead key={header.id} className="font-semibold">
+                <TableHead key={header.id} className="font-semibold md:text-xs">
                   {header.isPlaceholder ? null : (
                     <button
                       type="button"
-                      className={`flex gap-2 items-center justify-start ${
+                      className={`flex gap-1 items-center justify-start ${
                         header.column.getCanSort() ? 'cursor-pointer select-none group' : ''
                       } `}
                       onClick={header.column.getToggleSortingHandler()}
@@ -59,17 +61,23 @@ export function OrdersTableBody<TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className="group">
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
+            <OrdersContextMenu key={row.id} order={row.original as Order}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className="group lg:text-xs cursor-pointer"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </OrdersContextMenu>
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
+            <TableCell colSpan={columns.length} className="h-24 text-center ">
               Brak wyników.
             </TableCell>
           </TableRow>

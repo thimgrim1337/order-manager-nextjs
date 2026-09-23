@@ -1,4 +1,4 @@
--- Custom SQL migration file, put your code below! --
+-- Custom SQL migration file, put your code below! ---- Custom SQL migration file, put your code below! --
 CREATE VIEW orders_with_details AS
 SELECT 
   o.id,
@@ -11,7 +11,8 @@ SELECT
   o.price_currency,
   o.price_pln,
   o.currency_id,
-  o.currency_rate,
+  o.exchange_rate,
+  o.exchange_date,
   o.truck_id,
   o.driver_id,
   o.customer_id,
@@ -28,6 +29,7 @@ SELECT
   JSON_BUILD_OBJECT('id', d.id, 'firstName', d.first_name, 'lastName', d.last_name) as driver,
   JSON_BUILD_OBJECT('id', t.id, 'plate', t.plate, 'insuranceEndAt', t.insurance_end_at, 'serviceEndAt', t.service_end_at, 'driverId', t.driver_id) as truck,
   JSON_BUILD_OBJECT('id', s.id, 'name', s.name) as status,
+  JSON_BUILD_OBJECT('id', o.currency_id, 'code', cs.code, 'rate', o.exchange_rate, 'date', o.exchange_date) as currency_info,
 
   -- Loading/unloading places (subquery potrzebne bo relacja 1:N)
   (

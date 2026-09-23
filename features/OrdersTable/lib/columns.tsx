@@ -3,7 +3,6 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import { formatDate } from '@/lib/dates';
 import type { Order } from '@/types/types';
-import OrderActionMenu from '../components/OrdersAction/order-action-menu';
 import StatusBadge from '../components/ui/status-bagde';
 
 export const columns: ColumnDef<Order>[] = [
@@ -23,10 +22,12 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: 'loadingCity',
+    accessorFn: (order) => order.loadingPlaces[0].name,
     header: ' Miejsce załadunku',
   },
   {
     accessorKey: 'unloadingCity',
+    accessorFn: (order) => order.unloadingPlaces[order.unloadingPlaces.length - 1].name,
     header: 'Miejsce rozładunku',
   },
   {
@@ -36,17 +37,17 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: 'truckId',
-    accessorFn: (order) => order.truckPlate,
+    accessorFn: (order) => order.truck.plate,
     header: 'Pojazd',
   },
   {
     accessorKey: 'driverId',
-    accessorFn: (order) => order.driverFullname,
+    accessorFn: (order) => `${order.driver.firstName} ${order.driver.lastName}`,
     header: 'Kierowca',
   },
   {
     accessorKey: 'customerId',
-    cell: ({ row }) => <div className="w-40 truncate">{row.original.customerName}</div>,
+    cell: ({ row }) => <div className="w-40 truncate">{row.original.customer.name}</div>,
     header: 'Klient',
   },
   {
@@ -62,7 +63,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: 'currencyId',
     header: 'Waluta',
-    cell: ({ row }) => <div className="text-right">{row.original.currencyCode}</div>,
+    cell: ({ row }) => <div className="text-right">{row.original.currency.code}</div>,
   },
   {
     accessorKey: 'pricePLN',
@@ -75,16 +76,6 @@ export const columns: ColumnDef<Order>[] = [
         currency: 'PLN',
       }).format(price);
       return <div className="text-right font-medium text-red-600 ">{formatted}</div>;
-    },
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => {
-      return (
-        <div className="opacity-0 transition-opacity group-hover:opacity-100">
-          <OrderActionMenu order={row.original} />
-        </div>
-      );
     },
   },
 ];

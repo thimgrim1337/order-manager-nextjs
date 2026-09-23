@@ -1,8 +1,9 @@
 CREATE TABLE "cities" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "cities_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"name" text NOT NULL UNIQUE,
+	"name" text NOT NULL,
 	"postal" text NOT NULL,
 	"country_id" integer NOT NULL,
+	CONSTRAINT "cities_name_unique" UNIQUE("name"),
 	CONSTRAINT "cities_name_postal_country_id_unique" UNIQUE("name","postal","country_id")
 );
 --> statement-breakpoint
@@ -52,7 +53,8 @@ CREATE TABLE "orders" (
 	"price_currency" numeric(10, 2) NOT NULL,
 	"price_pln" numeric(10, 2) NOT NULL,
 	"currency_id" integer NOT NULL,
-	"currency_rate" numeric(5, 4) DEFAULT '1' NOT NULL,
+	"exchange_rate" numeric(5, 4) DEFAULT '1' NOT NULL,
+	"exchange_date" date,
 	"truck_id" integer NOT NULL,
 	"driver_id" integer NOT NULL,
 	"customer_id" integer NOT NULL,

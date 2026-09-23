@@ -1,8 +1,14 @@
 import { eq } from 'drizzle-orm';
+import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 
 export async function getAllTrucks() {
+  'use cache';
+  cacheLife('days');
+
+  cacheTag('drivers');
+
   const dbTrucks = await db.query.truck.findMany();
   return dbTrucks;
 }

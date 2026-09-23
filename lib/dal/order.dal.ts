@@ -31,6 +31,7 @@ export async function getAllOrders(
 ) {
   'use cache';
   cacheTag('orders');
+
   const getSortColumn = (sortParams?: SortParams[]) => {
     const sortMappings = {
       statusId: ordersWithDetailsView.statusId,
@@ -109,17 +110,24 @@ export async function getAllOrders(
 
   const whereConditions = or(...searchConditions, and(...andWhereConditions));
 
-  return db
+  const orders = db
     .select()
     .from(ordersWithDetailsView)
     .where(whereConditions)
     .orderBy(...sortColumn)
     .limit(pageSize)
     .offset(pageIndex * pageSize);
-}
 
-export async function getOrderCount() {
-  return db.select({ count: count() }).from(order);
+  const ordersCount = db
+    .select({ count: count() })
+    .from(ordersWithDetailsView)
+    .where(whereConditions)
+    .then((rows) => rows[0].count);
+
+  return {
+    data: await orders,
+    count: await ordersCount,
+  };
 }
 
 export async function createOrder(dto: CreateOrderDto, trx: dbTransaction) {

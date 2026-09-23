@@ -38,12 +38,13 @@ const order = pgTable(
     currencyId: integer('currency_id')
       .notNull()
       .references(() => currency.id),
-    currencyRate: numeric('currency_rate', {
+    exchangeRate: numeric('exchange_rate', {
       precision: 5,
       scale: 4,
     })
       .notNull()
       .default('1'),
+    exchangeDate: date('exchange_date', { mode: 'string' }),
     truckId: integer('truck_id')
       .notNull()
       .references(() => truck.id),
@@ -63,55 +64,53 @@ const order = pgTable(
 );
 
 export const ordersWithDetailsView = pgView('orders_with_details', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  createdAt: timestamp('created_at', { mode: 'string' }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'string' }).notNull().defaultNow(),
+  id: integer().notNull(),
+  createdAt: timestamp('created_at', { mode: 'string' }),
+  updatedAt: timestamp('updated_at', { mode: 'string' }),
   orderNr: text('order_nr').notNull(),
-  startDate: date('start_date', { mode: 'string' }).notNull().defaultNow(),
-  endDate: date('end_date', { mode: 'string' }).notNull().defaultNow(),
-  statusId: integer('status_id')
-    .notNull()
-    .references(() => status.id),
+  startDate: date('start_date', { mode: 'string' }).notNull(),
+  endDate: date('end_date', { mode: 'string' }).notNull(),
+  statusId: integer('status_id'),
+
   priceCurrency: numeric('price_currency', {
     precision: 10,
     scale: 2,
   }).notNull(),
   pricePLN: numeric('price_pln', { precision: 10, scale: 2 }).notNull(),
-  currencyId: integer('currency_id')
-    .notNull()
-    .references(() => currency.id),
-  currencyRate: numeric('currency_rate', {
+  currencyId: integer('currency_id'),
+  exchangeRate: numeric('exchange_rate', {
     precision: 5,
     scale: 4,
-  }).notNull(),
-  truckId: integer('truck_id')
-    .notNull()
-    .references(() => truck.id),
-  driverId: integer('driver_id')
-    .notNull()
-    .references(() => driver.id),
-  customerId: integer('customer_id')
-    .notNull()
-    .references(() => customer.id),
-
-  // Joined data
-  customerName: text('customer_name').notNull(),
-  driverFullname: text('driver_fullname').notNull(),
-  truckPlate: text('truck_plate').notNull(),
-  statusName: text('status_name').notNull(),
-  currencyCode: text('currency_code').notNull(),
+  }),
+  exchangeDate: date('exchange_date', { mode: 'string' }),
+  truckId: integer('truck_id'),
+  driverId: integer('driver_id'),
+  customerId: integer('customer_id'),
 
   // JSON aggregated data
   customer: json('customer').$type<Customer>().notNull(),
   driver: json('driver').$type<Driver>().notNull(),
   truck: json('truck').$type<Truck>().notNull(),
-  status: json('status').$type<Status>().notNull(),
+  status: json('status').$type<Status>().notNull().notNull(),
   loadingPlaces: json('loading_places').$type<City[]>().notNull(),
   unloadingPlaces: json('unloading_places').$type<City[]>().notNull(),
+  currency: json('currency_info')
+    .$type<{
+      id: number;
+      code: string;
+      rate: number;
+      date: string;
+    }>()
+    .notNull(),
 
   // Helper columns for sorting
-  loadingCity: text('loading_city').notNull(),
-  unloadingCity: text('unloading_city').notNull(),
+  loadingCity: text('loading_city'),
+  unloadingCity: text('unloading_city'),
+  customerName: text('customer_name'),
+  driverFullname: text('driver_fullname'),
+  truckPlate: text('truck_plate'),
+  statusName: text('status_name'),
+  currencyCode: text('currency_code'),
 }).existing();
 
 export const orderRelations = relations(order, ({ one, many }) => ({

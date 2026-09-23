@@ -1,6 +1,5 @@
 'use client';
 
-import { use } from 'react';
 import type { Order } from '@/types/types';
 import useTable from '../hooks/useTable';
 import { columns } from '../lib/columns';
@@ -8,17 +7,15 @@ import { OrdersTableBody } from './orders-table-body';
 import { OrdersTablePagination } from './orders-table-pagination';
 
 interface OrdersTableProps {
-  orders: Promise<Order[]>;
-  rowCount: number;
+  orders: Order[];
+  count: number;
 }
 
-export default function OrdersTable({ orders, rowCount }: OrdersTableProps) {
-  const ordersData = use(orders);
-
+export default function OrdersTable({ orders, count }: OrdersTableProps) {
   const table = useTable({
     columns,
-    data: ordersData,
-    rowCount,
+    data: orders,
+    rowCount: count,
   });
 
   return (

@@ -1,5 +1,5 @@
 {
-  "id": "b781d15a-731b-4f33-8bc1-a9f361191592",
+  "id": "9c510bf4-9d97-4b7a-bedf-a662eb6ac5ac",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -78,6 +78,13 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "cities_name_unique": {
+          "name": "cities_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        },
         "cities_name_postal_country_id_unique": {
           "name": "cities_name_postal_country_id_unique",
           "nullsNotDistinct": false,
@@ -473,12 +480,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "currency_rate": {
-          "name": "currency_rate",
+        "exchange_rate": {
+          "name": "exchange_rate",
           "type": "numeric(5, 4)",
           "primaryKey": false,
           "notNull": true,
           "default": "'1'"
+        },
+        "exchange_date": {
+          "name": "exchange_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         },
         "truck_id": {
           "name": "truck_id",
@@ -931,149 +944,140 @@
         "id": {
           "name": "id",
           "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "orders_with_details_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         },
         "order_nr": {
           "name": "order_nr",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "start_date": {
           "name": "start_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         },
         "end_date": {
           "name": "end_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         },
         "status_id": {
           "name": "status_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "price_currency": {
           "name": "price_currency",
           "type": "numeric(10, 2)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "price_pln": {
           "name": "price_pln",
           "type": "numeric(10, 2)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "currency_id": {
           "name": "currency_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "currency_rate": {
-          "name": "currency_rate",
+        "exchange_rate": {
+          "name": "exchange_rate",
           "type": "numeric(5, 4)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "exchange_date": {
+          "name": "exchange_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         },
         "truck_id": {
           "name": "truck_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "driver_id": {
           "name": "driver_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "customer_id": {
           "name": "customer_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "customer_name": {
           "name": "customer_name",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "driver_fullname": {
           "name": "driver_fullname",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "truck_plate": {
           "name": "truck_plate",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "status_name": {
           "name": "status_name",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "currency_code": {
           "name": "currency_code",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "customer": {
           "name": "customer",
           "type": "json",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "driver": {
           "name": "driver",
           "type": "json",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "truck": {
           "name": "truck",
           "type": "json",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "status": {
           "name": "status",
@@ -1085,25 +1089,31 @@
           "name": "loading_places",
           "type": "json",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "unloading_places": {
           "name": "unloading_places",
           "type": "json",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "currency_info": {
+          "name": "currency_info",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
         },
         "loading_city": {
           "name": "loading_city",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "unloading_city": {
           "name": "unloading_city",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "name": "orders_with_details",

@@ -21,6 +21,7 @@ export type Status = StatusDto;
 export type Currency = CurrencyDto;
 
 export type Currencies = 'PLN' | 'EUR';
+
 export type CurrencyTable = 'A' | 'B' | 'C';
 export type PlaceType = 'loadingPlace' | 'unloadingPlace';
 
@@ -56,23 +57,18 @@ export type SortParams = {
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
 
-export const TimelineFilters = z.object({
-  driverId: z.coerce.number().min(1).max(100).optional().catch(1),
-  startDate: z.iso.date().catch(getFirstDayOfWeek(getToday())),
-  endDate: z.iso.date().catch(getLastDayOfWeek(getToday())),
-});
-export type TimelineFilters = z.infer<typeof TimelineFilters>;
-
 const OrderFilters = z.object({
+  driverId: z.coerce.number().min(1).max(100).optional().catch(1),
+  startDate: z.iso.date().optional().default(getFirstDayOfWeek(getToday())),
+  endDate: z.iso.date().optional().default(getLastDayOfWeek(getToday())),
   globalFilters: z.string().optional(),
-  ...TimelineFilters.shape,
 });
 export type OrderFilters = z.infer<typeof OrderFilters>;
 
 export const SearchParams = z.object({
-  sort: z.string().pipe(AllowedSortField).optional().catch(undefined),
-  pageIndex: z.coerce.number().min(0).default(0).optional().catch(0),
-  pageSize: z.coerce.number().min(10).max(100).default(10).optional().catch(10),
+  sort: z.string().pipe(AllowedSortField).optional(),
+  pageIndex: z.coerce.number().min(0).default(0).catch(0),
+  pageSize: z.coerce.number().min(10).max(100).default(10).catch(10),
   ...OrderFilters.shape,
 });
 

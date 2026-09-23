@@ -1,21 +1,21 @@
 'use client';
 
-import { createContext, type ReactNode, use } from 'react';
+import { createContext, type ReactNode, useContext } from 'react';
 import type { City, Country, Currency, Customer, Driver, Truck } from '@/types/types';
 
 type OrderDataContextType = {
-  customers: Promise<Customer[]>;
-  cities: Promise<City[]>;
-  drivers: Promise<Driver[]>;
-  trucks: Promise<Truck[]>;
-  countries: Promise<Country[]>;
-  currencies: Promise<Currency[]>;
+  customers: Customer[];
+  cities: City[];
+  drivers: Driver[];
+  trucks: Truck[];
+  countries: Country[];
+  currencies: Currency[];
 };
 
 const OrderDataContext = createContext<OrderDataContextType | null>(null);
 
 export const useOrderData = () => {
-  const ctx = use(OrderDataContext);
+  const ctx = useContext(OrderDataContext);
 
   if (!ctx) throw new Error('useOrderData must be used within OrderDataProvider');
 
@@ -23,10 +23,10 @@ export const useOrderData = () => {
 };
 
 type OrderDataProviderProps = {
-  dataPromise: OrderDataContextType;
+  data: OrderDataContextType;
   children: ReactNode;
 };
 
-export function OrderDataProvider({ dataPromise, children }: OrderDataProviderProps) {
-  return <OrderDataContext value={dataPromise}>{children}</OrderDataContext>;
+export function OrderDataProvider({ data, children }: OrderDataProviderProps) {
+  return <OrderDataContext value={data}>{children}</OrderDataContext>;
 }

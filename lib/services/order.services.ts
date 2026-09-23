@@ -28,11 +28,13 @@ export async function createOrderService(rawData: unknown) {
   const { loadingPlaces, unloadingPlaces, currencyInfo, ...order } = validatedData;
 
   let pricePLN: string;
-  let currencyRate: string = '1';
+  let exchangeRate: string = '1';
+  let exchangeDate: string | null = null;
 
   if (order.currencyId !== 1 && currencyInfo.rate) {
-    currencyRate = currencyInfo.rate;
-    pricePLN = String(+order.priceCurrency * +currencyRate);
+    exchangeRate = currencyInfo.rate;
+    exchangeDate = currencyInfo.date;
+    pricePLN = pricePLN = String(+order.priceCurrency * +exchangeRate);
   } else {
     pricePLN = order.priceCurrency;
   }
@@ -40,7 +42,8 @@ export async function createOrderService(rawData: unknown) {
   const newOrder = {
     ...order,
     pricePLN,
-    currencyRate,
+    exchangeRate,
+    exchangeDate,
   };
 
   try {

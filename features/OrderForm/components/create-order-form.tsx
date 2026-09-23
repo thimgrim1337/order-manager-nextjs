@@ -1,7 +1,7 @@
 'use client';
 
 import { useStore } from '@tanstack/react-form';
-import { use, useEffect } from 'react';
+import { useEffect } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
 import { createOrder } from '@/lib/actions';
@@ -14,13 +14,7 @@ import CreateCustomer from './CustomerForm/create-customer';
 import CurrencyInfo from './ui/currency-info';
 
 export default function CreateOrderForm({ onDialogClose }: { onDialogClose: () => void }) {
-  const data = useOrderData();
-  const customers = use(data.customers);
-  const cities = use(data.cities);
-  const drivers = use(data.drivers);
-  const trucks = use(data.trucks);
-  const countries = use(data.countries);
-  const currencies = use(data.currencies);
+  const { cities, countries, currencies, customers, drivers, trucks } = useOrderData();
 
   const { submitForm } = useFormSubmit(createOrder, onDialogClose);
 
