@@ -40,6 +40,7 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
 
   const orders = data.map((d) =>
     pick(d, [
+      'id',
       'currency',
       'customer',
       'driver',

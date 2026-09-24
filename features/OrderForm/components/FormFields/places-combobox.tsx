@@ -32,6 +32,7 @@ export default function PlacesComboboxField(props: FormControlProps & PlacesComb
         items={props.cities}
         itemToStringValue={(item: City) => String(item.id)}
         onValueChange={(items: City[]) => field.handleChange(items)}
+        isItemEqualToValue={(item, value) => item.id === value.id}
         value={selectedCities}
         multiple
       >
@@ -57,9 +58,9 @@ export default function PlacesComboboxField(props: FormControlProps & PlacesComb
         <ComboboxContent>
           <ComboboxEmpty>Nic nie znaleziono.</ComboboxEmpty>
           <ComboboxList>
-            {(item) => (
-              <ComboboxItem key={item.id} value={item}>
-                {item.name}
+            {(city: City) => (
+              <ComboboxItem key={city.id} value={city}>
+                {city.name}
               </ComboboxItem>
             )}
           </ComboboxList>

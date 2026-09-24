@@ -57,6 +57,7 @@ export type OrderWithDetailsDto = z.infer<typeof selectOrderViewSchema>;
 export type OrderTableDto = Required<
   Pick<
     OrderWithDetailsDto,
+    | 'id'
     | 'currency'
     | 'customer'
     | 'driver'

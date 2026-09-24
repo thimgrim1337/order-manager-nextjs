@@ -21,12 +21,7 @@ export default function EditOrderForm({
   order: Order;
   onDialogClose: () => void;
 }) {
-  const data = useOrderData();
-  const cities = use(data.cities);
-  const drivers = use(data.drivers);
-  const trucks = use(data.trucks);
-  const countries = use(data.countries);
-  const currencies = use(data.currencies);
+  const { cities, countries, currencies, drivers, trucks } = useOrderData();
 
   const { submitForm } = useFormSubmit(updateOrder, onDialogClose);
 
@@ -36,12 +31,12 @@ export default function EditOrderForm({
       orderNr: order.orderNr,
       startDate: order.startDate,
       endDate: order.endDate,
-      customerId: order.customerId,
-      driverId: order.driverId,
-      truckId: order.truckId,
-      statusId: order.statusId,
+      customerId: order.customer.id,
+      driverId: order.driver.id,
+      truckId: order.truck.id,
+      statusId: order.status.id,
       priceCurrency: order.priceCurrency,
-      currencyId: order.currencyId,
+      currencyId: order.currency.id,
       loadingPlaces: order.loadingPlaces,
       unloadingPlaces: order.unloadingPlaces,
       currencyInfo: {
@@ -85,7 +80,8 @@ export default function EditOrderForm({
 
   return (
     <form
-      id="create-order-form"
+      className="w-20rem"
+      id="edit-order-form"
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();

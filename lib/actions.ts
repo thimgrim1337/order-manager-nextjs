@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, updateTag } from 'next/cache';
 import { getAllCustomers } from './dal/customer.dal.';
 import type { CityDto, CreateCityDto } from './dto/city.dto';
 import type { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
@@ -78,7 +78,7 @@ export async function updateOrder(
   const [error, order] = await updateOrderService(orderId, data);
 
   if (error === null) {
-    revalidateTag('orders', 'max');
+    updateTag('orders');
 
     return {
       success: true,
@@ -128,7 +128,7 @@ export async function patchOrder(
   const [error, order] = await patchOrderService(orderId, data);
 
   if (error === null) {
-    revalidateTag('orders', 'max');
+    updateTag('orders');
 
     return {
       success: true,
@@ -175,7 +175,7 @@ export async function deleteOrder(orderId: number): Promise<ActionResponse<Order
   const [error, order] = await deleteOrderService(orderId);
 
   if (error === null) {
-    revalidateTag('orders', 'max');
+    updateTag('orders');
 
     return {
       success: true,

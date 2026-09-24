@@ -34,7 +34,7 @@ export default function ComboboxField(props: FormControlProps & ComboboxFieldPro
         itemToStringLabel={(item: ComboboxData) => item.label}
         onInputValueChange={props.onSearch}
         onValueChange={(item) => field.handleChange(item ? item.value : 0)}
-        value={selectedItem && selectedItem}
+        value={selectedItem}
       >
         <ComboboxInput placeholder={props.placeholder} aria-invalid={isInvalid} id={field.name} />
         <ComboboxContent>
