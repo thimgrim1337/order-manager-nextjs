@@ -24,7 +24,7 @@ export default function TimelinePage({ searchParams }: { searchParams: Promise<R
 
       <Suspense fallback={<p>Loading...</p>}>
         <OrderDataProvider
-          dataPromise={{
+          data={{
             countries,
             drivers,
             cities,

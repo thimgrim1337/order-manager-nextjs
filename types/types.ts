@@ -59,6 +59,7 @@ export type RawSearchParams = Record<string, string | string[] | undefined>;
 
 const OrderFilters = z.object({
   driverId: z.coerce.number().min(1).max(100).optional().catch(1),
+  statusId: z.coerce.number().min(1).max(3).optional().catch(1),
   startDate: z.iso.date().optional().default(getFirstDayOfWeek(getToday())),
   endDate: z.iso.date().optional().default(getLastDayOfWeek(getToday())),
   globalFilters: z.string().optional(),

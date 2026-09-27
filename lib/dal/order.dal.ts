@@ -59,6 +59,8 @@ export async function getAllOrders(
   const sortColumn = getSortColumn(sortParams);
 
   const searchConditions = [];
+  const allWhereConditions = [];
+
   if (filters?.globalFilters) {
     const { searchTerm, isNumeric, numericValue, isDate, normalizedDate } = analyzeGlobalFiltering(
       filters.globalFilters,
@@ -92,23 +94,27 @@ export async function getAllOrders(
         eq(sql`DATE(${ordersWithDetailsView.endDate})`, normalizedDate),
       );
     }
+
+    allWhereConditions.push(or(...searchConditions));
   }
 
-  const andWhereConditions = [];
-
   if (filters?.startDate) {
-    andWhereConditions.push(gte(ordersWithDetailsView.startDate, filters.startDate));
+    allWhereConditions.push(gte(ordersWithDetailsView.startDate, filters.startDate));
   }
 
   if (filters?.endDate) {
-    andWhereConditions.push(lte(ordersWithDetailsView.endDate, filters.endDate));
+    allWhereConditions.push(lte(ordersWithDetailsView.endDate, filters.endDate));
   }
 
   if (filters?.driverId) {
-    andWhereConditions.push(eq(ordersWithDetailsView.driverId, filters.driverId));
+    allWhereConditions.push(eq(ordersWithDetailsView.driverId, filters.driverId));
   }
 
-  const whereConditions = or(...searchConditions, and(...andWhereConditions));
+  if (filters?.statusId) {
+    allWhereConditions.push(eq(ordersWithDetailsView.statusId, filters.statusId));
+  }
+
+  const whereConditions = allWhereConditions.length > 0 ? and(...allWhereConditions) : undefined;
 
   const orders = db
     .select()

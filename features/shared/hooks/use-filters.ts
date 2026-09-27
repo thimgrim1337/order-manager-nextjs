@@ -1,20 +1,21 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { SearchParams } from '@/types/types';
+import { SearchParams } from '@/types/types';
 
 export default function useFilters() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const filters: SearchParams = Object.fromEntries(searchParams);
+  const rawFilters = Object.fromEntries(searchParams);
+  const filters: SearchParams = SearchParams.parse(rawFilters);
 
-  function setFilters(filters: Partial<SearchParams>) {
+  function setFilters(newFilters: Partial<SearchParams>) {
     const params = new URLSearchParams(searchParams);
 
-    Object.entries(filters).forEach(([param, value]) => {
-      if (value) params.set(param, String(value));
+    Object.entries(newFilters).forEach(([param, value]) => {
+      if (value !== undefined && value !== null && value !== '') params.set(param, String(value));
       else params.delete(param);
     });
 
@@ -22,8 +23,6 @@ export default function useFilters() {
   }
 
   function resetFilters() {
-    if (!Object.entries(filters).length) return;
-
     const params = new URLSearchParams(searchParams);
 
     Object.keys(filters).forEach((param) => {

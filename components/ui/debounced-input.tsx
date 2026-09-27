@@ -1,52 +1,43 @@
-import { InputHTMLAttributes, ReactNode, useEffect, useState } from "react";
-import { Input } from "./input";
+import { InputHTMLAttributes, ReactNode, useEffect, useState } from 'react';
+import { Input } from './input';
 
 type DebouncedInputProps = {
-	value: string;
-	onChange: (value: string | number) => void;
-	debounce?: number;
-	icon?: ReactNode;
+  value: string;
+  onFiltersChange: (value: string) => void;
+  debounce?: number;
+  icon?: ReactNode;
 };
 
 export default function DebouncedInput({
-	value: initialValue,
-	onChange,
-	debounce = 200,
-	icon,
-	...props
+  value: initialValue,
+  onFiltersChange,
+  debounce = 500,
+  icon,
+  ...props
 }: DebouncedInputProps &
-	Omit<InputHTMLAttributes<HTMLInputElement>, "onChange">) {
-	const [value, setValue] = useState<string | number>(initialValue);
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  const [value, setValue] = useState<string>(initialValue);
 
-	useEffect(() => {
-		setValue(initialValue);
-	}, [initialValue]);
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <Only want to re-render when value is change>
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			onChange(value);
-		}, debounce);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onFiltersChange(value);
+    }, debounce);
 
-		return () => clearTimeout(timeout);
-		//biome
-	}, [value]);
+    return () => clearTimeout(timeout);
+  }, [value]);
 
-	return (
-		<>
-			{icon}
-			<Input
-				{...props}
-				value={value ?? ""}
-				onChange={(e) => {
-					if (e.target.value === "") return setValue("");
-					if (props.type === "number") {
-						setValue(e.target.valueAsNumber);
-					} else {
-						setValue(e.target.value);
-					}
-				}}
-			/>
-		</>
-	);
+  return (
+    <>
+      {icon}
+      <Input
+        {...props}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+    </>
+  );
 }

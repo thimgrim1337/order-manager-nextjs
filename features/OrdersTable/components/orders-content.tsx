@@ -8,12 +8,13 @@ import { getAllCurrencies } from '@/lib/dal/currency.dal';
 import { getAllCustomers } from '@/lib/dal/customer.dal.';
 import { getAllDrivers } from '@/lib/dal/driver.dal';
 import { getAllOrders } from '@/lib/dal/order.dal';
+import { getAllStatuses } from '@/lib/dal/status.dal';
 import { getAllTrucks } from '@/lib/dal/truck.dal';
 import { pick } from '@/lib/helpers';
 import { sortToState } from '@/lib/utils';
 import { type RawSearchParams, SearchParams } from '@/types/types';
+import OrderTableFilter from './OrdersFilter/orders-table-filter';
 import OrdersTable from './orders-table';
-import OrderTableFilter from './orders-table-filter';
 
 interface OrdersContentProps {
   searchParamsPromise: Promise<RawSearchParams>;
@@ -33,8 +34,16 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
   const pageIndex = validatedSearchParams?.pageIndex || DEFAULT_PAGE_INDEX;
   const pageSize = validatedSearchParams?.pageSize || DEFAULT_PAGE_SIZE;
   const globalFilters = validatedSearchParams?.globalFilters;
+  const startDate = validatedSearchParams?.startDate;
+  const endDate = validatedSearchParams?.endDate;
+  const driverId = validatedSearchParams?.driverId;
+  const statusId = validatedSearchParams?.statusId;
 
   const { data, count } = await getAllOrders(pageIndex, pageSize, sortParams, {
+    startDate,
+    endDate,
+    driverId,
+    statusId,
     globalFilters,
   });
 
@@ -56,13 +65,16 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
     ]),
   );
 
-  const [customers, cities, drivers, trucks, countries, currencies] = await Promise.all([
+  console.log(orders);
+
+  const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
     getAllCustomers(),
     getAllCities(),
     getAllDrivers(),
     getAllTrucks(),
     getAllCountries(),
     getAllCurrencies(),
+    getAllStatuses(),
   ]);
 
   return (
@@ -74,12 +86,14 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
         trucks,
         countries,
         currencies,
+        statuses,
       }}
     >
-      <div className="flex gap-2 justify-between border rounded-md py-2 px-4 my-5">
+      <div className="flex gap-2 justify-between my-5">
         <OrderTableFilter />
         <CreateOrder />
       </div>
+
       <OrdersTable orders={orders} count={count} />
     </OrderDataProvider>
   );
