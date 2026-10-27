@@ -88,6 +88,11 @@ const dataMock = {
     { id: 1, code: 'PLN' },
     { id: 2, code: 'EUR' },
   ],
+  statuses: [
+    { id: 1, name: 'w trakcie' },
+    { id: 2, name: 'anulowane' },
+    { id: 3, name: 'zakończone' },
+  ],
 };
 
 const setup = async (customData?: Partial<typeof dataMock>) => {
