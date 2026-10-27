@@ -16,9 +16,9 @@ import { type RawSearchParams, SearchParams } from '@/types/types';
 import OrderTableFilter from './OrdersFilter/orders-table-filter';
 import OrdersTable from './orders-table';
 
-interface OrdersContentProps {
+type OrdersContentProps = {
   searchParamsPromise: Promise<RawSearchParams>;
-}
+};
 
 export default async function OrdersContent({ searchParamsPromise }: OrdersContentProps) {
   const {
@@ -64,8 +64,6 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
       'truck',
     ]),
   );
-
-  console.log(orders);
 
   const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
     getAllCustomers(),

@@ -1,4 +1,3 @@
-import { use } from 'react';
 import {
   Select,
   SelectContent,
@@ -12,8 +11,7 @@ import useFilters from '@/features/shared/hooks/use-filters';
 
 export default function TimelinePaginationDriverSelect() {
   const { setFilters } = useFilters();
-  const data = useOrderData();
-  const drivers = use(data.drivers);
+  const { drivers } = useOrderData();
 
   const driverItems = drivers.map((driver) => ({
     label: `${driver.firstName} ${driver.lastName}`,

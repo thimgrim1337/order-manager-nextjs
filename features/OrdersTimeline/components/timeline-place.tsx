@@ -1,4 +1,3 @@
-import { use } from 'react';
 import { TableCell } from '@/components/ui/table';
 import { useOrderData } from '@/features/shared/context/order-context';
 import { compareAsc } from '@/lib/dates';
@@ -14,23 +13,24 @@ export default function TimelinePlaceCell({
   date: string;
   borderColor: string;
 }) {
-  const contextData = useOrderData();
-  const countries = use(contextData.countries);
+  const { countries } = useOrderData();
 
   const getCountryCode = (countryId: number) =>
-    countries.find((country) => country.id === countryId)?.code;
+    countries?.find((country) => country.id === countryId)?.code;
 
   const loadingCountryCode = getCountryCode(order.loadingPlaces[0].countryId);
   const unloadingCountryCode = getCountryCode(
     order.unloadingPlaces[order.unloadingPlaces.length - 1].countryId,
   );
+  const loadingCity = order.loadingPlaces[0].name;
+  const unloadingCity = order.unloadingPlaces[order.unloadingPlaces.length - 1].name;
 
   const isLoadingDate = date === order.startDate;
   const isUnloadingDate = date === order.endDate;
   const isBeetween =
     compareAsc(date, order.startDate) === 1 && compareAsc(date, order.endDate) === -1;
 
-  const cityName = isLoadingDate ? order.loadingCity : isUnloadingDate ? order.unloadingCity : '';
+  const cityName = isLoadingDate ? loadingCity : isUnloadingDate ? unloadingCity : '';
 
   const border =
     isLoadingDate || isUnloadingDate || isBeetween ? `border-b-4 ${borderColor} relative` : '';
@@ -45,7 +45,7 @@ export default function TimelinePlaceCell({
       </div>
       {isLoadingDate && (
         <span className="text-[.8rem] text-muted-foreground absolute bottom-1 max-w-75 truncate">
-          {order.customerName}
+          {order.customer.name}
         </span>
       )}
     </TableCell>

@@ -1,6 +1,5 @@
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { getAllOrders } from '@/lib/dal/order.dal';
-import type { Order, TimelineFilters } from '@/types/types';
+import type { Order } from '@/types/types';
 import TimelineOrder from './timeline-order';
 
 const borderColors = [
@@ -11,27 +10,7 @@ const borderColors = [
   'border-chart-5',
 ];
 
-async function getOrders(filters?: TimelineFilters): Promise<Order[]> {
-  const orders = await getAllOrders(
-    0,
-    10,
-    [
-      { id: 'truckId', desc: false },
-      { id: 'startDate', desc: false },
-    ],
-    filters,
-  );
-
-  return orders;
-}
-
-export default async function TimelineBody({ filters }: { filters: TimelineFilters }) {
-  const orders = await getOrders({
-    startDate: filters.startDate,
-    endDate: filters.endDate,
-    driverId: filters?.driverId,
-  });
-
+export default async function TimelineBody({ orders }: { orders: Order[] }) {
   const borderColorsMap = orders.reduce(
     (acc, order, index) => {
       const color = borderColors[index];
