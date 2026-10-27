@@ -22,10 +22,10 @@ export default function OrderTableFilter() {
           <ChevronDown />
         </CollapsibleTrigger>
         <CollapsibleContent className={'flex gap-2 mt-4 '}>
-          <FilterField label="Data załadunku">
+          <FilterField label="Data załadunku od">
             <DateInput filterName="startDate" />
           </FilterField>
-          <FilterField label="Data rozładunku">
+          <FilterField label="Data rozładunku do">
             <DateInput filterName="endDate" />
           </FilterField>
           <FilterField label="Kierowca">

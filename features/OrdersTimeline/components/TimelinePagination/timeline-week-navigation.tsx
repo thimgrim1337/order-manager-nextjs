@@ -1,42 +1,25 @@
 import { Calendar1, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import useFilters from '@/features/shared/hooks/use-filters';
-import {
-  addDays,
-  getFirstDayOfWeek,
-  getLastDayOfWeek,
-  getToday,
-  getWeek,
-  subDays,
-} from '@/lib/dates';
+import { addDays, getToday, getWeek, subDays } from '@/lib/dates';
 import type { Day } from '@/types/types';
+import useTimelineQuery from '../../hooks/use-timeline-query';
 import TimelinePaginationWeekSelect from './timeline-week-select';
 
 export default function TimelinePaginationWeekNavigation({ weekdays }: { weekdays: Day[] }) {
-  const { setFilters } = useFilters();
+  const { change } = useTimelineQuery();
   const firstDayOfWeek = weekdays[0].date;
-  const lastDayOfWeek = weekdays[6].date;
   const selectedWeekNumber = getWeek(firstDayOfWeek);
 
   function handlePrevious() {
-    setFilters({
-      startDate: subDays(firstDayOfWeek, 7),
-      endDate: subDays(lastDayOfWeek, 7),
-    });
+    change({ week: subDays(firstDayOfWeek, 7) });
   }
 
   function handleForward() {
-    setFilters({
-      startDate: addDays(firstDayOfWeek, 7),
-      endDate: addDays(lastDayOfWeek, 7),
-    });
+    change({ week: addDays(firstDayOfWeek, 7) });
   }
 
   function handlePresent() {
-    setFilters({
-      startDate: getFirstDayOfWeek(getToday()),
-      endDate: getLastDayOfWeek(getToday()),
-    });
+    change({ week: getToday() });
   }
 
   return (

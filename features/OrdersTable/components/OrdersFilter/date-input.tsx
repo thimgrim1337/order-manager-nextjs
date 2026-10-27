@@ -1,25 +1,13 @@
 import { ChevronDownIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import useFilters from '@/features/shared/hooks/use-filters';
 import { formatDate, parseDate } from '@/lib/dates';
+import useOrdersTableQuery from '../../hooks/use-orders-table-query';
 
 export default function DateInput({ filterName }: { filterName: 'startDate' | 'endDate' }) {
-  const { setFilters, filters } = useFilters();
-  const [selectedDate, setSelectedDate] = useState<string | undefined>(filters[filterName]);
-
-  useEffect(() => {
-    setSelectedDate(filters[filterName]);
-  }, [filterName, filters]);
-
-  function handleDateChange(date: string) {
-    setSelectedDate(date);
-    setFilters({
-      [filterName]: date,
-    });
-  }
+  const { query, change } = useOrdersTableQuery();
+  const selectedDate = query[filterName];
 
   return (
     <Popover>
@@ -39,11 +27,11 @@ export default function DateInput({ filterName }: { filterName: 'startDate' | 'e
       <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
-          defaultMonth={new Date(Date.now())}
+          defaultMonth={selectedDate ? parseDate(selectedDate) : new Date(Date.now())}
           showWeekNumber
           weekStartsOn={1}
           selected={selectedDate ? parseDate(selectedDate) : undefined}
-          onSelect={(value) => handleDateChange(formatDate(value))}
+          onSelect={(value) => change({ [filterName]: formatDate(value) || undefined })}
           className="rounded-lg border shadow-sm"
         />
       </PopoverContent>

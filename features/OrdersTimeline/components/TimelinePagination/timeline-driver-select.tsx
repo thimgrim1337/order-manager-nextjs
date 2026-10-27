@@ -7,10 +7,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useOrderData } from '@/features/shared/context/order-context';
-import useFilters from '@/features/shared/hooks/use-filters';
+import useTimelineQuery from '../../hooks/use-timeline-query';
 
 export default function TimelinePaginationDriverSelect() {
-  const { setFilters } = useFilters();
+  const { query, change } = useTimelineQuery();
   const { drivers } = useOrderData();
 
   const driverItems = drivers.map((driver) => ({
@@ -21,7 +21,8 @@ export default function TimelinePaginationDriverSelect() {
   return (
     <Select
       items={driverItems}
-      onValueChange={(value) => setFilters({ driverId: value ? +value : undefined })}
+      value={query.driverId ?? null}
+      onValueChange={(value) => change({ driverId: value ? +value : undefined })}
     >
       <SelectTrigger className={'min-w-45'}>
         <SelectValue placeholder="Wszyscy kierowcy"></SelectValue>

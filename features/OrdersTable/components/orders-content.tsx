@@ -1,7 +1,5 @@
-import z from 'zod';
 import CreateOrder from '@/features/OrderForm/components/create-order';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/lib/consts';
 import { getAllCities } from '@/lib/dal/city.dal';
 import { getAllCountries } from '@/lib/dal/country.dal';
 import { getAllCurrencies } from '@/lib/dal/currency.dal';
@@ -11,8 +9,8 @@ import { getAllOrders } from '@/lib/dal/order.dal';
 import { getAllStatuses } from '@/lib/dal/status.dal';
 import { getAllTrucks } from '@/lib/dal/truck.dal';
 import { pick } from '@/lib/helpers';
-import { sortToState } from '@/lib/utils';
-import { type RawSearchParams, SearchParams } from '@/types/types';
+import type { RawSearchParams } from '@/types/types';
+import { parse } from '../lib/orders-table-query';
 import OrderTableFilter from './OrdersFilter/orders-table-filter';
 import OrdersTable from './orders-table';
 
@@ -21,30 +19,14 @@ type OrdersContentProps = {
 };
 
 export default async function OrdersContent({ searchParamsPromise }: OrdersContentProps) {
-  const {
-    data: validatedSearchParams,
-    success,
-    error,
-  } = SearchParams.safeParse(await searchParamsPromise);
+  const query = parse(await searchParamsPromise);
 
-  if (!success) console.log('Błąd walidacji SearchParams: ', z.prettifyError(error));
-
-  const sort = validatedSearchParams?.sort || '';
-  const sortParams = sortToState(sort);
-  const pageIndex = validatedSearchParams?.pageIndex || DEFAULT_PAGE_INDEX;
-  const pageSize = validatedSearchParams?.pageSize || DEFAULT_PAGE_SIZE;
-  const globalFilters = validatedSearchParams?.globalFilters;
-  const startDate = validatedSearchParams?.startDate;
-  const endDate = validatedSearchParams?.endDate;
-  const driverId = validatedSearchParams?.driverId;
-  const statusId = validatedSearchParams?.statusId;
-
-  const { data, count } = await getAllOrders(pageIndex, pageSize, sortParams, {
-    startDate,
-    endDate,
-    driverId,
-    statusId,
-    globalFilters,
+  const { data, count } = await getAllOrders(query.pageIndex, query.pageSize, [query.sort], {
+    globalFilters: query.search,
+    startDate: query.startDate,
+    endDate: query.endDate,
+    driverId: query.driverId,
+    statusId: query.statusId,
   });
 
   const orders = data.map((d) =>

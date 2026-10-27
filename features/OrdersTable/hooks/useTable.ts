@@ -1,7 +1,11 @@
-import { type ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/lib/consts';
-import { sortToState, stateToSort } from '@/lib/utils';
-import useFilters from '../../shared/hooks/use-filters';
+import {
+  type ColumnDef,
+  getCoreRowModel,
+  type SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
+import { ORDER_SORT_FIELDS, type OrderSortField } from '@/lib/consts';
+import useOrdersTableQuery from './use-orders-table-query';
 
 type useTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -14,12 +18,9 @@ export default function useTable<TData, TValue>({
   data,
   rowCount,
 }: useTableProps<TData, TValue>) {
-  const { filters, setFilters } = useFilters();
-  const PaginationState = {
-    pageIndex: Number(filters.pageIndex ?? DEFAULT_PAGE_INDEX),
-    pageSize: Number(filters.pageSize ?? DEFAULT_PAGE_SIZE),
-  };
-  const sortState = sortToState(filters.sort);
+  const { query, change } = useOrdersTableQuery();
+  const paginationState = { pageIndex: query.pageIndex, pageSize: query.pageSize };
+  const sortState: SortingState = [query.sort];
 
   const table = useReactTable({
     data,
@@ -27,20 +28,27 @@ export default function useTable<TData, TValue>({
     rowCount: rowCount,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: (pagination) => {
-      setFilters(typeof pagination === 'function' ? pagination(PaginationState) : pagination);
+      change(typeof pagination === 'function' ? pagination(paginationState) : pagination);
     },
     onSortingChange: (sorter) => {
-      const newSortingState = typeof sorter === 'function' ? sorter(sortState) : sorter;
-      return setFilters({ sort: stateToSort(newSortingState) });
+      const [sort] = typeof sorter === 'function' ? sorter(sortState) : sorter;
+      if (!sort) return change({ sort: undefined });
+      if (isOrderSortField(sort.id)) change({ sort: { id: sort.id, desc: sort.desc } });
     },
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
+    // A sort is always applied (newest Start Date first by default), so headers toggle asc/desc only.
+    enableSortingRemoval: false,
     state: {
       sorting: sortState,
-      pagination: PaginationState,
+      pagination: paginationState,
     },
   });
 
   return table;
+}
+
+function isOrderSortField(id: string): id is OrderSortField {
+  return (ORDER_SORT_FIELDS as readonly string[]).includes(id);
 }

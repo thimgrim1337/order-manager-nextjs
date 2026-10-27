@@ -12,9 +12,11 @@ import {
   or,
   sql,
 } from 'drizzle-orm';
+import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db/schemas';
+import type { OrderSortField } from '@/lib/consts';
 import type { OrderFilters, PlaceType, SortParams } from '@/types/types';
 import type { CityDto } from '../dto/city.dto';
 import type { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
@@ -27,13 +29,13 @@ export async function getAllOrders(
   pageIndex: number,
   pageSize: number,
   sortParams?: SortParams[],
-  filters?: Partial<OrderFilters>,
+  filters?: OrderFilters,
 ) {
   'use cache';
   cacheTag('orders');
 
   const getSortColumn = (sortParams?: SortParams[]) => {
-    const sortMappings = {
+    const sortMappings: Record<OrderSortField, AnyPgColumn> = {
       statusId: ordersWithDetailsView.statusId,
       truckId: ordersWithDetailsView.truckId,
       loadingCity: ordersWithDetailsView.loadingCity,
@@ -48,12 +50,13 @@ export async function getAllOrders(
       driverId: ordersWithDetailsView.driverId,
     };
 
-    return (
-      sortParams?.map((param) => {
-        const col = sortMappings[param.id as keyof typeof sortMappings];
-        return param.desc ? desc(col) : asc(col);
-      }) || [ordersWithDetailsView.id]
-    );
+    const columns = (sortParams ?? []).map((param) => {
+      const col = sortMappings[param.id];
+      return param.desc ? desc(col) : asc(col);
+    });
+
+    // Tie-breaker keeps row order stable across pages.
+    return [...columns, asc(ordersWithDetailsView.id)];
   };
 
   const sortColumn = getSortColumn(sortParams);

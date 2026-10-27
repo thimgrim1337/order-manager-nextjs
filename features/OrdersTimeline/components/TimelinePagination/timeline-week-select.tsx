@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import useFilters from '@/features/shared/hooks/use-filters';
+import useTimelineQuery from '../../hooks/use-timeline-query';
 import { getWeeksStartDates } from '../../lib/helpers';
 
 export default function TimelinePaginationWeekSelect({
@@ -14,7 +14,7 @@ export default function TimelinePaginationWeekSelect({
 }: {
   selectedWeekNumber: number;
 }) {
-  const { setFilters } = useFilters();
+  const { change } = useTimelineQuery();
 
   const weekItems = getWeeksStartDates().map((week) => ({
     label: week.weekNumber,
@@ -29,10 +29,7 @@ export default function TimelinePaginationWeekSelect({
       value={selectedWeekNumber}
       onValueChange={(value) => {
         const week = weekItems.filter((week) => week.value === value)[0];
-        setFilters({
-          startDate: week.startDate,
-          endDate: week.endDate,
-        });
+        change({ week: week.startDate });
       }}
     >
       <SelectTrigger>

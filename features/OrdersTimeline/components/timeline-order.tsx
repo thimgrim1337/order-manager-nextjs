@@ -4,10 +4,10 @@ import { SquarePen } from 'lucide-react';
 import { TableRow } from '@/components/ui/table';
 import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
 import Dialog from '@/features/shared/components/ui/dialog';
-import useFilters from '@/features/shared/hooks/use-filters';
 import useToggle from '@/features/shared/hooks/use-toggle';
-import { getFirstDayOfWeek, getToday, getWeekDays } from '@/lib/dates';
+import { getWeekDays } from '@/lib/dates';
 import type { Order } from '@/types/types';
+import useTimelineQuery from '../hooks/use-timeline-query';
 import TimelineDetailsCell from './timeline-details';
 import TimelinePlaceCell from './timeline-place';
 
@@ -18,9 +18,8 @@ export default function TimelineOrder({
   order: Order;
   borderColor: string;
 }) {
-  const { filters } = useFilters();
-
-  const weekdays = getWeekDays(filters.startDate ?? getFirstDayOfWeek(getToday()));
+  const { query } = useTimelineQuery();
+  const weekdays = getWeekDays(query.week);
 
   const [isModalOpen, { toggle: toggleModal, setFalse: closeModal, setTrue: openModal }] =
     useToggle();
