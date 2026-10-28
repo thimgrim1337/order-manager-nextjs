@@ -17,6 +17,7 @@ import { cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db/schemas';
 import type { OrderSortField } from '@/lib/consts';
+import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, PlaceType, SortParams } from '@/types/types';
 import type { CityDto } from '../dto/city.dto';
 import type { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
@@ -137,6 +138,36 @@ export async function getAllOrders(
     data: await orders,
     count: await ordersCount,
   };
+}
+
+/** Orders in a Week: Start Date on or before its Sunday and End Date on or after its Monday. */
+export async function findOrdersInWeek(
+  database: db | dbTransaction,
+  week: Week,
+  opts?: { driverId?: number },
+) {
+  const days = weekDays(week);
+  const monday = days[0].date;
+  const sunday = days[6].date;
+
+  return database
+    .select()
+    .from(ordersWithDetailsView)
+    .where(
+      and(
+        lte(ordersWithDetailsView.startDate, sunday),
+        gte(ordersWithDetailsView.endDate, monday),
+        opts?.driverId ? eq(ordersWithDetailsView.driverId, opts.driverId) : undefined,
+      ),
+    )
+    .orderBy(asc(ordersWithDetailsView.startDate), asc(ordersWithDetailsView.id));
+}
+
+export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) {
+  'use cache';
+  cacheTag('orders');
+
+  return findOrdersInWeek(db, week, opts);
 }
 
 export async function createOrder(dto: CreateOrderDto, trx: dbTransaction) {

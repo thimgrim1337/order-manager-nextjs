@@ -10,10 +10,10 @@ const borderColors = [
   'border-chart-5',
 ];
 
-export default async function TimelineBody({ orders }: { orders: Order[] }) {
+export default function TimelineBody({ orders }: { orders: Order[] }) {
   const borderColorsMap = orders.reduce(
     (acc, order, index) => {
-      const color = borderColors[index];
+      const color = borderColors[index % borderColors.length];
       acc[order.id] = color;
       return acc;
     },

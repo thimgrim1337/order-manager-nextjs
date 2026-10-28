@@ -5,7 +5,7 @@ import { getAllCountries } from '@/lib/dal/country.dal';
 import { getAllCurrencies } from '@/lib/dal/currency.dal';
 import { getAllCustomers } from '@/lib/dal/customer.dal.';
 import { getAllDrivers } from '@/lib/dal/driver.dal';
-import { getAllOrders } from '@/lib/dal/order.dal';
+import { getOrdersInWeek } from '@/lib/dal/order.dal';
 import { getAllStatuses } from '@/lib/dal/status.dal';
 import { getAllTrucks } from '@/lib/dal/truck.dal';
 import { weekDays } from '@/lib/week';
@@ -22,11 +22,7 @@ export default async function TimelineContent({ searchParamsPromise }: TimelineC
   const query = parse(await searchParamsPromise);
 
   const weekdays = weekDays(query.week);
-  const { data: orders } = await getAllOrders(0, 100, [], {
-    startDate: query.week,
-    endDate: weekdays[6].date,
-    driverId: query.driverId,
-  });
+  const orders = await getOrdersInWeek(query.week, { driverId: query.driverId });
   const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
     getAllCustomers(),
     getAllCities(),

@@ -20,7 +20,7 @@ It's Transport Order Manager. The core functionality is CRUD orders and display 
 - 'pnpm dev' - Start the db container and Next dev server on :3000. If :3000 is down, start it in the background and read its log; use it to check UI acceptance criteria.
 - 'pnpm check' - Run Biome check --write
 - 'pnpm typecheck' - Run tsc --noEmit
-- 'pnpm exec vitest --run [path]' - Run tests once (browser mode, Chromium). 'pnpm test' is watch mode.
+- 'pnpm exec vitest --run [path]' - Run tests once. Two projects: `browser` (Chromium) and `db` (node, `*.db.test.ts` against real Postgres). The `db` project needs the `db-test` container up ('NODE_ENV=test docker compose up db-test -d'); it migrates it and rolls back each test. Pick one with '--project browser|db'. 'pnpm test' is watch mode.
 - 'pnpm test:e2e' - Playwright against the db-test container and a production build
 
 ## Agent skills
