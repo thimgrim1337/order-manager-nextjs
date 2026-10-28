@@ -68,3 +68,40 @@ export function parseWeekKey(key: string): Week | undefined {
   const weeks = weeksOfYear(Number(match[1]));
   return weeks[Number(match[2]) - 1];
 }
+
+export type OrderDayRole = 'none' | 'loading' | 'unloading' | 'loading-unloading' | 'transit';
+
+/** What an Order does on one day of the Week. */
+export type OrderDay = {
+  date: string;
+  role: OrderDayRole;
+  /** Monday only: the Order started in an earlier Week. */
+  continuesBefore?: true;
+  /** Sunday only: the Order ends in a later Week. */
+  continuesAfter?: true;
+};
+
+type OrderDates = { startDate: string; endDate: string };
+
+/** The Order's role on each of the Week's seven days, Monday first. */
+export function orderDays(week: Week, order: OrderDates): OrderDay[] {
+  const days = weekDays(week);
+  const monday = days[0].date;
+  const sunday = days[6].date;
+
+  return days.map(({ date }) => {
+    const day: OrderDay = { date, role: roleOn(date, order) };
+    if (date === monday && order.startDate < monday) day.continuesBefore = true;
+    if (date === sunday && order.endDate > sunday) day.continuesAfter = true;
+    return day;
+  });
+}
+
+// yyyy-MM-dd strings sort as dates.
+function roleOn(date: string, { startDate, endDate }: OrderDates): OrderDayRole {
+  if (date === startDate && date === endDate) return 'loading-unloading';
+  if (date === startDate) return 'loading';
+  if (date === endDate) return 'unloading';
+  if (date > startDate && date < endDate) return 'transit';
+  return 'none';
+}

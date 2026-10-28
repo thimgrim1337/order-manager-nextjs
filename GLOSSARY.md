@@ -39,3 +39,6 @@ _Avoid_: Week index
 **Order in a Week**:
 An Order with at least one day inside the Week (Start Date on or before Sunday and End Date on or after Monday). An Order crossing the Week's edge belongs to both Weeks.
 _Avoid_: Weekly orders
+
+**Order Day**:
+What an Order does on one day of a Week: loading (Start Date), unloading (End Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later.

@@ -47,7 +47,7 @@ export default async function TimelineContent({ searchParamsPromise }: TimelineC
     >
       <Table>
         <TimelineHead weekdays={weekdays} />
-        <TimelineBody orders={orders} />
+        <TimelineBody week={query.week} orders={orders} />
       </Table>
       <TimelinePagination />
     </OrderDataProvider>

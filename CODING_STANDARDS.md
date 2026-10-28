@@ -17,6 +17,10 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - Dates are `yyyy-MM-dd` strings. Any string handed to date-fns goes through `toDate`/`parseDate` from `lib/dates.ts` first: date-fns reads a bare `yyyy-MM-dd` string as UTC midnight, which is the previous day west of UTC.
 - "Today" is the company's day in `Europe/Warsaw`, via `currentWeek` (and `@date-fns/tz` for anything new). Browser tests run in `America/Los_Angeles` so code that relies on the machine's zone fails.
 
+## Accessibility
+
+- Icon-only controls get an English `aria-label` (e.g. `Next week`). E2E tests find elements by role and accessible name.
+
 ## Placement
 
 - Constants shared across files live in `lib/consts.ts`; module-private constants stay in their module.

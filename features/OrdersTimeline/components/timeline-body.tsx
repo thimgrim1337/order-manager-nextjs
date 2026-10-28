@@ -1,4 +1,5 @@
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { orderDays, type Week } from '@/lib/week';
 import type { Order } from '@/types/types';
 import TimelineOrder from './timeline-order';
 
@@ -10,7 +11,7 @@ const borderColors = [
   'border-chart-5',
 ];
 
-export default function TimelineBody({ orders }: { orders: Order[] }) {
+export default function TimelineBody({ week, orders }: { week: Week; orders: Order[] }) {
   const borderColorsMap = orders.reduce(
     (acc, order, index) => {
       const color = borderColors[index % borderColors.length];
@@ -24,7 +25,12 @@ export default function TimelineBody({ orders }: { orders: Order[] }) {
     <TableBody>
       {orders.length ? (
         orders.map((order) => (
-          <TimelineOrder key={order.id} order={order} borderColor={borderColorsMap[order.id]} />
+          <TimelineOrder
+            key={order.id}
+            order={order}
+            days={orderDays(week, order)}
+            borderColor={borderColorsMap[order.id]}
+          />
         ))
       ) : (
         <TableRow>

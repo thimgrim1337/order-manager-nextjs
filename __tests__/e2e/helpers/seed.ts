@@ -6,8 +6,11 @@ import {
   currency as currencies,
   customer as customers,
   driver as drivers,
+  loadingPlace as loadingPlaces,
+  order as orders,
   status as statuses,
   truck as trucks,
+  unloadingPlace as unloadingPlaces,
 } from '@/db/schemas';
 import { ENV } from '@/env';
 import { assertTestDatabase } from '../../db/assert-test-database';
@@ -76,9 +79,38 @@ export async function seedTestData() {
     ])
     .returning();
 
-  const currency = await db.insert(currencies).values([{ code: 'PLN' }, { code: 'EUR' }]);
+  const currency = await db
+    .insert(currencies)
+    .values([{ code: 'PLN' }, { code: 'EUR' }])
+    .returning();
 
   return { customer, driver, truck, dbCities, status, currency };
+}
+
+/** Warszawa → Płock, for the seeded Customer, Driver and Truck. */
+export async function seedOrder(
+  data: Awaited<ReturnType<typeof seedTestData>>,
+  fields: { orderNr: string; startDate: string; endDate: string },
+) {
+  const [loadingCity, unloadingCity] = data.dbCities;
+  const [dbOrder] = await db
+    .insert(orders)
+    .values({
+      ...fields,
+      customerId: data.customer.id,
+      driverId: data.driver.id,
+      truckId: data.truck.id,
+      statusId: data.status.id,
+      currencyId: data.currency[0].id,
+      priceCurrency: '1000',
+      pricePLN: '1000',
+    })
+    .returning();
+
+  await db.insert(loadingPlaces).values({ orderId: dbOrder.id, placeId: loadingCity.id });
+  await db.insert(unloadingPlaces).values({ orderId: dbOrder.id, placeId: unloadingCity.id });
+
+  return dbOrder;
 }
 
 export async function cleanupTestData() {

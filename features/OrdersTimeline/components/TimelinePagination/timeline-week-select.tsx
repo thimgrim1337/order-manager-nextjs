@@ -25,7 +25,7 @@ export default function TimelinePaginationWeekSelect() {
         if (week) change({ week });
       }}
     >
-      <SelectTrigger>
+      <SelectTrigger aria-label="Week">
         <SelectValue />
       </SelectTrigger>
       <SelectContent alignItemWithTrigger={false} className={'min-w-15'}>

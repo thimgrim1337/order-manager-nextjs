@@ -1,16 +1,15 @@
 import { TableCell } from '@/components/ui/table';
 import { useOrderData } from '@/features/shared/context/order-context';
-import { compareAsc } from '@/lib/dates';
-import { cn } from '@/lib/utils';
+import type { OrderDay } from '@/lib/week';
 import type { Order } from '@/types/types';
 
 export default function TimelinePlaceCell({
   order,
-  date,
+  day,
   borderColor,
 }: {
   order: Order;
-  date: string;
+  day: OrderDay;
   borderColor: string;
 }) {
   const { countries } = useOrderData();
@@ -18,38 +17,51 @@ export default function TimelinePlaceCell({
   const getCountryCode = (countryId: number) =>
     countries?.find((country) => country.id === countryId)?.code;
 
-  const loadingCountryCode = getCountryCode(order.loadingPlaces[0].countryId);
-  const unloadingCountryCode = getCountryCode(
-    order.unloadingPlaces[order.unloadingPlaces.length - 1].countryId,
+  const loadingPlace = order.loadingPlaces[0];
+  const unloadingPlace = order.unloadingPlaces[order.unloadingPlaces.length - 1];
+
+  if (day.role === 'none') return <TableCell />;
+
+  const border = `border-b-4 ${borderColor} relative`;
+
+  if (day.role === 'transit') {
+    return (
+      <TableCell className={border}>
+        <div className="flex justify-between text-muted-foreground">
+          {day.continuesBefore && <span>← {loadingPlace.name}</span>}
+          {day.continuesAfter && <span className="ml-auto">{unloadingPlace.name} →</span>}
+        </div>
+      </TableCell>
+    );
+  }
+
+  const renderPlace = (place: Order['loadingPlaces'][number]) => (
+    <>
+      <span className={`flag:${getCountryCode(place.countryId)}`} />
+      <span>{place.name}</span>
+    </>
   );
-  const loadingCity = order.loadingPlaces[0].name;
-  const unloadingCity = order.unloadingPlaces[order.unloadingPlaces.length - 1].name;
 
-  const isLoadingDate = date === order.startDate;
-  const isUnloadingDate = date === order.endDate;
-  const isBeetween =
-    compareAsc(date, order.startDate) === 1 && compareAsc(date, order.endDate) === -1;
-
-  const cityName = isLoadingDate ? loadingCity : isUnloadingDate ? unloadingCity : '';
-
-  const border =
-    isLoadingDate || isUnloadingDate || isBeetween ? `border-b-4 ${borderColor} relative` : '';
-
-  return isLoadingDate || isUnloadingDate ? (
+  return (
     <TableCell className={border}>
       <div className="flex gap-2 items-center">
-        <span
-          className={`flag:${cn(isLoadingDate ? loadingCountryCode : isUnloadingDate ? unloadingCountryCode : undefined)}`}
-        />
-        <span>{cityName}</span>
+        {day.role === 'unloading' ? (
+          renderPlace(unloadingPlace)
+        ) : day.role === 'loading' ? (
+          renderPlace(loadingPlace)
+        ) : (
+          <>
+            {renderPlace(loadingPlace)}
+            <span>→</span>
+            {renderPlace(unloadingPlace)}
+          </>
+        )}
       </div>
-      {isLoadingDate && (
+      {day.role !== 'unloading' && (
         <span className="text-[.8rem] text-muted-foreground absolute bottom-1 max-w-75 truncate">
           {order.customer.name}
         </span>
       )}
     </TableCell>
-  ) : (
-    <TableCell className={border} />
   );
 }
