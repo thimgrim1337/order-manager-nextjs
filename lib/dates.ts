@@ -1,6 +1,5 @@
 import {
   addDays as addDaysLib,
-  compareAsc,
   format,
   isFuture as isFutureLib,
   isWeekend as isWeekendLib,
@@ -39,5 +38,3 @@ export const addDays = (date: string | Date, amount: number) =>
 export const isFuture = (date: string | Date) => isFutureLib(toDate(date));
 
 export const isWeekend = (date: string | Date) => isWeekendLib(toDate(date));
-
-export { compareAsc };

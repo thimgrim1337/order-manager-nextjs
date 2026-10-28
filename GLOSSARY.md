@@ -10,13 +10,13 @@ Planning and tracking of transport Orders carried out by the company's Trucks an
 A single transport job for a Customer: carried by one Truck and Driver, from Loading Places to Unloading Places, for an agreed price.
 _Avoid_: Job, shipment, transport
 
-**Start Date** (_Data załadunku_):
+**Loading Date** (_Data załadunku_):
 The day an Order's loading begins; the first day of the Order.
-_Avoid_: Loading date, from date
+_Avoid_: Start date, from date
 
-**End Date** (_Data rozładunku_):
+**Unloading Date** (_Data rozładunku_):
 The day an Order's unloading ends; the last day of the Order.
-_Avoid_: Unloading date, delivery date
+_Avoid_: End date, delivery date
 
 ### Views
 
@@ -36,9 +36,10 @@ _Avoid_: Period, range
 The ISO 8601 number of a Week within its year: Week 1 is the Week containing 4 January.
 _Avoid_: Week index
 
-**Order in a Week**:
+**Order in a Week** (_Zlecenie w tygodniu_):
 An Order with at least one day inside the Week (Start Date on or before Sunday and End Date on or after Monday). An Order crossing the Week's edge belongs to both Weeks.
 _Avoid_: Weekly orders
 
-**Order Day**:
+**Order Day** (_Dzień zlecenia_):
 What an Order does on one day of a Week: loading (Start Date), unloading (End Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later.
+_Avoid_: Day status, cell type
