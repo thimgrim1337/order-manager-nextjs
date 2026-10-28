@@ -25,9 +25,17 @@ The searchable, paginated list of all Orders, unrestricted by date unless the us
 _Avoid_: Order list, orders page
 
 **Timeline** (_Harmonogram_):
-The one-Week view of Orders laid out across days, used for planning Trucks and Drivers.
+The one-Week view of every Order in that Week, laid out across days, used for planning Trucks and Drivers.
 _Avoid_: Schedule, calendar, planner
 
 **Week** (_Tydzień_):
-Seven days from Monday to Sunday, identified by its Monday; the unit the Timeline shows.
+Seven days from Monday to Sunday, identified by its year and Week Number (e.g. 2026-W44); the unit the Timeline shows.
 _Avoid_: Period, range
+
+**Week Number** (_Numer tygodnia_):
+The ISO 8601 number of a Week within its year: Week 1 is the Week containing 4 January.
+_Avoid_: Week index
+
+**Order in a Week**:
+An Order with at least one day inside the Week (Start Date on or before Sunday and End Date on or after Monday). An Order crossing the Week's edge belongs to both Weeks.
+_Avoid_: Weekly orders
