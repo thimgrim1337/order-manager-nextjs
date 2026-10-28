@@ -9,15 +9,13 @@ import {
   startOfISOWeek,
   startOfISOWeekYear,
 } from 'date-fns';
-import { formatDate, parseDate } from '@/lib/dates';
+import { formatDate, parseDate, toDate } from '@/lib/dates';
 import type { Day } from '@/types/types';
 
 /** A Monday-to-Sunday Week, held as its Monday (`yyyy-MM-dd`). */
 export type Week = string & { readonly __brand: 'Week' };
 
 const TIME_ZONE = 'Europe/Warsaw';
-
-const toDate = (date: string | Date) => (typeof date === 'string' ? parseDate(date) : date);
 
 export const weekOf = (date: string | Date): Week =>
   formatDate(startOfISOWeek(toDate(date))) as Week;

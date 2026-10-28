@@ -2,12 +2,18 @@ import {
   addDays as addDaysLib,
   compareAsc,
   format,
-  isFuture,
-  isWeekend,
+  isFuture as isFutureLib,
+  isWeekend as isWeekendLib,
   parse,
   subDays as subDaysLib,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
+
+export const parseDate = (date: string, dateFormat: string = 'yyyy-MM-dd') =>
+  parse(date, dateFormat, new Date());
+
+// date-fns reads a bare `yyyy-MM-dd` string as UTC midnight, which is the previous day west of UTC.
+export const toDate = (date: string | Date) => (typeof date === 'string' ? parseDate(date) : date);
 
 export const formatDate = (
   date: Date | number | string | undefined,
@@ -15,11 +21,8 @@ export const formatDate = (
 ) => {
   if (!date) return '';
 
-  return format(date, dateFormat, { locale: pl });
+  return format(typeof date === 'number' ? date : toDate(date), dateFormat, { locale: pl });
 };
-
-export const parseDate = (date: string, dateFormat: string = 'yyyy-MM-dd') =>
-  parse(date, dateFormat, new Date());
 
 export const getToday = () => formatDate(Date.now());
 
@@ -28,9 +31,13 @@ export const getTomorrow = () => formatDate(addDays(getToday(), 1));
 export const getYesterday = (date: Date | string) => formatDate(subDays(date, 1));
 
 export const subDays = (date: string | Date, amount: number) =>
-  formatDate(subDaysLib(typeof date === 'string' ? parseDate(date) : date, amount));
+  formatDate(subDaysLib(toDate(date), amount));
 
 export const addDays = (date: string | Date, amount: number) =>
-  formatDate(addDaysLib(typeof date === 'string' ? parseDate(date) : date, amount));
+  formatDate(addDaysLib(toDate(date), amount));
 
-export { compareAsc, isFuture, isWeekend };
+export const isFuture = (date: string | Date) => isFutureLib(toDate(date));
+
+export const isWeekend = (date: string | Date) => isWeekendLib(toDate(date));
+
+export { compareAsc };

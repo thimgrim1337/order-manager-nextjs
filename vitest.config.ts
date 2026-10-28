@@ -18,6 +18,8 @@ export default defineConfig({
         launchOptions: {
           executablePath: '/usr/bin/chromium',
         },
+        // Not Europe/Warsaw, so tests catch code that relies on the machine's zone instead of the company's.
+        contextOptions: { timezoneId: 'America/Los_Angeles' },
       }),
       instances: [{ browser: 'chromium' }],
       viewport: { width: 1920, height: 1080 },
