@@ -17,7 +17,7 @@ It's Transport Order Manager. The core functionality is CRUD orders and display 
 ## Development Commands
 
 - 'pnpm add' - Install dependencies (NOT npm)
-- 'pnpm dev' - Start the db container and Next dev server. It is usually already running on :3000: reuse it.
+- 'pnpm dev' - Start the db container and Next dev server on :3000. If :3000 is down, start it in the background and read its log; use it to check UI acceptance criteria.
 - 'pnpm check' - Run Biome check --write
 - 'pnpm typecheck' - Run tsc --noEmit
 - 'pnpm exec vitest --run [path]' - Run tests once (browser mode, Chromium). 'pnpm test' is watch mode.
