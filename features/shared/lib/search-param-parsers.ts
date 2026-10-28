@@ -1,4 +1,5 @@
 import z from 'zod';
+import { parseWeekKey } from '@/lib/week';
 import type { RawSearchParams } from '@/types/types';
 
 // Each parser returns undefined for a missing or invalid value, so one bad param never discards the others.
@@ -20,4 +21,9 @@ export function parseId(value: RawSearchParam) {
 export function parseIsoDate(value: RawSearchParam) {
   const result = z.iso.date().safeParse(first(value));
   return result.success ? result.data : undefined;
+}
+
+export function parseWeek(value: RawSearchParam) {
+  const key = first(value);
+  return key ? parseWeekKey(key) : undefined;
 }

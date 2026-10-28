@@ -6,34 +6,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { type Week, weekNumber, weeksOfYear, weekYear } from '@/lib/week';
 import useTimelineQuery from '../../hooks/use-timeline-query';
-import { getWeeksStartDates } from '../../lib/helpers';
 
-export default function TimelinePaginationWeekSelect({
-  selectedWeekNumber,
-}: {
-  selectedWeekNumber: number;
-}) {
-  const { change } = useTimelineQuery();
+export default function TimelinePaginationWeekSelect() {
+  const { query, change } = useTimelineQuery();
 
-  const weekItems = getWeeksStartDates().map((week) => ({
-    label: week.weekNumber,
-    value: week.weekNumber,
-    startDate: week.startDate,
-    endDate: week.endDate,
+  const weekItems = weeksOfYear(weekYear(query.week)).map((week) => ({
+    label: weekNumber(week),
+    value: week,
   }));
 
   return (
     <Select
       items={weekItems}
-      value={selectedWeekNumber}
-      onValueChange={(value) => {
-        const week = weekItems.filter((week) => week.value === value)[0];
-        change({ week: week.startDate });
+      value={query.week}
+      onValueChange={(week: Week | null) => {
+        if (week) change({ week });
       }}
     >
       <SelectTrigger>
-        <SelectValue placeholder={selectedWeekNumber}></SelectValue>
+        <SelectValue />
       </SelectTrigger>
       <SelectContent alignItemWithTrigger={false} className={'min-w-15'}>
         <SelectGroup>

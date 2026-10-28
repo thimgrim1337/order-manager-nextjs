@@ -5,7 +5,7 @@ import { TableRow } from '@/components/ui/table';
 import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
 import Dialog from '@/features/shared/components/ui/dialog';
 import useToggle from '@/features/shared/hooks/use-toggle';
-import { getWeekDays } from '@/lib/dates';
+import { weekDays } from '@/lib/week';
 import type { Order } from '@/types/types';
 import useTimelineQuery from '../hooks/use-timeline-query';
 import TimelineDetailsCell from './timeline-details';
@@ -19,7 +19,7 @@ export default function TimelineOrder({
   borderColor: string;
 }) {
   const { query } = useTimelineQuery();
-  const weekdays = getWeekDays(query.week);
+  const weekdays = weekDays(query.week);
 
   const [isModalOpen, { toggle: toggleModal, setFalse: closeModal, setTrue: openModal }] =
     useToggle();

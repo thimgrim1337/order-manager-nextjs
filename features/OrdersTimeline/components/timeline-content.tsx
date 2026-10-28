@@ -8,7 +8,7 @@ import { getAllDrivers } from '@/lib/dal/driver.dal';
 import { getAllOrders } from '@/lib/dal/order.dal';
 import { getAllStatuses } from '@/lib/dal/status.dal';
 import { getAllTrucks } from '@/lib/dal/truck.dal';
-import { getLastDayOfWeek, getToday, getWeekDays } from '@/lib/dates';
+import { weekDays } from '@/lib/week';
 import type { RawSearchParams } from '@/types/types';
 import { parse } from '../lib/timeline-query';
 import TimelinePagination from './TimelinePagination/timeline-pagination';
@@ -19,12 +19,12 @@ type TimelineContentProps = {
   searchParamsPromise: Promise<RawSearchParams>;
 };
 export default async function TimelineContent({ searchParamsPromise }: TimelineContentProps) {
-  const query = parse(await searchParamsPromise, getToday());
+  const query = parse(await searchParamsPromise);
 
-  const weekdays = getWeekDays(query.week);
+  const weekdays = weekDays(query.week);
   const { data: orders } = await getAllOrders(0, 100, [], {
     startDate: query.week,
-    endDate: getLastDayOfWeek(query.week),
+    endDate: weekdays[6].date,
     driverId: query.driverId,
   });
   const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
@@ -53,7 +53,7 @@ export default async function TimelineContent({ searchParamsPromise }: TimelineC
         <TimelineHead weekdays={weekdays} />
         <TimelineBody orders={orders} />
       </Table>
-      <TimelinePagination weekdays={weekdays} />
+      <TimelinePagination />
     </OrderDataProvider>
   );
 }

@@ -53,4 +53,5 @@ export type FieldData = {
 export type Day = {
   date: string;
   name: string;
+  isWeekend: boolean;
 };
