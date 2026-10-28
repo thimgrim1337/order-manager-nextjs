@@ -22,7 +22,7 @@ export async function createOrder(formData: OrderFormDto): Promise<ActionRespons
   const [error, order] = await createOrderService(formData);
 
   if (error === null) {
-    revalidateTag('orders', 'max');
+    updateTag('orders');
 
     return {
       success: true,
