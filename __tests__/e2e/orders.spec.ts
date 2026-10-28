@@ -59,13 +59,12 @@ test.describe('Order test', () => {
 
     await expect(page.getByRole('cell', { name: 'w trakcie' })).toBeVisible();
 
-    await page.getByRole('menu', { name: 'order actions' }).click();
-    await page.getByRole('button', { name: 'order status' }).click();
+    await page.getByRole('row', { name: /E2E-001/ }).click({ button: 'right' });
+    await page.getByRole('menuitem', { name: 'Status' }).click();
 
     await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
 
     await page.getByRole('button', { name: 'status-delivered' }).click();
-    await page.keyboard.press('Escape');
 
     await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).not.toBeVisible();
 
@@ -77,8 +76,8 @@ test.describe('Order test', () => {
 
     await expect(page.getByRole('cell', { name: 'E2E-001' })).toBeVisible();
 
-    await page.getByRole('menu', { name: 'order actions' }).click();
-    await page.getByRole('button', { name: 'order remove' }).click();
+    await page.getByRole('row', { name: /E2E-001/ }).click({ button: 'right' });
+    await page.getByRole('menuitem', { name: 'Usuń' }).click();
 
     await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).toBeVisible();
 
