@@ -9,7 +9,7 @@ export const db = drizzle({
     connectionString: ENV.DB_URL,
   },
   schema,
-  logger: true,
+  logger: ENV.NODE_ENV !== 'test',
 });
 
 export type db = typeof db;

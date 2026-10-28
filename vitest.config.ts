@@ -2,7 +2,6 @@ import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
-import { testDbUrl } from './__tests__/db/test-db-url';
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
@@ -22,8 +21,9 @@ export default defineConfig({
             enabled: true,
             headless: true,
             provider: playwright({
+              // CI uses the Chromium that `playwright install` downloads.
               launchOptions: {
-                executablePath: '/usr/bin/chromium',
+                executablePath: process.env.CI ? undefined : '/usr/bin/chromium',
               },
               // Not Europe/Warsaw, so tests catch code that relies on the machine's zone instead of the company's.
               contextOptions: { timezoneId: 'America/Los_Angeles' },
@@ -42,10 +42,6 @@ export default defineConfig({
           environment: 'node',
           include: ['__tests__/**/*.db.test.ts'],
           globalSetup: ['./__tests__/db/global-setup.ts'],
-          env: {
-            NODE_ENV: 'test',
-            DB_URL: testDbUrl(),
-          },
         },
       },
     ],

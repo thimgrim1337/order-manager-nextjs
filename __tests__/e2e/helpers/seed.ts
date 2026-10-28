@@ -9,6 +9,8 @@ import {
   status as statuses,
   truck as trucks,
 } from '@/db/schemas';
+import { ENV } from '@/env';
+import { assertTestDatabase } from '../../db/assert-test-database';
 
 export async function seedTestData() {
   const [country] = await db
@@ -80,6 +82,7 @@ export async function seedTestData() {
 }
 
 export async function cleanupTestData() {
+  assertTestDatabase(ENV.DB_URL);
   for (const table of [cities, trucks, drivers, customers, countries, statuses, currencies]) {
     await db.execute(sql.raw(`TRUNCATE TABLE ${getTableName(table)} RESTART IDENTITY CASCADE`));
   }
