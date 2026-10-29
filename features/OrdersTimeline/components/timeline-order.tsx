@@ -19,7 +19,7 @@ export default function TimelineOrder({
   days: OrderDay[];
   borderColor: string;
 }) {
-  const [isModalOpen, { toggle: toggleModal, setFalse: closeModal, setTrue: openModal }] =
+  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal, setTrue: openModal }] =
     useToggle();
 
   return (
@@ -33,7 +33,7 @@ export default function TimelineOrder({
       {
         <Dialog
           isOpen={isModalOpen}
-          onOpenChange={toggleModal}
+          onOpenChange={setIsModalOpen}
           title="Edycja zlecenia"
           description={`Wprowadź dane aby edytować zlecenie nr ${order.orderNr}`}
           icon={<SquarePen />}

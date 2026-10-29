@@ -6,12 +6,12 @@ import CreateOrderForm from './create-order-form';
 import FormDialog from './ui/form-dialog';
 
 export default function CreateOrder() {
-  const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] = useToggle();
+  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
 
   return (
     <FormDialog
       isOpen={isModalOpen}
-      onOpenChange={toggleModal}
+      onOpenChange={setIsModalOpen}
       icon={<FilePlus />}
       title={'Dodaj nowe zlecenie'}
       description="Wypełnij wszystkie pola aby dodać nowe zlecenie."

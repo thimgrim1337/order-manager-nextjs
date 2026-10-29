@@ -7,12 +7,12 @@ import FormDialog from '../ui/form-dialog';
 import CreateCityForm from './create-city-form';
 
 export default function CreateCity({ countries }: { countries: Country[] }) {
-  const [isModalOpen, { toggle: toggleModal, setFalse: closeModal }] = useToggle();
+  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
 
   return (
     <FormDialog
       isOpen={isModalOpen}
-      onOpenChange={toggleModal}
+      onOpenChange={setIsModalOpen}
       icon={<MapPinPlus />}
       title={'	Dodawanie nowego miejsca'}
       description="Wypełnij wszystkie pola aby dodać nowe miejsce."
