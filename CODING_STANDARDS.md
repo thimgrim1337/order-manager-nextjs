@@ -21,6 +21,10 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 
 - Icon-only controls get an English `aria-label` (e.g. `Next week`). E2E tests find elements by role and accessible name.
 
+## Types
+
+- Use the library's named type (`NodePgTransaction`, `InferSelectModel`…). Derive a type with `Parameters`/`ReturnType` only when the library doesn't export one.
+
 ## Placement
 
 - Constants shared across files live in `lib/consts.ts`; module-private constants stay in their module.

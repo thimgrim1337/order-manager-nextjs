@@ -1,24 +1,22 @@
 import type { OpenHolidaysResponse } from '@/features/OrderForm/services/openHolidays.services';
-import { getYesterday, isFuture, isWeekend, subDays } from '@/lib/dates';
+import { getToday, getYesterday, isFuture, isWeekend } from '@/lib/dates';
 
 export function getValidCurrencyDate(
   date: string,
   holidays: Pick<OpenHolidaysResponse, 'endDate'>[],
+  now?: Date,
 ) {
   try {
-    let yesterday: string;
+    // getYesterday throws on an invalid date, which isFuture's string compare can't catch.
+    const yesterday = getYesterday(date);
+    // A future date starts from today; the walk below steps back if today isn't a business day.
+    const candidate = isFuture(date, now) ? getToday(now) : yesterday;
 
-    if (isFuture(date)) {
-      yesterday = getYesterday(subDays(date, 1));
-    } else {
-      yesterday = getYesterday(date);
-    }
+    const isHoliday = holidays.some((day) => day.endDate === candidate);
 
-    const isHoliday = holidays.some((day) => day.endDate === yesterday);
+    if (!isWeekend(candidate) && !isHoliday) return candidate;
 
-    if (!isWeekend(yesterday) && !isFuture(yesterday) && !isHoliday) return yesterday;
-
-    return getValidCurrencyDate(yesterday, holidays);
+    return getValidCurrencyDate(candidate, holidays, now);
   } catch (error) {
     console.log(error);
     return date;
