@@ -40,6 +40,9 @@ export default defineConfig({
         test: {
           name: 'db',
           environment: 'node',
+          // Throws on any Node deprecation, aimed at pg's warning for parallel queries on one client
+          // (e.g. Promise.all over one trx). pg only warns from the 3rd queued query, so 2 slip through.
+          execArgv: ['--throw-deprecation'],
           include: ['__tests__/**/*.db.test.ts'],
           globalSetup: ['./__tests__/db/global-setup.ts'],
         },
