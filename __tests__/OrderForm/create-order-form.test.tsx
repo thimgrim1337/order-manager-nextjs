@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateOrderForm from '@/features/OrderForm/components/create-order-form';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
 import { searchCustomers } from '@/lib/actions';
@@ -98,17 +98,17 @@ const dataMock = {
 const setup = async (customData?: Partial<typeof dataMock>) => {
   const user = userEvent.setup({ pointerEventsCheck: 0 });
 
-  await act(async () => {
+  const { unmount } = await act(async () =>
     render(
       <OrderDataProvider data={{ ...dataMock, ...customData }}>
         <Suspense fallback={'Loading...'}>
           <CreateOrderForm onDialogClose={vi.fn()} />
         </Suspense>
       </OrderDataProvider>,
-    );
-  });
+    ),
+  );
 
-  return { user };
+  return { user, unmount };
 };
 
 describe('CreateOrderForm', () => {
@@ -129,6 +129,32 @@ describe('CreateOrderForm', () => {
 
       screen.getByRole('button', { name: 'Zapisz' });
       screen.getByRole('button', { name: 'Reset' });
+    });
+  });
+
+  describe('date defaults', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('default to today and tomorrow in Warsaw, read each time the form opens', async () => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      // Monday 2026-11-02 00:30 CET, still Sunday in UTC and Los Angeles
+      vi.setSystemTime(new Date('2026-11-01T23:30:00Z'));
+
+      const { unmount } = await setup();
+
+      expect(screen.getByLabelText('Data załadunku')).toHaveTextContent('2026-11-02');
+      expect(screen.getByLabelText('Data rozładunku')).toHaveTextContent('2026-11-03');
+
+      unmount();
+      // Tuesday 2026-11-03 00:30 CET
+      vi.setSystemTime(new Date('2026-11-02T23:30:00Z'));
+
+      await setup();
+
+      expect(screen.getByLabelText('Data załadunku')).toHaveTextContent('2026-11-03');
+      expect(screen.getByLabelText('Data rozładunku')).toHaveTextContent('2026-11-04');
     });
   });
 

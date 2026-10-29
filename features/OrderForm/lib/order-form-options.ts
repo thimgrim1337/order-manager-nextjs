@@ -1,14 +1,21 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
 import { isAfter, isBefore } from 'date-fns';
-import { getToday, getTomorrow } from '@/lib/dates';
+import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
 import type { City } from '@/types/types';
+
+/** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
+export const getDefaultOrderDates = () => {
+  const today = getToday();
+  return { startDate: today, endDate: addDays(today, 1) };
+};
 
 export const orderFormOptions = formOptions({
   defaultValues: {
     orderNr: '',
-    startDate: getToday(),
-    endDate: getTomorrow(),
+    // Placeholders: forms set their own, the create form from `getDefaultOrderDates`.
+    startDate: '',
+    endDate: '',
     customerId: 0,
     driverId: 0,
     truckId: 0,

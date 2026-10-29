@@ -20,6 +20,12 @@ _Avoid_: End date, delivery date
 
 ### Views
 
+**Start date**
+The filter, start of the range orders to fetch.
+
+**End date**
+The filter, end of the range orders to fetch.
+
 **Orders Table** (_Zlecenia_):
 The searchable, paginated list of all Orders, unrestricted by date unless the user filters it.
 _Avoid_: Order list, orders page
@@ -41,5 +47,5 @@ An Order with at least one day inside the Week (Start Date on or before Sunday a
 _Avoid_: Weekly orders
 
 **Order Day** (_Dzień zlecenia_):
-What an Order does on one day of a Week: loading (Start Date), unloading (End Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later.
+What an Order does on one day of a Week: loading (Loading date), unloading (Unloading Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later.
 _Avoid_: Day status, cell type

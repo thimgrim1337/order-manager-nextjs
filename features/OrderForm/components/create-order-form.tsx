@@ -1,14 +1,14 @@
 'use client';
 
 import { useStore } from '@tanstack/react-form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
 import { createOrder } from '@/lib/actions';
 import { useAppForm } from '../hooks/useAppForm';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
 import useFormSubmit from '../hooks/useFormSubmit';
-import { orderFormOptions } from '../lib/order-form-options';
+import { getDefaultOrderDates, orderFormOptions } from '../lib/order-form-options';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
 import CurrencyInfo from './ui/currency-info';
@@ -18,8 +18,12 @@ export default function CreateOrderForm({ onDialogClose }: { onDialogClose: () =
 
   const { submitForm } = useFormSubmit(createOrder, onDialogClose);
 
+  // Read once per open, so Reset keeps the dates the form opened with.
+  const [defaultDates] = useState(getDefaultOrderDates);
+
   const form = useAppForm({
     ...orderFormOptions,
+    defaultValues: { ...orderFormOptions.defaultValues, ...defaultDates },
     onSubmit: async ({ value }) => {
       submitForm(value, {
         successDescription: `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
