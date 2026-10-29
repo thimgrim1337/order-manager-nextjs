@@ -21,14 +21,14 @@ It's Transport Order Manager. The core functionality is CRUD orders and display 
 - 'pnpm dev' - Start the db container and Next dev server on :3000. If :3000 is down, start it in the background and read its log; use it to check UI acceptance criteria.
 - 'pnpm check' - Run Biome check --write
 - 'pnpm typecheck' - Run tsc --noEmit
-- 'pnpm exec vitest --run [path]' - Run tests once. Two projects: `browser` (Chromium) and `db` (node, `*.db.test.ts` against real Postgres). The `db` project needs the `db-test` container up ('NODE_ENV=test docker compose up db-test -d'); it migrates it and rolls back each test. Pick one with '--project browser|db'. 'pnpm test' is watch mode.
-- 'pnpm test:e2e' - Playwright against the db-test container and a production build
+- 'pnpm exec vitest --run [path]' - Run tests once. Two projects: `browser` (Chromium) and `db` (node, `*.db.test.ts` against real Postgres). The `db` project needs the `db-test` container up ('NODE_ENV=test docker compose up db-test -d'); it migrates it and rolls back each test. Pick one with '--project browser|db'. 'pnpm test' is watch mode. The pre-commit hook runs typecheck and the full suite, so let the commit be the final full run.
+- 'pnpm test:e2e' - Playwright against the db-test container and a production build on :3001; if that port is taken, set `E2E_PORT`.
 
 ## Agent skills
 
 ### Issue tracker
 
-Issues are tracked as local markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
+Issues are local markdown under `.scratch/<feature>/`. Read `docs/agents/issue-tracker.md` before creating, updating or closing one.
 
 ### Triage labels
 
@@ -41,6 +41,4 @@ Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/ag
 ## Git conventions
 
 - Commit messages: concise Conventional Commits (`type(scope): subject`), minimal or no body.
-- No `Co-Authored-By` trailer or any other attribution lines in commits.
-- No "Generated with Claude Code" (or similar) line in PR descriptions.
-- Every change goes on a branch for its feature (e.g. `feat/<feature>`, `chore/<topic>`), never directly on `main` or on an unrelated feature branch.
+- Every change goes on a branch for its feature (e.g. `feat/<feature>`, `chore/<topic>`), not an unrelated feature branch. The pre-commit hook rejects commits on `main`.

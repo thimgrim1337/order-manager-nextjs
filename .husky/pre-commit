@@ -1,3 +1,8 @@
-npx lint-staged
-npm run typecheck
-npm run test:staged
+if [ "$(git branch --show-current)" = "main" ]; then
+  echo "Commit on a feature branch (feat/<feature>, chore/<topic>), not main."
+  exit 1
+fi
+
+pnpm exec lint-staged
+pnpm typecheck
+pnpm test:staged
