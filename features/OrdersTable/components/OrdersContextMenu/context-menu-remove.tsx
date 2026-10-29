@@ -20,7 +20,7 @@ export default function ContextMenuRemove({
 }: ContextMenuOptionProps) {
   async function handleOrderRemove(orderId: number) {
     await deleteOrder(orderId);
-    onOpenChange();
+    onOpenChange(false);
   }
 
   return (

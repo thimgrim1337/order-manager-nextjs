@@ -14,7 +14,7 @@ import ContextMenuStatus from './context-menu-status';
 export type ContextMenuOptionProps = {
   order: Order;
   isModalOpen: boolean;
-  onOpenChange: () => void;
+  onOpenChange: (open: boolean) => void;
 };
 
 export default function OrdersContextMenu({
@@ -24,11 +24,11 @@ export default function OrdersContextMenu({
   order: Order;
   children: ReactElement;
 }) {
-  const [isEditOpen, { setTrue: openEdit, toggle: toggleEdit }] = useToggle();
+  const [isEditOpen, { setTrue: openEdit, setValue: setIsEditOpen }] = useToggle();
 
-  const [isStatusOpen, { setTrue: openStatus, toggle: toggleStatus }] = useToggle();
+  const [isStatusOpen, { setTrue: openStatus, setValue: setIsStatusOpen }] = useToggle();
 
-  const [isRemoveOpen, { setTrue: openRemove, toggle: toggleRemove }] = useToggle();
+  const [isRemoveOpen, { setTrue: openRemove, setValue: setIsRemoveOpen }] = useToggle();
 
   return (
     <>
@@ -42,9 +42,9 @@ export default function OrdersContextMenu({
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-      <ContextMenuOrderEdit order={order} isModalOpen={isEditOpen} onOpenChange={toggleEdit} />
-      <ContextMenuStatus order={order} isModalOpen={isStatusOpen} onOpenChange={toggleStatus} />
-      <ContextMenuRemove order={order} isModalOpen={isRemoveOpen} onOpenChange={toggleRemove} />
+      <ContextMenuOrderEdit order={order} isModalOpen={isEditOpen} onOpenChange={setIsEditOpen} />
+      <ContextMenuStatus order={order} isModalOpen={isStatusOpen} onOpenChange={setIsStatusOpen} />
+      <ContextMenuRemove order={order} isModalOpen={isRemoveOpen} onOpenChange={setIsRemoveOpen} />
     </>
   );
 }

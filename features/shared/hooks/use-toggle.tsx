@@ -4,7 +4,7 @@ type ToggleActions = {
   toggle: () => void;
   setTrue: () => void;
   setFalse: () => void;
-  setValue: SetStateAction<Dispatch<boolean>>;
+  setValue: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function useToggle(initialValue = false): [boolean, ToggleActions] {

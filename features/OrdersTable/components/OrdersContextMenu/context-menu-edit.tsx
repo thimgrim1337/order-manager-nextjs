@@ -16,7 +16,7 @@ export default function ContextMenuOrderEdit({
       title={`Edycja zlecenia ${order.orderNr}`}
       className="min-w-5xl"
     >
-      <EditOrderForm order={order} onDialogClose={onOpenChange} />
+      <EditOrderForm order={order} onDialogClose={() => onOpenChange(false)} />
     </Dialog>
   );
 }

@@ -16,7 +16,7 @@ export default function ContextMenuStatus({
       title="Zmiana statusu zlecenia"
       description={`Wybierz status dla zlecenia nr ${order?.orderNr}`}
     >
-      <OrderStatusMenu order={order} onOpenChange={onOpenChange} />
+      <OrderStatusMenu order={order} onDialogClose={() => onOpenChange(false)} />
     </Dialog>
   );
 }

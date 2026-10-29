@@ -27,13 +27,13 @@ const statusConfig = {
 
 type OrderStatusMenu = {
   order: Order;
-  onOpenChange: () => void;
+  onDialogClose: () => void;
 };
 
-export default function OrderStatusMenu({ order, onOpenChange }: OrderStatusMenu) {
+export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMenu) {
   async function handleStatusChange(orderId: number, statusId: number) {
     await patchOrder(orderId, { statusId });
-    onOpenChange();
+    onDialogClose();
   }
 
   return (
