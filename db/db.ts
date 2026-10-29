@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import type { ExtractTablesWithRelations } from 'drizzle-orm';
+import { drizzle, type NodePgTransaction } from 'drizzle-orm/node-postgres';
 import { ENV } from '@/env';
 import * as schema from './schemas/index';
 
@@ -13,5 +13,8 @@ export const db = drizzle({
 });
 
 export type db = typeof db;
-export type dbTransaction = PostgresJsDatabase<typeof schema>;
+export type dbTransaction = NodePgTransaction<
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
 export default db;

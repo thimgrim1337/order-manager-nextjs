@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import type { dbTransaction } from '@/db/db';
 import { currency, customer, driver, order, status, truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { parseWeekKey, type Week } from '@/lib/week';
-import { type Transaction, withRollback } from '../db/with-rollback';
+import { withRollback } from '../db/with-rollback';
 
 const week = (key: string) => parseWeekKey(key) as Week;
 
-async function seed(trx: Transaction) {
+async function seed(trx: dbTransaction) {
   // One transaction is one client, so inserts run one after another.
   const [jan, anna] = await trx
     .insert(driver)
