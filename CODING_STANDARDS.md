@@ -17,6 +17,11 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - Dates are `yyyy-MM-dd` strings. Any string handed to date-fns goes through `toDate`/`parseDate` from `lib/dates.ts` first: date-fns reads a bare `yyyy-MM-dd` string as UTC midnight, which is the previous day west of UTC.
 - "Today" is the company's day in `Europe/Warsaw` (Biome enforces reading it through `lib/dates.ts`). Browser tests run in `America/Los_Angeles`: code that depends on today gets a test across a Warsaw-midnight boundary, passing `now` explicitly.
 
+## Data access
+
+- A query worth testing is a `find*(database: db | dbTransaction, …)` function in `lib/dal/`. A thin `get*` adapter adds `'use cache'` + `cacheTag` and calls it, holding no other logic: `cacheTag()` throws outside the Next runtime, so the cached function itself can't be tested. Example: `findOrdersInWeek` / `getOrdersInWeek` in `lib/dal/order.dal.ts`. `getAllOrders` predates the rule; split it the same way when it first gets a test.
+- Query tests are `*.db.test.ts`, seed their own rows and run inside `withRollback` (`__tests__/db/with-rollback.ts`), passing its transaction to the `find*` function.
+
 ## Accessibility
 
 - Icon-only controls get an English `aria-label` (e.g. `Next week`). E2E tests find elements by role and accessible name.
