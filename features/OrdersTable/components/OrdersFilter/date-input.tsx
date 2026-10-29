@@ -2,7 +2,7 @@ import { ChevronDownIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { formatDate, parseDate } from '@/lib/dates';
+import { formatDate, getToday, parseDate } from '@/lib/dates';
 import useOrdersTableQuery from '../../hooks/use-orders-table-query';
 
 export default function DateInput({ filterName }: { filterName: 'startDate' | 'endDate' }) {
@@ -27,7 +27,7 @@ export default function DateInput({ filterName }: { filterName: 'startDate' | 'e
       <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
-          defaultMonth={selectedDate ? parseDate(selectedDate) : new Date(Date.now())}
+          defaultMonth={parseDate(selectedDate || getToday())}
           showWeekNumber
           weekStartsOn={1}
           selected={selectedDate ? parseDate(selectedDate) : undefined}

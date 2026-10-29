@@ -15,7 +15,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 
 - Week rules (which Week, its days, numbering, the URL key) live in `lib/week.ts`. Callers pass a `Week` around and leave the date arithmetic to that module.
 - Dates are `yyyy-MM-dd` strings. Any string handed to date-fns goes through `toDate`/`parseDate` from `lib/dates.ts` first: date-fns reads a bare `yyyy-MM-dd` string as UTC midnight, which is the previous day west of UTC.
-- "Today" is the company's day in `Europe/Warsaw`, via `currentWeek` (and `@date-fns/tz` for anything new). Browser tests run in `America/Los_Angeles` so code that relies on the machine's zone fails.
+- "Today" is the company's day in `Europe/Warsaw` (Biome enforces reading it through `lib/dates.ts`). Browser tests run in `America/Los_Angeles`: code that depends on today gets a test across a Warsaw-midnight boundary, passing `now` explicitly.
 
 ## Accessibility
 

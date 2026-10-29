@@ -8,8 +8,14 @@
   "files": {
     "ignoreUnknown": false,
     "maxSize": 1048576,
-    "includes": ["**", "!**/db/migrations/**", "!**/components/ui/**"]
+    "includes": [
+      "**",
+      "!**/db/migrations/**",
+      "!**/components/ui/**",
+      "!**/public/mockServiceWorker.js"
+    ]
   },
+  "plugins": ["./biome-plugins/company-today.grit"],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -35,6 +41,32 @@
       "suspicious": {
         "useBiomeIgnoreFolder": "off",
         "noShadowRestrictedNames": "off"
+      },
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "date-fns": {
+                "importNames": [
+                  "isToday",
+                  "isTomorrow",
+                  "isYesterday",
+                  "isFuture",
+                  "isPast",
+                  "startOfToday",
+                  "endOfToday",
+                  "startOfTomorrow",
+                  "startOfYesterday",
+                  "isThisWeek",
+                  "isThisMonth",
+                  "isThisYear"
+                ],
+                "message": "Reads the machine's clock; use the Warsaw helpers in @/lib/dates."
+              }
+            }
+          }
+        }
       }
     }
   }

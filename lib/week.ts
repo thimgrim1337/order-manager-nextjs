@@ -1,4 +1,3 @@
-import { TZDate } from '@date-fns/tz';
 import {
   addDays,
   addWeeks,
@@ -9,20 +8,17 @@ import {
   startOfISOWeek,
   startOfISOWeekYear,
 } from 'date-fns';
-import { formatDate, parseDate, toDate } from '@/lib/dates';
+import { formatDate, getToday, parseDate, toDate } from '@/lib/dates';
 import type { Day } from '@/types/types';
 
 /** A Monday-to-Sunday Week, held as its Monday (`yyyy-MM-dd`). */
 export type Week = string & { readonly __brand: 'Week' };
 
-const TIME_ZONE = 'Europe/Warsaw';
-
 export const weekOf = (date: string | Date): Week =>
   formatDate(startOfISOWeek(toDate(date))) as Week;
 
-/** The Week containing today in the company's time zone, whatever the server or browser zone is. */
-export const currentWeek = (now: Date = new Date()): Week =>
-  weekOf(formatDate(new TZDate(now, TIME_ZONE)));
+/** The Week containing today (see `getToday`). */
+export const currentWeek = (now?: Date): Week => weekOf(getToday(now));
 
 export const nextWeek = (week: Week) => weekOf(addWeeks(parseDate(week), 1));
 

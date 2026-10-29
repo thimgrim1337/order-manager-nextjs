@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { formatDate, parseDate } from '@/lib/dates';
+import { formatDate, getToday, parseDate } from '@/lib/dates';
 import { useFieldContext } from '../../context/form-context';
 import FormBase, { type FormControlProps } from './form-base';
 
@@ -34,7 +34,7 @@ export default function DateField(props: FormControlProps) {
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            defaultMonth={new Date(Date.now())}
+            defaultMonth={parseDate(getToday())}
             showWeekNumber
             weekStartsOn={1}
             selected={parseDate(selectedDate)}

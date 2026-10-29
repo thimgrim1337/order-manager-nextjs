@@ -1,0 +1,6 @@
+or {
+  `Date.now()`,
+  `new Date()`
+} as $call where {
+  register_diagnostic(span=$call, message="Read today with getToday() from @/lib/dates (Europe/Warsaw).")
+}
