@@ -1,10 +1,10 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Toaster } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { changeOrderStatus, deleteOrder } from '@/lib/actions';
 import type { Order } from '@/types/types';
+import { renderWithToaster } from '../utils/render-with-toaster';
 
 // The Edit dialog's form imports the customer and city actions too.
 vi.mock('@/lib/actions', () => ({
@@ -36,13 +36,10 @@ beforeEach(() => {
 
 const setup = () => {
   const user = userEvent.setup();
-  render(
-    <>
-      <OrdersContextMenu order={order}>
-        <div>ZL-001 row</div>
-      </OrdersContextMenu>
-      <Toaster />
-    </>,
+  renderWithToaster(
+    <OrdersContextMenu order={order}>
+      <div>ZL-001 row</div>
+    </OrdersContextMenu>,
   );
   return { user };
 };
@@ -82,7 +79,6 @@ describe('OrdersContextMenu', () => {
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
     await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
 
-    // Sonner fades the toast in.
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
   });
 
