@@ -90,4 +90,20 @@ describe('useFormSubmit', () => {
 
     expect(toastErrorMock).toHaveBeenCalledWith('Niepowodzenie', expect.anything());
   });
+
+  it('shows a fixed message when the action throws, keeping the dialog open', async () => {
+    const actionMock = vi.fn().mockRejectedValueOnce(new Error('connection lost'));
+    const { result } = renderHook(() => useFormSubmit(actionMock, onDialogClose));
+
+    await act(async () => {
+      await result.current.submitForm({}, { errorTitle: 'Nie udało się zapisać.' });
+    });
+
+    expect(toastErrorMock).toHaveBeenCalledWith('Nie udało się zapisać.', {
+      description: 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.',
+      richColors: true,
+    });
+    expect(onDialogClose).not.toHaveBeenCalled();
+    expect(refreshMock).not.toHaveBeenCalled();
+  });
 });

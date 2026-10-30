@@ -1,7 +1,7 @@
 import { cn } from 'cn';
 import { Ban, CheckCircle, Truck } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { toastOutcome } from '@/features/shared/lib/toast-outcome';
 import { changeOrderStatus } from '@/lib/actions';
 import { ORDER_STATUS } from '@/lib/consts';
 import type { Order } from '@/types/types';
@@ -34,16 +34,7 @@ type OrderStatusMenu = {
 
 export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMenu) {
   async function handleStatusChange(orderId: number, statusId: number) {
-    try {
-      const response = await changeOrderStatus(orderId, statusId);
-      if (!response.success)
-        toast.error('Niepowodzenie', { description: response.message, richColors: true });
-    } catch (error) {
-      toast.error('Niepowodzenie', {
-        description: `Nieoczekiwany błąd ${error}`,
-        richColors: true,
-      });
-    }
+    await toastOutcome(() => changeOrderStatus(orderId, statusId));
     onDialogClose();
   }
 

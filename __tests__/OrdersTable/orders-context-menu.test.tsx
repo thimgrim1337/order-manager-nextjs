@@ -82,6 +82,19 @@ describe('OrdersContextMenu', () => {
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
   });
 
+  it('shows a fixed message in a toast when the status change fails unexpectedly', async () => {
+    vi.mocked(changeOrderStatus).mockRejectedValueOnce(new Error('connection lost'));
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+    await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
+
+    await expect
+      .poll(() => screen.queryByText('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.'))
+      .toBeVisible();
+  });
+
   it('keeps the Remove dialog closed when Escape is pressed before the delete finishes', async () => {
     const remove = deferred();
     vi.mocked(removeOrder).mockReturnValueOnce(
@@ -125,7 +138,10 @@ describe('OrdersContextMenu', () => {
     await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
     await user.click(await screen.findByRole('button', { name: 'Usuń' }));
 
-    await expect.poll(() => screen.queryByText(/connection lost/)).toBeVisible();
+    await expect
+      .poll(() => screen.queryByText('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.'))
+      .toBeVisible();
+    expect(screen.queryByText(/connection lost/)).toBeNull();
   });
 
   it('confirms a removed Order in a toast', async () => {

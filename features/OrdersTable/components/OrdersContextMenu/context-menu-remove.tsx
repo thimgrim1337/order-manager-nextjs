@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,6 +9,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+import { toastOutcome } from '@/features/shared/lib/toast-outcome';
 import { removeOrder } from '@/lib/actions';
 
 import type { ContextMenuOptionProps } from './context-menu';
@@ -20,17 +20,9 @@ export default function ContextMenuRemove({
   onOpenChange,
 }: ContextMenuOptionProps) {
   async function handleOrderRemove(orderId: number) {
-    try {
-      const response = await removeOrder(orderId);
-      if (response.success)
-        toast.success('Sukces', { description: 'Zlecenie zostało usunięte.', richColors: true });
-      else toast.error('Niepowodzenie', { description: response.message, richColors: true });
-    } catch (error) {
-      toast.error('Niepowodzenie', {
-        description: `Nieoczekiwany błąd ${error}`,
-        richColors: true,
-      });
-    }
+    await toastOutcome(() => removeOrder(orderId), {
+      successDescription: 'Zlecenie zostało usunięte.',
+    });
     onOpenChange(false);
   }
 
