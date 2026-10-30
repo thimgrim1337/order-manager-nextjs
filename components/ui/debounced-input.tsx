@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, ReactNode, useEffect, useState } from 'react';
+import { InputHTMLAttributes, ReactNode, useEffect, useEffectEvent, useState } from 'react';
 import { Input } from './input';
 
 type DebouncedInputProps = {
@@ -22,10 +22,10 @@ export default function DebouncedInput({
     setValue(initialValue);
   }, [initialValue]);
 
+  const emit = useEffectEvent(() => onFiltersChange(value));
+
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      onFiltersChange(value);
-    }, debounce);
+    const timeout = setTimeout(emit, debounce);
 
     return () => clearTimeout(timeout);
   }, [value]);
