@@ -4,10 +4,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
-import type { OrderFormDto } from '@/lib/dto/order.dto';
 import { createOrder } from '@/lib/orders';
 import { parseWeekKey, type Week } from '@/lib/week';
-import { seedOrderReferences } from '../db/seed';
+import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
 
 // updateTag throws outside a Server Action.
@@ -16,23 +15,8 @@ vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
   const { jan } = refs.drivers;
-  const { warszawa, plock, gdansk } = refs.cities;
 
-  const orderForm = (fields: Partial<OrderFormDto> = {}): OrderFormDto => ({
-    orderNr: 'ZL/1',
-    startDate: '2026-10-27',
-    endDate: '2026-10-29',
-    statusId: refs.status.id,
-    truckId: refs.truck.id,
-    driverId: jan.id,
-    customerId: refs.customer.id,
-    currencyId: refs.currencies.pln.id,
-    priceCurrency: '1000',
-    loadingPlaces: [warszawa],
-    unloadingPlaces: [plock, gdansk],
-    currencyInfo: { rate: '', table: '', date: '' },
-    ...fields,
-  });
+  const orderForm = orderFormFor(refs);
 
   return { orderForm, jan, eur: refs.currencies.eur, dbTruck: refs.truck };
 }

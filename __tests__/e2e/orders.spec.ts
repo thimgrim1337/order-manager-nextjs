@@ -54,6 +54,25 @@ test.describe('Order test', () => {
     await expect(page.getByRole('cell', { name: 'E2E-001' })).toBeVisible();
   });
 
+  test('Edit order price and display in table', async ({ page }) => {
+    await page.goto('/orders');
+
+    const row = page.getByRole('row', { name: /E2E-001/ });
+    await row.click({ button: 'right' });
+    await page.getByRole('menuitem', { name: 'Edycja' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Edycja zlecenia E2E-001' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Edytuj' }).click();
+    await page.getByLabel('Cena w walucie').fill('2500');
+    await page.getByRole('button', { name: 'Zapisz' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Edycja zlecenia E2E-001' })).not.toBeVisible();
+
+    await expect(row.getByRole('cell', { name: '2500', exact: true })).toBeVisible();
+    await expect(row).toContainText(/2500,00\s*zł/);
+  });
+
   test('Change status order to finished', async ({ page }) => {
     await page.goto('/orders');
 

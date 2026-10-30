@@ -19,7 +19,6 @@ import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db
 import type { OrderSortField } from '@/lib/consts';
 import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, PlaceType, SortParams } from '@/types/types';
-import type { CityDto } from '../dto/city.dto';
 import type { UpdateOrderDto } from '../dto/order.dto';
 import { analyzeGlobalFiltering } from '../utils';
 
@@ -168,22 +167,6 @@ export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) 
   cacheTag('orders');
 
   return findOrdersInWeek(db, week, opts);
-}
-
-export async function addOrderPlaces(
-  orderId: number,
-  cities: CityDto[],
-  placeType: PlaceType,
-  trx: dbTransaction,
-) {
-  const places = cities.map((city) => ({
-    orderId,
-    placeId: city.id,
-  }));
-  const table = placeType === 'loadingPlace' ? loadingPlace : unloadingPlace;
-  const dbPlaces = await trx.insert(table).values(places).returning();
-
-  return dbPlaces;
 }
 
 export async function deleteOrderPlaces(orderId: number, placeType: PlaceType, trx: dbTransaction) {

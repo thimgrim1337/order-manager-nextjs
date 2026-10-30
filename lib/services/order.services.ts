@@ -2,57 +2,10 @@ import { DrizzleQueryError } from 'drizzle-orm';
 import type { DatabaseError } from 'pg';
 import z from 'zod';
 import db from '@/db/db';
-import { addOrderPlaces, deleteOrder, deleteOrderPlaces, updateOrder } from '../dal/order.dal';
-import { updateTruckAssignedDriver } from '../dal/truck.dal';
-import { OrderFormSchema, selectOrderSchema, updateOrderSchema } from '../dto/order.dto';
+import { deleteOrder, deleteOrderPlaces, updateOrder } from '../dal/order.dal';
+import { selectOrderSchema, updateOrderSchema } from '../dto/order.dto';
 import { error, ok } from '../error';
 import { getErrorDetails } from '../helpers';
-
-export async function updateOrderService(orderId: number, rawData: unknown) {
-  const validationResult = OrderFormSchema.safeParse(rawData);
-  if (!validationResult.success)
-    return error({
-      reason: 'InvalidData',
-      details: z.prettifyError(validationResult.error),
-    });
-
-  const { loadingPlaces, unloadingPlaces, ...order } = validationResult.data;
-
-  try {
-    const dbOrder = await db.transaction(async (trx) => {
-      const updatedOrder = updateOrder(orderId, order, trx);
-      await deleteOrderPlaces(orderId, 'loadingPlace', trx);
-      await deleteOrderPlaces(orderId, 'unloadingPlace', trx);
-      await addOrderPlaces(orderId, loadingPlaces, 'loadingPlace', trx);
-      await addOrderPlaces(orderId, unloadingPlaces, 'unloadingPlace', trx);
-      await updateTruckAssignedDriver(order.truckId, order.driverId, trx);
-
-      return updatedOrder;
-    });
-
-    return ok(selectOrderSchema.parse(dbOrder));
-  } catch (err) {
-    if (err instanceof DrizzleQueryError) {
-      const cause = err.cause as DatabaseError | undefined;
-
-      if (cause?.code === '23505') {
-        return error({
-          reason: 'OrderExist',
-        });
-      }
-
-      return error({
-        reason: 'DrizzleError',
-        details: getErrorDetails(err),
-      });
-    }
-
-    return error({
-      reason: 'UnexpectedError',
-      details: getErrorDetails(err),
-    });
-  }
-}
 
 export async function patchOrderService(orderId: number, rawData: unknown) {
   const validationResult = updateOrderSchema.safeParse(rawData);

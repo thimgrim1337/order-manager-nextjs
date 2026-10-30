@@ -9,7 +9,7 @@ type ToastMessage = {
 };
 
 export default function useFormSubmit<TInput, TResponse = TInput>(
-  action: (formData: TInput, id?: number) => Promise<ActionResponse<TResponse>>,
+  action: (formData: TInput) => Promise<ActionResponse<TResponse>>,
   onDialogClose?: () => void,
 ) {
   const { refresh } = useRouter();
@@ -17,10 +17,9 @@ export default function useFormSubmit<TInput, TResponse = TInput>(
   async function submitForm(
     formData: TInput,
     { errorTitle, successTitle, successDescription }: ToastMessage,
-    id?: number,
   ) {
     try {
-      const response = await action(formData, id);
+      const response = await action(formData);
 
       if (!response.success) {
         return toast.error(errorTitle || 'Niepowodzenie', {

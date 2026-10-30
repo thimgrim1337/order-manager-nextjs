@@ -1,5 +1,6 @@
 import type { dbTransaction } from '@/db/db';
 import { city, country, currency, customer, driver, status, truck } from '@/db/schemas';
+import type { OrderFormDto } from '@/lib/dto/order.dto';
 
 /**
  * Seeds the rows an Order references, inside the test's transaction.
@@ -55,4 +56,25 @@ export async function seedOrderReferences(trx: dbTransaction) {
     status: dbStatus,
     truck: dbTruck,
   };
+}
+
+/** A valid PLN Order form for the seeded references: Warszawa → Płock, Gdańsk, driven by Jan. */
+export function orderFormFor(refs: Awaited<ReturnType<typeof seedOrderReferences>>) {
+  const { warszawa, plock, gdansk } = refs.cities;
+
+  return (fields: Partial<OrderFormDto> = {}): OrderFormDto => ({
+    orderNr: 'ZL/1',
+    startDate: '2026-10-27',
+    endDate: '2026-10-29',
+    statusId: refs.status.id,
+    truckId: refs.truck.id,
+    driverId: refs.drivers.jan.id,
+    customerId: refs.customer.id,
+    currencyId: refs.currencies.pln.id,
+    priceCurrency: '1000',
+    loadingPlaces: [warszawa],
+    unloadingPlaces: [plock, gdansk],
+    currencyInfo: { rate: '', table: '', date: '' },
+    ...fields,
+  });
 }

@@ -7,6 +7,7 @@ export type ActionResponse<T> =
 const FAILURE_MESSAGES = {
   InvalidData: 'Nieprawidłowe dane.',
   OrderNrTaken: 'Zlecenie o tym numerze już istnieje.',
+  NotFound: 'Zlecenie nie istnieje.',
 };
 
 /** A failure outcome the translator has a user-facing message for. */

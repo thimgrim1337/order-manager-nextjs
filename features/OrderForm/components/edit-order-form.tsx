@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
 import { updateOrder } from '@/lib/actions';
+import type { OrderFormDto } from '@/lib/dto/order.dto';
 import type { Order } from '@/types/types';
 import { useAppForm } from '../hooks/useAppForm';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
@@ -23,7 +24,10 @@ export default function EditOrderForm({
 }) {
   const { cities, countries, currencies, drivers, trucks } = useOrderData();
 
-  const { submitForm } = useFormSubmit(updateOrder, onDialogClose);
+  const { submitForm } = useFormSubmit(
+    (formData: OrderFormDto) => updateOrder(order.id, formData),
+    onDialogClose,
+  );
 
   const form = useAppForm({
     ...orderFormOptions,
@@ -46,13 +50,9 @@ export default function EditOrderForm({
       },
     },
     onSubmit: async ({ value }) => {
-      submitForm(
-        value,
-        {
-          successDescription: `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`,
-        },
-        order.id,
-      );
+      submitForm(value, {
+        successDescription: `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`,
+      });
     },
   });
 

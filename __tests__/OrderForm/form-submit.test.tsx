@@ -40,7 +40,7 @@ describe('useFormSubmit', () => {
       });
     });
 
-    expect(actionMock).toHaveBeenCalledWith(customer, undefined);
+    expect(actionMock).toHaveBeenCalledWith(customer);
     expect(toastSuccessMock).toHaveBeenCalledWith(
       'OK',
       expect.objectContaining({
@@ -66,7 +66,7 @@ describe('useFormSubmit', () => {
       });
     });
 
-    expect(actionMock).toHaveBeenCalledWith({ foo: 'bar' }, undefined);
+    expect(actionMock).toHaveBeenCalledWith({ foo: 'bar' });
 
     expect(toastErrorMock).toHaveBeenCalledWith(
       'Nie udało się zapisać.',
@@ -78,21 +78,6 @@ describe('useFormSubmit', () => {
 
     expect(onDialogClose).not.toHaveBeenCalled();
     expect(refreshMock).not.toHaveBeenCalled();
-  });
-
-  it('passes id to action when provided', async () => {
-    const actionMock = vi.fn().mockResolvedValueOnce({
-      success: true,
-      data: {},
-    });
-
-    const { result } = renderHook(() => useFormSubmit(actionMock, onDialogClose));
-
-    await act(async () => {
-      await result.current.submitForm({ foo: 'bar' } as unknown, {}, 42);
-    });
-
-    expect(actionMock).toHaveBeenCalledWith({ foo: 'bar' }, 42);
   });
 
   it('uses fallback titles when not provided', async () => {

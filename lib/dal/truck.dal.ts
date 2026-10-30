@@ -1,7 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { cacheLife, cacheTag } from 'next/cache';
-import db, { type dbTransaction } from '@/db/db';
-import { truck } from '@/db/schemas';
+import db from '@/db/db';
 
 export async function getAllTrucks() {
   'use cache';
@@ -17,19 +16,5 @@ export async function getTruck(truckId: number) {
   const dbTruck = await db.query.truck.findFirst({
     where: (truck) => eq(truck.id, truckId),
   });
-  return dbTruck;
-}
-
-export async function updateTruckAssignedDriver(
-  truckId: number,
-  driverId: number,
-  trx: dbTransaction,
-) {
-  const dbTruck = await trx
-    .update(truck)
-    .set({ driverId })
-    .where(eq(truck.id, truckId))
-    .returning();
-
   return dbTruck;
 }
