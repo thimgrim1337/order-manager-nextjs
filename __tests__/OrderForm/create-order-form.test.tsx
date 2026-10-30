@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -274,6 +274,21 @@ describe('CreateOrderForm', () => {
 
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
+      expect(submitFormMock).not.toHaveBeenCalled();
+    });
+
+    it('show a field error and not call submitForm when the Loading Date is after the Unloading Date', async () => {
+      const { user } = await setup();
+
+      await user.click(screen.getByLabelText('Data załadunku'));
+      await user.click(within(screen.getByRole('gridcell', { name: '13' })).getByRole('button'));
+
+      await user.click(screen.getByLabelText('Data rozładunku'));
+      await user.click(within(screen.getByRole('gridcell', { name: '12' })).getByRole('button'));
+
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await screen.findByText('Data załadunku nie może być późniejsza niż data rozładunku.');
       expect(submitFormMock).not.toHaveBeenCalled();
     });
 

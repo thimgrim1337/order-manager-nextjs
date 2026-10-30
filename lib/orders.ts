@@ -24,9 +24,17 @@ export type ChangeOrderStatusFailure = InvalidData | NotFound | { reason: 'Unkno
 
 export type RemoveOrderFailure = InvalidData | NotFound;
 
+/** The cache tags each Order write invalidates: saving an Order also assigns its Driver to its Truck. */
+const INVALIDATED_TAGS = {
+  create: ['orders', 'trucks'],
+  update: ['orders', 'trucks'],
+  changeStatus: ['orders'],
+  remove: ['orders'],
+} as const;
+
 /**
  * Creates an Order with its Loading and Unloading Places and assigns its Driver to its Truck,
- * in one transaction, then invalidates the cached Orders. Call it from a Server Action.
+ * in one transaction, then invalidates the cached Orders and Trucks. Call it from a Server Action.
  */
 export async function createOrder(
   database: db | dbTransaction,
@@ -46,7 +54,7 @@ export async function createOrder(
       return newOrder;
     });
 
-    updateTag('orders');
+    invalidate('create');
 
     return ok(selectOrderSchema.parse(created));
   } catch (err) {
@@ -57,7 +65,7 @@ export async function createOrder(
 
 /**
  * Updates an Order, replaces its Loading and Unloading Places, re-assigns its Driver to its Truck
- * and recomputes its PLN price, in one transaction, then invalidates the cached Orders.
+ * and recomputes its PLN price, in one transaction, then invalidates the cached Orders and Trucks.
  * Call it from a Server Action.
  */
 export async function updateOrder(
@@ -90,7 +98,7 @@ export async function updateOrder(
     });
     if (!updated) return error({ reason: 'NotFound' });
 
-    updateTag('orders');
+    invalidate('update');
 
     return ok(selectOrderSchema.parse(updated));
   } catch (err) {
@@ -121,7 +129,7 @@ export async function changeOrderStatus(
     );
     if (!changed) return error({ reason: 'NotFound' });
 
-    updateTag('orders');
+    invalidate('changeStatus');
 
     return ok(selectOrderSchema.parse(changed));
   } catch (err) {
@@ -149,9 +157,13 @@ export async function removeOrder(
   });
   if (!removed) return error({ reason: 'NotFound' });
 
-  updateTag('orders');
+  invalidate('remove');
 
   return ok(selectOrderSchema.parse(removed));
+}
+
+function invalidate(write: keyof typeof INVALIDATED_TAGS) {
+  for (const tag of INVALIDATED_TAGS[write]) updateTag(tag);
 }
 
 /** Parses a row id, such as an Order's or a Status's, from a Server Action's untrusted input. */

@@ -1,5 +1,4 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
-import { isAfter, isBefore } from 'date-fns';
 import { ORDER_STATUS } from '@/lib/consts';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
@@ -33,44 +32,7 @@ export const orderFormOptions = formOptions({
     },
   },
   validators: {
+    // Also runs on submit; it holds the Loading/Unloading Date order the Orders module enforces.
     onChange: OrderFormSchema,
-    onSubmitAsync: async ({ value }) => {
-      const isLoadingDateAfter = isAfter(value.startDate, value.endDate);
-      const isUnloadingDateBefore = isBefore(value.endDate, value.startDate);
-      const { error } = OrderFormSchema.safeParse(value);
-
-      if (isLoadingDateAfter || isUnloadingDateBefore) {
-        return {
-          fields: {
-            ...(isLoadingDateAfter
-              ? {
-                  startDate: {
-                    message: 'Data załadunku nie może być późniejsza niż data rozładunku.',
-                  },
-                }
-              : {}),
-            ...(isUnloadingDateBefore
-              ? {
-                  endDate: {
-                    message: 'Data rozładunku nie może być wcześniejsza niż data załadunku.',
-                  },
-                }
-              : {}),
-          },
-        };
-      }
-
-      if (error && error) {
-        const errors = Object.fromEntries(
-          Object.entries(error).map(([field, errors]) => [field, { message: errors?.[0] ?? '' }]),
-        );
-
-        return {
-          fields: {
-            ...errors,
-          },
-        };
-      }
-    },
   },
 });

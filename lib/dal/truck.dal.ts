@@ -6,7 +6,7 @@ export async function getAllTrucks() {
   'use cache';
   cacheLife('days');
 
-  cacheTag('drivers');
+  cacheTag('trucks');
 
   const dbTrucks = await db.query.truck.findMany();
   return dbTrucks;

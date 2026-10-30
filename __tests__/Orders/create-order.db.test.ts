@@ -72,6 +72,19 @@ describe('createOrder', () => {
       });
     }));
 
+  it('rejects an EUR price without an exchange rate, and saves nothing', () =>
+    withRollback(async (trx) => {
+      const { orderForm, eur } = await seed(trx);
+
+      const [failure] = await createOrder(
+        trx,
+        orderForm({ currencyId: eur.id, priceCurrency: '1000' }),
+      );
+
+      expect(failure?.reason).toBe('InvalidData');
+      expect(await findOrdersInWeek(trx, week)).toHaveLength(0);
+    }));
+
   it('reports an Order Number already used for the Customer, and saves nothing', () =>
     withRollback(async (trx) => {
       const { orderForm } = await seed(trx);
@@ -83,6 +96,19 @@ describe('createOrder', () => {
       expect(await findOrdersInWeek(trx, week)).toHaveLength(1);
     }));
 
+  it('rejects a Loading Date after the Unloading Date, and saves nothing', () =>
+    withRollback(async (trx) => {
+      const { orderForm } = await seed(trx);
+
+      const [failure] = await createOrder(
+        trx,
+        orderForm({ startDate: '2026-10-29', endDate: '2026-10-28' }),
+      );
+
+      expect(failure?.reason).toBe('InvalidData');
+      expect(await findOrdersInWeek(trx, week)).toHaveLength(0);
+    }));
+
   it('invalidates cached Orders once the Order is created', () =>
     withRollback(async (trx) => {
       const { orderForm } = await seed(trx);
@@ -90,6 +116,15 @@ describe('createOrder', () => {
       await createOrder(trx, orderForm());
 
       expect(updateTag).toHaveBeenCalledWith('orders');
+    }));
+
+  it('invalidates cached Trucks once the Order is created, since it assigns its Driver to its Truck', () =>
+    withRollback(async (trx) => {
+      const { orderForm } = await seed(trx);
+
+      await createOrder(trx, orderForm());
+
+      expect(updateTag).toHaveBeenCalledWith('trucks');
     }));
 
   it('invalidates nothing when the Order is not created', () =>

@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm';
+import { updateTag } from 'next/cache';
 import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
@@ -63,6 +64,21 @@ describe('updateOrder', () => {
       expect(saved.pricePLN).toBe('1000.00');
     }));
 
+  it('rejects a Loading Date after the Unloading Date, keeping the saved dates', () =>
+    withRollback(async (trx) => {
+      const { orderForm, created } = await seed(trx);
+
+      const [failure] = await updateOrder(
+        trx,
+        created.id,
+        orderForm({ startDate: '2026-10-29', endDate: '2026-10-28' }),
+      );
+
+      expect(failure?.reason).toBe('InvalidData');
+      const [saved] = await findOrdersInWeek(trx, week);
+      expect(saved).toMatchObject({ startDate: '2026-10-27', endDate: '2026-10-29' });
+    }));
+
   it('replaces the Loading and Unloading Places', () =>
     withRollback(async (trx) => {
       const { orderForm, refs, created } = await seed(trx);
@@ -90,6 +106,16 @@ describe('updateOrder', () => {
 
       const [savedTruck] = await trx.select().from(truck).where(eq(truck.id, refs.truck.id));
       expect(savedTruck.driverId).toBe(refs.drivers.anna.id);
+    }));
+
+  it('invalidates cached Trucks once the Order is updated, since it assigns its Driver to its Truck', () =>
+    withRollback(async (trx) => {
+      const { orderForm, refs, created } = await seed(trx);
+      vi.mocked(updateTag).mockClear();
+
+      await updateOrder(trx, created.id, orderForm({ driverId: refs.drivers.anna.id }));
+
+      expect(updateTag).toHaveBeenCalledWith('trucks');
     }));
 
   it('rejects a malformed Order id', () =>
