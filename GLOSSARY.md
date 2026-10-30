@@ -26,6 +26,16 @@ _Avoid_: End date, delivery date
 Where an Order stands: in progress (_w trakcie_), cancelled (_anulowane_) or delivered (_zakończone_). Changing it touches nothing else on the Order.
 _Avoid_: State, stage
 
+### Customers and Cities
+
+**Customer** (_Zleceniodawca_):
+The company an Order is carried out for. Its name and its tax number (_NIP_) are each unique: a Customer with either already taken cannot be created.
+_Avoid_: Client, contractor
+
+**City** (_Miejscowość_):
+A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created.
+_Avoid_: Place, location, town
+
 ### Views
 
 **Start date**

@@ -14,11 +14,3 @@ export async function getAllCities(filters?: string) {
     .orderBy(city.name)
     .limit(10);
 }
-
-export async function getCityByName(cityName: string) {
-  const dbCity = await db.query.city.findFirst({
-    where: ilike(city.name, cityName),
-  });
-
-  return dbCity ? dbCity : null;
-}
