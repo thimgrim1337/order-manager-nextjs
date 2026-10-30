@@ -26,8 +26,6 @@ const EnvSchema = z.object({
   //   REFRESH_TOKEN_SECRET: z.string(),
 });
 
-export type EnvSchema = z.infer<typeof EnvSchema>;
-
 const env = EnvSchema.safeParse(process.env);
 
 if (!env.success) {

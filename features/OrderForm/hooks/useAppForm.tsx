@@ -9,7 +9,7 @@ import PlacesComboboxField from '../components/FormFields/places-combobox';
 import SelectField from '../components/FormFields/select-field';
 import { fieldContext, formContext } from '../context/form-context';
 
-export const { useAppForm, withForm } = createFormHook({
+export const { useAppForm } = createFormHook({
   fieldComponents: {
     InputField,
     DateField,

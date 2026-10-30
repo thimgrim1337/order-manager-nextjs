@@ -29,15 +29,6 @@ export async function apiCall<TData>(url: string, init?: RequestInit): Promise<A
   };
 }
 
-export function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
-  const keysToOmit = new Set(keys as string[]);
-
-  return Object.fromEntries(Object.entries(obj).filter(([key]) => !keysToOmit.has(key))) as Omit<
-    T,
-    K
-  >;
-}
-
 export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
   return keys.reduce(
     (acc, key) => {

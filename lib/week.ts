@@ -65,7 +65,7 @@ export function parseWeekKey(key: string): Week | undefined {
   return weeks[Number(match[2]) - 1];
 }
 
-export type OrderDayRole = 'none' | 'loading' | 'unloading' | 'loading-unloading' | 'transit';
+type OrderDayRole = 'none' | 'loading' | 'unloading' | 'loading-unloading' | 'transit';
 
 /** What an Order does on one day of the Week. */
 export type OrderDay = {

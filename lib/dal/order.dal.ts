@@ -1,28 +1,12 @@
-import {
-  and,
-  asc,
-  count,
-  desc,
-  eq,
-  gte,
-  type InferSelectModel,
-  type InferSelectViewModel,
-  ilike,
-  lte,
-  or,
-  sql,
-} from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
-import { type order, ordersWithDetailsView } from '@/db/schemas';
+import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
 import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
-
-export type DbOrderView = InferSelectViewModel<typeof ordersWithDetailsView>;
-export type DbOrder = InferSelectModel<typeof order>;
 
 export async function getAllOrders(
   pageIndex: number,

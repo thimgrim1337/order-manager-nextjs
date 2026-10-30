@@ -30,11 +30,9 @@ const TIME_ZONE = 'Europe/Warsaw';
 // biome-ignore lint/plugin: the one read of the clock
 export const getToday = (now: Date = new Date()) => formatDate(new TZDate(now, TIME_ZONE));
 
-export const getTomorrow = () => addDays(getToday(), 1);
-
 export const getYesterday = (date: Date | string) => formatDate(subDays(date, 1));
 
-export const subDays = (date: string | Date, amount: number) =>
+const subDays = (date: string | Date, amount: number) =>
   formatDate(subDaysLib(toDate(date), amount));
 
 export const addDays = (date: string | Date, amount: number) =>

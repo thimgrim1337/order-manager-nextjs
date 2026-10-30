@@ -1,8 +1,6 @@
-import { type InferSelectModel, ilike } from 'drizzle-orm';
+import { ilike } from 'drizzle-orm';
 import db from '@/db/db';
 import { city } from '@/db/schemas';
-
-export type DbCity = InferSelectModel<typeof city>;
 
 export async function getAllCities(filters?: string) {
   const searchTerm = filters ? `%${filters.trim().toLocaleLowerCase()}%` : undefined;
