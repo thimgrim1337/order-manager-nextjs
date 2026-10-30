@@ -20,7 +20,7 @@ import type { OrderSortField } from '@/lib/consts';
 import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, PlaceType, SortParams } from '@/types/types';
 import type { CityDto } from '../dto/city.dto';
-import type { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
+import type { UpdateOrderDto } from '../dto/order.dto';
 import { analyzeGlobalFiltering } from '../utils';
 
 export type DbOrderView = InferSelectViewModel<typeof ordersWithDetailsView>;
@@ -168,11 +168,6 @@ export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) 
   cacheTag('orders');
 
   return findOrdersInWeek(db, week, opts);
-}
-
-export async function createOrder(dto: CreateOrderDto, trx: dbTransaction) {
-  const [newOrder] = await trx.insert(order).values(dto).returning();
-  return newOrder;
 }
 
 export async function addOrderPlaces(

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import type { ActionResponse } from '@/lib/actions';
+import type { ActionResponse } from '@/lib/action-response';
 
 type ToastMessage = {
   errorTitle?: string;

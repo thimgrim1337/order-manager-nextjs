@@ -10,6 +10,10 @@ Planning and tracking of transport Orders carried out by the company's Trucks an
 A single transport job for a Customer: carried by one Truck and Driver, from Loading Places to Unloading Places, for an agreed price.
 _Avoid_: Job, shipment, transport
 
+**Order Number** (_Numer zlecenia_):
+The Customer's reference for an Order. Unique per Customer: two Customers may use the same Order Number.
+_Avoid_: Order id, reference
+
 **Loading Date** (_Data załadunku_):
 The day an Order's loading begins; the first day of the Order.
 _Avoid_: Start date, from date

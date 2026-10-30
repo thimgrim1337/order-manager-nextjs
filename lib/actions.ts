@@ -1,68 +1,23 @@
 'use server';
 
 import { revalidateTag, updateTag } from 'next/cache';
+import db from '@/db/db';
+import { type ActionResponse, toActionResponse } from './action-response';
 import { getAllCustomers } from './dal/customer.dal.';
 import type { CityDto, CreateCityDto } from './dto/city.dto';
 import type { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
 import type { OrderDto, OrderFormDto, UpdateOrderDto } from './dto/order.dto';
+import * as Orders from './orders';
 import { createCityService } from './services/city.services';
 import { createCustomerService } from './services/customer.services';
 import {
-  createOrderService,
   deleteOrderService,
   patchOrderService,
   updateOrderService,
 } from './services/order.services';
 
-export type ActionResponse<T> =
-  | { success: true; data: T; message?: string }
-  | { success: false; message?: string; details?: unknown };
-
 export async function createOrder(formData: OrderFormDto): Promise<ActionResponse<OrderDto>> {
-  const [error, order] = await createOrderService(formData);
-
-  if (error === null) {
-    updateTag('orders');
-
-    return {
-      success: true,
-      data: order,
-    };
-  }
-
-  const reason = error.reason;
-  switch (reason) {
-    case 'InvalidData': {
-      return {
-        success: false,
-        message: 'Nieprawidłowe dane.',
-        details: String(error.details),
-      };
-    }
-    case 'OrderExist': {
-      return {
-        success: false,
-        message: 'Zlecenie o tym numerze już istnieje.',
-      };
-    }
-    case 'DrizzleError': {
-      return {
-        success: false,
-        message: 'Wystąpił błąd bazy danych',
-        details: error.details,
-      };
-    }
-    case 'UnexpectedError': {
-      return {
-        success: false,
-        message: 'Wystąpił nieznany błąd.',
-        details: error.details,
-      };
-    }
-    default: {
-      throw new Error(`Unhandled error: ${reason satisfies never}`);
-    }
-  }
+  return toActionResponse(await Orders.createOrder(db, formData));
 }
 
 export async function updateOrder(

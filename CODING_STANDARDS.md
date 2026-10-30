@@ -20,6 +20,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 ## Data access
 
 - A query worth testing is a `find*(database: db | dbTransaction, …)` function in `lib/dal/`. A thin `get*` adapter adds `'use cache'` + `cacheTag` and calls it, holding no other logic: `cacheTag()` throws outside the Next runtime, so the cached function itself can't be tested. Example: `findOrdersInWeek` / `getOrdersInWeek` in `lib/dal/order.dal.ts`. `getAllOrders` predates the rule; split it the same way when it first gets a test.
+- Order writes go through the server-only Orders module (`lib/orders.ts`): it takes `db | dbTransaction`, owns validation, the transaction and cache invalidation, and returns a `Result` of domain outcomes. A Server Action only passes `db` and maps the outcome through `toActionResponse` (`lib/action-response.ts`), which holds every failure's Polish message.
 - Query tests are `*.db.test.ts`, seed their own rows and run inside `withRollback` (`__tests__/db/with-rollback.ts`), passing its transaction to the `find*` function.
 
 ## Accessibility

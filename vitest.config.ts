@@ -1,3 +1,4 @@
+import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -45,6 +46,10 @@ export default defineConfig({
           execArgv: ['--throw-deprecation'],
           include: ['__tests__/**/*.db.test.ts'],
           globalSetup: ['./__tests__/db/global-setup.ts'],
+        },
+        // Server code, so `server-only` resolves to its empty module as it does under the react-server condition.
+        resolve: {
+          alias: { 'server-only': path.resolve('node_modules/server-only/empty.js') },
         },
       },
     ],
