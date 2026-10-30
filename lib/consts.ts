@@ -5,6 +5,15 @@ export const ORDER_STATUS = {
   Delivered: 3,
 } as const;
 
+/** Cache tags: the DAL tags what it caches with them, and writes invalidate them. */
+export const CACHE_TAG = {
+  Orders: 'orders',
+  Trucks: 'trucks',
+  Drivers: 'drivers',
+  Status: 'status',
+  Countries: 'countries',
+} as const;
+
 export const DEFAULT_PAGE_INDEX = 0;
 export const DEFAULT_PAGE_SIZE = 10;
 

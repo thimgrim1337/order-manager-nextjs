@@ -16,7 +16,7 @@ import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { type order, ordersWithDetailsView } from '@/db/schemas';
-import type { OrderSortField } from '@/lib/consts';
+import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
 import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
@@ -31,7 +31,7 @@ export async function getAllOrders(
   filters?: OrderFilters,
 ) {
   'use cache';
-  cacheTag('orders');
+  cacheTag(CACHE_TAG.Orders);
 
   const getSortColumn = (sortParams?: SortParams[]) => {
     const sortMappings: Record<OrderSortField, AnyPgColumn> = {
@@ -163,7 +163,7 @@ export async function findOrdersInWeek(
 
 export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) {
   'use cache';
-  cacheTag('orders');
+  cacheTag(CACHE_TAG.Orders);
 
   return findOrdersInWeek(db, week, opts);
 }

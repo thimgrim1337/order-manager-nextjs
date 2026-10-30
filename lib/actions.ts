@@ -3,6 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import db from '@/db/db';
 import { type ActionResponse, toActionResponse } from './action-response';
+import { CACHE_TAG } from './consts';
 import { getAllCustomers } from './dal/customer.dal.';
 import type { CityDto, CreateCityDto } from './dto/city.dto';
 import type { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
@@ -43,7 +44,7 @@ export async function createCustomer(
   const [error, customer] = await createCustomerService(formData);
 
   if (error === null) {
-    revalidateTag('orders', 'max');
+    revalidateTag(CACHE_TAG.Orders, 'max');
 
     return {
       success: true,
@@ -90,7 +91,7 @@ export async function createCity(formData: CreateCityDto): Promise<ActionRespons
   const [error, customer] = await createCityService(formData);
 
   if (error === null) {
-    revalidateTag('orders', 'max');
+    revalidateTag(CACHE_TAG.Orders, 'max');
 
     return {
       success: true,
