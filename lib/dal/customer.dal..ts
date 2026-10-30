@@ -1,7 +1,6 @@
 import { ilike, or } from 'drizzle-orm';
 import db from '@/db/db';
 import { customer } from '@/db/schemas';
-import type { CreateCustomerDto } from '../dto/customer.dto';
 
 export async function getAllCustomers(filters?: string) {
   const searchTerm = filters ? `%${filters.trim().toLocaleLowerCase()}%` : undefined;
@@ -16,9 +15,4 @@ export async function getAllCustomers(filters?: string) {
     )
     .orderBy(customer.name)
     .limit(10);
-}
-
-export async function createCustomer(dto: CreateCustomerDto) {
-  const [newCustomer] = await db.insert(customer).values(dto).returning();
-  return newCustomer;
 }

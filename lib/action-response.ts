@@ -9,6 +9,8 @@ const FAILURE_MESSAGES = {
   OrderNrTaken: 'Zlecenie o tym numerze już istnieje.',
   NotFound: 'Zlecenie nie istnieje.',
   UnknownStatus: 'Nieznany status zlecenia.',
+  CityTaken: 'Ta miejscowość już istnieje.',
+  CustomerTaken: 'Ten zleceniodawca już istnieje.',
 };
 
 /** A failure outcome the translator has a user-facing message for. */

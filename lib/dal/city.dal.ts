@@ -1,7 +1,6 @@
 import { type InferSelectModel, ilike } from 'drizzle-orm';
 import db from '@/db/db';
 import { city } from '@/db/schemas';
-import type { CreateCityDto } from '../dto/city.dto';
 
 export type DbCity = InferSelectModel<typeof city>;
 
@@ -22,9 +21,4 @@ export async function getCityByName(cityName: string) {
   });
 
   return dbCity ? dbCity : null;
-}
-
-export async function createCity(dto: CreateCityDto) {
-  const [newCity] = await db.insert(city).values(dto).returning();
-  return newCity;
 }

@@ -1,11 +1,11 @@
 import 'server-only';
-import { DrizzleQueryError, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { updateTag } from 'next/cache';
-import type { DatabaseError } from 'pg';
 import z from 'zod';
 import type { db, dbTransaction } from '@/db/db';
 import { loadingPlace, order, truck, unloadingPlace } from '@/db/schemas';
 import { CACHE_TAG } from './consts';
+import { isForeignKeyViolation, isUniqueViolation } from './db-errors';
 import type { CityDto } from './dto/city.dto';
 import { type OrderDto, OrderFormSchema, selectOrderSchema } from './dto/order.dto';
 import { error, ok, type Result } from './error';
@@ -244,16 +244,9 @@ async function assignDriverToTruck(
 }
 
 function isOrderNrTaken(err: unknown) {
-  return violates(err, '23505', 'orders_customer_id_order_nr_unique');
+  return isUniqueViolation(err, 'orders_customer_id_order_nr_unique');
 }
 
 function isUnknownStatus(err: unknown) {
-  return violates(err, '23503', 'orders_status_id_statuses_id_fk');
-}
-
-/** Whether a query failed on the given Postgres error code and constraint. */
-function violates(err: unknown, code: string, constraint: string) {
-  const cause = err instanceof DrizzleQueryError ? (err.cause as DatabaseError) : undefined;
-
-  return cause?.code === code && cause.constraint === constraint;
+  return isForeignKeyViolation(err, 'orders_status_id_statuses_id_fk');
 }

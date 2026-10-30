@@ -41,95 +41,15 @@ export async function searchCustomers(query: string) {
 export async function createCustomer(
   formData: CreateCustomerDto,
 ): Promise<ActionResponse<CustomerDto>> {
-  const [error, customer] = await createCustomerService(formData);
+  const outcome = await createCustomerService(db, formData);
+  if (outcome[0] === null) revalidateTag(CACHE_TAG.Orders, 'max');
 
-  if (error === null) {
-    revalidateTag(CACHE_TAG.Orders, 'max');
-
-    return {
-      success: true,
-      data: customer,
-    };
-  }
-
-  const reason = error.reason;
-  switch (reason) {
-    case 'InvalidData': {
-      return {
-        success: false,
-        message: 'Nieprawidłowe dane.',
-        details: error.details,
-      };
-    }
-    case 'CustomerExist': {
-      return {
-        success: false,
-        message: 'Ten zleceniodawca już istnieje.',
-      };
-    }
-    case 'DrizzleError': {
-      return {
-        success: false,
-        message: 'Wystąpił błąd bazy danych',
-        details: error.details,
-      };
-    }
-    case 'UnexpectedError': {
-      return {
-        success: false,
-        message: 'Wystąpił nieznany błąd.',
-        details: error.details,
-      };
-    }
-    default: {
-      throw new Error(`Unhandled error: ${reason satisfies never}`);
-    }
-  }
+  return toActionResponse(outcome);
 }
 
 export async function createCity(formData: CreateCityDto): Promise<ActionResponse<CityDto>> {
-  const [error, customer] = await createCityService(formData);
+  const outcome = await createCityService(db, formData);
+  if (outcome[0] === null) revalidateTag(CACHE_TAG.Orders, 'max');
 
-  if (error === null) {
-    revalidateTag(CACHE_TAG.Orders, 'max');
-
-    return {
-      success: true,
-      data: customer,
-    };
-  }
-
-  const reason = error.reason;
-  switch (reason) {
-    case 'InvalidData': {
-      return {
-        success: false,
-        message: 'Nieprawidłowe dane.',
-        details: error.details,
-      };
-    }
-    case 'CityExist': {
-      return {
-        success: false,
-        message: 'Ta miejscowość już istnieje.',
-      };
-    }
-    case 'DrizzleError': {
-      return {
-        success: false,
-        message: 'Wystąpił błąd bazy danych',
-        details: error.details,
-      };
-    }
-    case 'UnexpectedError': {
-      return {
-        success: false,
-        message: 'Wystąpił nieznany błąd.',
-        details: error.details,
-      };
-    }
-    default: {
-      throw new Error(`Unhandled error: ${reason satisfies never}`);
-    }
-  }
+  return toActionResponse(outcome);
 }
