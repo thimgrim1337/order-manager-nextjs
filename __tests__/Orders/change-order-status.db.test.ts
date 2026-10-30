@@ -57,6 +57,15 @@ describe('changeOrderStatus', () => {
       });
     }));
 
+  it('rejects a malformed Order id', () =>
+    withRollback(async (trx) => {
+      const { delivered } = await seed(trx);
+
+      const [failure] = await changeOrderStatus(trx, 'abc', delivered.id);
+
+      expect(failure?.reason).toBe('InvalidData');
+    }));
+
   it('reports a status that does not exist', () =>
     withRollback(async (trx) => {
       const { created } = await seed(trx);

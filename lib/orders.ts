@@ -60,9 +60,12 @@ export async function createOrder(
  */
 export async function updateOrder(
   database: db | dbTransaction,
-  orderId: number,
+  orderIdInput: unknown,
   input: unknown,
 ): Promise<Result<OrderDto, UpdateOrderFailure>> {
+  const [invalidId, orderId] = parseId(orderIdInput);
+  if (invalidId) return error(invalidId);
+
   const [invalid, form] = parseOrderForm(input);
   if (invalid) return error(invalid);
 
@@ -101,17 +104,19 @@ export async function updateOrder(
  */
 export async function changeOrderStatus(
   database: db | dbTransaction,
-  orderId: number,
-  statusId: unknown,
+  orderIdInput: unknown,
+  statusIdInput: unknown,
 ): Promise<Result<OrderDto, ChangeOrderStatusFailure>> {
-  const validation = z.int().positive().safeParse(statusId);
-  if (!validation.success)
-    return error({ reason: 'InvalidData', details: z.prettifyError(validation.error) });
+  const [invalidOrderId, orderId] = parseId(orderIdInput);
+  if (invalidOrderId) return error(invalidOrderId);
+
+  const [invalidStatusId, statusId] = parseId(statusIdInput);
+  if (invalidStatusId) return error(invalidStatusId);
 
   try {
     // A savepoint, so a failed write leaves a caller's transaction usable.
     const [changed] = await database.transaction((trx) =>
-      trx.update(order).set({ statusId: validation.data }).where(eq(order.id, orderId)).returning(),
+      trx.update(order).set({ statusId }).where(eq(order.id, orderId)).returning(),
     );
     if (!changed) return error({ reason: 'NotFound' });
 
@@ -122,6 +127,18 @@ export async function changeOrderStatus(
     if (isUnknownStatus(err)) return error({ reason: 'UnknownStatus' });
     throw err;
   }
+}
+
+/** Parses a row id, such as an Order's or a Status's, from a Server Action's untrusted input. */
+function parseId(input: unknown) {
+  const validation = z.int().positive().safeParse(input);
+  if (!validation.success)
+    return error<'InvalidData', InvalidData>({
+      reason: 'InvalidData',
+      details: z.prettifyError(validation.error),
+    });
+
+  return ok(validation.data);
 }
 
 /** Validates the Order form and turns its price into the Order's PLN price, rate and date. */

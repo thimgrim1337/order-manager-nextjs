@@ -92,6 +92,15 @@ describe('updateOrder', () => {
       expect(savedTruck.driverId).toBe(refs.drivers.anna.id);
     }));
 
+  it('rejects a malformed Order id', () =>
+    withRollback(async (trx) => {
+      const { orderForm } = await seed(trx);
+
+      const [failure] = await updateOrder(trx, 1.5, orderForm());
+
+      expect(failure?.reason).toBe('InvalidData');
+    }));
+
   it('reports an Order that no longer exists', () =>
     withRollback(async (trx) => {
       const { orderForm, created } = await seed(trx);
