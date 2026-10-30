@@ -1,31 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { currency, customer, driver, order, status, truck } from '@/db/schemas';
+import { order } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { parseWeekKey, type Week } from '@/lib/week';
+import { seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
 
 const week = (key: string) => parseWeekKey(key) as Week;
 
 async function seed(trx: dbTransaction) {
-  // One transaction is one client, so inserts run one after another.
-  const [jan, anna] = await trx
-    .insert(driver)
-    .values([
-      { firstName: 'Jan', lastName: 'Kowalski' },
-      { firstName: 'Anna', lastName: 'Nowak' },
-    ])
-    .returning();
-  const [dbCustomer] = await trx
-    .insert(customer)
-    .values({ name: 'Test Firma', tax: 'PL1234567890' })
-    .returning();
-  const [dbCurrency] = await trx.insert(currency).values({ code: 'PLN' }).returning();
-  const [dbStatus] = await trx.insert(status).values({ name: 'w trakcie' }).returning();
-  const [dbTruck] = await trx
-    .insert(truck)
-    .values({ plate: 'WP0997C', insuranceEndAt: '2027-01-01', serviceEndAt: '2027-01-01' })
-    .returning();
+  const refs = await seedOrderReferences(trx);
+  const { jan, anna } = refs.drivers;
 
   let orderNr = 0;
   const addOrders = async (
@@ -37,10 +22,10 @@ async function seed(trx: dbTransaction) {
         orders.map((fields) => ({
           orderNr: `ZL/${++orderNr}`,
           driverId: jan.id,
-          truckId: dbTruck.id,
-          customerId: dbCustomer.id,
-          currencyId: dbCurrency.id,
-          statusId: dbStatus.id,
+          truckId: refs.truck.id,
+          customerId: refs.customer.id,
+          currencyId: refs.currencies.pln.id,
+          statusId: refs.status.id,
           priceCurrency: '100',
           pricePLN: '100',
           ...fields,

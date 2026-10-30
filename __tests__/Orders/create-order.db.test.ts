@@ -2,63 +2,31 @@ import { eq } from 'drizzle-orm';
 import { updateTag } from 'next/cache';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { city, country, currency, customer, driver, status, truck } from '@/db/schemas';
+import { truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
 import { createOrder } from '@/lib/orders';
 import { parseWeekKey, type Week } from '@/lib/week';
+import { seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
 
 // updateTag throws outside a Server Action.
 vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 
 async function seed(trx: dbTransaction) {
-  // One transaction is one client, so inserts run one after another.
-  const [dbCountry] = await trx.insert(country).values({ name: 'Polska', code: 'PL' }).returning();
-  const [warszawa, plock, gdansk] = await trx
-    .insert(city)
-    .values([
-      { name: 'Warszawa', postal: '00-001', countryId: dbCountry.id },
-      { name: 'Płock', postal: '09-400', countryId: dbCountry.id },
-      { name: 'Gdańsk', postal: '80-001', countryId: dbCountry.id },
-    ])
-    .returning();
-  const [jan] = await trx
-    .insert(driver)
-    .values({ firstName: 'Jan', lastName: 'Kowalski' })
-    .returning();
-  const [dbCustomer] = await trx
-    .insert(customer)
-    .values({ name: 'Test Firma', tax: 'PL1234567890' })
-    .returning();
-  // Fixed ids: the app reads currency 1 as PLN and accepts statuses 1–3.
-  const [pln, eur] = await trx
-    .insert(currency)
-    .overridingSystemValue()
-    .values([
-      { id: 1, code: 'PLN' },
-      { id: 2, code: 'EUR' },
-    ])
-    .returning();
-  const [dbStatus] = await trx
-    .insert(status)
-    .overridingSystemValue()
-    .values({ id: 1, name: 'w trakcie' })
-    .returning();
-  const [dbTruck] = await trx
-    .insert(truck)
-    .values({ plate: 'WP0997C', insuranceEndAt: '2027-01-01', serviceEndAt: '2027-01-01' })
-    .returning();
+  const refs = await seedOrderReferences(trx);
+  const { jan } = refs.drivers;
+  const { warszawa, plock, gdansk } = refs.cities;
 
   const orderForm = (fields: Partial<OrderFormDto> = {}): OrderFormDto => ({
     orderNr: 'ZL/1',
     startDate: '2026-10-27',
     endDate: '2026-10-29',
-    statusId: dbStatus.id,
-    truckId: dbTruck.id,
+    statusId: refs.status.id,
+    truckId: refs.truck.id,
     driverId: jan.id,
-    customerId: dbCustomer.id,
-    currencyId: pln.id,
+    customerId: refs.customer.id,
+    currencyId: refs.currencies.pln.id,
     priceCurrency: '1000',
     loadingPlaces: [warszawa],
     unloadingPlaces: [plock, gdansk],
@@ -66,7 +34,7 @@ async function seed(trx: dbTransaction) {
     ...fields,
   });
 
-  return { orderForm, jan, eur, dbTruck };
+  return { orderForm, jan, eur: refs.currencies.eur, dbTruck: refs.truck };
 }
 
 const week = parseWeekKey('2026-W44') as Week;
