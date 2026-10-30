@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import z from 'zod';
 import { order, ordersWithDetailsView } from '@/db/schemas';
-import { ZOD_ERROR_MESSAGES } from '../consts';
+import { ORDER_STATUS, ZOD_ERROR_MESSAGES } from '../consts';
 import { selectCitySchema as City } from './city.dto';
 
 export const OrderFormSchema = z.object({
@@ -11,7 +11,10 @@ export const OrderFormSchema = z.object({
     .trim(),
   startDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
   endDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
-  statusId: z.number({ error: ZOD_ERROR_MESSAGES.FieldRequired }).min(1).max(3),
+  statusId: z
+    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
+    .min(ORDER_STATUS.InProgress)
+    .max(ORDER_STATUS.Delivered),
   truckId: z
     .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Wybierz pojazd.' }),

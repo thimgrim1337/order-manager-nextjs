@@ -3,23 +3,24 @@ import { Ban, CheckCircle, Truck } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { changeOrderStatus } from '@/lib/actions';
+import { ORDER_STATUS } from '@/lib/consts';
 import type { Order } from '@/types/types';
 
 const statusConfig = {
   pending: {
-    id: 1,
+    id: ORDER_STATUS.InProgress,
     label: 'w trakcie',
     icon: Truck,
     description: 'Zlecenie zostało rozpoczęte.',
   },
-  cannceled: {
-    id: 2,
+  cancelled: {
+    id: ORDER_STATUS.Cancelled,
     label: 'anulowane',
     icon: Ban,
     description: 'Zlecenie zostało anulowane.',
   },
   delivered: {
-    id: 3,
+    id: ORDER_STATUS.Delivered,
     label: 'zakończone',
     icon: CheckCircle,
     description: 'Zlecenie zostało zakończone.',

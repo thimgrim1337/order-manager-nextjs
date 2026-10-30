@@ -1,5 +1,6 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
 import { isAfter, isBefore } from 'date-fns';
+import { ORDER_STATUS } from '@/lib/consts';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
 import type { City } from '@/types/types';
@@ -19,7 +20,8 @@ export const orderFormOptions = formOptions({
     customerId: 0,
     driverId: 0,
     truckId: 0,
-    statusId: 1,
+    // Widened, or the form would only accept this one Status.
+    statusId: ORDER_STATUS.InProgress as number,
     priceCurrency: '1',
     currencyId: 1,
     loadingPlaces: [] as City[] | [],

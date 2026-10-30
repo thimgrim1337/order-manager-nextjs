@@ -1,5 +1,6 @@
 import type { dbTransaction } from '@/db/db';
 import { city, country, currency, customer, driver, status, truck } from '@/db/schemas';
+import { ORDER_STATUS } from '@/lib/consts';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
 
 /**
@@ -41,7 +42,7 @@ export async function seedOrderReferences(trx: dbTransaction) {
   const [dbStatus] = await trx
     .insert(status)
     .overridingSystemValue()
-    .values({ id: 1, name: 'w trakcie' })
+    .values({ id: ORDER_STATUS.InProgress, name: 'w trakcie' })
     .returning();
   const [dbTruck] = await trx
     .insert(truck)
