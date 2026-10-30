@@ -3,14 +3,14 @@ import { Input } from './input';
 
 type DebouncedInputProps = {
   value: string;
-  onFiltersChange: (value: string) => void;
+  onDebouncedChange: (value: string) => void;
   debounce?: number;
   icon?: ReactNode;
 };
 
 export default function DebouncedInput({
   value: initialValue,
-  onFiltersChange,
+  onDebouncedChange,
   debounce = 500,
   icon,
   ...props
@@ -22,7 +22,7 @@ export default function DebouncedInput({
     setValue(initialValue);
   }, [initialValue]);
 
-  const emit = useEffectEvent(() => onFiltersChange(value));
+  const emit = useEffectEvent(() => onDebouncedChange(value));
 
   useEffect(() => {
     const timeout = setTimeout(emit, debounce);

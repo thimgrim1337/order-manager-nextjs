@@ -11,7 +11,7 @@ export default function OrdersSearch() {
       <DebouncedInput
         className=" border rounded-md"
         placeholder={`Szukaj zleceń....`}
-        onFiltersChange={(value) => change({ search: value })}
+        onDebouncedChange={(value) => change({ search: value })}
         value={query.search ?? ''}
         icon={<Search className="text-muted-foreground" size={'1.5rem'} />}
       />
