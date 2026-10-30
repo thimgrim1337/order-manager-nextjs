@@ -15,7 +15,11 @@
       "!**/public/mockServiceWorker.js"
     ]
   },
-  "plugins": ["./biome-plugins/company-today.grit"],
+  "plugins": [
+    "./biome-plugins/company-today.grit",
+    "./biome-plugins/cache-tag-constant.grit",
+    "./biome-plugins/calendar-day-click.grit"
+  ],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",

@@ -1,0 +1,8 @@
+or {
+  `cacheTag($tag)`,
+  `updateTag($tag)`,
+  `revalidateTag($tag, $profile)`
+} as $call where {
+  $tag <: JsStringLiteralExpression(),
+  register_diagnostic(span=$tag, message="Name the cache tag with CACHE_TAG from @/lib/consts, so readers and writers share one tag.")
+}

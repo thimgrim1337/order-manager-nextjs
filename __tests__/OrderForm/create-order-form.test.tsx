@@ -1,10 +1,11 @@
-import { act, render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateOrderForm from '@/features/OrderForm/components/create-order-form';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
 import { searchCustomers } from '@/lib/actions';
+import { pickDate } from '../utils/pick-date';
 
 const submitFormMock = vi.hoisted(() => vi.fn());
 vi.mock('@/features/OrderForm/hooks/useFormSubmit', () => ({
@@ -245,13 +246,8 @@ describe('CreateOrderForm', () => {
 
       await user.type(screen.getByLabelText('Numer zlecenia'), '12345');
 
-      await user.click(screen.getByLabelText('Data załadunku'));
-
-      await user.click(screen.getByRole('gridcell', { name: '12' }));
-
-      await user.click(screen.getByLabelText('Data rozładunku'));
-
-      await user.click(screen.getByRole('gridcell', { name: '13' }));
+      await pickDate(user, 'Data załadunku', 12);
+      await pickDate(user, 'Data rozładunku', 13);
 
       await user.click(screen.getByLabelText('Miejsca załadunku'));
       await user.click(screen.getByRole('option', { name: 'Płock' }));
@@ -280,11 +276,8 @@ describe('CreateOrderForm', () => {
     it('show a field error and not call submitForm when the Loading Date is after the Unloading Date', async () => {
       const { user } = await setup();
 
-      await user.click(screen.getByLabelText('Data załadunku'));
-      await user.click(within(screen.getByRole('gridcell', { name: '13' })).getByRole('button'));
-
-      await user.click(screen.getByLabelText('Data rozładunku'));
-      await user.click(within(screen.getByRole('gridcell', { name: '12' })).getByRole('button'));
+      await pickDate(user, 'Data załadunku', 13);
+      await pickDate(user, 'Data rozładunku', 12);
 
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 

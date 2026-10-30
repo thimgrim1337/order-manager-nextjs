@@ -1,0 +1,3 @@
+`$user.click($query.getByRole('gridcell', $_))` as $call where {
+  register_diagnostic(span=$call, message="Clicking a calendar gridcell selects nothing in browser tests; use pickDate from __tests__/utils/pick-date.")
+}
