@@ -15,10 +15,10 @@ import {
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
-import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db/schemas';
+import { type order, ordersWithDetailsView } from '@/db/schemas';
 import type { OrderSortField } from '@/lib/consts';
 import { type Week, weekDays } from '@/lib/week';
-import type { OrderFilters, PlaceType, SortParams } from '@/types/types';
+import type { OrderFilters, SortParams } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
 
 export type DbOrderView = InferSelectViewModel<typeof ordersWithDetailsView>;
@@ -166,17 +166,4 @@ export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) 
   cacheTag('orders');
 
   return findOrdersInWeek(db, week, opts);
-}
-
-export async function deleteOrderPlaces(orderId: number, placeType: PlaceType, trx: dbTransaction) {
-  const table = placeType === 'loadingPlace' ? loadingPlace : unloadingPlace;
-  const dbPlaces = await trx.delete(table).where(eq(table.orderId, orderId)).returning();
-
-  return dbPlaces;
-}
-
-export async function deleteOrder(orderId: number, trx: dbTransaction) {
-  const [dbOrder] = await trx.delete(order).where(eq(order.id, orderId)).returning();
-
-  return dbOrder;
 }

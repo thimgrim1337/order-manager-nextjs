@@ -2,14 +2,14 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
-import { changeOrderStatus, deleteOrder } from '@/lib/actions';
+import { changeOrderStatus, removeOrder } from '@/lib/actions';
 import type { Order } from '@/types/types';
 import { renderWithToaster } from '../utils/render-with-toaster';
 
 // The Edit dialog's form imports the customer and city actions too.
 vi.mock('@/lib/actions', () => ({
   changeOrderStatus: vi.fn(),
-  deleteOrder: vi.fn(),
+  removeOrder: vi.fn(),
   updateOrder: vi.fn(),
   searchCustomers: vi.fn(),
   createCity: vi.fn(),
@@ -84,8 +84,8 @@ describe('OrdersContextMenu', () => {
 
   it('keeps the Remove dialog closed when Escape is pressed before the delete finishes', async () => {
     const remove = deferred();
-    vi.mocked(deleteOrder).mockReturnValueOnce(
-      remove.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof deleteOrder>,
+    vi.mocked(removeOrder).mockReturnValueOnce(
+      remove.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof removeOrder>,
     );
     const { user } = setup();
 
@@ -101,5 +101,43 @@ describe('OrdersContextMenu', () => {
     await act(async () => remove.resolve());
 
     expect(screen.queryByRole('heading', { name: 'Czy jesteś pewny ?' })).toBeNull();
+  });
+
+  it('shows a not-found toast when the Order to remove no longer exists', async () => {
+    vi.mocked(removeOrder).mockResolvedValueOnce({
+      success: false,
+      message: 'Zlecenie nie istnieje.',
+    });
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
+    await user.click(await screen.findByRole('button', { name: 'Usuń' }));
+
+    await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
+  });
+
+  it('shows an error toast when the removal fails unexpectedly', async () => {
+    vi.mocked(removeOrder).mockRejectedValueOnce(new Error('connection lost'));
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
+    await user.click(await screen.findByRole('button', { name: 'Usuń' }));
+
+    await expect.poll(() => screen.queryByText(/connection lost/)).toBeVisible();
+  });
+
+  it('confirms a removed Order in a toast', async () => {
+    vi.mocked(removeOrder).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
+      ReturnType<typeof removeOrder>
+    >);
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
+    await user.click(await screen.findByRole('button', { name: 'Usuń' }));
+
+    await expect.poll(() => screen.queryByText('Zlecenie zostało usunięte.')).toBeVisible();
   });
 });

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag, updateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import db from '@/db/db';
 import { type ActionResponse, toActionResponse } from './action-response';
 import { getAllCustomers } from './dal/customer.dal.';
@@ -10,7 +10,6 @@ import type { OrderDto, OrderFormDto } from './dto/order.dto';
 import * as Orders from './orders';
 import { createCityService } from './services/city.services';
 import { createCustomerService } from './services/customer.services';
-import { deleteOrderService } from './services/order.services';
 
 export async function createOrder(formData: OrderFormDto): Promise<ActionResponse<OrderDto>> {
   return toActionResponse(await Orders.createOrder(db, formData));
@@ -30,38 +29,8 @@ export async function changeOrderStatus(
   return toActionResponse(await Orders.changeOrderStatus(db, orderId, statusId));
 }
 
-export async function deleteOrder(orderId: number): Promise<ActionResponse<OrderDto>> {
-  const [error, order] = await deleteOrderService(orderId);
-
-  if (error === null) {
-    updateTag('orders');
-
-    return {
-      success: true,
-      data: order,
-    };
-  }
-
-  const reason = error.reason;
-  switch (reason) {
-    case 'UnexpectedError': {
-      return {
-        success: false,
-        message: 'Wystąpił nieznany błąd.',
-        details: error.details,
-      };
-    }
-    case 'DrizzleError': {
-      return {
-        success: false,
-        message: 'Wystąpił błąd bazy danych',
-        details: error.details,
-      };
-    }
-    default: {
-      throw new Error(`Unhandled error: ${reason satisfies never}`);
-    }
-  }
+export async function removeOrder(orderId: number): Promise<ActionResponse<OrderDto>> {
+  return toActionResponse(await Orders.removeOrder(db, orderId));
 }
 
 export async function searchCustomers(query: string) {

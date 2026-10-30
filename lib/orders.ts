@@ -22,6 +22,8 @@ export type UpdateOrderFailure = CreateOrderFailure | NotFound;
 
 export type ChangeOrderStatusFailure = InvalidData | NotFound | { reason: 'UnknownStatus' };
 
+export type RemoveOrderFailure = InvalidData | NotFound;
+
 /**
  * Creates an Order with its Loading and Unloading Places and assigns its Driver to its Truck,
  * in one transaction, then invalidates the cached Orders. Call it from a Server Action.
@@ -80,8 +82,7 @@ export async function updateOrder(
         .returning();
       if (!updatedOrder) return null;
 
-      await trx.delete(loadingPlace).where(eq(loadingPlace.orderId, orderId));
-      await trx.delete(unloadingPlace).where(eq(unloadingPlace.orderId, orderId));
+      await deletePlaces(trx, orderId);
       await insertPlaces(trx, orderId, loadingPlaces, unloadingPlaces);
       await assignDriverToTruck(trx, updatedOrder);
 
@@ -127,6 +128,30 @@ export async function changeOrderStatus(
     if (isUnknownStatus(err)) return error({ reason: 'UnknownStatus' });
     throw err;
   }
+}
+
+/**
+ * Removes an Order with its Loading and Unloading Places, in one transaction, then invalidates
+ * the cached Orders. Call it from a Server Action.
+ */
+export async function removeOrder(
+  database: db | dbTransaction,
+  orderIdInput: unknown,
+): Promise<Result<OrderDto, RemoveOrderFailure>> {
+  const [invalidId, orderId] = parseId(orderIdInput);
+  if (invalidId) return error(invalidId);
+
+  const removed = await database.transaction(async (trx) => {
+    await deletePlaces(trx, orderId);
+    const [removedOrder] = await trx.delete(order).where(eq(order.id, orderId)).returning();
+
+    return removedOrder;
+  });
+  if (!removed) return error({ reason: 'NotFound' });
+
+  updateTag('orders');
+
+  return ok(selectOrderSchema.parse(removed));
 }
 
 /** Parses a row id, such as an Order's or a Status's, from a Server Action's untrusted input. */
@@ -191,6 +216,11 @@ async function insertPlaces(
   await trx
     .insert(unloadingPlace)
     .values(unloadingPlaces.map((city) => ({ orderId, placeId: city.id })));
+}
+
+async function deletePlaces(trx: dbTransaction, orderId: number) {
+  await trx.delete(loadingPlace).where(eq(loadingPlace.orderId, orderId));
+  await trx.delete(unloadingPlace).where(eq(unloadingPlace.orderId, orderId));
 }
 
 async function assignDriverToTruck(
