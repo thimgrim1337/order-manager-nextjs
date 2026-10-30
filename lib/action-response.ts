@@ -8,6 +8,7 @@ const FAILURE_MESSAGES = {
   InvalidData: 'Nieprawidłowe dane.',
   OrderNrTaken: 'Zlecenie o tym numerze już istnieje.',
   NotFound: 'Zlecenie nie istnieje.',
+  UnknownStatus: 'Nieznany status zlecenia.',
 };
 
 /** A failure outcome the translator has a user-facing message for. */

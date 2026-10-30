@@ -22,6 +22,10 @@ _Avoid_: Start date, from date
 The day an Order's unloading ends; the last day of the Order.
 _Avoid_: End date, delivery date
 
+**Status** (_Status zlecenia_):
+Where an Order stands: in progress (_w trakcie_), cancelled (_anulowane_) or delivered (_zakończone_). Changing it touches nothing else on the Order.
+_Avoid_: State, stage
+
 ### Views
 
 **Start date**

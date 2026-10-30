@@ -16,7 +16,11 @@ type InvalidData = { reason: 'InvalidData'; details: string };
 
 export type CreateOrderFailure = InvalidData | { reason: 'OrderNrTaken' };
 
-export type UpdateOrderFailure = CreateOrderFailure | { reason: 'NotFound' };
+type NotFound = { reason: 'NotFound' };
+
+export type UpdateOrderFailure = CreateOrderFailure | NotFound;
+
+export type ChangeOrderStatusFailure = InvalidData | NotFound | { reason: 'UnknownStatus' };
 
 /**
  * Creates an Order with its Loading and Unloading Places and assigns its Driver to its Truck,
@@ -91,6 +95,35 @@ export async function updateOrder(
   }
 }
 
+/**
+ * Sets an Order's Status, and nothing else, then invalidates the cached Orders.
+ * Call it from a Server Action.
+ */
+export async function changeOrderStatus(
+  database: db | dbTransaction,
+  orderId: number,
+  statusId: unknown,
+): Promise<Result<OrderDto, ChangeOrderStatusFailure>> {
+  const validation = z.int().positive().safeParse(statusId);
+  if (!validation.success)
+    return error({ reason: 'InvalidData', details: z.prettifyError(validation.error) });
+
+  try {
+    // A savepoint, so a failed write leaves a caller's transaction usable.
+    const [changed] = await database.transaction((trx) =>
+      trx.update(order).set({ statusId: validation.data }).where(eq(order.id, orderId)).returning(),
+    );
+    if (!changed) return error({ reason: 'NotFound' });
+
+    updateTag('orders');
+
+    return ok(selectOrderSchema.parse(changed));
+  } catch (err) {
+    if (isUnknownStatus(err)) return error({ reason: 'UnknownStatus' });
+    throw err;
+  }
+}
+
 /** Validates the Order form and turns its price into the Order's PLN price, rate and date. */
 function parseOrderForm(input: unknown) {
   const validation = OrderFormSchema.safeParse(input);
@@ -151,7 +184,16 @@ async function assignDriverToTruck(
 }
 
 function isOrderNrTaken(err: unknown) {
+  return violates(err, '23505', 'orders_customer_id_order_nr_unique');
+}
+
+function isUnknownStatus(err: unknown) {
+  return violates(err, '23503', 'orders_status_id_statuses_id_fk');
+}
+
+/** Whether a query failed on the given Postgres error code and constraint. */
+function violates(err: unknown, code: string, constraint: string) {
   const cause = err instanceof DrizzleQueryError ? (err.cause as DatabaseError) : undefined;
 
-  return cause?.code === '23505' && cause.constraint === 'orders_customer_id_order_nr_unique';
+  return cause?.code === code && cause.constraint === constraint;
 }

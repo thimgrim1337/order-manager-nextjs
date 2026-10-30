@@ -1,13 +1,14 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Toaster } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
-import { deleteOrder, patchOrder } from '@/lib/actions';
+import { changeOrderStatus, deleteOrder } from '@/lib/actions';
 import type { Order } from '@/types/types';
 
 // The Edit dialog's form imports the customer and city actions too.
 vi.mock('@/lib/actions', () => ({
-  patchOrder: vi.fn(),
+  changeOrderStatus: vi.fn(),
   deleteOrder: vi.fn(),
   updateOrder: vi.fn(),
   searchCustomers: vi.fn(),
@@ -36,9 +37,12 @@ beforeEach(() => {
 const setup = () => {
   const user = userEvent.setup();
   render(
-    <OrdersContextMenu order={order}>
-      <div>ZL-001 row</div>
-    </OrdersContextMenu>,
+    <>
+      <OrdersContextMenu order={order}>
+        <div>ZL-001 row</div>
+      </OrdersContextMenu>
+      <Toaster />
+    </>,
   );
   return { user };
 };
@@ -46,8 +50,10 @@ const setup = () => {
 describe('OrdersContextMenu', () => {
   it('keeps the Status dialog closed when Escape is pressed before the save finishes', async () => {
     const save = deferred();
-    vi.mocked(patchOrder).mockReturnValueOnce(
-      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof patchOrder>,
+    vi.mocked(changeOrderStatus).mockReturnValueOnce(
+      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<
+        typeof changeOrderStatus
+      >,
     );
     const { user } = setup();
 
@@ -63,6 +69,21 @@ describe('OrdersContextMenu', () => {
     await act(async () => save.resolve());
 
     expect(screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeNull();
+  });
+
+  it('shows the failure message in a toast when the status change fails', async () => {
+    vi.mocked(changeOrderStatus).mockResolvedValueOnce({
+      success: false,
+      message: 'Zlecenie nie istnieje.',
+    });
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+    await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
+
+    // Sonner fades the toast in.
+    await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
   });
 
   it('keeps the Remove dialog closed when Escape is pressed before the delete finishes', async () => {
