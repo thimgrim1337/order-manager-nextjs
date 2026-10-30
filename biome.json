@@ -18,7 +18,9 @@
   "plugins": [
     "./biome-plugins/company-today.grit",
     "./biome-plugins/cache-tag-constant.grit",
-    "./biome-plugins/calendar-day-click.grit"
+    "./biome-plugins/calendar-day-click.grit",
+    "./biome-plugins/order-writes-in-module.grit",
+    "./biome-plugins/db-error-codes.grit"
   ],
   "formatter": {
     "enabled": true,

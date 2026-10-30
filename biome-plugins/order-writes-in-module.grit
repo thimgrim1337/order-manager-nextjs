@@ -1,0 +1,8 @@
+or {
+  `$db.insert($table)` where { $table <: or { `order`, `loadingPlace`, `unloadingPlace` } },
+  `$db.update($table)` where { $table <: or { `order`, `loadingPlace`, `unloadingPlace`, `truck` } },
+  `$db.delete($table)` where { $table <: or { `order`, `loadingPlace`, `unloadingPlace` } }
+} as $call where {
+  $filename <: not or { r".*lib/orders\.ts", r".*__tests__/.*", r".*db/seeds/.*" },
+  register_diagnostic(span=$call, message="Write Orders, their Places and a Truck's Driver through the Orders module in @/lib/orders.")
+}

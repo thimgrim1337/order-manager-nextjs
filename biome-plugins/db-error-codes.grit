@@ -1,0 +1,8 @@
+or {
+  `'23505'`,
+  `'23503'`,
+  `DrizzleQueryError`
+} as $match where {
+  $filename <: not r".*lib/db-errors\.ts",
+  register_diagnostic(span=$match, message="Recognise a Postgres constraint violation with isUniqueViolation or isForeignKeyViolation from @/lib/db-errors.")
+}

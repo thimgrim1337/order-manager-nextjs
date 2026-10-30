@@ -11,6 +11,7 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Close**: `gh issue close <number> --comment "..."`
+- **Record progress on another issue**: when a commit meets an acceptance criterion of an issue other than the one in hand, tick that checkbox in its body (`gh issue edit <number> --body-file -`) and comment with the commit SHA, so its next implementer starts from what remains.
 
 Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
 
