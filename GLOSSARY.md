@@ -26,6 +26,24 @@ _Avoid_: End date, delivery date
 Where an Order stands: in progress (_w trakcie_), cancelled (_anulowane_) or delivered (_zakończone_). Changing it touches nothing else on the Order.
 _Avoid_: State, stage
 
+### Trucks and Drivers
+
+**Truck** (_Pojazd_):
+A company vehicle that carries Orders, known by its Plate. It may have a Regular Driver.
+_Avoid_: Vehicle, car
+
+**Plate** (_Numer rejestracyjny_):
+A Truck's registration number; unique, so it identifies the Truck.
+_Avoid_: Registration, truck number
+
+**Driver** (_Kierowca_):
+A person who drives Orders. Known by first and last name, shown as "Jan Kowalski" and ordered alphabetically by that name, first name first; no two Drivers share both.
+_Avoid_: Employee, chauffeur
+
+**Regular Driver** (_Stały kierowca_):
+The Driver who usually drives a Truck. An Order may still pair the Truck with a different Driver.
+_Avoid_: Assigned driver, truck owner
+
 ### Customers and Cities
 
 **Customer** (_Zleceniodawca_):
