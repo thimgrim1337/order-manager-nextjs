@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { cleanupTestData, seedOrder, seedTestData } from './helpers/seed';
+import { cleanupTestData, dayOfThisMonth, seedOrder, seedTestData } from './helpers/seed';
 
-const SEEDED_ORDER = { orderNr: 'E2E-001', startDate: '2026-10-12', endDate: '2026-10-13' };
+const SEEDED_ORDER = {
+  orderNr: 'E2E-001',
+  startDate: dayOfThisMonth(12),
+  endDate: dayOfThisMonth(13),
+};
 const { orderNr } = SEEDED_ORDER;
 
 test.describe('Order test', () => {

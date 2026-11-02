@@ -13,6 +13,8 @@ import {
   unloadingPlace as unloadingPlaces,
 } from '@/db/schemas';
 import { ENV } from '@/env';
+import { ORDER_STATUS } from '@/lib/consts';
+import { getToday } from '@/lib/dates';
 import { assertTestDatabase } from '../../db/assert-test-database';
 
 export async function seedTestData() {
@@ -66,18 +68,18 @@ export async function seedTestData() {
     ])
     .returning();
 
-  const [status] = await db
+  // Fixed ids: the app reads Statuses by `ORDER_STATUS`.
+  const dbStatuses = await db
     .insert(statuses)
+    .overridingSystemValue()
     .values([
-      {
-        name: 'w trakcie',
-      },
-      { name: 'anulowane' },
-      {
-        name: 'zakończone',
-      },
+      { id: ORDER_STATUS.InProgress, name: 'w trakcie' },
+      { id: ORDER_STATUS.Cancelled, name: 'anulowane' },
+      { id: ORDER_STATUS.Delivered, name: 'zakończone' },
     ])
     .returning();
+  const status = dbStatuses.find(({ id }) => id === ORDER_STATUS.InProgress);
+  if (!status) throw new Error('Seeded Statuses lack InProgress');
 
   const currency = await db
     .insert(currencies)
@@ -85,6 +87,14 @@ export async function seedTestData() {
     .returning();
 
   return { customer, driver, truck, dbCities, status, currency };
+}
+
+/**
+ * `yyyy-MM-dd` for `day` of the current (Warsaw) month: the month the date picker opens on,
+ * so a current-month default filter on `/orders` would include it.
+ */
+export function dayOfThisMonth(day: number) {
+  return `${getToday().slice(0, 8)}${String(day).padStart(2, '0')}`;
 }
 
 /** Warszawa → Płock, for the seeded Customer, Driver and Truck. */
