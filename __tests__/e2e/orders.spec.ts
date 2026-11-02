@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { cleanupTestData, seedTestData } from './helpers/seed';
+import { cleanupTestData, seedOrder, seedTestData } from './helpers/seed';
+
+const SEEDED_ORDER = { orderNr: 'E2E-001', startDate: '2026-10-12', endDate: '2026-10-13' };
+const { orderNr } = SEEDED_ORDER;
 
 test.describe('Order test', () => {
-  test.beforeAll(async () => {
+  test.beforeEach(async () => {
     await cleanupTestData();
-    const data = await seedTestData();
-    console.log('SEED DATA:', JSON.stringify(data));
   });
 
   test.afterAll(async () => {
@@ -13,6 +14,7 @@ test.describe('Order test', () => {
   });
 
   test('Create new order and display in table', async ({ page }) => {
+    await seedTestData();
     await page.goto('/orders');
 
     await page.getByRole('button', { name: 'Dodaj nowe zlecenie ' }).click();
@@ -54,55 +56,65 @@ test.describe('Order test', () => {
     await expect(page.getByRole('cell', { name: 'E2E-001' })).toBeVisible();
   });
 
-  test('Edit order price and display in table', async ({ page }) => {
-    await page.goto('/orders');
+  test.describe('with a seeded Order', () => {
+    test.beforeEach(async () => {
+      await seedOrder(await seedTestData(), SEEDED_ORDER);
+    });
 
-    const row = page.getByRole('row', { name: /E2E-001/ });
-    await row.click({ button: 'right' });
-    await page.getByRole('menuitem', { name: 'Edycja' }).click();
+    test('Edit order price and display in table', async ({ page }) => {
+      await page.goto('/orders');
 
-    await expect(page.getByRole('heading', { name: 'Edycja zlecenia E2E-001' })).toBeVisible();
+      const row = page.getByRole('row', { name: orderNr });
+      await row.click({ button: 'right' });
+      await page.getByRole('menuitem', { name: 'Edycja' }).click();
 
-    await page.getByRole('button', { name: 'Edytuj' }).click();
-    await page.getByLabel('Cena w walucie').fill('2500');
-    await page.getByRole('button', { name: 'Zapisz' }).click();
+      await expect(page.getByRole('heading', { name: `Edycja zlecenia ${orderNr}` })).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Edycja zlecenia E2E-001' })).not.toBeVisible();
+      await page.getByRole('button', { name: 'Edytuj' }).click();
+      await page.getByLabel('Cena w walucie').fill('2500');
+      await page.getByRole('button', { name: 'Zapisz' }).click();
 
-    await expect(row.getByRole('cell', { name: '2500', exact: true })).toBeVisible();
-    await expect(row).toContainText(/2500,00\s*zł/);
-  });
+      await expect(
+        page.getByRole('heading', { name: `Edycja zlecenia ${orderNr}` }),
+      ).not.toBeVisible();
 
-  test('Change status order to finished', async ({ page }) => {
-    await page.goto('/orders');
+      await expect(row.getByRole('cell', { name: '2500', exact: true })).toBeVisible();
+      await expect(row).toContainText(/2500,00\s*zł/);
+    });
 
-    await expect(page.getByRole('cell', { name: 'w trakcie' })).toBeVisible();
+    test('Change status order to finished', async ({ page }) => {
+      await page.goto('/orders');
 
-    await page.getByRole('row', { name: /E2E-001/ }).click({ button: 'right' });
-    await page.getByRole('menuitem', { name: 'Status' }).click();
+      await expect(page.getByRole('cell', { name: 'w trakcie' })).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
+      await page.getByRole('row', { name: orderNr }).click({ button: 'right' });
+      await page.getByRole('menuitem', { name: 'Status' }).click();
 
-    await page.getByRole('button', { name: 'status-delivered' }).click();
+      await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).not.toBeVisible();
+      await page.getByRole('button', { name: 'status-delivered' }).click();
 
-    await expect(page.getByText('zakończone')).toBeVisible();
-  });
+      await expect(
+        page.getByRole('heading', { name: 'Zmiana statusu zlecenia' }),
+      ).not.toBeVisible();
 
-  test('Delete order', async ({ page }) => {
-    await page.goto('/orders');
+      await expect(page.getByText('zakończone')).toBeVisible();
+    });
 
-    await expect(page.getByRole('cell', { name: 'E2E-001' })).toBeVisible();
+    test('Delete order', async ({ page }) => {
+      await page.goto('/orders');
 
-    await page.getByRole('row', { name: /E2E-001/ }).click({ button: 'right' });
-    await page.getByRole('menuitem', { name: 'Usuń' }).click();
+      await expect(page.getByRole('cell', { name: orderNr })).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).toBeVisible();
+      await page.getByRole('row', { name: orderNr }).click({ button: 'right' });
+      await page.getByRole('menuitem', { name: 'Usuń' }).click();
 
-    await page.getByRole('button', { name: 'Usuń' }).click();
-    await page.keyboard.press('Escape');
+      await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).toBeVisible();
 
-    await expect(page.getByRole('cell', { name: 'E2E-001' })).not.toBeVisible();
+      await page.getByRole('button', { name: 'Usuń' }).click();
+      await page.keyboard.press('Escape');
+
+      await expect(page.getByRole('cell', { name: orderNr })).not.toBeVisible();
+    });
   });
 });
