@@ -25,7 +25,7 @@ async function seed(trx: dbTransaction) {
           truckId: refs.truck.id,
           customerId: refs.customer.id,
           currencyId: refs.currencies.pln.id,
-          statusId: refs.status.id,
+          statusId: refs.statuses.inProgress.id,
           priceCurrency: '100',
           pricePLN: '100',
           ...fields,

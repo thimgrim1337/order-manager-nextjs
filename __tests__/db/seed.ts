@@ -1,13 +1,10 @@
 import type { dbTransaction } from '@/db/db';
-import { city, country, currency, customer, driver, status, truck } from '@/db/schemas';
-import { ORDER_STATUS } from '@/lib/consts';
+import { city, country, customer, driver, truck } from '@/db/schemas';
+import seedReference from '@/db/seeds/reference';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
 
 /**
  * Seeds the rows an Order references, inside the test's transaction.
- *
- * Currencies and statuses get fixed ids: the app reads currency 1 as PLN and the Order form accepts
- * statuses 1–3, while identity sequences keep counting across `withRollback`.
  */
 export async function seedOrderReferences(trx: dbTransaction) {
   // One transaction is one client, so inserts run one after another.
@@ -31,19 +28,7 @@ export async function seedOrderReferences(trx: dbTransaction) {
     .insert(customer)
     .values({ name: 'Test Firma', tax: 'PL1234567890' })
     .returning();
-  const [pln, eur] = await trx
-    .insert(currency)
-    .overridingSystemValue()
-    .values([
-      { id: 1, code: 'PLN' },
-      { id: 2, code: 'EUR' },
-    ])
-    .returning();
-  const [dbStatus] = await trx
-    .insert(status)
-    .overridingSystemValue()
-    .values({ id: ORDER_STATUS.InProgress, name: 'w trakcie' })
-    .returning();
+  const { statuses, currencies } = await seedReference(trx);
   const [dbTruck] = await trx
     .insert(truck)
     .values({ plate: 'WP0997C', insuranceEndAt: '2027-01-01', serviceEndAt: '2027-01-01' })
@@ -53,8 +38,8 @@ export async function seedOrderReferences(trx: dbTransaction) {
     cities: { warszawa, plock, gdansk },
     drivers: { jan, anna },
     customer: dbCustomer,
-    currencies: { pln, eur },
-    status: dbStatus,
+    currencies,
+    statuses,
     truck: dbTruck,
   };
 }
@@ -67,7 +52,7 @@ export function orderFormFor(refs: Awaited<ReturnType<typeof seedOrderReferences
     orderNr: 'ZL/1',
     startDate: '2026-10-27',
     endDate: '2026-10-29',
-    statusId: refs.status.id,
+    statusId: refs.statuses.inProgress.id,
     truckId: refs.truck.id,
     driverId: refs.drivers.jan.id,
     customerId: refs.customer.id,

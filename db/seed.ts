@@ -37,8 +37,7 @@ async function seed() {
   await seeds.customer(db);
   await seeds.driver(db);
   await seeds.truck(db);
-  await seeds.status(db);
-  await seeds.currency(db);
+  await seeds.reference(db);
   await seeds.country(db);
 
   console.log('Seeds finished.');

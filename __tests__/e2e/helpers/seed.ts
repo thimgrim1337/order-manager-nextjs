@@ -12,8 +12,8 @@ import {
   truck as trucks,
   unloadingPlace as unloadingPlaces,
 } from '@/db/schemas';
+import seedReference from '@/db/seeds/reference';
 import { ENV } from '@/env';
-import { ORDER_STATUS } from '@/lib/consts';
 import { getToday } from '@/lib/dates';
 import { assertTestDatabase } from '../../db/assert-test-database';
 
@@ -68,25 +68,9 @@ export async function seedTestData() {
     ])
     .returning();
 
-  // Fixed ids: the app reads Statuses by `ORDER_STATUS`.
-  const dbStatuses = await db
-    .insert(statuses)
-    .overridingSystemValue()
-    .values([
-      { id: ORDER_STATUS.InProgress, name: 'w trakcie' },
-      { id: ORDER_STATUS.Cancelled, name: 'anulowane' },
-      { id: ORDER_STATUS.Delivered, name: 'zakończone' },
-    ])
-    .returning();
-  const status = dbStatuses.find(({ id }) => id === ORDER_STATUS.InProgress);
-  if (!status) throw new Error('Seeded Statuses lack InProgress');
+  const { statuses, currencies } = await seedReference(db);
 
-  const currency = await db
-    .insert(currencies)
-    .values([{ code: 'PLN' }, { code: 'EUR' }])
-    .returning();
-
-  return { customer, driver, truck, dbCities, status, currency };
+  return { customer, driver, truck, dbCities, statuses, currencies };
 }
 
 /**
@@ -110,8 +94,8 @@ export async function seedOrder(
       customerId: data.customer.id,
       driverId: data.driver.id,
       truckId: data.truck.id,
-      statusId: data.status.id,
-      currencyId: data.currency[0].id,
+      statusId: data.statuses.inProgress.id,
+      currencyId: data.currencies.pln.id,
       priceCurrency: '1000',
       pricePLN: '1000',
     })

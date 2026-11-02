@@ -1,8 +1,14 @@
-/** Order Status ids, as seeded in the statuses table (`db/seeds/data/status.json`). */
+/** Order Status ids, as seeded by `db/seeds/reference.ts`. */
 export const ORDER_STATUS = {
   InProgress: 1,
   Cancelled: 2,
   Delivered: 3,
+} as const;
+
+/** Currency ids, as seeded by `db/seeds/reference.ts`. */
+export const CURRENCY = {
+  PLN: 1,
+  EUR: 2,
 } as const;
 
 /** Cache tags: the DAL tags what it caches with them, and writes invalidate them. */

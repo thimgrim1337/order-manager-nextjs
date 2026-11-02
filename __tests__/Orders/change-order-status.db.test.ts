@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { status } from '@/db/schemas';
-import { ORDER_STATUS } from '@/lib/consts';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { changeOrderStatus, createOrder } from '@/lib/orders';
 import { parseWeekKey, type Week } from '@/lib/week';
@@ -13,16 +11,11 @@ vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
-  const [delivered] = await trx
-    .insert(status)
-    .overridingSystemValue()
-    .values({ id: ORDER_STATUS.Delivered, name: 'zakończone' })
-    .returning();
 
   const [, created] = await createOrder(trx, orderFormFor(refs)());
   if (!created) throw new Error('Seed Order was not created');
 
-  return { created, delivered };
+  return { created, delivered: refs.statuses.delivered };
 }
 
 const week = parseWeekKey('2026-W44') as Week;
