@@ -1,0 +1,8 @@
+or {
+  `seedTestData($...)`,
+  `seedOrder($...)`
+} as $call where {
+  $call <: within `test.beforeAll($...)` ,
+  $filename <: r".*__tests__/e2e/.*",
+  register_diagnostic(span=$call, message="Seed in beforeEach or the test body, so each e2e test passes alone under -g.")
+}

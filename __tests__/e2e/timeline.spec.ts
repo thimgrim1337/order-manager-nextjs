@@ -7,7 +7,7 @@ const FRIDAY = 5;
 const SUNDAY = 7;
 
 test.describe('Timeline', () => {
-  test.beforeAll(async () => {
+  test.beforeEach(async () => {
     await cleanupTestData();
     const data = await seedTestData();
     await seedOrder(data, {
