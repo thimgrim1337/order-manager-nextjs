@@ -22,7 +22,7 @@ describe('Orders Table Query: parse', () => {
       endDate: '2026-10-31',
       driverId: '7',
       statusId: '2',
-      sort: 'driverId.asc',
+      sort: 'driverFullname.asc',
       pageIndex: '3',
       pageSize: '50',
     };
@@ -33,7 +33,7 @@ describe('Orders Table Query: parse', () => {
       endDate: '2026-10-31',
       driverId: 7,
       statusId: 2,
-      sort: { id: 'driverId', desc: false },
+      sort: { id: 'driverFullname', desc: false },
       pageIndex: 3,
       pageSize: 50,
     });
@@ -87,7 +87,7 @@ describe('Orders Table Query: apply', () => {
   });
 
   it('falls back to newest Start Date first when sorting is cleared', () => {
-    const sortedByDriver = parse({ sort: 'driverId.asc', pageIndex: '2' });
+    const sortedByDriver = parse({ sort: 'driverFullname.asc', pageIndex: '2' });
 
     expect(apply(sortedByDriver, { sort: undefined })).toEqual({
       ...sortedByDriver,
@@ -104,7 +104,7 @@ describe('Orders Table Query: reset', () => {
       startDate: '2026-10-01',
       driverId: '7',
       statusId: '2',
-      sort: 'driverId.asc',
+      sort: 'driverFullname.asc',
       pageIndex: '3',
       pageSize: '50',
     });
@@ -123,13 +123,13 @@ describe('Orders Table Query: toSearchParams', () => {
       globalFilters: 'Kraków',
       startDate: '2026-10-01',
       driverId: '7',
-      sort: 'driverId.asc',
+      sort: 'driverFullname.asc',
       pageIndex: '3',
       pageSize: '50',
     });
 
     expect(toSearchParams(query).toString()).toBe(
-      'globalFilters=Krak%C3%B3w&startDate=2026-10-01&driverId=7&sort=driverId.asc&pageIndex=3&pageSize=50',
+      'globalFilters=Krak%C3%B3w&startDate=2026-10-01&driverId=7&sort=driverFullname.asc&pageIndex=3&pageSize=50',
     );
   });
 });

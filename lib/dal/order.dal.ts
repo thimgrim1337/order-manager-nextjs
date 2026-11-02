@@ -8,19 +8,17 @@ import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
 
-export async function getAllOrders(
+export async function findOrders(
+  database: db | dbTransaction,
   pageIndex: number,
   pageSize: number,
   sortParams?: SortParams[],
   filters?: OrderFilters,
 ) {
-  'use cache';
-  cacheTag(CACHE_TAG.Orders);
-
   const getSortColumn = (sortParams?: SortParams[]) => {
     const sortMappings: Record<OrderSortField, AnyPgColumn> = {
       statusId: ordersWithDetailsView.statusId,
-      truckId: ordersWithDetailsView.truckId,
+      truckPlate: ordersWithDetailsView.truckPlate,
       loadingCity: ordersWithDetailsView.loadingCity,
       unloadingCity: ordersWithDetailsView.unloadingCity,
       orderNr: ordersWithDetailsView.orderNr,
@@ -29,8 +27,8 @@ export async function getAllOrders(
       pricePLN: ordersWithDetailsView.pricePLN,
       priceCurrency: ordersWithDetailsView.priceCurrency,
       currencyId: ordersWithDetailsView.currencyId,
-      customerId: ordersWithDetailsView.customerId,
-      driverId: ordersWithDetailsView.driverId,
+      customerName: ordersWithDetailsView.customerName,
+      driverFullname: ordersWithDetailsView.driverFullname,
     };
 
     const columns = (sortParams ?? []).map((param) => {
@@ -102,7 +100,7 @@ export async function getAllOrders(
 
   const whereConditions = allWhereConditions.length > 0 ? and(...allWhereConditions) : undefined;
 
-  const orders = db
+  const orders = database
     .select()
     .from(ordersWithDetailsView)
     .where(whereConditions)
@@ -110,7 +108,7 @@ export async function getAllOrders(
     .limit(pageSize)
     .offset(pageIndex * pageSize);
 
-  const ordersCount = db
+  const ordersCount = database
     .select({ count: count() })
     .from(ordersWithDetailsView)
     .where(whereConditions)
@@ -120,6 +118,18 @@ export async function getAllOrders(
     data: await orders,
     count: await ordersCount,
   };
+}
+
+export async function getAllOrders(
+  pageIndex: number,
+  pageSize: number,
+  sortParams?: SortParams[],
+  filters?: OrderFilters,
+) {
+  'use cache';
+  cacheTag(CACHE_TAG.Orders);
+
+  return findOrders(db, pageIndex, pageSize, sortParams, filters);
 }
 
 /** Orders in a Week: Start Date on or before its Sunday and End Date on or after its Monday. */

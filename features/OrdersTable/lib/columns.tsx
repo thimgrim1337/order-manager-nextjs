@@ -1,11 +1,15 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
+import type { OrderSortField } from '@/lib/consts';
 import { formatDate } from '@/lib/dates';
 import type { Order } from '@/types/types';
 import StatusBadge from '../components/ui/status-bagde';
 
-export const columns: ColumnDef<Order>[] = [
+/** Every column is sortable: its `accessorKey` is its id, and the id is the sort field the URL and DAL read. */
+type OrderColumn = ColumnDef<Order> & { accessorKey: OrderSortField };
+
+export const columns: OrderColumn[] = [
   {
     accessorKey: 'orderNr',
     header: 'Nr zlecenia',
@@ -36,17 +40,17 @@ export const columns: ColumnDef<Order>[] = [
     header: 'Status',
   },
   {
-    accessorKey: 'truckId',
+    accessorKey: 'truckPlate',
     accessorFn: (order) => order.truck.plate,
     header: 'Pojazd',
   },
   {
-    accessorKey: 'driverId',
+    accessorKey: 'driverFullname',
     accessorFn: (order) => `${order.driver.firstName} ${order.driver.lastName}`,
     header: 'Kierowca',
   },
   {
-    accessorKey: 'customerId',
+    accessorKey: 'customerName',
     cell: ({ row }) => <div className="w-40 truncate">{row.original.customer.name}</div>,
     header: 'Klient',
   },
