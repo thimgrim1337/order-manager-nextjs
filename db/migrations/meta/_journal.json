@@ -15,6 +15,13 @@
       "when": 1790103011979,
       "tag": "0001_create-orders-view",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793642554510,
+      "tag": "0002_collate-orders-view",
+      "breakpoints": true
     }
   ]
 }
