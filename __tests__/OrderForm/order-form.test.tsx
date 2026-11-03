@@ -51,6 +51,17 @@ const data = {
 
 const NO_RATE = { table: '', rate: '', date: '' };
 
+const NBP_RATE_URL = 'https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/';
+
+/** NBP and OpenHolidays, which picks the Exchange Rate's day, answer with a server error. */
+const failRateApis = () =>
+  worker.use(
+    http.get(NBP_RATE_URL, () => HttpResponse.json({}, { status: 500 })),
+    http.get('https://openholidaysapi.org/PublicHolidays', () =>
+      HttpResponse.json({}, { status: 500 }),
+    ),
+  );
+
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(searchCustomers).mockResolvedValue([customer]);
@@ -280,58 +291,133 @@ describe('OrderForm', () => {
       );
     });
 
-    it('submits a non-PLN Order with the Exchange Rate of its Currency', async () => {
-      worker.use(
-        http.get('https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/', ({ params }) =>
-          params.code === 'USD'
-            ? HttpResponse.json({
-                rates: [{ no: '211/A/NBP/2026', mid: 3.65, effectiveDate: '2026-10-30' }],
-              })
-            : HttpResponse.json({}, { status: 404 }),
-        ),
-      );
-      const { user, onDialogClose } = await editSetup({
-        ...order,
-        currency: { id: 3, code: 'USD', rate: 3.6, date: '2026-10-29' },
-      });
-
-      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
-      await screen.findByText('Tabela nr 211/A/NBP/2026 z dnia 2026-10-30, 1 USD = 3.65 PLN');
-      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
-      expect(updateOrder).toHaveBeenCalledWith(
-        7,
-        expect.objectContaining({
-          currencyId: 3,
-          currencyInfo: { table: '211/A/NBP/2026', rate: '3.65', date: '2026-10-30' },
-        }),
-      );
-    });
-
-    it('drops the old Exchange Rate and blocks saving when the new Currency has none', async () => {
-      worker.use(
-        http.get('https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/', ({ params }) =>
-          params.code === 'EUR'
-            ? HttpResponse.json({
-                rates: [{ no: '211/A/NBP/2026', mid: 4.25, effectiveDate: '2026-10-30' }],
-              })
-            : HttpResponse.json({}, { status: 404 }),
-        ),
-      );
-      const { user } = await editSetup({
+    describe('a EUR Order', () => {
+      const eurOrder: OrderReadModel = {
         ...order,
         currency: { id: 2, code: 'EUR', rate: 4.2, date: '2026-10-29' },
+        priceCurrency: '1000',
+        pricePLN: '4200.00',
+      };
+      const storedRate = { table: '', rate: '4.2', date: '2026-10-29' };
+
+      /** NBP has an Exchange Rate for EUR only. */
+      const nbpHasEurRateOnly = () =>
+        worker.use(
+          http.get(NBP_RATE_URL, ({ params }) =>
+            params.code === 'EUR'
+              ? HttpResponse.json({
+                  rates: [{ no: '211/A/NBP/2026', mid: 4.25, effectiveDate: '2026-10-30' }],
+                })
+              : HttpResponse.json({}, { status: 404 }),
+          ),
+        );
+
+      it('starts with its stored Exchange Rate, rate date and PLN Price', async () => {
+        failRateApis();
+        await editSetup(eurOrder);
+
+        expect(screen.getByText('Kurs z dnia 2026-10-29, 1 EUR = 4.2 PLN')).toBeInTheDocument();
+        expect(screen.getByText('Cena w PLN: 4200.00')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
-      await screen.findByText(/1 EUR = 4.25 PLN/);
-      await user.click(screen.getByLabelText('Waluta'));
-      await user.click(await screen.findByRole('option', { name: 'USD' }));
-      await screen.findByText('Nie znaleziono kursu dla wskazanej daty.');
+      it('saves with its stored Exchange Rate while the rate APIs are down', async () => {
+        failRateApis();
+        const { user, onDialogClose } = await editSetup(eurOrder);
 
-      expect(screen.queryByText(/Tabela nr/)).not.toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Zapisz' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+        await user.clear(screen.getByLabelText('Cena w walucie'));
+        await user.type(screen.getByLabelText('Cena w walucie'), '2000');
+        expect(screen.getByText('Cena w PLN: 8400.00')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(updateOrder).toHaveBeenCalledWith(
+          7,
+          expect.objectContaining({
+            priceCurrency: '2000',
+            currencyId: 2,
+            currencyInfo: storedRate,
+          }),
+        );
+      });
+
+      it('keeps its stored Exchange Rate again when the Unloading Date changes back', async () => {
+        failRateApis();
+        const { user, onDialogClose } = await editSetup(eurOrder);
+
+        await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+        await pickDate(user, 'Data rozładunku', 20);
+        await screen.findByText('Nie udało się pobrać dni wolnych.');
+        // The calendar stays open after a pick; a second click on its field would close it.
+        await user.keyboard('{Escape}');
+        await pickDate(user, 'Data rozładunku', 13);
+        await screen.findByText('Kurs z dnia 2026-10-29, 1 EUR = 4.2 PLN');
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(updateOrder).toHaveBeenCalledWith(
+          7,
+          expect.objectContaining({ endDate: '2026-11-13', currencyInfo: storedRate }),
+        );
+      });
+
+      it('fetches a new Exchange Rate when its Unloading Date changes', async () => {
+        nbpHasEurRateOnly();
+        const { user, onDialogClose } = await editSetup(eurOrder);
+
+        await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+        await pickDate(user, 'Data rozładunku', 20);
+        await screen.findByText('Tabela nr 211/A/NBP/2026 z dnia 2026-10-30, 1 EUR = 4.25 PLN');
+        expect(screen.getByText('Cena w PLN: 4250.00')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(updateOrder).toHaveBeenCalledWith(
+          7,
+          expect.objectContaining({
+            endDate: '2026-11-20',
+            currencyInfo: { table: '211/A/NBP/2026', rate: '4.25', date: '2026-10-30' },
+          }),
+        );
+      });
+
+      it('fetches a new Exchange Rate when its Currency changes', async () => {
+        nbpHasEurRateOnly();
+        const { user, onDialogClose } = await editSetup({
+          ...eurOrder,
+          currency: { id: 3, code: 'USD', rate: 3.6, date: '2026-10-29' },
+        });
+
+        await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+        await user.click(screen.getByLabelText('Waluta'));
+        await user.click(await screen.findByRole('option', { name: 'EUR' }));
+        await screen.findByText('Tabela nr 211/A/NBP/2026 z dnia 2026-10-30, 1 EUR = 4.25 PLN');
+        expect(screen.getByText('Cena w PLN: 4250.00')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(updateOrder).toHaveBeenCalledWith(
+          7,
+          expect.objectContaining({
+            currencyId: 2,
+            currencyInfo: { table: '211/A/NBP/2026', rate: '4.25', date: '2026-10-30' },
+          }),
+        );
+      });
+
+      it('drops its Exchange Rate and blocks saving when the new Currency has none', async () => {
+        nbpHasEurRateOnly();
+        const { user } = await editSetup(eurOrder);
+
+        await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+        await user.click(screen.getByLabelText('Waluta'));
+        await user.click(await screen.findByRole('option', { name: 'USD' }));
+        await screen.findByText('Nie znaleziono kursu dla wskazanej daty.');
+
+        expect(screen.queryByText(/1 (EUR|USD) =/)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Cena w PLN/)).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Zapisz' })).toBeDisabled();
+      });
     });
   });
 });

@@ -1,5 +1,5 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
-import { ORDER_STATUS } from '@/lib/consts';
+import { CURRENCY, ORDER_STATUS } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
@@ -38,6 +38,12 @@ export const orderFormOptions = formOptions({
   },
 });
 
+/** The Exchange Rate `order` was saved with, if any; NBP's table number isn't stored with it. */
+const getStoredCurrencyInfo = ({ currency }: OrderReadModel) =>
+  currency.id !== CURRENCY.PLN && currency.rate && currency.date
+    ? { table: '', rate: String(currency.rate), date: currency.date }
+    : orderFormOptions.defaultValues.currencyInfo;
+
 /** The form's values for editing `order`, or for a new Order dated from today when there is none. */
 export const getStartingValues = (order?: OrderReadModel) => {
   if (!order) return { ...orderFormOptions.defaultValues, ...getDefaultOrderDates() };
@@ -55,5 +61,6 @@ export const getStartingValues = (order?: OrderReadModel) => {
     currencyId: order.currency.id,
     loadingPlaces: order.loadingPlaces,
     unloadingPlaces: order.unloadingPlaces,
+    currencyInfo: getStoredCurrencyInfo(order),
   };
 };

@@ -29,6 +29,9 @@ export default function useCurrencyInfo(
     retry: false,
   });
 
+  // The holidays only pick the rate's day, so without a `currency` their outcome doesn't matter.
+  if (!currency) return { rate: undefined, isLoading: false, isError: false, error: null };
+
   return {
     rate: rateQuery.data,
     isLoading: holidaysQuery.isLoading || rateQuery.isLoading,
