@@ -1,18 +1,16 @@
 'use client';
 
 import { useStore } from '@tanstack/react-form';
-import { useEffect, useState } from 'react';
-import { FieldGroup } from '@/components/ui/field';
+import { useState } from 'react';
+import { FieldError, FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
 import type { ActionResponse } from '@/lib/action-response';
-import { CURRENCY } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
 import { useAppForm } from '../hooks/useAppForm';
-import useCurrencyInfo from '../hooks/useCurrencyInfo';
+import useExchangeRate from '../hooks/useExchangeRate';
 import useFormSubmit from '../hooks/useFormSubmit';
 import { getStartingValues, orderFormOptions } from '../lib/order-form-options';
-import { toCurrencyInfo } from '../services/nbp.services';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
 import CurrencyInfo from './ui/currency-info';
@@ -39,50 +37,22 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     ...orderFormOptions,
     defaultValues: startingValues,
     onSubmit: async ({ value }) => {
-      submitForm(value, {
-        successDescription: order
-          ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
-          : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
-      });
+      if (exchangeRate.error) return;
+
+      submitForm(
+        { ...value, currencyInfo: exchangeRate.currencyInfo },
+        {
+          successDescription: order
+            ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
+            : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
+        },
+      );
     },
   });
 
-  const { endDate, currencyId, currencyInfo, priceCurrency } = useStore(
-    form.store,
-    (state) => state.values,
-  );
-  // Any Currency but PLN needs its Exchange Rate, from which the Orders module works out the PLN Price.
-  const needsRate = currencyId !== CURRENCY.PLN;
-  const rateCurrencyCode = needsRate
-    ? (currencies.find((currency) => currency.id === currencyId)?.code ?? null)
-    : null;
-  // The edited Order's Exchange Rate holds until its Unloading Date or Currency changes.
-  const keepsStoredRate =
-    !!startingValues.currencyInfo.rate &&
-    endDate === startingValues.endDate &&
-    currencyId === startingValues.currencyId;
-
-  const {
-    rate,
-    isLoading: isRateLoading,
-    isError: isRateError,
-    error: rateError,
-  } = useCurrencyInfo(endDate, keepsStoredRate ? null : rateCurrencyCode);
-
-  useEffect(() => {
-    if (keepsStoredRate) form.setFieldValue('currencyInfo', startingValues.currencyInfo);
-    else if (needsRate && rate?.rates[0]) form.setFieldValue('currencyInfo', toCurrencyInfo(rate));
-    // Not keeping the last currency's rate, which would price this one with it.
-    else if (form.getFieldValue('currencyInfo').rate)
-      form.setFieldValue('currencyInfo', orderFormOptions.defaultValues.currencyInfo);
-  }, [keepsStoredRate, startingValues, needsRate, rate, form]);
-
-  // The currency's validator reads the fetch's outcome, which settles after the currency or date
-  // changed, or clears when the date changes back to the stored rate's.
-  const rateOutcome = isRateLoading ? 'loading' : isRateError ? 'error' : 'settled';
-  useEffect(() => {
-    if (needsRate && rateOutcome !== 'loading') form.validateField('currencyId', 'change');
-  }, [needsRate, rateOutcome, form]);
+  const { endDate, currencyId, priceCurrency } = useStore(form.store, (state) => state.values);
+  // Saved with the Order in place of the form's `currencyInfo`, which keeps the stored one.
+  const exchangeRate = useExchangeRate(startingValues, endDate, currencyId);
 
   const fieldGroupStyle = 'flex-row pt-5';
 
@@ -151,20 +121,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
             <form.AppField name="priceCurrency">
               {(field) => <field.InputField label="Cena w walucie" type="number" min={0} />}
             </form.AppField>
-            <form.AppField
-              name="currencyId"
-              validators={{
-                onChangeAsync: async ({ value }) => {
-                  if (value === CURRENCY.PLN) return null;
-
-                  if (isRateError)
-                    return {
-                      message: rateError?.message || 'Wystąpił błąd podczas pobierania kursu.',
-                    };
-                  return null;
-                },
-              }}
-            >
+            <form.AppField name="currencyId">
               {(field) => (
                 <field.SelectField
                   label="Waluta"
@@ -174,14 +131,15 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
                     value: currency.id,
                   }))}
                 >
-                  {rateCurrencyCode && (
+                  {exchangeRate.currencyCode && (
                     <CurrencyInfo
-                      isLoading={isRateLoading}
-                      currencyCode={rateCurrencyCode}
-                      currencyInfo={currencyInfo}
+                      isLoading={exchangeRate.isLoading}
+                      currencyCode={exchangeRate.currencyCode}
+                      currencyInfo={exchangeRate.currencyInfo}
                       priceCurrency={priceCurrency}
                     />
                   )}
+                  {exchangeRate.error && <FieldError errors={[{ message: exchangeRate.error }]} />}
                 </field.SelectField>
               )}
             </form.AppField>
@@ -226,6 +184,8 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
           id={form.formId}
           isEditButton={!!order}
           isEditable={isEditable}
+          // Saving without the Exchange Rate would leave the Order without its PLN Price.
+          isBlocked={!!exchangeRate.error}
           onEditBtnClick={order ? setIsEditable : undefined}
         />
       </form.AppForm>

@@ -6,11 +6,14 @@ export default function FormControls({
   id,
   isEditButton,
   isEditable = true,
+  isBlocked = false,
   onEditBtnClick,
 }: {
   id: string;
   isEditButton?: boolean;
   isEditable?: boolean;
+  /** Keeps a valid form from saving, for what its fields don't validate. */
+  isBlocked?: boolean;
   onEditBtnClick?: Dispatch<SetStateAction<boolean>>;
 }) {
   const form = useFormContext();
@@ -20,11 +23,11 @@ export default function FormControls({
         <div className="mt-5 flex gap-2">
           <Button
             type="submit"
-            disabled={!canSubmit && isEditable}
+            disabled={(!canSubmit || isBlocked) && isEditable}
             form={id}
             onClick={() => {
               onEditBtnClick?.(true);
-              if (canSubmit && isEditable) form.handleSubmit();
+              if (canSubmit && !isBlocked && isEditable) form.handleSubmit();
             }}
           >
             {isSubmitting ? 'Wysyłanie' : isEditButton && !isEditable ? 'Edytuj' : 'Zapisz'}
