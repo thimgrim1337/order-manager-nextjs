@@ -1,6 +1,6 @@
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays, type Week } from '@/lib/week';
-import type { Order } from '@/types/types';
 import TimelineOrder from './timeline-order';
 
 const borderColors = [
@@ -11,7 +11,7 @@ const borderColors = [
   'border-chart-5',
 ];
 
-export default function TimelineBody({ week, orders }: { week: Week; orders: Order[] }) {
+export default function TimelineBody({ week, orders }: { week: Week; orders: OrderReadModel[] }) {
   const borderColorsMap = orders.reduce(
     (acc, order, index) => {
       const color = borderColors[index % borderColors.length];

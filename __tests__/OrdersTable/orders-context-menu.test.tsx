@@ -3,14 +3,14 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { changeOrderStatus, removeOrder } from '@/lib/actions';
-import type { Order } from '@/types/types';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { renderWithToaster } from '../utils/render-with-toaster';
 
 const order = {
   id: 1,
   orderNr: 'ZL-001',
   status: { id: 1, name: 'pending' },
-} as unknown as Order;
+} as unknown as OrderReadModel;
 
 function deferred() {
   let resolve!: () => void;

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { toastOutcome } from '@/features/shared/lib/toast-outcome';
 import { changeOrderStatus } from '@/lib/actions';
 import { ORDER_STATUS } from '@/lib/consts';
-import type { Order } from '@/types/types';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 
 const statusConfig = {
   pending: {
@@ -28,7 +28,7 @@ const statusConfig = {
 };
 
 type OrderStatusMenu = {
-  order: Order;
+  order: OrderReadModel;
   onDialogClose: () => void;
 };
 

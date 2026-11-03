@@ -1,13 +1,13 @@
 'use client';
 
-import type { Order } from '@/types/types';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import useTable from '../hooks/useTable';
 import { columns } from '../lib/columns';
 import { OrdersTableBody } from './orders-table-body';
 import { OrdersTablePagination } from './orders-table-pagination';
 
 interface OrdersTableProps {
-  orders: Order[];
+  orders: OrderReadModel[];
   count: number;
 }
 

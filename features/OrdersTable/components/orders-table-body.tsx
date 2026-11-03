@@ -2,7 +2,7 @@
 
 import { type ColumnDef, flexRender, type Table } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
-import type { Order } from '@/types/types';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import {
   TableBody,
   TableCell,
@@ -61,7 +61,7 @@ export function OrdersTableBody<TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <OrdersContextMenu key={row.id} order={row.original as Order}>
+            <OrdersContextMenu key={row.id} order={row.original as OrderReadModel}>
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}

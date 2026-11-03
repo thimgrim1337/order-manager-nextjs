@@ -5,13 +5,13 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import type { Order } from '@/types/types';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import ContextMenuOrderEdit from './context-menu-edit';
 import ContextMenuRemove from './context-menu-remove';
 import ContextMenuStatus from './context-menu-status';
 
 export type ContextMenuOptionProps = {
-  order: Order;
+  order: OrderReadModel;
   isModalOpen: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -22,7 +22,7 @@ export default function OrdersContextMenu({
   order,
   children,
 }: {
-  order: Order;
+  order: OrderReadModel;
   children: ReactElement;
 }) {
   const [openDialog, setOpenDialog] = useState<OpenDialog>(null);

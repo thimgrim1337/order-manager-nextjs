@@ -1,14 +1,14 @@
 import { TableCell } from '@/components/ui/table';
 import { useOrderData } from '@/features/shared/context/order-context';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import type { OrderDay } from '@/lib/week';
-import type { Order } from '@/types/types';
 
 export default function TimelinePlaceCell({
   order,
   day,
   borderColor,
 }: {
-  order: Order;
+  order: OrderReadModel;
   day: OrderDay;
   borderColor: string;
 }) {
@@ -35,7 +35,7 @@ export default function TimelinePlaceCell({
     );
   }
 
-  const renderPlace = (place: Order['loadingPlaces'][number]) => (
+  const renderPlace = (place: OrderReadModel['loadingPlaces'][number]) => (
     <>
       <span className={`flag:${getCountryCode(place.countryId)}`} />
       <span>{place.name}</span>

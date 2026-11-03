@@ -44,7 +44,7 @@ describe('changeOrderStatus', () => {
       expect(failure?.reason).toBe('InvalidData');
       const [saved] = await findOrdersInWeek(trx, week);
       expect(saved).toMatchObject({
-        statusId: created.statusId,
+        status: { id: created.statusId },
         orderNr: 'ZL/1',
         pricePLN: '1000.00',
       });

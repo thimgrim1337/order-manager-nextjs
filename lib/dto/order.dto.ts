@@ -1,7 +1,7 @@
 import { isAfter } from 'date-fns';
 import { createSelectSchema } from 'drizzle-zod';
 import z from 'zod';
-import { order, ordersWithDetailsView } from '@/db/schemas';
+import { order } from '@/db/schemas';
 import { ORDER_STATUS, ZOD_ERROR_MESSAGES } from '../consts';
 import { toDate } from '../dates';
 import { selectCitySchema as City } from './city.dto';
@@ -72,27 +72,7 @@ export const OrderFormSchema = OrderFormFields.refine((order) => !isLoadingAfter
   ...onlyWhenDatesValid,
 });
 
-const selectOrderViewSchema = createSelectSchema(ordersWithDetailsView);
 export const selectOrderSchema = createSelectSchema(order);
 
 export type OrderFormDto = z.infer<typeof OrderFormSchema>;
-type OrderWithDetailsDto = z.infer<typeof selectOrderViewSchema>;
-export type OrderTableDto = Required<
-  Pick<
-    OrderWithDetailsDto,
-    | 'id'
-    | 'currency'
-    | 'customer'
-    | 'driver'
-    | 'startDate'
-    | 'endDate'
-    | 'loadingPlaces'
-    | 'unloadingPlaces'
-    | 'orderNr'
-    | 'priceCurrency'
-    | 'pricePLN'
-    | 'status'
-    | 'truck'
-  >
->;
 export type OrderDto = z.infer<typeof selectOrderSchema>;

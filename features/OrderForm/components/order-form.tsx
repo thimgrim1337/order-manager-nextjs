@@ -6,8 +6,8 @@ import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
 import type { ActionResponse } from '@/lib/action-response';
 import { CURRENCY } from '@/lib/consts';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
-import type { Order } from '@/types/types';
 import { useAppForm } from '../hooks/useAppForm';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
 import useFormSubmit from '../hooks/useFormSubmit';
@@ -19,7 +19,7 @@ import CurrencyInfo from './ui/currency-info';
 
 export type OrderFormProps = {
   /** The Order to edit, locked until the user asks to edit it; without one the form creates an Order. */
-  order?: Order;
+  order?: OrderReadModel;
   /** Saves the filled-in Order through the Orders module. */
   action: (formData: OrderFormDto) => Promise<ActionResponse<OrderDto>>;
   onDialogClose: () => void;

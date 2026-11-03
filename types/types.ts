@@ -4,11 +4,9 @@ import type { CountryDto } from '@/lib/dto/country.dto';
 import type { CurrencyDto } from '@/lib/dto/currency.dto';
 import type { CustomerDto } from '@/lib/dto/customer.dto';
 import type { DriverDto } from '@/lib/dto/driver.dto';
-import type { OrderTableDto } from '@/lib/dto/order.dto';
 import type { StatusDto } from '@/lib/dto/status.dto';
 import type { TruckDto } from '@/lib/dto/truck.dto';
 
-export type Order = OrderTableDto;
 export type City = CityDto;
 export type Country = CountryDto;
 export type Customer = CustomerDto;

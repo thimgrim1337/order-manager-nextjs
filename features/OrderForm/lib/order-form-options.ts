@@ -1,8 +1,9 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
 import { ORDER_STATUS } from '@/lib/consts';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
-import type { City, Order } from '@/types/types';
+import type { City } from '@/types/types';
 
 /** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
 const getDefaultOrderDates = () => {
@@ -38,7 +39,7 @@ export const orderFormOptions = formOptions({
 });
 
 /** The form's values for editing `order`, or for a new Order dated from today when there is none. */
-export const getStartingValues = (order?: Order) => {
+export const getStartingValues = (order?: OrderReadModel) => {
   if (!order) return { ...orderFormOptions.defaultValues, ...getDefaultOrderDates() };
 
   return {

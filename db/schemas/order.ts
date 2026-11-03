@@ -11,8 +11,16 @@ import {
   timestamp,
   unique,
 } from 'drizzle-orm/pg-core';
-import type { City, Customer, Driver, Status, Truck } from '@/types/types';
-import { currency, customer, driver, loadingPlace, status, truck, unloadingPlace } from '.';
+import {
+  type city,
+  currency,
+  customer,
+  driver,
+  loadingPlace,
+  status,
+  truck,
+  unloadingPlace,
+} from '.';
 
 const order = pgTable(
   'orders',
@@ -88,12 +96,12 @@ export const ordersWithDetailsView = pgView('orders_with_details', {
   customerId: integer('customer_id'),
 
   // JSON aggregated data
-  customer: json('customer').$type<Customer>().notNull(),
-  driver: json('driver').$type<Driver>().notNull(),
-  truck: json('truck').$type<Truck>().notNull(),
-  status: json('status').$type<Status>().notNull().notNull(),
-  loadingPlaces: json('loading_places').$type<City[]>().notNull(),
-  unloadingPlaces: json('unloading_places').$type<City[]>().notNull(),
+  customer: json('customer').$type<typeof customer.$inferSelect>().notNull(),
+  driver: json('driver').$type<typeof driver.$inferSelect>().notNull(),
+  truck: json('truck').$type<typeof truck.$inferSelect>().notNull(),
+  status: json('status').$type<typeof status.$inferSelect>().notNull(),
+  loadingPlaces: json('loading_places').$type<(typeof city.$inferSelect)[]>().notNull(),
+  unloadingPlaces: json('unloading_places').$type<(typeof city.$inferSelect)[]>().notNull(),
   currency: json('currency_info')
     .$type<{
       id: number;

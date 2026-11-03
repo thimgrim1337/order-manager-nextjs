@@ -5,8 +5,8 @@ import { TableRow } from '@/components/ui/table';
 import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
 import Dialog from '@/features/shared/components/ui/dialog';
 import useToggle from '@/features/shared/hooks/use-toggle';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import type { OrderDay } from '@/lib/week';
-import type { Order } from '@/types/types';
 import TimelineDetailsCell from './timeline-details';
 import TimelinePlaceCell from './timeline-place';
 
@@ -15,7 +15,7 @@ export default function TimelineOrder({
   days,
   borderColor,
 }: {
-  order: Order;
+  order: OrderReadModel;
   days: OrderDay[];
   borderColor: string;
 }) {

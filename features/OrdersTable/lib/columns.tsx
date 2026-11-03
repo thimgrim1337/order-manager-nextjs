@@ -2,12 +2,12 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { OrderSortField } from '@/lib/consts';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { formatDate } from '@/lib/dates';
-import type { Order } from '@/types/types';
 import StatusBadge from '../components/ui/status-bagde';
 
 /** Every column is sortable: its `accessorKey` is its id, and the id is the sort field the URL and DAL read. */
-type OrderColumn = ColumnDef<Order> & { accessorKey: OrderSortField };
+type OrderColumn = ColumnDef<OrderReadModel> & { accessorKey: OrderSortField };
 
 export const columns: OrderColumn[] = [
   {

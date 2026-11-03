@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
-import type { Order } from '@/types/types';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
 import { pickDate } from '../utils/pick-date';
 import { renderWithQueries } from '../utils/wrapper';
@@ -212,7 +212,7 @@ describe('OrderForm', () => {
   });
 
   describe('edit', () => {
-    const order: Order = {
+    const order: OrderReadModel = {
       id: 7,
       orderNr: 'ZL-7',
       startDate: '2026-11-12',
@@ -227,7 +227,7 @@ describe('OrderForm', () => {
       loadingPlaces: [plock],
       unloadingPlaces: [plock],
     };
-    const editSetup = (edited: Order = order) =>
+    const editSetup = (edited: OrderReadModel = order) =>
       setup({ order: edited, action: (formData) => updateOrder(edited.id, formData) });
 
     beforeEach(() => {

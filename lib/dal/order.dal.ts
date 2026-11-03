@@ -8,6 +8,26 @@ import { type Week, weekDays } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
 
+/** The columns of an Order as the Orders Table and the Timeline show it. */
+const orderReadModel = {
+  id: ordersWithDetailsView.id,
+  orderNr: ordersWithDetailsView.orderNr,
+  startDate: ordersWithDetailsView.startDate,
+  endDate: ordersWithDetailsView.endDate,
+  status: ordersWithDetailsView.status,
+  customer: ordersWithDetailsView.customer,
+  driver: ordersWithDetailsView.driver,
+  truck: ordersWithDetailsView.truck,
+  currency: ordersWithDetailsView.currency,
+  priceCurrency: ordersWithDetailsView.priceCurrency,
+  pricePLN: ordersWithDetailsView.pricePLN,
+  loadingPlaces: ordersWithDetailsView.loadingPlaces,
+  unloadingPlaces: ordersWithDetailsView.unloadingPlaces,
+};
+
+/** An Order as the Orders Table and the Timeline receive it. */
+export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number];
+
 export async function findOrders(
   database: db | dbTransaction,
   pageIndex: number,
@@ -101,7 +121,7 @@ export async function findOrders(
   const whereConditions = allWhereConditions.length > 0 ? and(...allWhereConditions) : undefined;
 
   const orders = database
-    .select()
+    .select(orderReadModel)
     .from(ordersWithDetailsView)
     .where(whereConditions)
     .orderBy(...sortColumn)
@@ -145,7 +165,7 @@ export async function findOrdersInWeek(
   const sunday = days[6].date;
 
   return database
-    .select()
+    .select(orderReadModel)
     .from(ordersWithDetailsView)
     .where(
       and(
