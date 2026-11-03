@@ -4,5 +4,6 @@
     "noUncheckedIndexedAccess": false,
     "tsBuildInfoFile": "../tsconfig.tests.tsbuildinfo"
   },
+  "exclude": ["../node_modules"],
   "include": ["**/*.ts", "**/*.tsx", "../*.d.ts", "../types/**/*.ts"]
 }
