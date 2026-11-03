@@ -1,6 +1,7 @@
 import { Pen } from 'lucide-react';
-import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
+import OrderForm from '@/features/OrderForm/components/order-form';
 import Dialog from '@/features/shared/components/ui/dialog';
+import { updateOrder } from '@/lib/actions';
 import type { ContextMenuOptionProps } from './context-menu';
 
 export default function ContextMenuOrderEdit({
@@ -16,7 +17,11 @@ export default function ContextMenuOrderEdit({
       title={`Edycja zlecenia ${order.orderNr}`}
       className="min-w-5xl"
     >
-      <EditOrderForm order={order} onDialogClose={() => onOpenChange(false)} />
+      <OrderForm
+        order={order}
+        action={(formData) => updateOrder(order.id, formData)}
+        onDialogClose={() => onOpenChange(false)}
+      />
     </Dialog>
   );
 }

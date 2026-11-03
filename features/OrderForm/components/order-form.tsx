@@ -4,84 +4,83 @@ import { useStore } from '@tanstack/react-form';
 import { useEffect, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
-import { updateOrder } from '@/lib/actions';
-import type { OrderFormDto } from '@/lib/dto/order.dto';
+import type { ActionResponse } from '@/lib/action-response';
+import { CURRENCY } from '@/lib/consts';
+import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
 import type { Order } from '@/types/types';
 import { useAppForm } from '../hooks/useAppForm';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
 import useFormSubmit from '../hooks/useFormSubmit';
-import { orderFormOptions } from '../lib/order-form-options';
+import { getStartingValues, orderFormOptions } from '../lib/order-form-options';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
 import CurrencyInfo from './ui/currency-info';
 
-export default function EditOrderForm({
-  order,
-  onDialogClose,
-}: {
-  order: Order;
+export type OrderFormProps = {
+  /** The Order to edit, locked until the user asks to edit it; without one the form creates an Order. */
+  order?: Order;
+  /** Saves the filled-in Order through the Orders module. */
+  action: (formData: OrderFormDto) => Promise<ActionResponse<OrderDto>>;
   onDialogClose: () => void;
-}) {
-  const { cities, countries, currencies, drivers, trucks } = useOrderData();
+};
 
-  const { submitForm } = useFormSubmit(
-    (formData: OrderFormDto) => updateOrder(order.id, formData),
-    onDialogClose,
-  );
+/** Creates or edits an Order. */
+export default function OrderForm({ order, action, onDialogClose }: OrderFormProps) {
+  const { cities, countries, currencies, customers, drivers, trucks } = useOrderData();
+
+  const { submitForm } = useFormSubmit(action, onDialogClose);
+
+  // Read once per open, so Reset keeps the dates the form opened with.
+  const [startingValues] = useState(() => getStartingValues(order));
+  const [isEditable, setIsEditable] = useState(!order);
 
   const form = useAppForm({
     ...orderFormOptions,
-    defaultValues: {
-      orderNr: order.orderNr,
-      startDate: order.startDate,
-      endDate: order.endDate,
-      customerId: order.customer.id,
-      driverId: order.driver.id,
-      truckId: order.truck.id,
-      statusId: order.status.id,
-      priceCurrency: order.priceCurrency,
-      currencyId: order.currency.id,
-      loadingPlaces: order.loadingPlaces,
-      unloadingPlaces: order.unloadingPlaces,
-      currencyInfo: {
-        table: '',
-        rate: '',
-        date: '',
-      },
-    },
+    defaultValues: startingValues,
     onSubmit: async ({ value }) => {
       submitForm(value, {
-        successDescription: `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`,
+        successDescription: order
+          ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
+          : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
       });
     },
   });
 
   const { endDate, currencyId, currencyInfo } = useStore(form.store, (state) => state.values);
+  const currencyCode = currencies.find((currency) => currency.id === currencyId)?.code ?? 'PLN';
 
   const {
     rate,
     isLoading: isRateLoading,
     isError: isRateError,
     error: rateError,
-  } = useCurrencyInfo(endDate);
+  } = useCurrencyInfo(endDate, currencyCode);
+
+  // Any currency but PLN needs its NBP rate, from which the Orders module works out the PLN price.
+  const needsRate = currencyId !== CURRENCY.PLN;
 
   useEffect(() => {
-    if (currencyId === 2 && rate?.rates[0])
+    if (needsRate && rate?.rates[0])
       form.setFieldValue('currencyInfo', {
         date: rate.rates[0].effectiveDate,
         rate: rate.rates[0].mid.toString(),
         table: rate.rates[0].no,
       });
-  }, [currencyId, rate, form]);
+    // Not keeping the last currency's rate, which would price this one with it.
+    else if (form.getFieldValue('currencyInfo').rate)
+      form.setFieldValue('currencyInfo', orderFormOptions.defaultValues.currencyInfo);
+  }, [needsRate, rate, form]);
 
-  const [isEditable, setIsEditable] = useState(false);
+  // The currency's validator reads the fetch's outcome, which settles after the currency changed.
+  useEffect(() => {
+    if (needsRate && !isRateLoading) form.validateField('currencyId', 'change');
+  }, [needsRate, isRateLoading, form]);
 
   const fieldGroupStyle = 'flex-row pt-5';
 
   return (
     <form
-      className="w-20rem"
-      id="edit-order-form"
+      id="order-form"
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
@@ -94,7 +93,8 @@ export default function EditOrderForm({
               <form.AppField name="customerId">
                 {(field) => (
                   <field.CustomersComboboxField
-                    customers={[order.customer]}
+                    // Editing, the Order's own Customer may lie outside the preloaded ones.
+                    customers={order ? [order.customer] : customers}
                     label="Zleceniodawca"
                   />
                 )}
@@ -134,7 +134,7 @@ export default function EditOrderForm({
                 <field.PlacesComboboxField
                   cities={cities}
                   countries={countries}
-                  label="Miejsca rozaładunku"
+                  label="Miejsca rozładunku"
                 />
               )}
             </form.AppField>
@@ -147,7 +147,7 @@ export default function EditOrderForm({
               name="currencyId"
               validators={{
                 onChangeAsync: async ({ value }) => {
-                  if (value !== 2) return null;
+                  if (value === CURRENCY.PLN) return null;
 
                   if (isRateError)
                     return {
@@ -166,11 +166,13 @@ export default function EditOrderForm({
                     value: currency.id,
                   }))}
                 >
-                  <CurrencyInfo
-                    isLoading={isRateLoading}
-                    selectedCurrency={currencyId}
-                    currencyInfo={currencyInfo}
-                  />
+                  {needsRate && (
+                    <CurrencyInfo
+                      isLoading={isRateLoading}
+                      currencyCode={currencyCode}
+                      currencyInfo={currencyInfo}
+                    />
+                  )}
                 </field.SelectField>
               )}
             </form.AppField>
@@ -213,9 +215,9 @@ export default function EditOrderForm({
         </fieldset>
         <form.FormControls
           id={form.formId}
-          isEditButton
+          isEditButton={!!order}
           isEditable={isEditable}
-          onEditBtnClick={setIsEditable}
+          onEditBtnClick={order ? setIsEditable : undefined}
         />
       </form.AppForm>
     </form>

@@ -2,16 +2,14 @@ import { Loader2 } from "lucide-react";
 import { CurrencyInfo as TCurrencyInfo } from "@/types/types";
 
 export default function CurrencyInfo({
-	selectedCurrency,
+	currencyCode,
 	isLoading,
 	currencyInfo,
 }: {
-	selectedCurrency: number;
+	currencyCode: string;
 	isLoading: boolean;
 	currencyInfo?: TCurrencyInfo | null;
 }) {
-	if (selectedCurrency === 1) return null;
-
 	const content = isLoading ? (
 		<>
 			<Loader2 className="h-3 w-3 animate-spin" />
@@ -19,7 +17,7 @@ export default function CurrencyInfo({
 		</>
 	) : currencyInfo?.rate ? (
 		<span>
-			Tabela nr {currencyInfo.table} z dnia {currencyInfo.date}, 1 EUR ={" "}
+			Tabela nr {currencyInfo.table} z dnia {currencyInfo.date}, 1 {currencyCode} ={" "}
 			{currencyInfo.rate} PLN
 		</span>
 	) : null;

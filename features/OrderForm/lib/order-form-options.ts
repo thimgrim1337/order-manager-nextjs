@@ -2,10 +2,10 @@ import { formOptions } from '@tanstack/react-form-nextjs';
 import { ORDER_STATUS } from '@/lib/consts';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
-import type { City } from '@/types/types';
+import type { City, Order } from '@/types/types';
 
 /** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
-export const getDefaultOrderDates = () => {
+const getDefaultOrderDates = () => {
   const today = getToday();
   return { startDate: today, endDate: addDays(today, 1) };
 };
@@ -13,7 +13,7 @@ export const getDefaultOrderDates = () => {
 export const orderFormOptions = formOptions({
   defaultValues: {
     orderNr: '',
-    // Placeholders: forms set their own, the create form from `getDefaultOrderDates`.
+    // Placeholders: `getStartingValues` sets them.
     startDate: '',
     endDate: '',
     customerId: 0,
@@ -36,3 +36,23 @@ export const orderFormOptions = formOptions({
     onChange: OrderFormSchema,
   },
 });
+
+/** The form's values for editing `order`, or for a new Order dated from today when there is none. */
+export const getStartingValues = (order?: Order) => {
+  if (!order) return { ...orderFormOptions.defaultValues, ...getDefaultOrderDates() };
+
+  return {
+    ...orderFormOptions.defaultValues,
+    orderNr: order.orderNr,
+    startDate: order.startDate,
+    endDate: order.endDate,
+    customerId: order.customer.id,
+    driverId: order.driver.id,
+    truckId: order.truck.id,
+    statusId: order.status.id,
+    priceCurrency: order.priceCurrency,
+    currencyId: order.currency.id,
+    loadingPlaces: order.loadingPlaces,
+    unloadingPlaces: order.unloadingPlaces,
+  };
+};

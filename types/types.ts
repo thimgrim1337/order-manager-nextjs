@@ -17,7 +17,8 @@ export type Truck = TruckDto;
 export type Status = StatusDto;
 export type Currency = CurrencyDto;
 
-export type Currencies = 'PLN' | 'EUR';
+/** A currency's code, as the NBP API takes it. */
+export type Currencies = Currency['code'];
 
 export type CurrencyTable = 'A' | 'B' | 'C';
 

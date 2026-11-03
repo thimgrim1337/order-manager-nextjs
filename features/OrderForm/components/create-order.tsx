@@ -1,8 +1,9 @@
 'use client';
 
 import { FilePlus } from 'lucide-react';
+import { createOrder } from '@/lib/actions';
 import useToggle from '../../shared/hooks/use-toggle';
-import CreateOrderForm from './create-order-form';
+import OrderForm from './order-form';
 import FormDialog from './ui/form-dialog';
 
 export default function CreateOrder() {
@@ -17,7 +18,7 @@ export default function CreateOrder() {
       description="Wypełnij wszystkie pola aby dodać nowe zlecenie."
       className="min-w-5xl"
     >
-      <CreateOrderForm onDialogClose={closeModal} />
+      <OrderForm action={createOrder} onDialogClose={closeModal} />
     </FormDialog>
   );
 }
