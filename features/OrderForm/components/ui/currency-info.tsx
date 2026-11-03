@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { toPricePLN } from "@/lib/prices";
 import { CurrencyInfo as TCurrencyInfo } from "@/types/types";
 
 export default function CurrencyInfo({
@@ -12,8 +13,6 @@ export default function CurrencyInfo({
 	currencyInfo?: TCurrencyInfo | null;
 	priceCurrency: string;
 }) {
-	const pricePLN = Number(priceCurrency) * Number(currencyInfo?.rate);
-
 	const content = isLoading ? (
 		<>
 			<Loader2 className="h-3 w-3 animate-spin" />
@@ -26,7 +25,9 @@ export default function CurrencyInfo({
 				{currencyInfo.table ? `Tabela nr ${currencyInfo.table}` : "Kurs"} z dnia{" "}
 				{currencyInfo.date}, 1 {currencyCode} = {currencyInfo.rate} PLN
 			</span>
-			{pricePLN > 0 && <span>Cena w PLN: {pricePLN.toFixed(2)}</span>}
+			{Number(priceCurrency) > 0 && (
+				<span>Cena w PLN: {toPricePLN(priceCurrency, currencyInfo.rate)}</span>
+			)}
 		</div>
 	) : null;
 

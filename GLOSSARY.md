@@ -41,7 +41,7 @@ The NBP mid rate of a foreign Currency to PLN, from the latest business day befo
 _Avoid_: NBP rate, conversion rate
 
 **PLN Price** (_Cena w PLN_):
-An Order's Price in PLN: the Price itself for a PLN Order, otherwise the Price at its Exchange Rate.
+An Order's Price in PLN: the Price itself for a PLN Order, otherwise the Price at its Exchange Rate, rounded to the grosz with half a grosz rounded up.
 _Avoid_: Converted price, price in złoty
 
 ### Trucks and Drivers

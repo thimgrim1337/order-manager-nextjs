@@ -72,6 +72,23 @@ describe('createOrder', () => {
       });
     }));
 
+  it('rounds a PLN price on half a grosz up', () =>
+    withRollback(async (trx) => {
+      const { orderForm, eur } = await seed(trx);
+
+      const [, created] = await createOrder(
+        trx,
+        orderForm({
+          currencyId: eur.id,
+          priceCurrency: '1070',
+          currencyInfo: { rate: '4.1235', table: '210/A/NBP/2026', date: '2026-10-28' },
+        }),
+      );
+
+      // 4412.145 exactly; floating point makes it 4412.1449999999995.
+      expect(created?.pricePLN).toBe('4412.15');
+    }));
+
   it('rejects an EUR price without an exchange rate, and saves nothing', () =>
     withRollback(async (trx) => {
       const { orderForm, eur } = await seed(trx);

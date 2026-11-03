@@ -9,6 +9,7 @@ import { isForeignKeyViolation, isUniqueViolation } from '../db-errors';
 import type { CityDto } from '../dto/city.dto';
 import { type OrderDto, OrderFormSchema, selectOrderSchema } from '../dto/order.dto';
 import { error, ok, type Result } from '../error';
+import { toPricePLN } from '../prices';
 
 type InvalidData = { reason: 'InvalidData'; details: string };
 
@@ -206,7 +207,7 @@ function parseOrderForm(input: unknown) {
     unloadingPlaces,
     fields: {
       ...fields,
-      pricePLN: String(Number(fields.priceCurrency) * Number(currencyInfo.rate)),
+      pricePLN: toPricePLN(fields.priceCurrency, currencyInfo.rate),
       exchangeRate: currencyInfo.rate,
       exchangeDate: currencyInfo.date,
     },
