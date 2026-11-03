@@ -46,3 +46,10 @@ export function analyzeGlobalFiltering(value: string) {
     searchTerm: `%${trimmed.toLowerCase()}%`,
   };
 }
+
+/** `%search%` for `ilike`, or undefined for an empty search, which matches everything. */
+export function toSearchTerm(search?: string) {
+  const trimmed = search?.trim();
+
+  return trimmed ? `%${trimmed}%` : undefined;
+}

@@ -1,8 +1,9 @@
 import CreateOrder from '@/features/OrderForm/components/create-order';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
+import { getCities } from '@/lib/dal/city.dal';
 import { getAllCountries } from '@/lib/dal/country.dal';
 import { getAllCurrencies } from '@/lib/dal/currency.dal';
-import { getCities, getCustomers } from '@/lib/dal/customers-and-cities.dal';
+import { getCustomers } from '@/lib/dal/customer.dal';
 import { getAllDrivers } from '@/lib/dal/driver.dal';
 import { getAllOrders } from '@/lib/dal/order.dal';
 import { getAllStatuses } from '@/lib/dal/status.dal';

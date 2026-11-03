@@ -25,6 +25,9 @@ export const CACHE_TAG = {
 export const DEFAULT_PAGE_INDEX = 0;
 export const DEFAULT_PAGE_SIZE = 10;
 
+/** How many Customers or Cities a search returns: the comboboxes show the first ones by name. */
+export const SEARCH_LIMIT = 10;
+
 type ZodMessages = {
   FieldRequired: 'Pole jest wymagane.';
 };

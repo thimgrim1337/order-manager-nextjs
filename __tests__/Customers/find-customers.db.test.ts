@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { customer } from '@/db/schemas';
-import { findCustomers } from '@/lib/dal/customers-and-cities.dal';
+import { findCustomers } from '@/lib/dal/customer.dal';
 import { withRollback } from '../db/with-rollback';
 
 async function seedCustomers(trx: dbTransaction, customers: { name: string; tax: string }[]) {
