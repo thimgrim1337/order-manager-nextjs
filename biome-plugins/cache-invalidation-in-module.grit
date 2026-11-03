@@ -1,0 +1,10 @@
+or {
+  `updateTag($_)`,
+  `revalidateTag($...)`
+} as $call where {
+  $filename <: not or {
+    r".*lib/services/.*\.services\.ts",
+    r".*__tests__/.*"
+  },
+  register_diagnostic(span=$call, message="Invalidate cached data in the write's service in @/lib/services, next to the write.")
+}

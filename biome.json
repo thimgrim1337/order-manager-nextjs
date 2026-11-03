@@ -21,7 +21,8 @@
     "./biome-plugins/calendar-day-click.grit",
     "./biome-plugins/order-writes-in-module.grit",
     "./biome-plugins/db-error-codes.grit",
-    "./biome-plugins/e2e-seed-per-test.grit"
+    "./biome-plugins/e2e-seed-per-test.grit",
+    "./biome-plugins/cache-invalidation-in-module.grit"
   ],
   "formatter": {
     "enabled": true,
