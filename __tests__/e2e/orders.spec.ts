@@ -1,4 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import { cacheEmptySearch, searchCombobox } from './helpers/combobox';
 import { cleanupTestData, dayOfThisMonth, seedOrder, seedTestData } from './helpers/seed';
 
 const SEEDED_ORDER = {
@@ -7,29 +8,6 @@ const SEEDED_ORDER = {
   endDate: dayOfThisMonth(13),
 };
 const { orderNr } = SEEDED_ORDER;
-
-/**
- * Types `query` into a combobox and waits for the server to answer its debounced search.
- * Matches the search Server Action's request by its serialised `[query]` argument.
- */
-async function searchCombobox(page: Page, label: string, query: string) {
-  const answered = page.waitForResponse(
-    (res) =>
-      res.request().headers()['next-action'] !== undefined &&
-      res.request().postData() === JSON.stringify([query]),
-  );
-  await page.getByLabel(label).fill(query);
-  await answered;
-}
-
-/** Searches a combobox for `query`, so the server caches it finding nothing, then closes it. */
-async function cacheEmptySearch(page: Page, label: string, query: string) {
-  await searchCombobox(page, label, query);
-  await expect(page.getByText('Nic nie znaleziono.')).toBeVisible();
-  const combobox = page.getByLabel(label);
-  await combobox.fill('');
-  await combobox.press('Escape');
-}
 
 test.describe('Order test', () => {
   test.beforeEach(async () => {

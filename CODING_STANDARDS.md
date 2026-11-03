@@ -25,6 +25,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - Writes go through a server-only service in `lib/services/<entity>.services.ts`, e.g. the Orders module `orders.services.ts`: it takes `db | dbTransaction`, owns validation, the transaction and cache invalidation (Biome enforces where Orders with their Places and a Truck's Driver, Customers and Cities are written, and where `updateTag` is called), and returns a `Result` of domain outcomes. A Server Action only passes `db` and maps the outcome through `toActionResponse` (`lib/action-response.ts`), which holds the failures' Polish messages. A Server Action's arguments are untrusted: the service parses every one it receives, ids included, and a malformed one returns `InvalidData`.
 - A write returns an expected constraint violation (a taken name, an unknown id) as a domain outcome and lets anything else throw.
 - Query tests are `*.db.test.ts`, seed their own rows and run inside `withRollback` (`__tests__/db/with-rollback.ts`), passing its transaction to the `find*` function.
+- A test of a write's cache invalidation first reads the cached query the write should change, with the same arguments, so it goes red without the invalidation. In e2e, `cacheEmptySearch` (`__tests__/e2e/helpers/combobox.ts`) does this for a combobox search.
 
 ## Accessibility
 

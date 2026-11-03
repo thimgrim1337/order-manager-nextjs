@@ -28,7 +28,7 @@ It's Transport Order Manager. The core functionality is CRUD orders and display 
 
 ### Issue tracker
 
-Issues live in GitHub Issues (`thimgrim1337/order-manager-nextjs`) via the `gh` CLI. Read `docs/agents/issue-tracker.md` before creating, updating or closing one.
+Issues live in GitHub Issues (`thimgrim1337/order-manager-nextjs`) via the `gh` CLI. Read `docs/agents/issue-tracker.md` before creating, updating or closing one, or committing work that meets another issue's criterion.
 
 ### Triage labels
 
