@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { loadingPlace, unloadingPlace } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
-import { createOrder, removeOrder } from '@/lib/orders';
+import { createOrder, removeOrder } from '@/lib/services/orders.services';
 import { parseWeekKey, type Week } from '@/lib/week';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';

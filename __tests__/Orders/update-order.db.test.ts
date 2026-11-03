@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
-import { createOrder, updateOrder } from '@/lib/orders';
+import { createOrder, updateOrder } from '@/lib/services/orders.services';
 import { parseWeekKey, type Week } from '@/lib/week';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';

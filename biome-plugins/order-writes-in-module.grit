@@ -23,9 +23,9 @@ or {
   }
 } as $call where {
   $filename <: not or {
-    r".*lib/orders\.ts",
+    r".*lib/services/orders\.services\.ts",
     r".*__tests__/.*",
     r".*db/seeds/.*"
   },
-  register_diagnostic(span=$call, message="Write Orders, their Places and a Truck's Driver through the Orders module in @/lib/orders.")
+  register_diagnostic(span=$call, message="Write Orders, their Places and a Truck's Driver through the Orders module in @/lib/services/orders.services.")
 }
