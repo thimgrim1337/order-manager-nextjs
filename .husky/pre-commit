@@ -3,7 +3,12 @@ if [ "$(git branch --show-current)" = "main" ]; then
   exit 1
 fi
 
+# Husky runs this with `sh -e`, so the last step printed is the one that failed.
+echo "▶ pre-commit: lint-staged"
 pnpm exec lint-staged
+echo "▶ pre-commit: typecheck"
 pnpm typecheck
+echo "▶ pre-commit: knip"
 pnpm knip
+echo "▶ pre-commit: tests"
 pnpm test:staged

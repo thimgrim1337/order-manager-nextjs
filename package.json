@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "check": "biome check --write",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p __tests__",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p __tests__ && tsc -p __tests__ --listFilesOnly | grep -q '/__tests__/'",
     "knip": "knip",
     "test": "vitest ",
     "test:staged": "docker compose up db-test -d --wait && vitest --run",
