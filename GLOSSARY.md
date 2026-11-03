@@ -92,6 +92,10 @@ The filter, end of the range orders to fetch.
 The searchable, paginated list of all Orders, unrestricted by date unless the user filters it.
 _Avoid_: Order list, orders page
 
+**Search** (_Wyszukiwanie_):
+The Orders Table's one free-text term. It matches an Order by any of its text columns (Order Number, Customer, Driver, Truck, Status, Currency, Loading and Unloading Cities), by a Price or PLN Price within 1 of it when it is a number, and by its Start or End Date when it is a date (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY).
+_Avoid_: Global filter, query
+
 **Timeline** (_Harmonogram_):
 The one-Week view of every Order in that Week, laid out across days, used for planning Trucks and Drivers.
 _Avoid_: Schedule, calendar, planner

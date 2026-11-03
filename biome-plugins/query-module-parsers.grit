@@ -1,0 +1,5 @@
+`import $_ from $source` as $import where {
+  $source <: r"['\"]zod['\"]",
+  $filename <: r".*features/[^/]+/lib/[^/]+-query\.ts",
+  register_diagnostic(span=$import, message="A query module reads params through @/features/shared/lib/search-param-parsers: add a parser there.")
+}

@@ -24,7 +24,8 @@
     "./biome-plugins/e2e-seed-per-test.grit",
     "./biome-plugins/cache-invalidation-in-module.grit",
     "./biome-plugins/use-cache-life.grit",
-    "./biome-plugins/money-in-prices.grit"
+    "./biome-plugins/money-in-prices.grit",
+    "./biome-plugins/query-module-parsers.grit"
   ],
   "formatter": {
     "enabled": true,

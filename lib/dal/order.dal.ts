@@ -28,11 +28,7 @@ const orderReadModel = {
 const DAY_FIRST_DATE = /^(\d{2})([-/.])(\d{2})\2(\d{4})$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-/**
- * What a search term matches: an `ilike` pattern for any text column, a Price or PLN Price
- * within 1 of it when it is a number, and a Start or End Date when it is a date
- * (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY).
- */
+/** What the Orders Table's Search matches, as `GLOSSARY.md` defines it. */
 function parseSearch(search: string) {
   const trimmed = search.trim();
   const price = Number(trimmed);

@@ -9,7 +9,8 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 ## URL search params
 
 - Each page owns a query module (`features/<Feature>/lib/*-query.ts`) with `parse`, `apply` and `toSearchParams`.
-- `parse` reads every param through `features/shared/lib/search-param-parsers.ts`: one `parseX(value: RawSearchParam)` per kind of value, returning `undefined` when the value is missing or invalid. A new kind of param gets a new parser there.
+- `parse` reads every param through `features/shared/lib/search-param-parsers.ts` (Biome enforces that a query module imports no `zod`): one `parseX(value: RawSearchParam)` per kind of value, returning `undefined` when the value is missing or invalid. A new kind of param gets a new parser there.
+- A parser's bounds belong to its kind and live in it (`parsePageSize`, not `parseInteger({ min, max })`). It takes a second argument only for the values a page defines, like the sort fields `parseSort(value, ORDER_SORT_FIELDS)` accepts.
 
 ## Dates and Weeks
 
