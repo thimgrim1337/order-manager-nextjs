@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { cleanupTestData, dayOfThisMonth, seedOrder, seedTestData } from './helpers/seed';
 
 const SEEDED_ORDER = {
@@ -7,6 +7,29 @@ const SEEDED_ORDER = {
   endDate: dayOfThisMonth(13),
 };
 const { orderNr } = SEEDED_ORDER;
+
+/**
+ * Types `query` into a combobox and waits for the server to answer its debounced search.
+ * Matches the search Server Action's request by its serialised `[query]` argument.
+ */
+async function searchCombobox(page: Page, label: string, query: string) {
+  const answered = page.waitForResponse(
+    (res) =>
+      res.request().headers()['next-action'] !== undefined &&
+      res.request().postData() === JSON.stringify([query]),
+  );
+  await page.getByLabel(label).fill(query);
+  await answered;
+}
+
+/** Searches a combobox for `query`, so the server caches it finding nothing, then closes it. */
+async function cacheEmptySearch(page: Page, label: string, query: string) {
+  await searchCombobox(page, label, query);
+  await expect(page.getByText('Nic nie znaleziono.')).toBeVisible();
+  const combobox = page.getByLabel(label);
+  await combobox.fill('');
+  await combobox.press('Escape');
+}
 
 test.describe('Order test', () => {
   test.beforeEach(async () => {
@@ -56,6 +79,42 @@ test.describe('Order test', () => {
     await expect(page.getByRole('heading', { name: 'Dodaj nowe zlecenie' })).not.toBeVisible();
 
     await expect(page.getByRole('cell', { name: 'E2E-001' })).toBeVisible();
+  });
+
+  test('Create a Customer and a City and pick them in the order form', async ({ page }) => {
+    await seedTestData();
+    await page.goto('/orders');
+
+    await page.getByRole('button', { name: 'Dodaj nowe zlecenie ' }).click();
+
+    // A stale cached search would still find nothing after creating.
+    await cacheEmptySearch(page, 'Zleceniodawca', 'Nowa');
+
+    await page.getByRole('button', { name: 'Dodawanie nowego zleceniodawcy' }).click();
+    const customerDialog = page.getByRole('dialog', { name: 'Dodawanie nowego zleceniodawcy' });
+    await customerDialog.getByLabel('Nazwa zleceniodawcy').fill('Nowa Firma');
+    await customerDialog.getByLabel('NIP').fill('PL9876543210');
+    await customerDialog.getByRole('button', { name: 'Zapisz' }).click();
+    await expect(customerDialog).not.toBeVisible();
+
+    await searchCombobox(page, 'Zleceniodawca', 'Nowa');
+    await page.getByRole('option', { name: 'Nowa Firma' }).click();
+    await expect(page.getByLabel('Zleceniodawca')).toHaveValue('Nowa Firma');
+
+    await cacheEmptySearch(page, 'Miejsca załadunku', 'Kra');
+
+    await page.getByRole('button', { name: 'Dodawanie nowego miejsca' }).click();
+    const cityDialog = page.getByRole('dialog', { name: 'Dodawanie nowego miejsca' });
+    await cityDialog.getByLabel('Kod kraju').click();
+    await page.getByRole('option', { name: 'PL Poland' }).click();
+    await cityDialog.getByLabel('Kod pocztowy').fill('30-001');
+    await cityDialog.getByLabel('Nazwa miejscowości').fill('Kraków');
+    await cityDialog.getByRole('button', { name: 'Zapisz' }).click();
+    await expect(cityDialog).not.toBeVisible();
+
+    await searchCombobox(page, 'Miejsca załadunku', 'Kra');
+    await page.getByRole('option', { name: 'Kraków' }).click();
+    await expect(page.getByText('30-001')).toBeVisible();
   });
 
   test.describe('with a seeded Order', () => {

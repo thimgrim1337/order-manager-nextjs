@@ -13,7 +13,7 @@ export type CreateCustomerFailure =
   | { reason: 'CustomerTaken' };
 
 /** Creates a Customer, then invalidates the cached Customers. Call it from a Server Action. */
-export async function createCustomerService(
+export async function createCustomer(
   database: db | dbTransaction,
   input: unknown,
 ): Promise<Result<CustomerDto, CreateCustomerFailure>> {

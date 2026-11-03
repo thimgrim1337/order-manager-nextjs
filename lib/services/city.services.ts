@@ -13,7 +13,7 @@ export type CreateCityFailure =
   | { reason: 'CityTaken' };
 
 /** Creates a City, then invalidates the cached Cities. Call it from a Server Action. */
-export async function createCityService(
+export async function createCity(
   database: db | dbTransaction,
   input: unknown,
 ): Promise<Result<CityDto, CreateCityFailure>> {

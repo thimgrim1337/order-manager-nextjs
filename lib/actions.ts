@@ -7,8 +7,8 @@ import { getCustomers } from './dal/customer.dal';
 import type { CityDto, CreateCityDto } from './dto/city.dto';
 import type { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
 import type { OrderDto, OrderFormDto } from './dto/order.dto';
-import { createCityService } from './services/city.services';
-import { createCustomerService } from './services/customer.services';
+import * as Cities from './services/city.services';
+import * as Customers from './services/customer.services';
 import * as Orders from './services/orders.services';
 
 export async function createOrder(formData: OrderFormDto): Promise<ActionResponse<OrderDto>> {
@@ -44,9 +44,9 @@ export async function searchCities(query: string) {
 export async function createCustomer(
   formData: CreateCustomerDto,
 ): Promise<ActionResponse<CustomerDto>> {
-  return toActionResponse(await createCustomerService(db, formData));
+  return toActionResponse(await Customers.createCustomer(db, formData));
 }
 
 export async function createCity(formData: CreateCityDto): Promise<ActionResponse<CityDto>> {
-  return toActionResponse(await createCityService(db, formData));
+  return toActionResponse(await Cities.createCity(db, formData));
 }
