@@ -1,0 +1,5 @@
+JsFunctionBody() as $body where {
+  $body <: contains `'use cache'`,
+  $body <: not contains `cacheLife($_)`,
+  register_diagnostic(span=$body, message="Give a 'use cache' function its cacheLife profile, chosen for how stale its data may get.")
+}

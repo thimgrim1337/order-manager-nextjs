@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
-import { cacheTag } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
@@ -127,6 +127,8 @@ export async function getAllOrders(
   filters?: OrderFilters,
 ) {
   'use cache';
+  // Hours, not days: Order writes invalidate the tag, but one outside the app would not.
+  cacheLife('hours');
   cacheTag(CACHE_TAG.Orders);
 
   return findOrders(db, pageIndex, pageSize, sortParams, filters);
@@ -157,6 +159,8 @@ export async function findOrdersInWeek(
 
 export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) {
   'use cache';
+  // Hours, not days: Order writes invalidate the tag, but one outside the app would not.
+  cacheLife('hours');
   cacheTag(CACHE_TAG.Orders);
 
   return findOrdersInWeek(db, week, opts);
