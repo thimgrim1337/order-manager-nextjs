@@ -5,6 +5,8 @@ import { useFieldContext } from '../../context/form-context';
 export type FormControlProps = {
   label: string;
   icon?: ReactNode;
+  /** An error from outside the field's validators, shown as one of its own. */
+  error?: string | null;
 };
 
 type FormBaseProps = {
@@ -17,9 +19,10 @@ export default function FormBase({
   children,
   horizontal,
   icon,
+  error,
 }: FormControlProps & FormBaseProps) {
   const field = useFieldContext();
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+  const isInvalid = (field.state.meta.isTouched && !field.state.meta.isValid) || !!error;
   return (
     <Field
       aria-invalid={isInvalid}
@@ -32,7 +35,13 @@ export default function FormBase({
       </FieldLabel>
 
       {children}
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      {isInvalid && (
+        <FieldError
+          errors={
+            error ? [...field.state.meta.errors, { message: error }] : field.state.meta.errors
+          }
+        />
+      )}
     </Field>
   );
 }

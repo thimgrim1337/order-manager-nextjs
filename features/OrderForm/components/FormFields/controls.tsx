@@ -19,32 +19,35 @@ export default function FormControls({
   const form = useFormContext();
   return (
     <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-      {([canSubmit, isSubmitting]) => (
-        <div className="mt-5 flex gap-2">
-          <Button
-            type="submit"
-            disabled={(!canSubmit || isBlocked) && isEditable}
-            form={id}
-            onClick={() => {
-              onEditBtnClick?.(true);
-              if (canSubmit && !isBlocked && isEditable) form.handleSubmit();
-            }}
-          >
-            {isSubmitting ? 'Wysyłanie' : isEditButton && !isEditable ? 'Edytuj' : 'Zapisz'}
-          </Button>
-          <Button
-            type="reset"
-            variant={'secondary'}
-            onClick={(e) => {
-              e.preventDefault();
-              onEditBtnClick?.(false);
-              form.reset();
-            }}
-          >
-            Reset
-          </Button>
-        </div>
-      )}
+      {([canSubmit, isSubmitting]) => {
+        const canSave = canSubmit && !isBlocked;
+        return (
+          <div className="mt-5 flex gap-2">
+            <Button
+              type="submit"
+              disabled={!canSave && isEditable}
+              form={id}
+              onClick={() => {
+                onEditBtnClick?.(true);
+                if (canSave && isEditable) form.handleSubmit();
+              }}
+            >
+              {isSubmitting ? 'Wysyłanie' : isEditButton && !isEditable ? 'Edytuj' : 'Zapisz'}
+            </Button>
+            <Button
+              type="reset"
+              variant={'secondary'}
+              onClick={(e) => {
+                e.preventDefault();
+                onEditBtnClick?.(false);
+                form.reset();
+              }}
+            >
+              Reset
+            </Button>
+          </div>
+        );
+      }}
     </form.Subscribe>
   );
 }

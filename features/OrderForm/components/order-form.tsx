@@ -2,7 +2,7 @@
 
 import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
-import { FieldError, FieldGroup } from '@/components/ui/field';
+import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
 import type { ActionResponse } from '@/lib/action-response';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
@@ -126,6 +126,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
                 <field.SelectField
                   label="Waluta"
                   placeholder="Wybierz walutę"
+                  error={exchangeRate.error}
                   data={currencies.map((currency) => ({
                     label: currency.code,
                     value: currency.id,
@@ -139,7 +140,6 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
                       priceCurrency={priceCurrency}
                     />
                   )}
-                  {exchangeRate.error && <FieldError errors={[{ message: exchangeRate.error }]} />}
                 </field.SelectField>
               )}
             </form.AppField>

@@ -1,17 +1,22 @@
 import { useOrderData } from '@/features/shared/context/order-context';
 import { CURRENCY } from '@/lib/consts';
-import type { CurrencyInfo } from '@/types/types';
+import type { OrderFormDto } from '@/lib/dto/order.dto';
 import { orderFormOptions } from '../lib/order-form-options';
 import { toCurrencyInfo } from '../services/nbp.services';
 import useCurrencyInfo from './useCurrencyInfo';
 
-type StoredRate = { endDate: string; currencyId: number; currencyInfo: CurrencyInfo };
+/** The Unloading Date and Currency an Order's Exchange Rate was stored for. */
+type StoredExchangeRate = Pick<OrderFormDto, 'endDate' | 'currencyId' | 'currencyInfo'>;
 
 /**
  * The Exchange Rate an Order dated `endDate` in `currencyId` is saved with: the `stored` one while
  * its Unloading Date and Currency hold, otherwise the one NBP answers with.
  */
-export default function useExchangeRate(stored: StoredRate, endDate: string, currencyId: number) {
+export default function useExchangeRate(
+  stored: StoredExchangeRate,
+  endDate: string,
+  currencyId: number,
+) {
   const { currencies } = useOrderData();
 
   // Any Currency but PLN needs its Exchange Rate, from which the Orders module works out the PLN Price.

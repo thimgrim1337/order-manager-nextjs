@@ -29,7 +29,7 @@ export type SelectFieldProps = FormControlProps & {
 export default function SelectField({ children, ...props }: SelectFieldProps) {
   const field = useFieldContext<number>();
 
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+  const isInvalid = (field.state.meta.isTouched && !field.state.meta.isValid) || !!props.error;
   const selectedValue = field.state.value;
   const selectedItem = props.data.filter((item) => item.value === selectedValue)[0] || null;
 
