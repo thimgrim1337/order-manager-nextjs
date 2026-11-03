@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
-import { createOrder, searchCustomers, updateOrder } from '@/lib/actions';
+import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
 import type { Order } from '@/types/types';
 import { worker } from '../mocks/browser';
 import { pickDate } from '../utils/pick-date';
@@ -137,6 +137,23 @@ describe('OrderForm', () => {
           currencyId: 2,
           currencyInfo: { table: '107/NBP/A', rate: '4.25', date: '2021-01-15' },
         }),
+      );
+    });
+
+    it('searches Cities by name and picks one beyond the preloaded ones', async () => {
+      const zgierz = { id: 11, name: 'Zgierz', postal: '95-100', countryId: 1 };
+      vi.mocked(searchCities).mockResolvedValue([zgierz]);
+      const { user, onDialogClose } = await setup();
+
+      await fillInNewOrder(user);
+      await user.type(screen.getByLabelText('Miejsca rozładunku'), 'Zgi');
+      await user.click(await screen.findByRole('option', { name: 'Zgierz' }));
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(searchCities).toHaveBeenCalledWith('Zgi');
+      expect(createOrder).toHaveBeenCalledWith(
+        expect.objectContaining({ loadingPlaces: [plock], unloadingPlaces: [plock, zgierz] }),
       );
     });
 

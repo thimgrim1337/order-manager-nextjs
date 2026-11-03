@@ -18,6 +18,8 @@ export const CACHE_TAG = {
   Drivers: 'drivers',
   Status: 'status',
   Countries: 'countries',
+  Customers: 'customers',
+  Cities: 'cities',
 } as const;
 
 export const DEFAULT_PAGE_INDEX = 0;

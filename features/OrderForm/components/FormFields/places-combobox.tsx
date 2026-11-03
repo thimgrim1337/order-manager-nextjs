@@ -9,6 +9,8 @@ import {
   ComboboxList,
   useComboboxAnchor,
 } from '@/components/ui/combobox';
+import useSearchQuery from '@/features/shared/hooks/use-search-query';
+import { searchCities } from '@/lib/actions';
 import type { City, Country } from '@/types/types';
 import { useFieldContext } from '../../context/form-context';
 import FormBase, { type FormControlProps } from './form-base';
@@ -16,21 +18,26 @@ import FormBase, { type FormControlProps } from './form-base';
 type PlacesComboboxFieldProps = {
   cities: City[];
   countries: Country[];
-  onSearch?: (value: string) => void;
 };
 
-export default function PlacesComboboxField(props: FormControlProps & PlacesComboboxFieldProps) {
+export default function PlacesComboboxField({
+  cities: initialData,
+  ...props
+}: FormControlProps & PlacesComboboxFieldProps) {
   const field = useFieldContext<City[]>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   const anchor = useComboboxAnchor();
+  const { data: cities, setQuery } = useSearchQuery(searchCities, initialData);
 
   const selectedCities = field.state.value;
 
   return (
     <FormBase {...props}>
       <Combobox
-        items={props.cities}
+        items={cities}
+        itemToStringLabel={(item: City) => item.name}
         itemToStringValue={(item: City) => String(item.id)}
+        onInputValueChange={setQuery}
         onValueChange={(items: City[]) => field.handleChange(items)}
         isItemEqualToValue={(item, value) => item.id === value.id}
         value={selectedCities}

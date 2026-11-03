@@ -14,6 +14,7 @@ vi.mock('@/lib/actions', () => ({
   createCity: vi.fn(),
   createCustomer: vi.fn(),
   searchCustomers: vi.fn(),
+  searchCities: vi.fn(),
   revalidatePath: vi.fn(),
 }));
 

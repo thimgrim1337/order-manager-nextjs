@@ -1,9 +1,8 @@
 import { Table } from '@/components/ui/table';
 import { OrderDataProvider } from '@/features/shared/context/order-context';
-import { getAllCities } from '@/lib/dal/city.dal';
 import { getAllCountries } from '@/lib/dal/country.dal';
 import { getAllCurrencies } from '@/lib/dal/currency.dal';
-import { getAllCustomers } from '@/lib/dal/customer.dal.';
+import { getCities, getCustomers } from '@/lib/dal/customers-and-cities.dal';
 import { getAllDrivers } from '@/lib/dal/driver.dal';
 import { getOrdersInWeek } from '@/lib/dal/order.dal';
 import { getAllStatuses } from '@/lib/dal/status.dal';
@@ -24,8 +23,8 @@ export default async function TimelineContent({ searchParamsPromise }: TimelineC
   const weekdays = weekDays(query.week);
   const orders = await getOrdersInWeek(query.week, { driverId: query.driverId });
   const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
-    getAllCustomers(),
-    getAllCities(),
+    getCustomers(),
+    getCities(),
     getAllDrivers(),
     getAllTrucks(),
     getAllCountries(),
