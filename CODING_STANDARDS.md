@@ -28,6 +28,10 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - Query tests are `*.db.test.ts`, seed their own rows and run inside `withRollback` (`__tests__/db/with-rollback.ts`), passing its transaction to the `find*` function.
 - A test of a write's cache invalidation first reads the cached query the write should change, with the same arguments, so it goes red without the invalidation. In e2e, `cacheEmptySearch` (`__tests__/e2e/helpers/combobox.ts`) does this for a combobox search.
 
+## Forms
+
+- A value a form fetches (like the Order form's Exchange Rate) stays outside its TanStack Form state, with no `useEffect` copying it in: its error goes through a field's `error` prop and `FormControls`' `isBlocked`, and `onSubmit` adds the value. See `docs/adr/0001-fetched-values-stay-outside-the-form.md`.
+
 ## Accessibility
 
 - Icon-only controls get an English `aria-label` (e.g. `Next week`). E2E tests find elements by role and accessible name.
