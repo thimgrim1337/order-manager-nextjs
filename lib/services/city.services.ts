@@ -1,7 +1,9 @@
 import 'server-only';
+import { updateTag } from 'next/cache';
 import z from 'zod';
 import type { db, dbTransaction } from '@/db/db';
 import { city } from '@/db/schemas';
+import { CACHE_TAG } from '../consts';
 import { isUniqueViolation } from '../db-errors';
 import { type CityDto, createCitySchema, selectCitySchema } from '../dto/city.dto';
 import { error, ok, type Result } from '../error';
@@ -10,7 +12,7 @@ export type CreateCityFailure =
   | { reason: 'InvalidData'; details: string }
   | { reason: 'CityTaken' };
 
-/** Creates a City. Call it from a Server Action. */
+/** Creates a City, then invalidates the cached Cities. Call it from a Server Action. */
 export async function createCityService(
   database: db | dbTransaction,
   input: unknown,
@@ -24,6 +26,8 @@ export async function createCityService(
     const [created] = await database.transaction((trx) =>
       trx.insert(city).values(validation.data).returning(),
     );
+
+    updateTag(CACHE_TAG.Cities);
 
     return ok(selectCitySchema.parse(created));
   } catch (err) {

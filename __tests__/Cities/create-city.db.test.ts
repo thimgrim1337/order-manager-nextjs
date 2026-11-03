@@ -1,8 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { updateTag } from 'next/cache';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { country } from '@/db/schemas';
 import { createCityService } from '@/lib/services/city.services';
 import { withRollback } from '../db/with-rollback';
+
+// updateTag throws outside a Server Action.
+vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 
 async function seedCountry(trx: dbTransaction) {
   const [dbCountry] = await trx.insert(country).values({ name: 'Polska', code: 'PL' }).returning();
@@ -11,6 +15,10 @@ async function seedCountry(trx: dbTransaction) {
 }
 
 describe('createCityService', () => {
+  beforeEach(() => {
+    vi.mocked(updateTag).mockClear();
+  });
+
   it('saves a City', () =>
     withRollback(async (trx) => {
       const dbCountry = await seedCountry(trx);
@@ -47,5 +55,21 @@ describe('createCityService', () => {
       });
 
       expect(failure?.reason).toBe('InvalidData');
+    }));
+
+  it('invalidates cached Cities once created', () =>
+    withRollback(async (trx) => {
+      const dbCountry = await seedCountry(trx);
+      await createCityService(trx, { name: 'Kraków', postal: '30-001', countryId: dbCountry.id });
+
+      expect(updateTag).toHaveBeenCalledExactlyOnceWith('cities');
+    }));
+
+  it('invalidates nothing when not created', () =>
+    withRollback(async (trx) => {
+      const dbCountry = await seedCountry(trx);
+      await createCityService(trx, { name: '', postal: '30-001', countryId: dbCountry.id });
+
+      expect(updateTag).not.toHaveBeenCalled();
     }));
 });

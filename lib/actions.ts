@@ -1,9 +1,7 @@
 'use server';
 
-import { updateTag } from 'next/cache';
 import db from '@/db/db';
 import { type ActionResponse, toActionResponse } from './action-response';
-import { CACHE_TAG } from './consts';
 import { getCities } from './dal/city.dal';
 import { getCustomers } from './dal/customer.dal';
 import type { CityDto, CreateCityDto } from './dto/city.dto';
@@ -46,15 +44,9 @@ export async function searchCities(query: string) {
 export async function createCustomer(
   formData: CreateCustomerDto,
 ): Promise<ActionResponse<CustomerDto>> {
-  const outcome = await createCustomerService(db, formData);
-  if (outcome[0] === null) updateTag(CACHE_TAG.Customers);
-
-  return toActionResponse(outcome);
+  return toActionResponse(await createCustomerService(db, formData));
 }
 
 export async function createCity(formData: CreateCityDto): Promise<ActionResponse<CityDto>> {
-  const outcome = await createCityService(db, formData);
-  if (outcome[0] === null) updateTag(CACHE_TAG.Cities);
-
-  return toActionResponse(outcome);
+  return toActionResponse(await createCityService(db, formData));
 }

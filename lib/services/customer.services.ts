@@ -1,7 +1,9 @@
 import 'server-only';
+import { updateTag } from 'next/cache';
 import z from 'zod';
 import type { db, dbTransaction } from '@/db/db';
 import { customer } from '@/db/schemas';
+import { CACHE_TAG } from '../consts';
 import { isUniqueViolation } from '../db-errors';
 import { type CustomerDto, createCustomerSchema, selectCustomerSchema } from '../dto/customer.dto';
 import { error, ok, type Result } from '../error';
@@ -10,7 +12,7 @@ export type CreateCustomerFailure =
   | { reason: 'InvalidData'; details: string }
   | { reason: 'CustomerTaken' };
 
-/** Creates a Customer. Call it from a Server Action. */
+/** Creates a Customer, then invalidates the cached Customers. Call it from a Server Action. */
 export async function createCustomerService(
   database: db | dbTransaction,
   input: unknown,
@@ -24,6 +26,8 @@ export async function createCustomerService(
     const [created] = await database.transaction((trx) =>
       trx.insert(customer).values(validation.data).returning(),
     );
+
+    updateTag(CACHE_TAG.Customers);
 
     return ok(selectCustomerSchema.parse(created));
   } catch (err) {

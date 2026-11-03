@@ -1,5 +1,5 @@
 import { ilike, or } from 'drizzle-orm';
-import { cacheTag } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { customer } from '@/db/schemas';
 import { CACHE_TAG, SEARCH_LIMIT } from '@/lib/consts';
@@ -23,6 +23,7 @@ export async function findCustomers(database: db | dbTransaction, search?: strin
 
 export async function getCustomers(search?: string) {
   'use cache';
+  cacheLife('days');
   cacheTag(CACHE_TAG.Customers);
 
   return findCustomers(db, search);
