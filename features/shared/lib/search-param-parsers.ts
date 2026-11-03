@@ -27,3 +27,23 @@ export function parseWeek(value: RawSearchParam) {
   const key = first(value);
   return key ? parseWeekKey(key) : undefined;
 }
+
+export function parsePageIndex(value: RawSearchParam) {
+  const result = z.coerce.number().int().min(0).safeParse(first(value));
+  return result.success ? result.data : undefined;
+}
+
+export function parsePageSize(value: RawSearchParam) {
+  const result = z.coerce.number().int().min(10).max(100).safeParse(first(value));
+  return result.success ? result.data : undefined;
+}
+
+/** A `field.asc` or `field.desc` sort on one of `fields`. */
+export function parseSort<Field extends string>(value: RawSearchParam, fields: readonly Field[]) {
+  const [id, direction, ...rest] = parseText(value)?.split('.') ?? [];
+  const isField = (id?: string): id is Field => fields.some((field) => field === id);
+  if (!isField(id) || (direction !== 'asc' && direction !== 'desc') || rest.length > 0)
+    return undefined;
+
+  return { id, desc: direction === 'desc' };
+}

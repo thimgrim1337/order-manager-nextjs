@@ -20,7 +20,7 @@ describe('useOrdersTableQuery', () => {
 
     const url = new URL(replaceMock.mock.lastCall?.[0], window.location.origin);
     expect(url.pathname).toBe('/orders');
-    expect(url.searchParams.get('globalFilters')).toBe('Kraków');
+    expect(url.searchParams.get('search')).toBe('Kraków');
     expect(url.searchParams.get('statusId')).toBe('2');
   });
 });

@@ -6,7 +6,6 @@ import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
 import { type Week, weekBounds } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
-import { analyzeGlobalFiltering } from '../utils';
 
 /** The columns of an Order as the Orders Table and the Timeline show it. */
 const orderReadModel = {
@@ -24,6 +23,31 @@ const orderReadModel = {
   loadingPlaces: ordersWithDetailsView.loadingPlaces,
   unloadingPlaces: ordersWithDetailsView.unloadingPlaces,
 };
+
+/** Day-first dates the search recognises besides ISO, as `day`, `month`, `year` with one separator. */
+const DAY_FIRST_DATE = /^(\d{2})([-/.])(\d{2})\2(\d{4})$/;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * What a search term matches: an `ilike` pattern for any text column, a Price or PLN Price
+ * within 1 of it when it is a number, and a Start or End Date when it is a date
+ * (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY).
+ */
+function parseSearch(search: string) {
+  const trimmed = search.trim();
+  const price = Number(trimmed);
+  const dayFirst = DAY_FIRST_DATE.exec(trimmed);
+
+  return {
+    pattern: `%${trimmed}%`,
+    price: trimmed !== '' && !Number.isNaN(price) ? price : undefined,
+    date: ISO_DATE.test(trimmed)
+      ? trimmed
+      : dayFirst
+        ? `${dayFirst[4]}-${dayFirst[3]}-${dayFirst[1]}`
+        : undefined,
+  };
+}
 
 /** An Order as the Orders Table and the Timeline receive it. */
 export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number];
@@ -65,37 +89,31 @@ export async function findOrders(
   const searchConditions = [];
   const allWhereConditions = [];
 
-  if (filters?.globalFilters) {
-    const { searchTerm, isNumeric, numericValue, isDate, normalizedDate } = analyzeGlobalFiltering(
-      filters.globalFilters,
-    );
+  if (filters?.search) {
+    const { pattern, price, date } = parseSearch(filters.search);
 
     searchConditions.push(
-      ilike(ordersWithDetailsView.orderNr, searchTerm),
-      ilike(ordersWithDetailsView.customerName, searchTerm),
-      ilike(ordersWithDetailsView.driverFullname, searchTerm),
-      ilike(ordersWithDetailsView.truckPlate, searchTerm),
-      ilike(ordersWithDetailsView.statusName, searchTerm),
-      ilike(ordersWithDetailsView.currencyCode, searchTerm),
-      ilike(ordersWithDetailsView.loadingCity, searchTerm),
-      ilike(ordersWithDetailsView.unloadingCity, searchTerm),
+      ilike(ordersWithDetailsView.orderNr, pattern),
+      ilike(ordersWithDetailsView.customerName, pattern),
+      ilike(ordersWithDetailsView.driverFullname, pattern),
+      ilike(ordersWithDetailsView.truckPlate, pattern),
+      ilike(ordersWithDetailsView.statusName, pattern),
+      ilike(ordersWithDetailsView.currencyCode, pattern),
+      ilike(ordersWithDetailsView.loadingCity, pattern),
+      ilike(ordersWithDetailsView.unloadingCity, pattern),
     );
 
-    if (isNumeric) {
+    if (price !== undefined) {
       searchConditions.push(
-        sql`${ordersWithDetailsView.pricePLN}::numeric BETWEEN ${
-          numericValue - 1
-        } AND ${numericValue + 1}`,
-        sql`${ordersWithDetailsView.priceCurrency}::numeric BETWEEN ${
-          numericValue - 1
-        } AND ${numericValue + 1}`,
+        sql`${ordersWithDetailsView.pricePLN}::numeric BETWEEN ${price - 1} AND ${price + 1}`,
+        sql`${ordersWithDetailsView.priceCurrency}::numeric BETWEEN ${price - 1} AND ${price + 1}`,
       );
     }
 
-    if (isDate) {
+    if (date) {
       searchConditions.push(
-        eq(sql`DATE(${ordersWithDetailsView.startDate})`, normalizedDate),
-        eq(sql`DATE(${ordersWithDetailsView.endDate})`, normalizedDate),
+        eq(sql`DATE(${ordersWithDetailsView.startDate})`, date),
+        eq(sql`DATE(${ordersWithDetailsView.endDate})`, date),
       );
     }
 

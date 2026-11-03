@@ -1,24 +1,15 @@
-import z from 'zod';
 import {
   parseId,
   parseIsoDate,
+  parsePageIndex,
+  parsePageSize,
+  parseSort,
   parseText,
-  type RawSearchParam,
 } from '@/features/shared/lib/search-param-parsers';
-import {
-  DEFAULT_PAGE_INDEX,
-  DEFAULT_PAGE_SIZE,
-  ORDER_SORT_FIELDS,
-  type OrderSortField,
-} from '@/lib/consts';
-import type { RawSearchParams, SortParams } from '@/types/types';
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, ORDER_SORT_FIELDS } from '@/lib/consts';
+import type { OrderFilters, RawSearchParams, SortParams } from '@/types/types';
 
-export type OrdersTableQuery = {
-  search?: string;
-  startDate?: string;
-  endDate?: string;
-  driverId?: number;
-  statusId?: number;
+export type OrdersTableQuery = OrderFilters & {
   sort: SortParams;
   pageIndex: number;
   pageSize: number;
@@ -26,33 +17,16 @@ export type OrdersTableQuery = {
 
 const DEFAULT_SORT: SortParams = { id: 'startDate', desc: true };
 
-const SortParam = z.templateLiteral([z.enum(ORDER_SORT_FIELDS), '.', z.enum(['asc', 'desc'])]);
-const PageIndexParam = z.coerce.number().int().min(0);
-const PageSizeParam = z.coerce.number().int().min(10).max(100);
-
-function parseSort(value: RawSearchParam): SortParams {
-  const result = SortParam.safeParse(parseText(value));
-  if (!result.success) return DEFAULT_SORT;
-
-  const [id, direction] = result.data.split('.') as [OrderSortField, 'asc' | 'desc'];
-  return { id, desc: direction === 'desc' };
-}
-
-function parseNumber(schema: z.ZodType<number>, value: RawSearchParam, fallback: number) {
-  const result = schema.safeParse(parseText(value));
-  return result.success ? result.data : fallback;
-}
-
 export function parse(raw: RawSearchParams): OrdersTableQuery {
   return {
-    search: parseText(raw.globalFilters),
+    search: parseText(raw.search),
     startDate: parseIsoDate(raw.startDate),
     endDate: parseIsoDate(raw.endDate),
     driverId: parseId(raw.driverId),
     statusId: parseId(raw.statusId),
-    sort: parseSort(raw.sort),
-    pageIndex: parseNumber(PageIndexParam, raw.pageIndex, DEFAULT_PAGE_INDEX),
-    pageSize: parseNumber(PageSizeParam, raw.pageSize, DEFAULT_PAGE_SIZE),
+    sort: parseSort(raw.sort, ORDER_SORT_FIELDS) ?? DEFAULT_SORT,
+    pageIndex: parsePageIndex(raw.pageIndex) ?? DEFAULT_PAGE_INDEX,
+    pageSize: parsePageSize(raw.pageSize) ?? DEFAULT_PAGE_SIZE,
   };
 }
 
@@ -85,7 +59,7 @@ export function toSearchParams(query: OrdersTableQuery): URLSearchParams {
   const params = new URLSearchParams();
   const { sort } = query;
 
-  if (query.search) params.set('globalFilters', query.search);
+  if (query.search) params.set('search', query.search);
   if (query.startDate) params.set('startDate', query.startDate);
   if (query.endDate) params.set('endDate', query.endDate);
   if (query.driverId) params.set('driverId', String(query.driverId));

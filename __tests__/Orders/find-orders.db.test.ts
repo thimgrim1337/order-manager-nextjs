@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { city, customer, driver, loadingPlace, order, truck, unloadingPlace } from '@/db/schemas';
@@ -138,5 +139,65 @@ describe('findOrders sorting', () => {
       const { first, second } = await seedPolishNames(trx);
 
       expect(await sortedIds(trx, field, false)).toEqual([second, first]);
+    }));
+});
+
+const searchedIds = async (trx: dbTransaction, search: string) => {
+  const { data, count } = await findOrders(trx, 0, 10, undefined, { search });
+  expect(count).toBe(data.length);
+  return data.map((o) => o.id);
+};
+
+describe('findOrders search', () => {
+  it('finds Orders by Customer, Driver or Truck, ignoring case', () =>
+    withRollback(async (trx) => {
+      const { first, second } = await seed(trx);
+
+      expect(await searchedIds(trx, 'alfa trans')).toEqual([second]);
+      expect(await searchedIds(trx, 'KOWALSKI')).toEqual([first]);
+      expect(await searchedIds(trx, 'ab12')).toEqual([second]);
+    }));
+
+  it.each([
+    '2026-11-02',
+    '02-11-2026',
+    '02/11/2026',
+    '02.11.2026',
+  ])('finds Orders starting or ending on the date %s', (date) =>
+    withRollback(async (trx) => {
+      const { first, second } = await seed(trx);
+      await trx
+        .update(order)
+        .set({ startDate: '2026-11-02', endDate: '2026-11-04' })
+        .where(eq(order.id, first));
+      await trx
+        .update(order)
+        .set({ startDate: '2026-10-30', endDate: '2026-11-02' })
+        .where(eq(order.id, second));
+
+      expect(await searchedIds(trx, date)).toEqual([first, second]);
+      expect(await searchedIds(trx, '2026-11-03')).toEqual([]);
+    }));
+
+  it('finds Orders whose Price or PLN Price is within 1 of a number', () =>
+    withRollback(async (trx) => {
+      const { first, second } = await seed(trx);
+      await trx
+        .update(order)
+        .set({ priceCurrency: '250', pricePLN: '1062.5' })
+        .where(eq(order.id, second));
+
+      expect(await searchedIds(trx, '101')).toEqual([first]);
+      expect(await searchedIds(trx, '249.5')).toEqual([second]);
+      expect(await searchedIds(trx, '1063')).toEqual([second]);
+      expect(await searchedIds(trx, '103')).toEqual([]);
+    }));
+
+  it('matches a term mixing letters and digits as text only', () =>
+    withRollback(async (trx) => {
+      const { second } = await seed(trx);
+
+      expect(await searchedIds(trx, 'zl/2')).toEqual([second]);
+      expect(await searchedIds(trx, '100 zł')).toEqual([]);
     }));
 });

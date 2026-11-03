@@ -24,13 +24,7 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
     query.pageIndex,
     query.pageSize,
     [query.sort],
-    {
-      globalFilters: query.search,
-      startDate: query.startDate,
-      endDate: query.endDate,
-      driverId: query.driverId,
-      statusId: query.statusId,
-    },
+    query,
   );
 
   const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([

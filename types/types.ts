@@ -32,8 +32,9 @@ export type SortParams = {
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
 
+/** The Orders Table's filters, as the Order DAL takes them. */
 export type OrderFilters = {
-  globalFilters?: string;
+  search?: string;
   startDate?: string;
   endDate?: string;
   driverId?: number;

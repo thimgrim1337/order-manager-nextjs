@@ -17,7 +17,7 @@ describe('Orders Table Query: parse', () => {
 
   it('reads every criterion from the URL, including sorting by Driver', () => {
     const raw = {
-      globalFilters: 'Kraków',
+      search: 'Kraków',
       startDate: '2026-10-01',
       endDate: '2026-10-31',
       driverId: '7',
@@ -41,7 +41,7 @@ describe('Orders Table Query: parse', () => {
 
   it('ignores each invalid param on its own and keeps the valid ones', () => {
     const raw = {
-      globalFilters: 'Kraków',
+      search: 'Kraków',
       startDate: '2026-13-01',
       endDate: 'yesterday',
       driverId: 'abc',
@@ -65,7 +65,7 @@ describe('Orders Table Query: parse', () => {
 });
 
 describe('Orders Table Query: apply', () => {
-  const onPage3 = parse({ globalFilters: 'Kraków', pageIndex: '3', pageSize: '20' });
+  const onPage3 = parse({ search: 'Kraków', pageIndex: '3', pageSize: '20' });
 
   it('goes back to the first page when a filter changes', () => {
     expect(apply(onPage3, { driverId: 7 })).toEqual({ ...onPage3, driverId: 7, pageIndex: 0 });
@@ -100,7 +100,7 @@ describe('Orders Table Query: apply', () => {
 describe('Orders Table Query: reset', () => {
   it('clears filters, search and sorting but keeps the page size', () => {
     const filtered = parse({
-      globalFilters: 'Kraków',
+      search: 'Kraków',
       startDate: '2026-10-01',
       driverId: '7',
       statusId: '2',
@@ -118,9 +118,9 @@ describe('Orders Table Query: toSearchParams', () => {
     expect(toSearchParams(parse({})).toString()).toBe('');
   });
 
-  it('writes only what differs from the default view, under the existing param names', () => {
+  it('writes only what differs from the default view, under the same names as the query', () => {
     const query = parse({
-      globalFilters: 'Kraków',
+      search: 'Kraków',
       startDate: '2026-10-01',
       driverId: '7',
       sort: 'driverFullname.asc',
@@ -129,7 +129,7 @@ describe('Orders Table Query: toSearchParams', () => {
     });
 
     expect(toSearchParams(query).toString()).toBe(
-      'globalFilters=Krak%C3%B3w&startDate=2026-10-01&driverId=7&sort=driverFullname.asc&pageIndex=3&pageSize=50',
+      'search=Krak%C3%B3w&startDate=2026-10-01&driverId=7&sort=driverFullname.asc&pageIndex=3&pageSize=50',
     );
   });
 });
