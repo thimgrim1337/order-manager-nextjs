@@ -179,6 +179,20 @@ describe('findOrders search', () => {
       expect(await searchedIds(trx, '2026-11-03')).toEqual([]);
     }));
 
+  it.each([
+    '31-02-2026',
+    '2026-13-45',
+  ])('matches the impossible date %s as text, without a database error', (date) =>
+    withRollback(async (trx) => {
+      const { second } = await seed(trx);
+      await trx
+        .update(order)
+        .set({ orderNr: `ZL/${date}` })
+        .where(eq(order.id, second));
+
+      expect(await searchedIds(trx, date)).toEqual([second]);
+    }));
+
   it('finds Orders whose Price or PLN Price is within 1 of a number', () =>
     withRollback(async (trx) => {
       const { first, second } = await seed(trx);

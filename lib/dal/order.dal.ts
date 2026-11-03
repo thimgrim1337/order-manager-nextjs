@@ -1,9 +1,11 @@
+import { isValid } from 'date-fns';
 import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
+import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
 
@@ -33,15 +35,17 @@ function parseSearch(search: string) {
   const trimmed = search.trim();
   const price = Number(trimmed);
   const dayFirst = DAY_FIRST_DATE.exec(trimmed);
+  const dateShaped = ISO_DATE.test(trimmed)
+    ? trimmed
+    : dayFirst
+      ? `${dayFirst[4]}-${dayFirst[3]}-${dayFirst[1]}`
+      : undefined;
 
   return {
     pattern: `%${trimmed}%`,
     price: trimmed !== '' && !Number.isNaN(price) ? price : undefined,
-    date: ISO_DATE.test(trimmed)
-      ? trimmed
-      : dayFirst
-        ? `${dayFirst[4]}-${dayFirst[3]}-${dayFirst[1]}`
-        : undefined,
+    // A date-shaped term that is no calendar date (`31-02-2026`) is text only.
+    date: dateShaped && isValid(parseDate(dateShaped)) ? dateShaped : undefined,
   };
 }
 
