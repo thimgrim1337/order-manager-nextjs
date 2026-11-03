@@ -78,7 +78,7 @@ _Avoid_: Client, contractor
 
 **City** (_Miejscowość_):
 A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created.
-_Avoid_: Place, location, town
+_Avoid_: Place, location, town (a Loading Place or Unloading Place is the role a City plays in an Order)
 
 ### Views
 
