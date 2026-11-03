@@ -7,16 +7,7 @@ import { worker } from './__tests__/mocks/browser';
 //   db: {} as unknown,
 // }));
 
-vi.mock('@/lib/actions', () => ({
-  createOrder: vi.fn(),
-  updateOrder: vi.fn(),
-  deleteOrder: vi.fn(),
-  createCity: vi.fn(),
-  createCustomer: vi.fn(),
-  searchCustomers: vi.fn(),
-  searchCities: vi.fn(),
-  revalidatePath: vi.fn(),
-}));
+vi.mock('@/lib/actions', async () => (await import('./__tests__/mocks/actions')).actions);
 
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),

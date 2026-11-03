@@ -6,17 +6,6 @@ import { changeOrderStatus, removeOrder } from '@/lib/actions';
 import type { Order } from '@/types/types';
 import { renderWithToaster } from '../utils/render-with-toaster';
 
-// The Edit dialog's form imports the customer and city actions too.
-vi.mock('@/lib/actions', () => ({
-  changeOrderStatus: vi.fn(),
-  removeOrder: vi.fn(),
-  updateOrder: vi.fn(),
-  searchCustomers: vi.fn(),
-  searchCities: vi.fn(),
-  createCity: vi.fn(),
-  createCustomer: vi.fn(),
-}));
-
 const order = {
   id: 1,
   orderNr: 'ZL-001',
