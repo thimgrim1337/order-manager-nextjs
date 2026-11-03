@@ -32,17 +32,13 @@ export type SortParams = {
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
 
-/** The Orders Table's filters. */
-type OrderFilters = {
+/** The Orders Table's query, as the Order DAL takes it: its filters, one sort and one page. */
+export type OrderQuery = {
   search?: string;
   startDate?: string;
   endDate?: string;
   driverId?: number;
   statusId?: number;
-};
-
-/** The Orders Table's query, as the Order DAL takes it: its filters, one sort and one page. */
-export type OrderQuery = OrderFilters & {
   sort?: SortParams;
   pageIndex: number;
   pageSize: number;

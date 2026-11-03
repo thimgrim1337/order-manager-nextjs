@@ -53,9 +53,7 @@ function parseSearch(search: string) {
 export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number];
 
 export async function findOrders(database: db | dbTransaction, query: OrderQuery) {
-  const { pageIndex, pageSize } = query;
-
-  const getSortColumn = (sort?: SortParams) => {
+  const getOrderBy = (sort?: SortParams) => {
     const sortMappings: Record<OrderSortField, AnyPgColumn> = {
       statusId: ordersWithDetailsView.statusId,
       truckPlate: ordersWithDetailsView.truckPlate,
@@ -75,11 +73,11 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
     const tieBreaker = asc(ordersWithDetailsView.id);
     if (!sort) return [tieBreaker];
 
-    const col = sortMappings[sort.id];
-    return [sort.desc ? desc(col) : asc(col), tieBreaker];
+    const column = sortMappings[sort.id];
+    return [sort.desc ? desc(column) : asc(column), tieBreaker];
   };
 
-  const sortColumn = getSortColumn(query.sort);
+  const orderBy = getOrderBy(query.sort);
 
   const searchConditions = [];
   const allWhereConditions = [];
@@ -137,9 +135,9 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
     .select(orderReadModel)
     .from(ordersWithDetailsView)
     .where(whereConditions)
-    .orderBy(...sortColumn)
-    .limit(pageSize)
-    .offset(pageIndex * pageSize);
+    .orderBy(...orderBy)
+    .limit(query.pageSize)
+    .offset(query.pageIndex * query.pageSize);
 
   const ordersCount = database
     .select({ count: count() })
