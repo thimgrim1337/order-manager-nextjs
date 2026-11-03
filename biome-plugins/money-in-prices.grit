@@ -1,0 +1,10 @@
+or {
+  `$x.toFixed($_)`,
+  `Number($a) * Number($b)`
+} as $call where {
+  $filename <: not or {
+    r".*lib/prices\.ts",
+    r".*__tests__/.*"
+  },
+  register_diagnostic(span=$call, message="Work out a PLN Price with toPricePLN from @/lib/prices: floating point loses half a grosz.")
+}

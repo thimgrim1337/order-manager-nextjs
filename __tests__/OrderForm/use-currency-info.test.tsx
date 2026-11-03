@@ -3,7 +3,7 @@ import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 import useCurrencyInfo from '@/features/OrderForm/hooks/useCurrencyInfo';
 import { worker } from '../mocks/browser';
-import { mockHoliday, mockRate } from '../mocks/handlers';
+import { HOLIDAYS_URL, mockHoliday, mockRate, NBP_RATE_URL } from '../mocks/handlers';
 import { createWrapper } from '../utils/wrapper';
 
 describe('useCurrencyInfo', async () => {
@@ -20,7 +20,7 @@ describe('useCurrencyInfo', async () => {
 
   it('use recieved holidays', async () => {
     worker.use(
-      http.get('https://openholidaysapi.org/PublicHolidays', () => {
+      http.get(HOLIDAYS_URL, () => {
         return HttpResponse.json([{ ...mockHoliday, endDate: '2024-01-15' }]);
       }),
     );
@@ -45,11 +45,7 @@ describe('useCurrencyInfo', async () => {
   });
 
   it('return isRateError: true when error occured', async () => {
-    worker.use(
-      http.get('https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/', () =>
-        HttpResponse.error(),
-      ),
-    );
+    worker.use(http.get(NBP_RATE_URL, () => HttpResponse.error()));
 
     const { result } = renderHook(() => useCurrencyInfo('2024-01-16', 'EUR'), {
       wrapper: createWrapper(),

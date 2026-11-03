@@ -1,5 +1,8 @@
 import { HttpResponse, http } from 'msw';
 
+export const NBP_RATE_URL = 'https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/';
+export const HOLIDAYS_URL = 'https://openholidaysapi.org/PublicHolidays';
+
 export const mockRate = {
   rates: [
     {
@@ -24,14 +27,11 @@ export const mockHoliday = {
 };
 
 export const handlers = [
-  http.get<{ table: string; code: string; date: string }>(
-    'https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/',
-    () => {
-      return HttpResponse.json(mockRate);
-    },
-  ),
+  http.get<{ table: string; code: string; date: string }>(NBP_RATE_URL, () => {
+    return HttpResponse.json(mockRate);
+  }),
 
-  http.get('https://openholidaysapi.org/PublicHolidays', () => {
+  http.get(HOLIDAYS_URL, () => {
     return HttpResponse.json([]);
   }),
 ];

@@ -7,6 +7,7 @@ import { OrderDataProvider } from '@/features/shared/context/order-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
+import { HOLIDAYS_URL, NBP_RATE_URL } from '../mocks/handlers';
 import { pickDate } from '../utils/pick-date';
 import { renderWithQueries } from '../utils/wrapper';
 
@@ -51,15 +52,11 @@ const data = {
 
 const NO_RATE = { table: '', rate: '', date: '' };
 
-const NBP_RATE_URL = 'https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/';
-
 /** NBP and OpenHolidays, which picks the Exchange Rate's day, answer with a server error. */
 const failRateApis = () =>
   worker.use(
     http.get(NBP_RATE_URL, () => HttpResponse.json({}, { status: 500 })),
-    http.get('https://openholidaysapi.org/PublicHolidays', () =>
-      HttpResponse.json({}, { status: 500 }),
-    ),
+    http.get(HOLIDAYS_URL, () => HttpResponse.json({}, { status: 500 })),
   );
 
 beforeEach(() => {
@@ -182,6 +179,14 @@ describe('OrderForm', () => {
 
       expect(screen.getByLabelText('Data załadunku')).toHaveTextContent('2026-11-03');
       expect(screen.getByLabelText('Data rozładunku')).toHaveTextContent('2026-11-04');
+    });
+
+    it('closes the calendar once a day is picked', async () => {
+      const { user } = await setup();
+
+      await pickDate(user, 'Data rozładunku', 20);
+
+      expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     });
 
     it('leaves the Driver empty when the picked Truck has no Regular Driver', async () => {
@@ -348,8 +353,6 @@ describe('OrderForm', () => {
         await user.click(screen.getByRole('button', { name: 'Edytuj' }));
         await pickDate(user, 'Data rozładunku', 20);
         await screen.findByText('Nie udało się pobrać dni wolnych.');
-        // The calendar stays open after a pick; a second click on its field would close it.
-        await user.keyboard('{Escape}');
         await pickDate(user, 'Data rozładunku', 13);
         await screen.findByText('Kurs z dnia 2026-10-29, 1 EUR = 4.2 PLN');
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));

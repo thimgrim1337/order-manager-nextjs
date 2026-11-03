@@ -31,13 +31,11 @@ test.describe('Order test', () => {
     await page.getByLabel('Data załadunku').click();
     await expect(page.getByRole('gridcell', { name: '12' })).toBeVisible();
     await page.getByRole('gridcell', { name: '12' }).click();
-    await page.keyboard.press('Escape');
     await expect(page.getByRole('gridcell', { name: '12' })).not.toBeVisible();
 
     await page.getByLabel('Data rozładunku').click();
     await expect(page.getByRole('gridcell', { name: '13' })).toBeVisible();
     await page.getByRole('gridcell', { name: '13' }).click();
-    await page.keyboard.press('Escape');
     await expect(page.getByRole('gridcell', { name: '13' })).not.toBeVisible();
 
     await page.getByLabel('Miejsca załadunku').fill('Warszawa');

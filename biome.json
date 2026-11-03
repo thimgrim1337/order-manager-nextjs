@@ -23,7 +23,8 @@
     "./biome-plugins/db-error-codes.grit",
     "./biome-plugins/e2e-seed-per-test.grit",
     "./biome-plugins/cache-invalidation-in-module.grit",
-    "./biome-plugins/use-cache-life.grit"
+    "./biome-plugins/use-cache-life.grit",
+    "./biome-plugins/money-in-prices.grit"
   ],
   "formatter": {
     "enabled": true,

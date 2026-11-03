@@ -38,7 +38,10 @@ export default function DateField(props: FormControlProps) {
             showWeekNumber
             weekStartsOn={1}
             selected={parseDate(selectedDate)}
-            onSelect={(value) => field.handleChange(formatDate(value))}
+            onSelect={(value) => {
+              field.handleChange(formatDate(value));
+              setOpen(false);
+            }}
             className="rounded-lg border shadow-sm"
             id={field.name}
           />
