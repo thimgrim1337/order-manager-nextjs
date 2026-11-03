@@ -9,7 +9,7 @@ This is NextJS 16 App Router app, using shadcn for styling and drizzle for dateb
 - 'db/' - Database migrations and schemas
 - 'features/' - App features,
 - 'lib/' - Utilites, API helpers, DTO and DAL
-- '__tests__/' - Tests: `*.test.ts` (browser), `*.db.test.ts` (db, seed in `__tests__/db/seed.ts`), `e2e/*.spec.ts` (Playwright, seed in `e2e/helpers/seed.ts`)
+- '__tests__/' - Tests: `*.test.ts` (browser), `*.db.test.ts` (db, seed in `__tests__/db/seed.ts`), `__tests__/e2e/*.spec.ts` (Playwright, seed in `__tests__/e2e/helpers/seed.ts`)
 
 ## Purpose
 

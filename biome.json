@@ -41,7 +41,9 @@
     }
   },
   "css": {
-    "parser": { "tailwindDirectives": true }
+    "parser": {
+      "tailwindDirectives": true
+    }
   },
   "linter": {
     "enabled": true,
@@ -78,5 +80,33 @@
         }
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["db/schemas/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/types/**",
+                      "@/lib/**",
+                      "@/features/**",
+                      "@/app/**",
+                      "@/components/**"
+                    ],
+                    "message": "The DB schema is the bottom layer; type JSON columns from the tables ($inferSelect)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
