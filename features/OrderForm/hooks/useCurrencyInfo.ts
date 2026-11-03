@@ -1,13 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { getToday } from '@/lib/dates';
-import type { Currencies, CurrencyTable } from '@/types/types';
+import type { CurrencyCode, CurrencyTable } from '@/types/types';
 import { getValidCurrencyDate } from '../lib/utils';
 import { getCurrencyRate } from '../services/nbp.services';
 import { getHolidays } from '../services/openHolidays.services';
 
+/** Fetches the Exchange Rate of `currency` for an Unloading Date `date`; none for a null `currency`. */
 export default function useCurrencyInfo(
   date: string,
-  currency: Currencies = 'EUR',
+  currency: CurrencyCode | null,
   table: CurrencyTable = 'A',
 ) {
   const holidaysQuery = useQuery({
@@ -21,9 +22,11 @@ export default function useCurrencyInfo(
 
   const rateQuery = useQuery({
     queryKey: ['currencyRate', validDate, currency, table],
-    queryFn: () => getCurrencyRate(validDate, currency, table),
+    queryFn:
+      currency && validDate && !holidaysQuery.isLoading
+        ? () => getCurrencyRate(validDate, currency, table)
+        : skipToken,
     retry: false,
-    enabled: !!validDate && !holidaysQuery.isLoading,
   });
 
   return {

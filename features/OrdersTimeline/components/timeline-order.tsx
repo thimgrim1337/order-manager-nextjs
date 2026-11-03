@@ -2,10 +2,9 @@
 
 import { SquarePen } from 'lucide-react';
 import { TableRow } from '@/components/ui/table';
-import OrderForm from '@/features/OrderForm/components/order-form';
+import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
 import Dialog from '@/features/shared/components/ui/dialog';
 import useToggle from '@/features/shared/hooks/use-toggle';
-import { updateOrder } from '@/lib/actions';
 import type { OrderDay } from '@/lib/week';
 import type { Order } from '@/types/types';
 import TimelineDetailsCell from './timeline-details';
@@ -40,11 +39,7 @@ export default function TimelineOrder({
           icon={<SquarePen />}
           className="min-w-5xl"
         >
-          <OrderForm
-            order={order}
-            action={(formData) => updateOrder(order.id, formData)}
-            onDialogClose={closeModal}
-          />
+          <EditOrderForm order={order} onDialogClose={closeModal} />
         </Dialog>
       }
     </>

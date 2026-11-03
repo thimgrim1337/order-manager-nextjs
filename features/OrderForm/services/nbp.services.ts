@@ -1,5 +1,5 @@
 import { apiCall } from '@/lib/helpers';
-import type { Currencies, CurrencyTable } from '@/types/types';
+import type { CurrencyCode, CurrencyInfo, CurrencyTable } from '@/types/types';
 
 export type NBPApiResponse = {
   table: string;
@@ -16,10 +16,10 @@ export type NBPApiResponse = {
 
 export async function getCurrencyRate(
   date: string,
-  code: Currencies = 'EUR',
+  code: CurrencyCode,
   table: CurrencyTable = 'A',
 ) {
-  if (code === 'PLN' || !date) return null;
+  if (!date) return null;
 
   const result = await apiCall<NBPApiResponse>(
     `https://api.nbp.pl/api/exchangerates/rates/${table}/${code}/${date}/?format=json`,
@@ -31,4 +31,9 @@ export async function getCurrencyRate(
   }
 
   return result.data;
+}
+
+/** The Exchange Rate NBP answered with, as the Order form holds it. */
+export function toCurrencyInfo({ rates: [rate] }: NBPApiResponse): CurrencyInfo {
+  return { date: rate.effectiveDate, rate: rate.mid.toString(), table: rate.no };
 }

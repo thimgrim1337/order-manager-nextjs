@@ -12,6 +12,7 @@ import { useAppForm } from '../hooks/useAppForm';
 import useCurrencyInfo from '../hooks/useCurrencyInfo';
 import useFormSubmit from '../hooks/useFormSubmit';
 import { getStartingValues, orderFormOptions } from '../lib/order-form-options';
+import { toCurrencyInfo } from '../services/nbp.services';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
 import CurrencyInfo from './ui/currency-info';
@@ -47,25 +48,21 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   });
 
   const { endDate, currencyId, currencyInfo } = useStore(form.store, (state) => state.values);
-  const currencyCode = currencies.find((currency) => currency.id === currencyId)?.code ?? 'PLN';
+  // Any Currency but PLN needs its Exchange Rate, from which the Orders module works out the PLN Price.
+  const needsRate = currencyId !== CURRENCY.PLN;
+  const rateCurrencyCode = needsRate
+    ? (currencies.find((currency) => currency.id === currencyId)?.code ?? null)
+    : null;
 
   const {
     rate,
     isLoading: isRateLoading,
     isError: isRateError,
     error: rateError,
-  } = useCurrencyInfo(endDate, currencyCode);
-
-  // Any currency but PLN needs its NBP rate, from which the Orders module works out the PLN price.
-  const needsRate = currencyId !== CURRENCY.PLN;
+  } = useCurrencyInfo(endDate, rateCurrencyCode);
 
   useEffect(() => {
-    if (needsRate && rate?.rates[0])
-      form.setFieldValue('currencyInfo', {
-        date: rate.rates[0].effectiveDate,
-        rate: rate.rates[0].mid.toString(),
-        table: rate.rates[0].no,
-      });
+    if (needsRate && rate?.rates[0]) form.setFieldValue('currencyInfo', toCurrencyInfo(rate));
     // Not keeping the last currency's rate, which would price this one with it.
     else if (form.getFieldValue('currencyInfo').rate)
       form.setFieldValue('currencyInfo', orderFormOptions.defaultValues.currencyInfo);
@@ -166,10 +163,10 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
                     value: currency.id,
                   }))}
                 >
-                  {needsRate && (
+                  {rateCurrencyCode && (
                     <CurrencyInfo
                       isLoading={isRateLoading}
-                      currencyCode={currencyCode}
+                      currencyCode={rateCurrencyCode}
                       currencyInfo={currencyInfo}
                     />
                   )}

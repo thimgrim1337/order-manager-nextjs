@@ -26,6 +26,24 @@ _Avoid_: End date, delivery date
 Where an Order stands: in progress (_w trakcie_), cancelled (_anulowane_) or delivered (_zakończone_). Changing it touches nothing else on the Order.
 _Avoid_: State, stage
 
+### Prices
+
+**Currency** (_Waluta_):
+The currency an Order's Price is agreed in: PLN or a foreign one such as EUR.
+_Avoid_: Money type
+
+**Price** (_Cena w walucie_):
+What the Customer pays for an Order, in the Order's Currency.
+_Avoid_: Amount, rate, freight
+
+**Exchange Rate** (_Kurs waluty_):
+The NBP mid rate of a foreign Currency to PLN, from the latest business day before the Unloading Date and no later than today. A PLN Order has none.
+_Avoid_: NBP rate, conversion rate
+
+**PLN Price** (_Cena w PLN_):
+An Order's Price in PLN: the Price itself for a PLN Order, otherwise the Price at its Exchange Rate.
+_Avoid_: Converted price, price in złoty
+
 ### Trucks and Drivers
 
 **Truck** (_Pojazd_):

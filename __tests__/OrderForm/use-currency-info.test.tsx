@@ -8,7 +8,7 @@ import { createWrapper } from '../utils/wrapper';
 
 describe('useCurrencyInfo', async () => {
   it('return currency rate if date is correct', async () => {
-    const { result } = renderHook(() => useCurrencyInfo('2024-01-16'), {
+    const { result } = renderHook(() => useCurrencyInfo('2024-01-16', 'EUR'), {
       wrapper: createWrapper(),
     });
 
@@ -25,7 +25,7 @@ describe('useCurrencyInfo', async () => {
       }),
     );
 
-    const { result } = renderHook(() => useCurrencyInfo('2024-01-16'), {
+    const { result } = renderHook(() => useCurrencyInfo('2024-01-16', 'EUR'), {
       wrapper: createWrapper(),
     });
 
@@ -37,7 +37,7 @@ describe('useCurrencyInfo', async () => {
   });
 
   it('return isRateLoading: true when fetching', () => {
-    const { result } = renderHook(() => useCurrencyInfo('2024-01-16'), {
+    const { result } = renderHook(() => useCurrencyInfo('2024-01-16', 'EUR'), {
       wrapper: createWrapper(),
     });
 
@@ -51,7 +51,7 @@ describe('useCurrencyInfo', async () => {
       ),
     );
 
-    const { result } = renderHook(() => useCurrencyInfo('2024-01-16'), {
+    const { result } = renderHook(() => useCurrencyInfo('2024-01-16', 'EUR'), {
       wrapper: createWrapper(),
     });
 

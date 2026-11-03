@@ -129,7 +129,7 @@ describe('OrderForm', () => {
       });
     });
 
-    it('submits a new non-PLN Order with the NBP rate', async () => {
+    it('submits a new non-PLN Order with its Exchange Rate', async () => {
       const { user, onDialogClose } = await setup();
 
       await fillInNewOrder(user);
@@ -270,7 +270,7 @@ describe('OrderForm', () => {
       );
     });
 
-    it('submits a non-PLN Order with the NBP rate of its currency', async () => {
+    it('submits a non-PLN Order with the Exchange Rate of its Currency', async () => {
       worker.use(
         http.get('https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/', ({ params }) =>
           params.code === 'USD'
@@ -299,7 +299,7 @@ describe('OrderForm', () => {
       );
     });
 
-    it('drops the old rate and blocks saving when the new currency has no rate', async () => {
+    it('drops the old Exchange Rate and blocks saving when the new Currency has none', async () => {
       worker.use(
         http.get('https://api.nbp.pl/api/exchangerates/rates/:table/:code/:date/', ({ params }) =>
           params.code === 'EUR'
