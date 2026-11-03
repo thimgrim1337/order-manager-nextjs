@@ -112,7 +112,7 @@ async function seedPolishNames(trx: dbTransaction) {
 }
 
 const sortedIds = async (trx: dbTransaction, id: OrderSortField, desc: boolean) => {
-  const { data } = await findOrders(trx, 0, 10, [{ id, desc }]);
+  const { data } = await findOrders(trx, { pageIndex: 0, pageSize: 10, sort: { id, desc } });
   return data.map((o) => o.id);
 };
 
@@ -143,7 +143,7 @@ describe('findOrders sorting', () => {
 });
 
 const searchedIds = async (trx: dbTransaction, search: string) => {
-  const { data, count } = await findOrders(trx, 0, 10, undefined, { search });
+  const { data, count } = await findOrders(trx, { pageIndex: 0, pageSize: 10, search });
   expect(count).toBe(data.length);
   return data.map((o) => o.id);
 };

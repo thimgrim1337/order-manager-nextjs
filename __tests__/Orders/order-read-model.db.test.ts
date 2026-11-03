@@ -18,7 +18,7 @@ describe('Order read model', () => {
 
       const {
         data: [inTable],
-      } = await findOrders(trx, 0, 10);
+      } = await findOrders(trx, { pageIndex: 0, pageSize: 10 });
       const [inTimeline] = await findOrdersInWeek(trx, week);
 
       expect(inTable).toEqual(inTimeline);

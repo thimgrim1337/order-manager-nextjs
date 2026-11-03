@@ -7,13 +7,9 @@ import {
   parseText,
 } from '@/features/shared/lib/search-param-parsers';
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, ORDER_SORT_FIELDS } from '@/lib/consts';
-import type { OrderFilters, RawSearchParams, SortParams } from '@/types/types';
+import type { OrderQuery, RawSearchParams, SortParams } from '@/types/types';
 
-export type OrdersTableQuery = OrderFilters & {
-  sort: SortParams;
-  pageIndex: number;
-  pageSize: number;
-};
+export type OrdersTableQuery = OrderQuery & { sort: SortParams };
 
 const DEFAULT_SORT: SortParams = { id: 'startDate', desc: true };
 

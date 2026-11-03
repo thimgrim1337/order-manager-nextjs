@@ -20,12 +20,7 @@ type OrdersContentProps = {
 export default async function OrdersContent({ searchParamsPromise }: OrdersContentProps) {
   const query = parse(await searchParamsPromise);
 
-  const { data: orders, count } = await getAllOrders(
-    query.pageIndex,
-    query.pageSize,
-    [query.sort],
-    query,
-  );
+  const { data: orders, count } = await getAllOrders(query);
 
   const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
     getCustomers(),

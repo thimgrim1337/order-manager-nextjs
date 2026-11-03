@@ -7,7 +7,7 @@ import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
-import type { OrderFilters, SortParams } from '@/types/types';
+import type { OrderQuery, SortParams } from '@/types/types';
 
 /** The columns of an Order as the Orders Table and the Timeline show it. */
 const orderReadModel = {
@@ -52,14 +52,10 @@ function parseSearch(search: string) {
 /** An Order as the Orders Table and the Timeline receive it. */
 export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number];
 
-export async function findOrders(
-  database: db | dbTransaction,
-  pageIndex: number,
-  pageSize: number,
-  sortParams?: SortParams[],
-  filters?: OrderFilters,
-) {
-  const getSortColumn = (sortParams?: SortParams[]) => {
+export async function findOrders(database: db | dbTransaction, query: OrderQuery) {
+  const { pageIndex, pageSize } = query;
+
+  const getSortColumn = (sort?: SortParams) => {
     const sortMappings: Record<OrderSortField, AnyPgColumn> = {
       statusId: ordersWithDetailsView.statusId,
       truckPlate: ordersWithDetailsView.truckPlate,
@@ -75,22 +71,21 @@ export async function findOrders(
       driverFullname: ordersWithDetailsView.driverFullname,
     };
 
-    const columns = (sortParams ?? []).map((param) => {
-      const col = sortMappings[param.id];
-      return param.desc ? desc(col) : asc(col);
-    });
-
     // Tie-breaker keeps row order stable across pages.
-    return [...columns, asc(ordersWithDetailsView.id)];
+    const tieBreaker = asc(ordersWithDetailsView.id);
+    if (!sort) return [tieBreaker];
+
+    const col = sortMappings[sort.id];
+    return [sort.desc ? desc(col) : asc(col), tieBreaker];
   };
 
-  const sortColumn = getSortColumn(sortParams);
+  const sortColumn = getSortColumn(query.sort);
 
   const searchConditions = [];
   const allWhereConditions = [];
 
-  if (filters?.search) {
-    const { pattern, price, date } = parseSearch(filters.search);
+  if (query.search) {
+    const { pattern, price, date } = parseSearch(query.search);
 
     searchConditions.push(
       ilike(ordersWithDetailsView.orderNr, pattern),
@@ -120,20 +115,20 @@ export async function findOrders(
     allWhereConditions.push(or(...searchConditions));
   }
 
-  if (filters?.startDate) {
-    allWhereConditions.push(gte(ordersWithDetailsView.startDate, filters.startDate));
+  if (query.startDate) {
+    allWhereConditions.push(gte(ordersWithDetailsView.startDate, query.startDate));
   }
 
-  if (filters?.endDate) {
-    allWhereConditions.push(lte(ordersWithDetailsView.endDate, filters.endDate));
+  if (query.endDate) {
+    allWhereConditions.push(lte(ordersWithDetailsView.endDate, query.endDate));
   }
 
-  if (filters?.driverId) {
-    allWhereConditions.push(eq(ordersWithDetailsView.driverId, filters.driverId));
+  if (query.driverId) {
+    allWhereConditions.push(eq(ordersWithDetailsView.driverId, query.driverId));
   }
 
-  if (filters?.statusId) {
-    allWhereConditions.push(eq(ordersWithDetailsView.statusId, filters.statusId));
+  if (query.statusId) {
+    allWhereConditions.push(eq(ordersWithDetailsView.statusId, query.statusId));
   }
 
   const whereConditions = allWhereConditions.length > 0 ? and(...allWhereConditions) : undefined;
@@ -158,18 +153,13 @@ export async function findOrders(
   };
 }
 
-export async function getAllOrders(
-  pageIndex: number,
-  pageSize: number,
-  sortParams?: SortParams[],
-  filters?: OrderFilters,
-) {
+export async function getAllOrders(query: OrderQuery) {
   'use cache';
   // Hours, not days: Order writes invalidate the tag, but one outside the app would not.
   cacheLife('hours');
   cacheTag(CACHE_TAG.Orders);
 
-  return findOrders(db, pageIndex, pageSize, sortParams, filters);
+  return findOrders(db, query);
 }
 
 /** Orders in a Week: Start Date on or before its Sunday and End Date on or after its Monday. */
