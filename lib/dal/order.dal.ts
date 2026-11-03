@@ -4,7 +4,7 @@ import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
-import { type Week, weekDays } from '@/lib/week';
+import { type Week, weekBounds } from '@/lib/week';
 import type { OrderFilters, SortParams } from '@/types/types';
 import { analyzeGlobalFiltering } from '../utils';
 
@@ -132,7 +132,7 @@ export async function findOrders(
     .select({ count: count() })
     .from(ordersWithDetailsView)
     .where(whereConditions)
-    .then((rows) => rows[0].count);
+    .then(([row]) => row?.count ?? 0);
 
   return {
     data: await orders,
@@ -160,9 +160,7 @@ export async function findOrdersInWeek(
   week: Week,
   opts?: { driverId?: number },
 ) {
-  const days = weekDays(week);
-  const monday = days[0].date;
-  const sunday = days[6].date;
+  const { monday, sunday } = weekBounds(week);
 
   return database
     .select(orderReadModel)

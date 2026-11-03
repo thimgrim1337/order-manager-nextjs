@@ -37,6 +37,12 @@ export const weekDays = (week: Week): Day[] =>
     };
   });
 
+/** The Week's first and last day, Monday and Sunday (`yyyy-MM-dd`). */
+export const weekBounds = (week: Week) => ({
+  monday: week as string,
+  sunday: formatDate(addDays(parseDate(week), 6)),
+});
+
 /** ISO 8601 Week Number: Week 1 contains 4 January. */
 export const weekNumber = (week: Week) => getISOWeek(parseDate(week));
 
@@ -93,13 +99,11 @@ type OrderInWeek = OrderDates & OrderPlaces & { customer: Customer };
  * shown that day. An Order without Loading or Unloading Places shows no place.
  */
 export function orderDays(week: Week, order: OrderInWeek): OrderDay[] {
-  const days = weekDays(week);
-  const monday = days[0].date;
-  const sunday = days[6].date;
+  const { monday, sunday } = weekBounds(week);
   const loadingPlace = firstLoadingPlace(order);
   const unloadingPlace = lastUnloadingPlace(order);
 
-  return days.map(({ date }) => {
+  return weekDays(week).map(({ date }) => {
     const role = roleOn(date, order);
     const day: OrderDay = { date, role };
     const loads = role === 'loading' || role === 'loading-unloading';

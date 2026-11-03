@@ -47,6 +47,7 @@ export async function createOrder(
   try {
     const created = await database.transaction(async (trx) => {
       const [newOrder] = await trx.insert(order).values(fields).returning();
+      if (!newOrder) throw new Error('Inserting an Order returned no row.');
       await insertPlaces(trx, newOrder.id, loadingPlaces, unloadingPlaces);
       await assignDriverToTruck(trx, newOrder);
 
