@@ -27,7 +27,7 @@ export default function TimelineOrder({
       <TableRow key={order.id} onClick={() => openModal()} className="hover:cursor-pointer">
         <TimelineDetailsCell key={order.id} order={order} />
         {days.map((day) => (
-          <TimelinePlaceCell key={day.date} order={order} day={day} borderColor={borderColor} />
+          <TimelinePlaceCell key={day.date} day={day} borderColor={borderColor} />
         ))}
       </TableRow>
       {

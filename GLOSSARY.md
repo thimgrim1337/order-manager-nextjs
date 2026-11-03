@@ -22,6 +22,14 @@ _Avoid_: Start date, from date
 The day an Order's unloading ends; the last day of the Order.
 _Avoid_: End date, delivery date
 
+**Loading Place** (_Miejsce załadunku_):
+A City an Order loads in. The Timeline and the Orders Table show the Order's first one, or none when it has none.
+_Avoid_: Origin, pickup
+
+**Unloading Place** (_Miejsce rozładunku_):
+A City an Order unloads in. The Timeline and the Orders Table show the Order's last one, or none when it has none.
+_Avoid_: Destination, drop-off
+
 **Status** (_Status zlecenia_):
 Where an Order stands: in progress (_w trakcie_), cancelled (_anulowane_) or delivered (_zakończone_). Changing it touches nothing else on the Order.
 _Avoid_: State, stage
@@ -101,5 +109,5 @@ An Order with at least one day inside the Week (Start Date on or before Sunday a
 _Avoid_: Weekly orders
 
 **Order Day** (_Dzień zlecenia_):
-What an Order does on one day of a Week: loading (Loading date), unloading (Unloading Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later.
+What an Order does on one day of a Week: loading (Loading date), unloading (Unloading Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later. It also carries what the Timeline shows that day: the Loading Place and the Customer on a loading day, the Unloading Place on an unloading day, and, in transit, the Loading Place on a continuing Monday and the Unloading Place on a continuing Sunday.
 _Avoid_: Day status, cell type

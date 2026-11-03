@@ -4,6 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { OrderSortField } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { formatDate } from '@/lib/dates';
+import { firstLoadingPlace, lastUnloadingPlace } from '@/lib/places';
 import StatusBadge from '../components/ui/status-bagde';
 
 /** Every column is sortable: its `accessorKey` is its id, and the id is the sort field the URL and DAL read. */
@@ -26,12 +27,12 @@ export const columns: OrderColumn[] = [
   },
   {
     accessorKey: 'loadingCity',
-    accessorFn: (order) => order.loadingPlaces[0].name,
+    accessorFn: (order) => firstLoadingPlace(order)?.name ?? '',
     header: ' Miejsce załadunku',
   },
   {
     accessorKey: 'unloadingCity',
-    accessorFn: (order) => order.unloadingPlaces[order.unloadingPlaces.length - 1].name,
+    accessorFn: (order) => lastUnloadingPlace(order)?.name ?? '',
     header: 'Miejsce rozładunku',
   },
   {
