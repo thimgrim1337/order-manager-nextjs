@@ -6,6 +6,7 @@ import { expect } from 'vitest';
  * Opens the date field labelled `label` and picks `day` of the shown month.
  *
  * Clicks the day's button: a click on its gridcell selects nothing in browser tests.
+ * Render with `renderWithQueries` (`./wrapper`): a pick made while queries still load is lost.
  */
 export async function pickDate(user: UserEvent, label: string, day: number) {
   await user.click(screen.getByLabelText(label));

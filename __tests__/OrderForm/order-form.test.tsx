@@ -1,5 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -9,6 +8,7 @@ import { createOrder, searchCustomers, updateOrder } from '@/lib/actions';
 import type { Order } from '@/types/types';
 import { worker } from '../mocks/browser';
 import { pickDate } from '../utils/pick-date';
+import { renderWithQueries } from '../utils/wrapper';
 
 const plock = { id: 1, name: 'Płock', postal: '09-410', countryId: 1 };
 const customer = { id: 1, name: 'DEVIL', tax: '7743241555' };
@@ -68,20 +68,13 @@ afterEach(() => {
 
 const setup = async (props: Partial<OrderFormProps> = {}) => {
   const user = userEvent.setup({ pointerEventsCheck: 0 });
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const onDialogClose = vi.fn();
 
-  const { unmount } = await act(async () =>
-    render(
-      <QueryClientProvider client={queryClient}>
-        <OrderDataProvider data={data}>
-          <OrderForm action={createOrder} onDialogClose={onDialogClose} {...props} />
-        </OrderDataProvider>
-      </QueryClientProvider>,
-    ),
+  const { unmount } = await renderWithQueries(
+    <OrderDataProvider data={data}>
+      <OrderForm action={createOrder} onDialogClose={onDialogClose} {...props} />
+    </OrderDataProvider>,
   );
-  // A date picked while the holidays and rate still load is lost.
-  await vi.waitFor(() => expect(queryClient.isFetching()).toBe(0));
 
   return { user, onDialogClose, unmount };
 };

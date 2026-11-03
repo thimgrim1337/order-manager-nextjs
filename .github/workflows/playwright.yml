@@ -37,6 +37,8 @@ jobs:
       run: pnpm typecheck
     - name: Lint and format
       run: pnpm exec biome ci
+    - name: Unused code
+      run: pnpm knip
     - name: Install Chromium
       run: pnpm exec playwright install --with-deps chromium
     - name: Unit and db tests
