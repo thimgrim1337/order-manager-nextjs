@@ -71,6 +71,11 @@ const order = pgTable(
   ],
 );
 
+/**
+ * Defined in SQL by the latest migration that recreates it
+ * (`grep -l 'CREATE VIEW orders_with_details' db/migrations`); these columns are kept in step by hand.
+ * See `docs/agents/migrations.md`.
+ */
 export const ordersWithDetailsView = pgView('orders_with_details', {
   id: integer().notNull(),
   createdAt: timestamp('created_at', { mode: 'string' }),
