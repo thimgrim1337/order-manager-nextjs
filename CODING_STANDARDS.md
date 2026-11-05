@@ -9,6 +9,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 ## URL search params
 
 - Each page owns a query module (`features/<Feature>/lib/*-query.ts`) with `parse`, `apply` and `toSearchParams`.
+- Components read and change the URL query through `useUrlQuery(<page>Query)` (`features/shared/hooks/use-url-query.ts`), passing the page's query module directly; a page gets no hook of its own wrapping it. A change relative to the current query (the Week after it) passes a function: `change(({ week }) => ({ week: nextWeek(week) }))`.
 - `parse` reads every param through `features/shared/lib/search-param-parsers.ts` (Biome enforces that a query module imports no `zod`): one `parseX(value: RawSearchParam)` per kind of value, returning `undefined` when the value is missing or invalid. A new kind of param gets a new parser there.
 - A parser's bounds belong to its kind and live in it (`parsePageSize`, not `parseInteger({ min, max })`). It takes a second argument only for the values a page defines, like the sort fields `parseSort(value, ORDER_SORT_FIELDS)` accepts.
 
@@ -17,6 +18,12 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - Week rules (which Week, its days, numbering, the URL key) live in `lib/week.ts`. Callers pass a `Week` around and leave the date arithmetic to that module.
 - Dates are `yyyy-MM-dd` strings. Any string handed to date-fns goes through `toDate`/`parseDate` from `lib/dates.ts` first: date-fns reads a bare `yyyy-MM-dd` string as UTC midnight, which is the previous day west of UTC.
 - "Today" is the company's day in `Europe/Warsaw` (Biome enforces reading it through `lib/dates.ts`). Browser tests run in `America/Los_Angeles`: code that depends on today gets a test across a Warsaw-midnight boundary, passing `now` explicitly.
+- A test whose expected values pass through a default derived from today (the Timeline's default Week, the Order form's dates) pins the clock with `vi.setSystemTime`, as `__tests__/OrderForm/order-form.test.tsx` does.
+
+## Tests
+
+- A regression test goes red on the bug it guards: with the fix reverted it fails on its assertion, not only on a missing module.
+- Tests build a Week from its key with `week('2026-W44')` (`__tests__/utils/week.ts`).
 
 ## Data access
 
