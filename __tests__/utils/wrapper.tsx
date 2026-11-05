@@ -10,18 +10,10 @@ const createQueryClient = () =>
     },
   });
 
-export const createWrapper = () => {
-  const queryClient = createQueryClient();
-
-  return ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-};
-
 /**
  * Renders `ui` with a fresh QueryClient and waits until its queries settle.
  *
- * A click while a query still loads can be lost (e.g. `pickDate` before the holidays arrive).
+ * A click while a query still loads can be lost (e.g. `pickDate` before the Exchange Rate arrives).
  */
 export const renderWithQueries = async (ui: ReactNode) => {
   const queryClient = createQueryClient();

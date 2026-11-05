@@ -1,9 +1,10 @@
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { useOrderData } from '@/features/shared/context/order-context';
 import { CURRENCY } from '@/lib/consts';
+import { getToday } from '@/lib/dates';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
 import { orderFormOptions } from '../lib/order-form-options';
-import { toCurrencyInfo } from '../services/nbp.services';
-import useCurrencyInfo from './useCurrencyInfo';
+import { getExchangeRate } from '../services/nbp.services';
 
 /** The Unloading Date and Currency an Order's Exchange Rate was stored for. */
 type StoredExchangeRate = Pick<OrderFormDto, 'endDate' | 'currencyId' | 'currencyInfo'>;
@@ -26,11 +27,16 @@ export default function useExchangeRate(
       : (currencies.find((currency) => currency.id === currencyId)?.code ?? null);
   const keepsStoredRate =
     !!stored.currencyInfo.rate && endDate === stored.endDate && currencyId === stored.currencyId;
+  const codeToFetch = keepsStoredRate ? null : currencyCode;
+  // The rate depends on today too, so a form open past midnight asks again.
+  const today = getToday();
 
-  const { rate, isLoading, isError, error } = useCurrencyInfo(
-    endDate,
-    keepsStoredRate ? null : currencyCode,
-  );
+  const rateQuery = useQuery({
+    queryKey: ['exchangeRate', codeToFetch, endDate, today],
+    queryFn:
+      codeToFetch && endDate ? () => getExchangeRate(codeToFetch, endDate, today) : skipToken,
+    retry: false,
+  });
 
   if (keepsStoredRate) {
     return { currencyCode, currencyInfo: stored.currencyInfo, isLoading: false, error: null };
@@ -39,11 +45,10 @@ export default function useExchangeRate(
   return {
     currencyCode,
     // Without one, not the last Currency's rate, which would price this one with it.
-    currencyInfo:
-      currencyCode && rate?.rates[0]
-        ? toCurrencyInfo(rate)
-        : orderFormOptions.defaultValues.currencyInfo,
-    isLoading,
-    error: isError ? error?.message || 'Wystąpił błąd podczas pobierania kursu.' : null,
+    currencyInfo: rateQuery.data ?? orderFormOptions.defaultValues.currencyInfo,
+    isLoading: rateQuery.isLoading,
+    error: rateQuery.isError
+      ? rateQuery.error.message || 'Wystąpił błąd podczas pobierania kursu.'
+      : null,
   };
 }

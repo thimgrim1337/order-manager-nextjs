@@ -1,28 +1,35 @@
+import { addDays, getYesterday } from '@/lib/dates';
 import { apiCall } from '@/lib/helpers';
-import type { CurrencyCode, CurrencyInfo, CurrencyTable } from '@/types/types';
+import type { CurrencyCode, CurrencyInfo } from '@/types/types';
 
-export type NBPApiResponse = {
+type NBPRatesResponse = {
   table: string;
   currency: string;
   code: string;
-  rates: [
-    {
-      no: string;
-      effectiveDate: string;
-      mid: number;
-    },
-  ];
+  /** Oldest first. */
+  rates: { no: string; effectiveDate: string; mid: number }[];
 };
 
-export async function getCurrencyRate(
-  date: string,
-  code: CurrencyCode,
-  table: CurrencyTable = 'A',
-) {
-  if (!date) return null;
+/** How far back from its last day the range asked of NBP reaches; longer than any run of days NBP skips. */
+const LOOKBACK_DAYS = 14;
 
-  const result = await apiCall<NBPApiResponse>(
-    `https://api.nbp.pl/api/exchangerates/rates/${table}/${code}/${date}/?format=json`,
+/**
+ * The Exchange Rate of `code` for an Order unloading on `unloadingDate`, as of `today` (see
+ * `getToday`): NBP's latest mid rate published before the Unloading Date and no later than today.
+ * NBP's published dates decide which days are business days, and a rate not yet published today
+ * falls back to the last.
+ */
+export async function getExchangeRate(
+  code: CurrencyCode,
+  unloadingDate: string,
+  today: string,
+): Promise<CurrencyInfo> {
+  const dayBefore = getYesterday(unloadingDate);
+  const rangeEnd = dayBefore < today ? dayBefore : today;
+  const rangeStart = addDays(rangeEnd, -LOOKBACK_DAYS);
+
+  const result = await apiCall<NBPRatesResponse>(
+    `https://api.nbp.pl/api/exchangerates/rates/A/${code}/${rangeStart}/${rangeEnd}/?format=json`,
   );
 
   if (result.type === 'error') {
@@ -30,10 +37,8 @@ export async function getCurrencyRate(
     throw new Error('Nie udało się pobrać kursu walut.');
   }
 
-  return result.data;
-}
+  const rate = result.data.rates.at(-1);
+  if (!rate) throw new Error('Nie znaleziono kursu dla wskazanej daty.');
 
-/** The Exchange Rate NBP answered with, as the Order form holds it. */
-export function toCurrencyInfo({ rates: [rate] }: NBPApiResponse): CurrencyInfo {
   return { date: rate.effectiveDate, rate: rate.mid.toString(), table: rate.no };
 }

@@ -18,8 +18,6 @@ export type Currency = CurrencyDto;
 /** A Currency's code, as the NBP API takes it. */
 export type CurrencyCode = Currency['code'];
 
-export type CurrencyTable = 'A' | 'B' | 'C';
-
 export type CurrencyInfo = {
   date: string;
   table: string;

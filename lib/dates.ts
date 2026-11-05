@@ -1,11 +1,5 @@
 import { TZDate } from '@date-fns/tz';
-import {
-  addDays as addDaysLib,
-  format,
-  isWeekend as isWeekendLib,
-  parse,
-  subDays as subDaysLib,
-} from 'date-fns';
+import { addDays as addDaysLib, format, parse, subDays as subDaysLib } from 'date-fns';
 import { pl } from 'date-fns/locale';
 
 export const parseDate = (date: string, dateFormat: string = 'yyyy-MM-dd') =>
@@ -37,8 +31,3 @@ const subDays = (date: string | Date, amount: number) =>
 
 export const addDays = (date: string | Date, amount: number) =>
   formatDate(addDaysLib(toDate(date), amount));
-
-/** After today in the company's time zone; today itself is not the future. yyyy-MM-dd strings sort as dates. */
-export const isFuture = (date: string, now?: Date) => date > getToday(now);
-
-export const isWeekend = (date: string | Date) => isWeekendLib(toDate(date));

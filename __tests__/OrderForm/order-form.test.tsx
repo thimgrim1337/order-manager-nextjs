@@ -7,7 +7,7 @@ import { OrderDataProvider } from '@/features/shared/context/order-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
-import { HOLIDAYS_URL, NBP_RATE_URL } from '../mocks/handlers';
+import { fakeNbp, NBP_RATES_URL } from '../mocks/handlers';
 import { pickDate } from '../utils/pick-date';
 import { renderWithQueries } from '../utils/wrapper';
 
@@ -52,12 +52,9 @@ const data = {
 
 const NO_RATE = { table: '', rate: '', date: '' };
 
-/** NBP and OpenHolidays, which picks the Exchange Rate's day, answer with a server error. */
-const failRateApis = () =>
-  worker.use(
-    http.get(NBP_RATE_URL, () => HttpResponse.json({}, { status: 500 })),
-    http.get(HOLIDAYS_URL, () => HttpResponse.json({}, { status: 500 })),
-  );
+/** NBP answers with a server error. */
+const failNbp = () =>
+  worker.use(http.get(NBP_RATES_URL, () => HttpResponse.json({}, { status: 500 })));
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -144,6 +141,36 @@ describe('OrderForm', () => {
         expect.objectContaining({
           currencyId: 2,
           currencyInfo: { table: '107/NBP/A', rate: '4.25', date: '2021-01-15' },
+        }),
+      );
+    });
+
+    it("saves a EUR Order unloading after the new year's holiday with the rate from before it", async () => {
+      // Wednesday 2027-01-20 12:00 in Warsaw, so the date pickers show January 2027.
+      vi.setSystemTime(new Date('2027-01-20T11:00:00Z'));
+      worker.use(
+        fakeNbp([
+          { no: '002/A/NBP/2027', mid: 4.24, effectiveDate: '2027-01-05' },
+          { no: '003/A/NBP/2027', mid: 4.25, effectiveDate: '2027-01-07' },
+        ]),
+      );
+      const { user, onDialogClose } = await setup();
+
+      await fillInNewOrder(user);
+      await pickDate(user, 'Data rozładunku', 7);
+      await pickDate(user, 'Data załadunku', 5);
+      await user.click(screen.getByLabelText('Waluta'));
+      await user.click(await screen.findByRole('option', { name: 'EUR' }));
+      // 6 January (Epiphany) is a holiday.
+      await screen.findByText('Tabela nr 002/A/NBP/2027 z dnia 2027-01-05, 1 EUR = 4.24 PLN');
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(createOrder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          endDate: '2027-01-07',
+          currencyId: 2,
+          currencyInfo: { table: '002/A/NBP/2027', rate: '4.24', date: '2027-01-05' },
         }),
       );
     });
@@ -308,7 +335,7 @@ describe('OrderForm', () => {
       /** NBP has an Exchange Rate for EUR only. */
       const nbpHasEurRateOnly = () =>
         worker.use(
-          http.get(NBP_RATE_URL, ({ params }) =>
+          http.get(NBP_RATES_URL, ({ params }) =>
             params.code === 'EUR'
               ? HttpResponse.json({
                   rates: [{ no: '211/A/NBP/2026', mid: 4.25, effectiveDate: '2026-10-30' }],
@@ -318,15 +345,15 @@ describe('OrderForm', () => {
         );
 
       it('starts with its stored Exchange Rate, rate date and PLN Price', async () => {
-        failRateApis();
+        failNbp();
         await editSetup(eurOrder);
 
         expect(screen.getByText('Kurs z dnia 2026-10-29, 1 EUR = 4.2 PLN')).toBeInTheDocument();
         expect(screen.getByText('Cena w PLN: 4200.00')).toBeInTheDocument();
       });
 
-      it('saves with its stored Exchange Rate while the rate APIs are down', async () => {
-        failRateApis();
+      it('saves with its stored Exchange Rate while NBP is down', async () => {
+        failNbp();
         const { user, onDialogClose } = await editSetup(eurOrder);
 
         await user.click(screen.getByRole('button', { name: 'Edytuj' }));
@@ -347,12 +374,12 @@ describe('OrderForm', () => {
       });
 
       it('keeps its stored Exchange Rate again when the Unloading Date changes back', async () => {
-        failRateApis();
+        failNbp();
         const { user, onDialogClose } = await editSetup(eurOrder);
 
         await user.click(screen.getByRole('button', { name: 'Edytuj' }));
         await pickDate(user, 'Data rozładunku', 20);
-        await screen.findByText('Nie udało się pobrać dni wolnych.');
+        await screen.findByText('Nie udało się pobrać kursu walut.');
         await pickDate(user, 'Data rozładunku', 13);
         await screen.findByText('Kurs z dnia 2026-10-29, 1 EUR = 4.2 PLN');
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));

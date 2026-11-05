@@ -24,7 +24,7 @@ export async function apiCall<TData>(url: string, init?: RequestInit): Promise<A
 
   return {
     type: 'success',
-    data: response.json() as TData,
+    data: (await response.json()) as TData,
     status: response.status,
   };
 }
