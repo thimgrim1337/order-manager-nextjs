@@ -100,12 +100,12 @@ async function seedPolishNames(trx: dbTransaction) {
     )
     .returning({ id: order.id });
   await trx.insert(loadingPlace).values([
-    { orderId: first.id, placeId: zamosc.id },
-    { orderId: second.id, placeId: lodz.id },
+    { orderId: first.id, placeId: zamosc.id, position: 0 },
+    { orderId: second.id, placeId: lodz.id, position: 0 },
   ]);
   await trx.insert(unloadingPlace).values([
-    { orderId: first.id, placeId: zgierz.id },
-    { orderId: second.id, placeId: lowicz.id },
+    { orderId: first.id, placeId: zgierz.id, position: 0 },
+    { orderId: second.id, placeId: lowicz.id, position: 0 },
   ]);
 
   return { first: first.id, second: second.id };

@@ -101,8 +101,12 @@ export async function seedOrder(
     })
     .returning();
 
-  await db.insert(loadingPlaces).values({ orderId: dbOrder.id, placeId: loadingCity.id });
-  await db.insert(unloadingPlaces).values({ orderId: dbOrder.id, placeId: unloadingCity.id });
+  await db
+    .insert(loadingPlaces)
+    .values({ orderId: dbOrder.id, placeId: loadingCity.id, position: 0 });
+  await db
+    .insert(unloadingPlaces)
+    .values({ orderId: dbOrder.id, placeId: unloadingCity.id, position: 0 });
 
   return dbOrder;
 }

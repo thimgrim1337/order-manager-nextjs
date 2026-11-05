@@ -18,7 +18,7 @@ async function seed(trx: dbTransaction) {
 
   const orderForm = orderFormFor(refs);
 
-  return { orderForm, jan, eur: refs.currencies.eur, dbTruck: refs.truck };
+  return { orderForm, refs, jan, eur: refs.currencies.eur, dbTruck: refs.truck };
 }
 
 const week = parseWeekKey('2026-W44') as Week;
@@ -28,17 +28,23 @@ describe('createOrder', () => {
     vi.mocked(updateTag).mockClear();
   });
 
-  it('saves the Loading and Unloading Places', () =>
+  it('saves the Loading and Unloading Places in the order entered', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
+      const { orderForm, refs } = await seed(trx);
 
-      const [failure, created] = await createOrder(trx, orderForm());
+      const { warszawa, plock, gdansk } = refs.cities;
+
+      // Gdańsk has a higher City id than Płock.
+      const [failure, created] = await createOrder(
+        trx,
+        orderForm({ loadingPlaces: [warszawa], unloadingPlaces: [gdansk, plock] }),
+      );
 
       expect(failure).toBeNull();
       const [saved] = await findOrdersInWeek(trx, week);
       expect(saved.id).toBe(created?.id);
       expect(saved.loadingPlaces.map((place) => place.name)).toEqual(['Warszawa']);
-      expect(saved.unloadingPlaces.map((place) => place.name).sort()).toEqual(['Gdańsk', 'Płock']);
+      expect(saved.unloadingPlaces.map((place) => place.name)).toEqual(['Gdańsk', 'Płock']);
     }));
 
   it("assigns the Order's Driver to its Truck", () =>

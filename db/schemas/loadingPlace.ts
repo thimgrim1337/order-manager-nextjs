@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { index, integer, pgTable, primaryKey } from 'drizzle-orm/pg-core';
+import { index, integer, pgTable, primaryKey, unique } from 'drizzle-orm/pg-core';
 import city from './city';
 import order from './order';
 
@@ -12,9 +12,12 @@ const loadingPlace = pgTable(
     placeId: integer('place_id')
       .notNull()
       .references(() => city.id),
+    /** Where the Place stands among the Order's, in the order the user entered them, from 0. */
+    position: integer('position').notNull(),
   },
   (table) => [
     primaryKey({ columns: [table.orderId, table.placeId] }),
+    unique().on(table.orderId, table.position),
     index('idx_loading_places_order_id').on(table.orderId),
   ],
 );

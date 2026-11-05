@@ -215,19 +215,21 @@ function parseOrderForm(input: unknown) {
   });
 }
 
-/** One transaction is one client, so the inserts run one after another. */
+/**
+ * Stores the Places in the order the user entered them in. One transaction is one client, so the
+ * inserts run one after another.
+ */
 async function insertPlaces(
   trx: dbTransaction,
   orderId: number,
   loadingPlaces: CityDto[],
   unloadingPlaces: CityDto[],
 ) {
-  await trx
-    .insert(loadingPlace)
-    .values(loadingPlaces.map((city) => ({ orderId, placeId: city.id })));
-  await trx
-    .insert(unloadingPlace)
-    .values(unloadingPlaces.map((city) => ({ orderId, placeId: city.id })));
+  const inEnteredOrder = (places: CityDto[]) =>
+    places.map((city, position) => ({ orderId, placeId: city.id, position }));
+
+  await trx.insert(loadingPlace).values(inEnteredOrder(loadingPlaces));
+  await trx.insert(unloadingPlace).values(inEnteredOrder(unloadingPlaces));
 }
 
 async function deletePlaces(trx: dbTransaction, orderId: number) {

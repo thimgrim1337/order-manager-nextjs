@@ -22,6 +22,13 @@
       "when": 1793642554510,
       "tag": "0002_collate-orders-view",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793904801726,
+      "tag": "0003_place-position",
+      "breakpoints": true
     }
   ]
 }

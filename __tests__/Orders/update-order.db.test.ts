@@ -79,7 +79,7 @@ describe('updateOrder', () => {
       expect(saved).toMatchObject({ startDate: '2026-10-27', endDate: '2026-10-29' });
     }));
 
-  it('replaces the Loading and Unloading Places', () =>
+  it('replaces the Loading and Unloading Places, in the order entered', () =>
     withRollback(async (trx) => {
       const { orderForm, refs, created } = await seed(trx);
       const { warszawa, plock, gdansk } = refs.cities;
@@ -87,15 +87,12 @@ describe('updateOrder', () => {
       await updateOrder(
         trx,
         created.id,
-        orderForm({ loadingPlaces: [gdansk], unloadingPlaces: [warszawa, plock] }),
+        orderForm({ loadingPlaces: [gdansk], unloadingPlaces: [plock, warszawa] }),
       );
 
       const [saved] = await findOrdersInWeek(trx, week);
       expect(saved.loadingPlaces.map((place) => place.name)).toEqual(['Gdańsk']);
-      expect(saved.unloadingPlaces.map((place) => place.name).sort()).toEqual([
-        'Płock',
-        'Warszawa',
-      ]);
+      expect(saved.unloadingPlaces.map((place) => place.name)).toEqual(['Płock', 'Warszawa']);
     }));
 
   it("re-assigns the Order's new Driver to its Truck", () =>
