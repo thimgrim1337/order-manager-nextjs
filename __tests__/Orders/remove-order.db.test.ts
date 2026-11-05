@@ -4,9 +4,9 @@ import type { dbTransaction } from '@/db/db';
 import { loadingPlace, unloadingPlace } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder, removeOrder } from '@/lib/services/orders.services';
-import { parseWeekKey, type Week } from '@/lib/week';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
 vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
@@ -21,7 +21,7 @@ async function seed(trx: dbTransaction) {
   return { created };
 }
 
-const week = parseWeekKey('2026-W44') as Week;
+const orderWeek = week('2026-W44');
 
 describe('removeOrder', () => {
   it('removes an Order with its places', () =>
@@ -32,7 +32,7 @@ describe('removeOrder', () => {
 
       expect(failure).toBeNull();
       expect(removed).toEqual(created);
-      expect(await findOrdersInWeek(trx, week)).toEqual([]);
+      expect(await findOrdersInWeek(trx, orderWeek)).toEqual([]);
       expect(
         await trx.select().from(loadingPlace).where(eq(loadingPlace.orderId, created.id)),
       ).toEqual([]);
@@ -58,6 +58,6 @@ describe('removeOrder', () => {
       const [failure] = await removeOrder(trx, 'abc');
 
       expect(failure?.reason).toBe('InvalidData');
-      expect(await findOrdersInWeek(trx, week)).toHaveLength(1);
+      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(1);
     }));
 });

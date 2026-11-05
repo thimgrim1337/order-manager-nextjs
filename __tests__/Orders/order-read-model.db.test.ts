@@ -3,15 +3,16 @@ import type { dbTransaction } from '@/db/db';
 import { city } from '@/db/schemas';
 import { findOrders, findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder } from '@/lib/services/orders.services';
-import { orderDays, parseWeekKey, type Week } from '@/lib/week';
+import { orderDays } from '@/lib/week';
 import type { OrderQuery } from '@/types/types';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
 vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 
-const week = parseWeekKey('2026-W44') as Week;
+const orderWeek = week('2026-W44');
 
 describe('Order read model', () => {
   it('gives the Orders Table and the Timeline the same Order', () =>
@@ -22,7 +23,7 @@ describe('Order read model', () => {
       const {
         data: [inTable],
       } = await findOrders(trx, { pageIndex: 0, pageSize: 10 });
-      const [inTimeline] = await findOrdersInWeek(trx, week);
+      const [inTimeline] = await findOrdersInWeek(trx, orderWeek);
 
       expect(inTable).toEqual(inTimeline);
       expect(Object.keys(inTable).sort()).toEqual([
@@ -52,11 +53,11 @@ describe('Order read model', () => {
       expect(inTable?.loadingPlaces.map((place) => place.name)).toEqual(['Gdańsk', 'Warszawa']);
       expect(inTable?.unloadingPlaces.map((place) => place.name)).toEqual(['Płock', 'Warszawa']);
 
-      const inTimeline = (await findOrdersInWeek(trx, week)).find(
+      const inTimeline = (await findOrdersInWeek(trx, orderWeek)).find(
         (order) => order.id === gdanskToWarszawa,
       );
       if (!inTimeline) throw new Error('Order missing from the Timeline');
-      const days = orderDays(week, inTimeline).filter((day) => day.role !== 'none');
+      const days = orderDays(orderWeek, inTimeline).filter((day) => day.role !== 'none');
       expect(days.at(0)?.loadingPlace?.name).toBe('Gdańsk');
       expect(days.at(-1)?.unloadingPlace?.name).toBe('Warszawa');
 

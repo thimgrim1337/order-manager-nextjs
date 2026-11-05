@@ -5,9 +5,9 @@ import type { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder } from '@/lib/services/orders.services';
-import { parseWeekKey, type Week } from '@/lib/week';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
 vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
@@ -21,7 +21,7 @@ async function seed(trx: dbTransaction) {
   return { orderForm, refs, jan, eur: refs.currencies.eur, dbTruck: refs.truck };
 }
 
-const week = parseWeekKey('2026-W44') as Week;
+const orderWeek = week('2026-W44');
 
 describe('createOrder', () => {
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe('createOrder', () => {
       );
 
       expect(failure).toBeNull();
-      const [saved] = await findOrdersInWeek(trx, week);
+      const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved.id).toBe(created?.id);
       expect(saved.loadingPlaces.map((place) => place.name)).toEqual(['Warszawa']);
       expect(saved.unloadingPlaces.map((place) => place.name)).toEqual(['Gdańsk', 'Płock']);
@@ -105,7 +105,7 @@ describe('createOrder', () => {
       );
 
       expect(failure?.reason).toBe('InvalidData');
-      expect(await findOrdersInWeek(trx, week)).toHaveLength(0);
+      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
     }));
 
   it('reports an Order Number already used for the Customer, and saves nothing', () =>
@@ -116,7 +116,7 @@ describe('createOrder', () => {
       const [failure] = await createOrder(trx, orderForm({ orderNr: 'ZL/7' }));
 
       expect(failure).toEqual({ reason: 'OrderNrTaken' });
-      expect(await findOrdersInWeek(trx, week)).toHaveLength(1);
+      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(1);
     }));
 
   it('rejects a Loading Date after the Unloading Date, and saves nothing', () =>
@@ -129,7 +129,7 @@ describe('createOrder', () => {
       );
 
       expect(failure?.reason).toBe('InvalidData');
-      expect(await findOrdersInWeek(trx, week)).toHaveLength(0);
+      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
     }));
 
   it('invalidates cached Orders once the Order is created', () =>

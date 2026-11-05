@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import * as timelineQuery from '@/features/OrdersTimeline/lib/timeline-query';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
-import { nextWeek, parseWeekKey, type Week } from '@/lib/week';
+import { nextWeek } from '@/lib/week';
+import { week } from '../utils/week';
 
 const replaceMock = vi.hoisted(() => vi.fn());
 const pathname = vi.hoisted(() => ({ current: '/orders' }));
@@ -72,7 +73,7 @@ describe('useUrlQuery with the Orders Table query', () => {
 });
 
 // A Week other than the current one, so picking it is a change, not a no-op.
-const MARCH_WEEK = parseWeekKey('2026-W10') as Week;
+const MARCH_WEEK = week('2026-W10');
 
 describe('useUrlQuery with the Timeline query', () => {
   beforeEach(() => {

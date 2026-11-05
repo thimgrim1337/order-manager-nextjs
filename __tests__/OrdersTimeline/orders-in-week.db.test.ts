@@ -2,11 +2,9 @@ import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { order } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
-import { parseWeekKey, type Week } from '@/lib/week';
 import { seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
-
-const week = (key: string) => parseWeekKey(key) as Week;
+import { week } from '../utils/week';
 
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);

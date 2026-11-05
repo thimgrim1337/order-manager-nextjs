@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { changeOrderStatus, createOrder } from '@/lib/services/orders.services';
-import { parseWeekKey, type Week } from '@/lib/week';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
 vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
@@ -18,7 +18,7 @@ async function seed(trx: dbTransaction) {
   return { created, delivered: refs.statuses.delivered };
 }
 
-const week = parseWeekKey('2026-W44') as Week;
+const orderWeek = week('2026-W44');
 
 describe('changeOrderStatus', () => {
   it("changes the Order's status and leaves its other columns untouched", () =>
@@ -42,7 +42,7 @@ describe('changeOrderStatus', () => {
       });
 
       expect(failure?.reason).toBe('InvalidData');
-      const [saved] = await findOrdersInWeek(trx, week);
+      const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved).toMatchObject({
         status: { id: created.statusId },
         orderNr: 'ZL/1',

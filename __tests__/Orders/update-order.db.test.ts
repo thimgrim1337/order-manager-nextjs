@@ -5,9 +5,9 @@ import type { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder, updateOrder } from '@/lib/services/orders.services';
-import { parseWeekKey, type Week } from '@/lib/week';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
 vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
@@ -23,7 +23,7 @@ async function seed(trx: dbTransaction) {
   return { orderForm, refs, created };
 }
 
-const week = parseWeekKey('2026-W44') as Week;
+const orderWeek = week('2026-W44');
 
 describe('updateOrder', () => {
   it('recomputes the PLN price when the price and currency change to EUR', () =>
@@ -60,7 +60,7 @@ describe('updateOrder', () => {
       );
 
       expect(failure?.reason).toBe('InvalidData');
-      const [saved] = await findOrdersInWeek(trx, week);
+      const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved.pricePLN).toBe('1000.00');
     }));
 
@@ -75,7 +75,7 @@ describe('updateOrder', () => {
       );
 
       expect(failure?.reason).toBe('InvalidData');
-      const [saved] = await findOrdersInWeek(trx, week);
+      const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved).toMatchObject({ startDate: '2026-10-27', endDate: '2026-10-29' });
     }));
 
@@ -90,7 +90,7 @@ describe('updateOrder', () => {
         orderForm({ loadingPlaces: [gdansk], unloadingPlaces: [plock, warszawa] }),
       );
 
-      const [saved] = await findOrdersInWeek(trx, week);
+      const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved.loadingPlaces.map((place) => place.name)).toEqual(['Gdańsk']);
       expect(saved.unloadingPlaces.map((place) => place.name)).toEqual(['Płock', 'Warszawa']);
     }));
