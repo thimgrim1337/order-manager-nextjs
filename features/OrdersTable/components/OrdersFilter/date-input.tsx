@@ -2,11 +2,12 @@ import { ChevronDownIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
+import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { formatDate, getToday, parseDate } from '@/lib/dates';
-import useOrdersTableQuery from '../../hooks/use-orders-table-query';
 
 export default function DateInput({ filterName }: { filterName: 'startDate' | 'endDate' }) {
-  const { query, change } = useOrdersTableQuery();
+  const { query, change } = useUrlQuery(ordersTableQuery);
   const selectedDate = query[filterName];
 
   return (

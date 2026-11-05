@@ -14,7 +14,9 @@ export function parse(raw: RawSearchParams, now?: Date): TimelineQuery {
   };
 }
 
-export function apply(query: TimelineQuery, change: Partial<TimelineQuery>): TimelineQuery {
+export type TimelineChange = Partial<TimelineQuery>;
+
+export function apply(query: TimelineQuery, change: TimelineChange): TimelineQuery {
   const next = { ...query, ...change };
 
   if (next.week === query.week && next.driverId === query.driverId) return query;

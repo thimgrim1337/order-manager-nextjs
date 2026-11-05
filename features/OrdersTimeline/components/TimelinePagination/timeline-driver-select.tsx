@@ -6,11 +6,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import * as timelineQuery from '@/features/OrdersTimeline/lib/timeline-query';
 import { useOrderData } from '@/features/shared/context/order-context';
-import useTimelineQuery from '../../hooks/use-timeline-query';
+import useUrlQuery from '@/features/shared/hooks/use-url-query';
 
 export default function TimelinePaginationDriverSelect() {
-  const { query, change } = useTimelineQuery();
+  const { query, change } = useUrlQuery(timelineQuery);
   const { drivers } = useOrderData();
 
   const driverItems = drivers.map((driver) => ({

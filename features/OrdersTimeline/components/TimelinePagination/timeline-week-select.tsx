@@ -6,11 +6,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import * as timelineQuery from '@/features/OrdersTimeline/lib/timeline-query';
+import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { type Week, weekNumber, weeksOfYear, weekYear } from '@/lib/week';
-import useTimelineQuery from '../../hooks/use-timeline-query';
 
 export default function TimelinePaginationWeekSelect() {
-  const { query, change } = useTimelineQuery();
+  const { query, change } = useUrlQuery(timelineQuery);
 
   const weekItems = weeksOfYear(weekYear(query.week)).map((week) => ({
     label: weekNumber(week),

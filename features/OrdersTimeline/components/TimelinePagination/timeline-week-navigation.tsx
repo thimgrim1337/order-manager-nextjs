@@ -1,18 +1,19 @@
 import { Calendar1, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import * as timelineQuery from '@/features/OrdersTimeline/lib/timeline-query';
+import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { currentWeek, nextWeek, prevWeek } from '@/lib/week';
-import useTimelineQuery from '../../hooks/use-timeline-query';
 import TimelinePaginationWeekSelect from './timeline-week-select';
 
 export default function TimelinePaginationWeekNavigation() {
-  const { query, change } = useTimelineQuery();
+  const { change } = useUrlQuery(timelineQuery);
 
   function handlePrevious() {
-    change({ week: prevWeek(query.week) });
+    change(({ week }) => ({ week: prevWeek(week) }));
   }
 
   function handleForward() {
-    change({ week: nextWeek(query.week) });
+    change(({ week }) => ({ week: nextWeek(week) }));
   }
 
   function handlePresent() {

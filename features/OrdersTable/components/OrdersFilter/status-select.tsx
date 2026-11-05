@@ -5,13 +5,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import { useOrderData } from '@/features/shared/context/order-context';
+import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import type { Status } from '@/types/types';
-import useOrdersTableQuery from '../../hooks/use-orders-table-query';
 
 export default function StatusSelect() {
   const { statuses } = useOrderData();
-  const { query, change } = useOrdersTableQuery();
+  const { query, change } = useUrlQuery(ordersTableQuery);
 
   return (
     <Select

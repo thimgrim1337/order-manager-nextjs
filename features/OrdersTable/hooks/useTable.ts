@@ -4,8 +4,9 @@ import {
   type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
+import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
+import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { ORDER_SORT_FIELDS, type OrderSortField } from '@/lib/consts';
-import useOrdersTableQuery from './use-orders-table-query';
 
 type useTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -18,7 +19,7 @@ export default function useTable<TData, TValue>({
   data,
   rowCount,
 }: useTableProps<TData, TValue>) {
-  const { query, change } = useOrdersTableQuery();
+  const { query, change } = useUrlQuery(ordersTableQuery);
   const paginationState = { pageIndex: query.pageIndex, pageSize: query.pageSize };
   const sortState: SortingState = [query.sort];
 
