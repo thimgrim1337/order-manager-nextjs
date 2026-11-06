@@ -1,0 +1,10 @@
+JsFunctionBody() as $body where {
+  $filename <: r".*lib/dal/[^/]+\.dal\.ts",
+  $body <: contains `'use cache'`,
+  $body <: contains or {
+    `$_.select()`,
+    `$_.select($_)`,
+    `$_.query`
+  } as $query,
+  register_diagnostic(span=$query, message="A cached get* only calls its find*(database, …), which holds the query so a *.db.test.ts can run it in withRollback.")
+}

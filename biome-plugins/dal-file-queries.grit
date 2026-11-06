@@ -1,0 +1,8 @@
+`import $_ from $source` as $import where {
+  $filename <: r".*lib/dal/[^/]+\.dal\.ts",
+  $source <: or {
+    r"['\"]@/lib/dal/.*['\"]",
+    r"['\"]\./[^/]+\.dal['\"]"
+  },
+  register_diagnostic(span=$import, message="A lib/dal/<entity>.dal.ts queries its own entity only. Code combining several DALs goes in the feature using it: features/<Feature>/lib/, or features/shared/lib/ when several features share it.")
+}

@@ -1,13 +1,25 @@
 import { cacheLife, cacheTag } from 'next/cache';
-import db from '@/db/db';
+import db, { type dbTransaction } from '@/db/db';
+import { truck } from '@/db/schemas';
 import { CACHE_TAG } from '@/lib/consts';
+
+/** Every Truck. */
+async function findTrucks(database: db | dbTransaction) {
+  return database
+    .select({
+      id: truck.id,
+      plate: truck.plate,
+      insuranceEndAt: truck.insuranceEndAt,
+      serviceEndAt: truck.serviceEndAt,
+      driverId: truck.driverId,
+    })
+    .from(truck);
+}
 
 export async function getAllTrucks() {
   'use cache';
   cacheLife('days');
-
   cacheTag(CACHE_TAG.Trucks);
 
-  const dbTrucks = await db.query.truck.findMany();
-  return dbTrucks;
+  return findTrucks(db);
 }

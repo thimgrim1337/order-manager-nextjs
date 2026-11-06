@@ -1,16 +1,16 @@
 import type { OrderSortField } from '@/lib/consts';
 import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { CurrencyReadModel } from '@/lib/dal/currency.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { DriverReadModel } from '@/lib/dal/driver.dal';
-import type { CountryDto } from '@/lib/dto/country.dto';
-import type { StatusDto } from '@/lib/dto/status.dto';
+import type { StatusReadModel } from '@/lib/dal/status.dal';
 
 export type City = CityReadModel;
-export type Country = CountryDto;
+export type Country = CountryReadModel;
 export type Customer = CustomerReadModel;
 export type Driver = DriverReadModel;
-export type Status = StatusDto;
+export type Status = StatusReadModel;
 
 /** A Currency's code, as the NBP API takes it. */
 export type CurrencyCode = CurrencyReadModel['code'];
