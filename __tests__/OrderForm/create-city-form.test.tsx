@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateCityForm from '@/features/OrderForm/components/CityForm/create-city-form';
 import { createCity } from '@/lib/actions';
+import { deferred } from '../utils/deferred';
 
 const onDialogClose = vi.fn();
 
@@ -50,6 +51,23 @@ describe('CreateCityForm', () => {
 
     expect(createCity).toHaveBeenCalledWith({ name: 'Kraków', postal: '30-001', countryId: 1 });
     await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+  });
+
+  it('sends one City while it is being created, however often Zapisz is clicked', async () => {
+    const create = deferred();
+    vi.mocked(createCity).mockReturnValueOnce(
+      create.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof createCity>,
+    );
+    const { user } = setup();
+
+    await fillAndSubmit(user);
+
+    const sending = screen.getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(createCity).toHaveBeenCalledOnce();
+
+    await act(async () => create.resolve());
   });
 
   it('keeps the dialog open when the City is not created', async () => {

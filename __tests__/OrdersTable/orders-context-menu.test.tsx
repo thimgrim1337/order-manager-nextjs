@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { changeOrderStatus, removeOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { deferred } from '../utils/deferred';
 import { renderWithToaster } from '../utils/render-with-toaster';
 
 const order = {
@@ -11,14 +12,6 @@ const order = {
   orderNr: 'ZL-001',
   status: { id: 1, name: 'pending' },
 } as unknown as OrderReadModel;
-
-function deferred() {
-  let resolve!: () => void;
-  const promise = new Promise<void>((r) => {
-    resolve = r;
-  });
-  return { promise, resolve };
-}
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -71,6 +64,76 @@ describe('OrdersContextMenu', () => {
 
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
+  });
+
+  it('sends one Status change while it runs, whichever Status button is clicked', async () => {
+    const save = deferred();
+    vi.mocked(changeOrderStatus).mockReturnValueOnce(
+      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<
+        typeof changeOrderStatus
+      >,
+    );
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+    await user.dblClick(await screen.findByRole('button', { name: 'status-delivered' }));
+
+    expect(screen.getByRole('button', { name: 'status-delivered' })).toHaveTextContent('Wysyłanie');
+    for (const status of ['pending', 'cancelled', 'delivered']) {
+      const button = screen.getByRole('button', { name: `status-${status}` });
+      expect(button).toBeDisabled();
+      await user.click(button);
+    }
+    expect(changeOrderStatus).toHaveBeenCalledOnce();
+
+    await act(async () => save.resolve());
+  });
+
+  it('sends no second Status change from a Status dialog reopened while the first runs', async () => {
+    const save = deferred();
+    vi.mocked(changeOrderStatus).mockReturnValueOnce(
+      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<
+        typeof changeOrderStatus
+      >,
+    );
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+    await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
+    await user.keyboard('{Escape}');
+    await expect
+      .poll(() => screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' }))
+      .toBeNull();
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+
+    const button = await screen.findByRole('button', { name: 'status-cancelled' });
+    expect(button).toBeDisabled();
+    await user.click(button);
+    expect(changeOrderStatus).toHaveBeenCalledOnce();
+
+    await act(async () => save.resolve());
+  });
+
+  it('lets the user retry the Status change once it failed', async () => {
+    vi.mocked(changeOrderStatus).mockResolvedValueOnce({
+      success: false,
+      message: 'Zlecenie nie istnieje.',
+    });
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+    await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
+    await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
+
+    const retry = screen.getByRole('button', { name: 'status-cancelled' });
+    await expect.poll(() => retry).toBeEnabled();
+    await user.click(retry);
+
+    expect(changeOrderStatus).toHaveBeenCalledTimes(2);
   });
 
   it('confirms a changed Status in a toast and closes the Status dialog', async () => {
@@ -126,6 +189,44 @@ describe('OrdersContextMenu', () => {
 
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Czy jesteś pewny ?' })).toBeVisible();
+  });
+
+  it('sends one removal while it runs, however often "Usuń" is clicked', async () => {
+    const remove = deferred();
+    vi.mocked(removeOrder).mockReturnValueOnce(
+      remove.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof removeOrder>,
+    );
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
+    await user.dblClick(await screen.findByRole('button', { name: 'Usuń' }));
+
+    const sending = screen.getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(removeOrder).toHaveBeenCalledOnce();
+
+    await act(async () => remove.resolve());
+  });
+
+  it('lets the user retry the removal once it failed', async () => {
+    vi.mocked(removeOrder).mockResolvedValueOnce({
+      success: false,
+      message: 'Zlecenie nie istnieje.',
+    });
+    const { user } = setup();
+
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
+    await user.click(await screen.findByRole('button', { name: 'Usuń' }));
+    await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
+
+    const retry = screen.getByRole('button', { name: 'Usuń' });
+    await expect.poll(() => retry).toBeEnabled();
+    await user.click(retry);
+
+    expect(removeOrder).toHaveBeenCalledTimes(2);
   });
 
   it('confirms a removed Order in a toast and closes the Remove dialog', async () => {

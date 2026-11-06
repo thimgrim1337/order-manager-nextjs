@@ -1,8 +1,6 @@
 import { cn } from 'cn';
 import { Ban, CheckCircle, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { settleWrite } from '@/features/shared/lib/settle-write';
-import { changeOrderStatus } from '@/lib/actions';
 import { ORDER_STATUS } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 
@@ -29,17 +27,16 @@ const statusConfig = {
 
 type OrderStatusMenu = {
   order: OrderReadModel;
-  onDialogClose: () => void;
+  /** The Status whose change is running; every button is disabled while one is. */
+  sendingStatusId: number | undefined;
+  onStatusChange: (statusId: number, label: string) => void;
 };
 
-export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMenu) {
-  async function handleStatusChange(statusId: number, label: string) {
-    await settleWrite(() => changeOrderStatus(order.id, statusId), {
-      closeDialog: onDialogClose,
-      successDescription: `Zlecenie ${order.orderNr} ma teraz status: ${label}.`,
-    });
-  }
-
+export default function OrderStatusMenu({
+  order,
+  sendingStatusId,
+  onStatusChange,
+}: OrderStatusMenu) {
   return (
     <div className="space-y-3">
       {Object.entries(statusConfig).map(([status, config]) => {
@@ -52,7 +49,8 @@ export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMen
               'w-full justify-start h-auto p-4 text-left',
               order.status.id === config.id ? 'font-bold' : undefined,
             )}
-            onClick={() => handleStatusChange(config.id, config.label)}
+            disabled={sendingStatusId !== undefined}
+            onClick={() => onStatusChange(config.id, config.label)}
             aria-label={`status-${status}`}
           >
             <div className="flex items-start gap-3">
@@ -63,7 +61,9 @@ export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMen
                 >
                   {config.label}
                 </div>
-                <div className="text-sm text-muted-foreground">{config.description}</div>
+                <div className="text-sm text-muted-foreground">
+                  {sendingStatusId === config.id ? 'Wysyłanie' : config.description}
+                </div>
               </div>
             </div>
           </Button>

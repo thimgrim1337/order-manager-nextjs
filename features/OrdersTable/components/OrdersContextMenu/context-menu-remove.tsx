@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-import { settleWrite } from '@/features/shared/lib/settle-write';
+import { useSettleWrite } from '@/features/shared/hooks/use-settle-write';
 import { removeOrder } from '@/lib/actions';
 
 import type { ContextMenuOptionProps } from './context-menu';
@@ -19,8 +19,10 @@ export default function ContextMenuRemove({
   isModalOpen,
   onOpenChange,
 }: ContextMenuOptionProps) {
-  async function handleOrderRemove(orderId: number) {
-    await settleWrite(() => removeOrder(orderId), {
+  const [isRemoving, settle] = useSettleWrite();
+
+  function handleOrderRemove(orderId: number) {
+    settle(() => removeOrder(orderId), {
       closeDialog: () => onOpenChange(false),
       successDescription: 'Zlecenie zostało usunięte.',
     });
@@ -37,8 +39,12 @@ export default function ContextMenuRemove({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Anuluj</AlertDialogCancel>
-          <AlertDialogAction variant={'destructive'} onClick={() => handleOrderRemove(order.id)}>
-            Usuń
+          <AlertDialogAction
+            variant={'destructive'}
+            disabled={isRemoving}
+            onClick={() => handleOrderRemove(order.id)}
+          >
+            {isRemoving ? 'Wysyłanie' : 'Usuń'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

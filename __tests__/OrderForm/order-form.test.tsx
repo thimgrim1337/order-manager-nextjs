@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,6 +8,7 @@ import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/a
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
 import { fakeNbp, NBP_RATES_URL } from '../mocks/handlers';
+import { deferred } from '../utils/deferred';
 import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
 import { renderWithQueries } from '../utils/wrapper';
@@ -105,6 +106,24 @@ describe('OrderForm', () => {
 
       await vi.waitFor(() => expect(createOrder).toHaveBeenCalledOnce());
       expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
+    it('sends one Order while it is being saved, however often Zapisz is clicked', async () => {
+      const save = deferred();
+      vi.mocked(createOrder).mockReturnValueOnce(
+        save.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof createOrder>,
+      );
+      const { user } = await setup();
+
+      await fillInNewOrder(user);
+      await user.dblClick(screen.getByRole('button', { name: 'Zapisz' }));
+
+      const sending = await screen.findByRole('button', { name: 'Wysyłanie' });
+      expect(sending).toBeDisabled();
+      await user.click(sending);
+      expect(createOrder).toHaveBeenCalledOnce();
+
+      await act(async () => save.resolve());
     });
 
     it('submits a new non-PLN Order with its Exchange Rate', async () => {

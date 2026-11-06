@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/create-customer-form';
 import { createCustomer } from '@/lib/actions';
+import { deferred } from '../utils/deferred';
 
 const onDialogClose = vi.fn();
 
@@ -42,6 +43,23 @@ describe('CreateCustomerForm', () => {
 
     expect(createCustomer).toHaveBeenCalledWith({ name: 'DEVIL', tax: 'PL7743241555' });
     await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+  });
+
+  it('sends one Customer while it is being created, however often Zapisz is clicked', async () => {
+    const create = deferred();
+    vi.mocked(createCustomer).mockReturnValueOnce(
+      create.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof createCustomer>,
+    );
+    const { user } = setup();
+
+    await fillAndSubmit(user);
+
+    const sending = screen.getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(createCustomer).toHaveBeenCalledOnce();
+
+    await act(async () => create.resolve());
   });
 
   it('keeps the dialog open when the Customer is not created', async () => {
