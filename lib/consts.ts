@@ -20,6 +20,7 @@ export const CACHE_TAG = {
   Countries: 'countries',
   Customers: 'customers',
   Cities: 'cities',
+  Currencies: 'currencies',
 } as const;
 
 export const DEFAULT_PAGE_INDEX = 0;

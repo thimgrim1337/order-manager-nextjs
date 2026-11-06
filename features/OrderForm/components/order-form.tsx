@@ -3,7 +3,7 @@
 import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
-import { useOrderData } from '@/features/shared/context/order-context';
+import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import { settleWrite } from '@/features/shared/lib/settle-write';
 import type { ActionResponse } from '@/lib/action-response';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
@@ -26,7 +26,7 @@ export type OrderFormProps = {
 
 /** Creates or edits an Order. */
 export default function OrderForm({ order, action, onDialogClose }: OrderFormProps) {
-  const { cities, countries, currencies, customers, drivers, trucks } = useOrderData();
+  const { cities, countries, currencies, customers, drivers, trucks } = useOrderChoices();
 
   // Read once per open, so Reset keeps the dates the form opened with.
   const [startingValues] = useState(() => getStartingValues(order));

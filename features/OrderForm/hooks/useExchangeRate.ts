@@ -1,5 +1,5 @@
 import { skipToken, useQuery } from '@tanstack/react-query';
-import { useOrderData } from '@/features/shared/context/order-context';
+import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import { CURRENCY } from '@/lib/consts';
 import { getToday } from '@/lib/dates';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
@@ -18,7 +18,7 @@ export default function useExchangeRate(
   endDate: string,
   currencyId: number,
 ) {
-  const { currencies } = useOrderData();
+  const { currencies } = useOrderChoices();
 
   // Any Currency but PLN needs its Exchange Rate, from which the Orders module works out the PLN Price.
   const currencyCode =

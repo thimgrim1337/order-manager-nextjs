@@ -3,52 +3,18 @@ import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
-import { OrderDataProvider } from '@/features/shared/context/order-context';
+import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
 import { fakeNbp, NBP_RATES_URL } from '../mocks/handlers';
+import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
 import { renderWithQueries } from '../utils/wrapper';
 
-const plock = { id: 1, name: 'Płock', postal: '09-410', countryId: 1 };
-const customer = { id: 1, name: 'DEVIL', tax: '7743241555' };
-
-const data = {
-  cities: [plock],
-  customers: [customer],
-  drivers: [
-    { id: 1, firstName: 'Jan', lastName: 'Kowalski' },
-    { id: 2, firstName: 'Adam', lastName: 'Nowak' },
-  ],
-  trucks: [
-    {
-      id: 1,
-      plate: 'WND0997C',
-      insuranceEndAt: '2027-06-01',
-      serviceEndAt: '2027-06-01',
-      driverId: 1,
-    },
-    {
-      id: 2,
-      plate: 'WPL1234A',
-      insuranceEndAt: '2027-06-01',
-      serviceEndAt: '2027-06-01',
-      driverId: null,
-    },
-  ],
-  countries: [{ id: 1, name: 'Poland', code: 'PL' }],
-  currencies: [
-    { id: 1, code: 'PLN' },
-    { id: 2, code: 'EUR' },
-    { id: 3, code: 'USD' },
-  ],
-  statuses: [
-    { id: 1, name: 'w trakcie' },
-    { id: 2, name: 'anulowane' },
-    { id: 3, name: 'zakończone' },
-  ],
-};
+const choices = orderChoices();
+const [plock] = choices.cities;
+const [customer] = choices.customers;
 
 const NO_RATE = { table: '', rate: '', date: '' };
 
@@ -76,9 +42,9 @@ const setup = async (props: Partial<OrderFormProps> = {}) => {
   const onDialogClose = vi.fn();
 
   const { unmount } = await renderWithQueries(
-    <OrderDataProvider data={data}>
+    <OrderChoicesProvider choices={choices}>
       <OrderForm action={createOrder} onDialogClose={onDialogClose} {...props} />
-    </OrderDataProvider>,
+    </OrderChoicesProvider>,
   );
 
   return { user, onDialogClose, unmount };
@@ -275,10 +241,10 @@ describe('OrderForm', () => {
       startDate: '2026-11-12',
       endDate: '2026-11-13',
       customer,
-      driver: data.drivers[1],
-      truck: data.trucks[0],
-      status: data.statuses[0],
-      currency: { ...data.currencies[0], rate: 1, date: '' },
+      driver: choices.drivers[1],
+      truck: choices.trucks[0],
+      status: choices.statuses[0],
+      currency: { ...choices.currencies[0], rate: 1, date: '' },
       priceCurrency: '1000',
       pricePLN: '1000',
       loadingPlaces: [plock],
@@ -322,7 +288,7 @@ describe('OrderForm', () => {
     });
 
     it("defaults the Driver to the picked Truck's Regular Driver", async () => {
-      const { user } = await editSetup({ ...order, truck: data.trucks[1] });
+      const { user } = await editSetup({ ...order, truck: choices.trucks[1] });
 
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));
       await user.click(screen.getByLabelText('Pojazd'));

@@ -1,13 +1,6 @@
 import CreateOrder from '@/features/OrderForm/components/create-order';
-import { OrderDataProvider } from '@/features/shared/context/order-context';
-import { getCities } from '@/lib/dal/city.dal';
-import { getAllCountries } from '@/lib/dal/country.dal';
-import { getAllCurrencies } from '@/lib/dal/currency.dal';
-import { getCustomers } from '@/lib/dal/customer.dal';
-import { getAllDrivers } from '@/lib/dal/driver.dal';
+import OrderChoicesLoader from '@/features/shared/components/order-choices-loader';
 import { getAllOrders } from '@/lib/dal/order.dal';
-import { getAllStatuses } from '@/lib/dal/status.dal';
-import { getAllTrucks } from '@/lib/dal/truck.dal';
 import type { RawSearchParams } from '@/types/types';
 import { parse } from '../lib/orders-table-query';
 import OrderTableFilter from './OrdersFilter/orders-table-filter';
@@ -22,34 +15,14 @@ export default async function OrdersContent({ searchParamsPromise }: OrdersConte
 
   const { data: orders, count } = await getAllOrders(query);
 
-  const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
-    getCustomers(),
-    getCities(),
-    getAllDrivers(),
-    getAllTrucks(),
-    getAllCountries(),
-    getAllCurrencies(),
-    getAllStatuses(),
-  ]);
-
   return (
-    <OrderDataProvider
-      data={{
-        customers,
-        cities,
-        drivers,
-        trucks,
-        countries,
-        currencies,
-        statuses,
-      }}
-    >
+    <OrderChoicesLoader>
       <div className="flex gap-2 justify-between my-5">
         <OrderTableFilter />
         <CreateOrder />
       </div>
 
       <OrdersTable orders={orders} count={count} />
-    </OrderDataProvider>
+    </OrderChoicesLoader>
   );
 }

@@ -1,13 +1,6 @@
 import { Table } from '@/components/ui/table';
-import { OrderDataProvider } from '@/features/shared/context/order-context';
-import { getCities } from '@/lib/dal/city.dal';
-import { getAllCountries } from '@/lib/dal/country.dal';
-import { getAllCurrencies } from '@/lib/dal/currency.dal';
-import { getCustomers } from '@/lib/dal/customer.dal';
-import { getAllDrivers } from '@/lib/dal/driver.dal';
+import OrderChoicesLoader from '@/features/shared/components/order-choices-loader';
 import { getOrdersInWeek } from '@/lib/dal/order.dal';
-import { getAllStatuses } from '@/lib/dal/status.dal';
-import { getAllTrucks } from '@/lib/dal/truck.dal';
 import { weekDays } from '@/lib/week';
 import type { RawSearchParams } from '@/types/types';
 import { parse } from '../lib/timeline-query';
@@ -23,33 +16,14 @@ export default async function TimelineContent({ searchParamsPromise }: TimelineC
 
   const weekdays = weekDays(query.week);
   const orders = await getOrdersInWeek(query.week, { driverId: query.driverId });
-  const [customers, cities, drivers, trucks, countries, currencies, statuses] = await Promise.all([
-    getCustomers(),
-    getCities(),
-    getAllDrivers(),
-    getAllTrucks(),
-    getAllCountries(),
-    getAllCurrencies(),
-    getAllStatuses(),
-  ]);
 
   return (
-    <OrderDataProvider
-      data={{
-        customers,
-        cities,
-        drivers,
-        trucks,
-        countries,
-        currencies,
-        statuses,
-      }}
-    >
+    <OrderChoicesLoader>
       <Table>
         <TimelineHead weekdays={weekdays} />
         <TimelineBody week={query.week} orders={orders} />
       </Table>
       <TimelinePagination />
-    </OrderDataProvider>
+    </OrderChoicesLoader>
   );
 }

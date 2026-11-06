@@ -1,5 +1,5 @@
 import { TableCell } from '@/components/ui/table';
-import { useOrderData } from '@/features/shared/context/order-context';
+import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import type { OrderDay } from '@/lib/week';
 import type { City } from '@/types/types';
 
@@ -10,7 +10,7 @@ export default function TimelinePlaceCell({
   day: OrderDay;
   borderColor: string;
 }) {
-  const { countries } = useOrderData();
+  const { countries } = useOrderChoices();
 
   const getCountryCode = (countryId: number) =>
     countries?.find((country) => country.id === countryId)?.code;

@@ -7,13 +7,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import * as timelineQuery from '@/features/OrdersTimeline/lib/timeline-query';
-import { useOrderData } from '@/features/shared/context/order-context';
+import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { driverName } from '@/lib/drivers';
 
 export default function TimelinePaginationDriverSelect() {
   const { query, change } = useUrlQuery(timelineQuery);
-  const { drivers } = useOrderData();
+  const { drivers } = useOrderChoices();
 
   const driverItems = drivers.map((driver) => ({
     label: driverName(driver),

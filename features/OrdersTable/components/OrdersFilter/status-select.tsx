@@ -6,12 +6,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
-import { useOrderData } from '@/features/shared/context/order-context';
+import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import type { Status } from '@/types/types';
 
 export default function StatusSelect() {
-  const { statuses } = useOrderData();
+  const { statuses } = useOrderChoices();
   const { query, change } = useUrlQuery(ordersTableQuery);
 
   return (

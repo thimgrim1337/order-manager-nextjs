@@ -7,13 +7,13 @@ import {
   ComboboxList,
 } from '@/components/ui/combobox';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
-import { useOrderData } from '@/features/shared/context/order-context';
+import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { driverName } from '@/lib/drivers';
 import type { Driver } from '@/types/types';
 
 export default function DriverCombobox() {
-  const { drivers } = useOrderData();
+  const { drivers } = useOrderChoices();
   const { query, change } = useUrlQuery(ordersTableQuery);
 
   return (
