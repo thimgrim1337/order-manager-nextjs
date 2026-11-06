@@ -23,6 +23,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 ## Tests
 
 - A regression test goes red on the bug it guards: with the fix reverted it fails on its assertion, not only on a missing module.
+- A test covering existing code goes red when that code breaks: each condition it covers fails a test once mutated (`>=` to `>`, a filter dropped, `and` to `or`). A range filter gets an Order on each edge and one just past it.
 - Tests build a Week from its key with `week('2026-W44')` (`__tests__/utils/week.ts`).
 
 ## Data access
