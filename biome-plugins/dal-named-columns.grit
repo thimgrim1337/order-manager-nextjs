@@ -1,0 +1,6 @@
+`function $name($_) { $_ }` as $find where {
+  $filename <: r".*lib/dal/[^/]+\.dal\.ts",
+  $name <: r"find.*",
+  $find <: contains `$_.select()` as $select,
+  register_diagnostic(span=$select, message="A find* selects named columns, so its row type (Awaited<ReturnType<typeof find…>>[number]) lists them: pass them to select().")
+}

@@ -25,7 +25,8 @@
     "./biome-plugins/cache-invalidation-in-module.grit",
     "./biome-plugins/use-cache-life.grit",
     "./biome-plugins/money-in-prices.grit",
-    "./biome-plugins/query-module-parsers.grit"
+    "./biome-plugins/query-module-parsers.grit",
+    "./biome-plugins/dal-named-columns.grit"
   ],
   "formatter": {
     "enabled": true,

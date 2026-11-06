@@ -10,7 +10,7 @@ export async function findCustomers(database: db | dbTransaction, search?: strin
   const searchTerm = toSearchTerm(search);
 
   return database
-    .select()
+    .select({ id: customer.id, name: customer.name, tax: customer.tax })
     .from(customer)
     .where(
       searchTerm
@@ -20,6 +20,8 @@ export async function findCustomers(database: db | dbTransaction, search?: strin
     .orderBy(customer.name)
     .limit(SEARCH_LIMIT);
 }
+
+export type CustomerReadModel = Awaited<ReturnType<typeof findCustomers>>[number];
 
 export async function getCustomers(search?: string) {
   'use cache';

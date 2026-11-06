@@ -10,12 +10,14 @@ export async function findCities(database: db | dbTransaction, search?: string) 
   const searchTerm = toSearchTerm(search);
 
   return database
-    .select()
+    .select({ id: city.id, name: city.name, postal: city.postal, countryId: city.countryId })
     .from(city)
     .where(searchTerm ? ilike(city.name, searchTerm) : undefined)
     .orderBy(city.name)
     .limit(SEARCH_LIMIT);
 }
+
+export type CityReadModel = Awaited<ReturnType<typeof findCities>>[number];
 
 export async function getCities(search?: string) {
   'use cache';
