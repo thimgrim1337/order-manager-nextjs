@@ -5,30 +5,8 @@ import { city, customer, driver, loadingPlace, order, truck, unloadingPlace } fr
 import type { OrderSortField } from '@/lib/consts';
 import { findOrders } from '@/lib/dal/order.dal';
 import type { OrderQuery } from '@/types/types';
-import { seedOrderReferences } from '../db/seed';
+import { orderRowFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
-
-type OrderRefs = Awaited<ReturnType<typeof seedOrderReferences>>;
-
-/** A PLN Order row in progress, 2026-10-27 → 2026-10-29, priced 100, for the given Driver, Customer and Truck. */
-function orderRow(
-  refs: OrderRefs,
-  orderNr: string,
-  ref: { driver: { id: number }; customer: { id: number }; truck: { id: number } },
-) {
-  return {
-    orderNr,
-    startDate: '2026-10-27',
-    endDate: '2026-10-29',
-    driverId: ref.driver.id,
-    truckId: ref.truck.id,
-    customerId: ref.customer.id,
-    currencyId: refs.currencies.pln.id,
-    statusId: refs.statuses.inProgress.id,
-    priceCurrency: '100',
-    pricePLN: '100',
-  };
-}
 
 /**
  * Two Orders whose ids run opposite to their names: the first is Jan Kowalski / Test Firma / WP0997C,
@@ -44,14 +22,18 @@ async function seed(trx: dbTransaction) {
     .insert(truck)
     .values({ plate: 'AB1234', insuranceEndAt: '2027-01-01', serviceEndAt: '2027-01-01' })
     .returning();
-  const orderRefs = [
-    { driver: refs.drivers.jan, customer: refs.customer, truck: refs.truck },
-    { driver: refs.drivers.anna, customer: alfaTrans, truck: ab1234 },
-  ];
-
+  const orderRow = orderRowFor(refs);
   const [first, second] = await trx
     .insert(order)
-    .values(orderRefs.map((ref, i) => orderRow(refs, `ZL/${i + 1}`, ref)))
+    .values([
+      orderRow(),
+      orderRow({
+        orderNr: 'ZL/2',
+        driverId: refs.drivers.anna.id,
+        customerId: alfaTrans.id,
+        truckId: ab1234.id,
+      }),
+    ])
     .returning({ id: order.id });
 
   return { first: first.id, second: second.id, refs };
@@ -87,27 +69,13 @@ async function seedPolishNames(trx: dbTransaction) {
       })),
     )
     .returning();
-  const orderRefs = [
-    { driver: zenon, customer: zaklad, from: zamosc, to: zgierz },
-    { driver: lukasz, customer: lodzka, from: lodz, to: lowicz },
-  ];
-
+  const orderRow = orderRowFor(refs);
   const [first, second] = await trx
     .insert(order)
-    .values(
-      orderRefs.map((ref, i) => ({
-        orderNr: `ZL/${i + 1}`,
-        startDate: '2026-10-27',
-        endDate: '2026-10-29',
-        driverId: ref.driver.id,
-        truckId: refs.truck.id,
-        customerId: ref.customer.id,
-        currencyId: refs.currencies.pln.id,
-        statusId: refs.statuses.inProgress.id,
-        priceCurrency: '100',
-        pricePLN: '100',
-      })),
-    )
+    .values([
+      orderRow({ driverId: zenon.id, customerId: zaklad.id }),
+      orderRow({ orderNr: 'ZL/2', driverId: lukasz.id, customerId: lodzka.id }),
+    ])
     .returning({ id: order.id });
   await trx.insert(loadingPlace).values([
     { orderId: first.id, placeId: zamosc.id, position: 0 },
@@ -295,13 +263,7 @@ describe('findOrders paging', () => {
       const { first, second, refs } = await seed(trx);
       const [third] = await trx
         .insert(order)
-        .values(
-          orderRow(refs, 'ZL/3', {
-            driver: refs.drivers.jan,
-            customer: refs.customer,
-            truck: refs.truck,
-          }),
-        )
+        .values(orderRowFor(refs)({ orderNr: 'ZL/3' }))
         .returning({ id: order.id });
 
       const page = (pageIndex: number, search?: string) =>

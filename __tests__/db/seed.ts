@@ -1,5 +1,6 @@
+import type { InferInsertModel } from 'drizzle-orm';
 import type { dbTransaction } from '@/db/db';
-import { city, country, customer, driver, truck } from '@/db/schemas';
+import { city, country, customer, driver, type order, truck } from '@/db/schemas';
 import seedReference from '@/db/seeds/reference';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
 
@@ -42,6 +43,25 @@ export async function seedOrderReferences(trx: dbTransaction) {
     statuses,
     truck: dbTruck,
   };
+}
+
+/** An `order` row for the seeded references: ZL/1, PLN 100, in progress, 2026-10-27 → 2026-10-29, Jan with the seeded Customer and Truck. */
+export function orderRowFor(refs: Awaited<ReturnType<typeof seedOrderReferences>>) {
+  return (
+    fields: Partial<InferInsertModel<typeof order>> = {},
+  ): InferInsertModel<typeof order> => ({
+    orderNr: 'ZL/1',
+    startDate: '2026-10-27',
+    endDate: '2026-10-29',
+    driverId: refs.drivers.jan.id,
+    truckId: refs.truck.id,
+    customerId: refs.customer.id,
+    currencyId: refs.currencies.pln.id,
+    statusId: refs.statuses.inProgress.id,
+    priceCurrency: '100',
+    pricePLN: '100',
+    ...fields,
+  });
 }
 
 /** A valid PLN Order form for the seeded references: Warszawa → Płock, Gdańsk, driven by Jan. */

@@ -2,13 +2,14 @@ import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { order } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
-import { seedOrderReferences } from '../db/seed';
+import { orderRowFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
 import { week } from '../utils/week';
 
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
   const { jan, anna } = refs.drivers;
+  const orderRow = orderRowFor(refs);
 
   let orderNr = 0;
   const addOrders = async (
@@ -16,19 +17,7 @@ async function seed(trx: dbTransaction) {
   ): Promise<number[]> => {
     const rows = await trx
       .insert(order)
-      .values(
-        orders.map((fields) => ({
-          orderNr: `ZL/${++orderNr}`,
-          driverId: jan.id,
-          truckId: refs.truck.id,
-          customerId: refs.customer.id,
-          currencyId: refs.currencies.pln.id,
-          statusId: refs.statuses.inProgress.id,
-          priceCurrency: '100',
-          pricePLN: '100',
-          ...fields,
-        })),
-      )
+      .values(orders.map((fields) => orderRow({ orderNr: `ZL/${++orderNr}`, ...fields })))
       .returning({ id: order.id });
 
     return rows.map((row) => row.id);
