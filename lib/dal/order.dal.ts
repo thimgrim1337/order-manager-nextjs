@@ -54,7 +54,7 @@ export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number
 
 export async function findOrders(database: db | dbTransaction, query: OrderQuery) {
   const getOrderBy = (sort?: SortParams) => {
-    const sortMappings: Record<OrderSortField, AnyPgColumn> = {
+    const sortMappings: Record<OrderSortField, AnyPgColumn | AnyPgColumn[]> = {
       statusId: ordersWithDetailsView.statusId,
       truckPlate: ordersWithDetailsView.truckPlate,
       loadingCity: ordersWithDetailsView.loadingCity,
@@ -66,15 +66,16 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
       priceCurrency: ordersWithDetailsView.priceCurrency,
       currencyId: ordersWithDetailsView.currencyId,
       customerName: ordersWithDetailsView.customerName,
-      driverFullname: ordersWithDetailsView.driverFullname,
+      // As Drivers are ordered: first name, then last name.
+      driverFullname: [ordersWithDetailsView.driverFirstName, ordersWithDetailsView.driverLastName],
     };
 
     // Tie-breaker keeps row order stable across pages.
     const tieBreaker = asc(ordersWithDetailsView.id);
     if (!sort) return [tieBreaker];
 
-    const column = sortMappings[sort.id];
-    return [sort.desc ? desc(column) : asc(column), tieBreaker];
+    const columns = [sortMappings[sort.id]].flat();
+    return [...columns.map((column) => (sort.desc ? desc(column) : asc(column))), tieBreaker];
   };
 
   const orderBy = getOrderBy(query.sort);
@@ -88,7 +89,11 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
     searchConditions.push(
       ilike(ordersWithDetailsView.orderNr, pattern),
       ilike(ordersWithDetailsView.customerName, pattern),
-      ilike(ordersWithDetailsView.driverFullname, pattern),
+      // The Driver's name as `driverName` shows it: "Jan Kowalski".
+      ilike(
+        sql`${ordersWithDetailsView.driverFirstName} || ' ' || ${ordersWithDetailsView.driverLastName}`,
+        pattern,
+      ),
       ilike(ordersWithDetailsView.truckPlate, pattern),
       ilike(ordersWithDetailsView.statusName, pattern),
       ilike(ordersWithDetailsView.currencyCode, pattern),

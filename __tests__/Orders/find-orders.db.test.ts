@@ -123,6 +123,32 @@ describe('findOrders sorting', () => {
 
       expect(await sortedIds(trx, field, false)).toEqual([second, first]);
     }));
+
+  it('sorts by Driver first name, then last name: every Jan before every Jana', () =>
+    withRollback(async (trx) => {
+      const refs = await seedOrderReferences(trx);
+      // Inserted out of order, so the id tie-breaker alone gets none right.
+      const drivers = await trx
+        .insert(driver)
+        .values([
+          { firstName: 'Jan Paweł', lastName: 'Adamski' },
+          { firstName: 'Jana', lastName: 'Abacka' },
+          { firstName: 'Jan', lastName: 'Zieliński' },
+          { firstName: 'Jan', lastName: 'Adamczyk' },
+        ])
+        .returning();
+      const orderRow = orderRowFor(refs);
+      const [janPawel, jana, janZ, janA] = (
+        await trx
+          .insert(order)
+          .values(drivers.map((d, i) => orderRow({ orderNr: `ZL/${i}`, driverId: d.id })))
+          .returning({ id: order.id })
+      ).map((o) => o.id);
+      const byName = [janA, janZ, janPawel, jana];
+
+      expect(await sortedIds(trx, 'driverFullname', false)).toEqual(byName);
+      expect(await sortedIds(trx, 'driverFullname', true)).toEqual(byName.toReversed());
+    }));
 });
 
 const searchedIds = (trx: dbTransaction, search: string) => foundIds(trx, { search });
@@ -134,6 +160,7 @@ describe('findOrders search', () => {
 
       expect(await searchedIds(trx, 'alfa trans')).toEqual([second]);
       expect(await searchedIds(trx, 'KOWALSKI')).toEqual([first]);
+      expect(await searchedIds(trx, 'jan kowalski')).toEqual([first]);
       expect(await searchedIds(trx, 'ab12')).toEqual([second]);
     }));
 
