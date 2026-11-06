@@ -45,7 +45,7 @@ export async function seedOrderReferences(trx: dbTransaction) {
   };
 }
 
-/** An `order` row for the seeded references: ZL/1, PLN 100, in progress, 2026-10-27 → 2026-10-29, Jan with the seeded Customer and Truck. */
+/** An `order` row for the seeded references: ZL/1, PLN 100, in progress, 2026-10-27 → 2026-10-29, Jan with the seeded Customer and Truck. Several rows for one Customer need distinct `orderNr` (unique per Customer). */
 export function orderRowFor(refs: Awaited<ReturnType<typeof seedOrderReferences>>) {
   return (
     fields: Partial<InferInsertModel<typeof order>> = {},
