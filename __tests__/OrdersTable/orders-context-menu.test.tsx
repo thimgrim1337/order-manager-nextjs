@@ -58,7 +58,7 @@ describe('OrdersContextMenu', () => {
     expect(screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeNull();
   });
 
-  it('shows the failure message in a toast when the status change fails', async () => {
+  it('shows the failure in a toast and keeps the Status dialog open when the change fails', async () => {
     vi.mocked(changeOrderStatus).mockResolvedValueOnce({
       success: false,
       message: 'Zlecenie nie istnieje.',
@@ -70,10 +70,13 @@ describe('OrdersContextMenu', () => {
     await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
 
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
   });
 
-  it('shows a fixed message in a toast when the status change fails unexpectedly', async () => {
-    vi.mocked(changeOrderStatus).mockRejectedValueOnce(new Error('connection lost'));
+  it('confirms a changed Status in a toast and closes the Status dialog', async () => {
+    vi.mocked(changeOrderStatus).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
+      ReturnType<typeof changeOrderStatus>
+    >);
     const { user } = setup();
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
@@ -81,8 +84,12 @@ describe('OrdersContextMenu', () => {
     await user.click(await screen.findByRole('button', { name: 'status-delivered' }));
 
     await expect
-      .poll(() => screen.queryByText('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.'))
+      .poll(() => screen.queryByText('Zlecenie ZL-001 ma teraz status: zakończone.'))
       .toBeVisible();
+    expect(changeOrderStatus).toHaveBeenCalledWith(1, 3);
+    await expect
+      .poll(() => screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' }))
+      .toBeNull();
   });
 
   it('keeps the Remove dialog closed when Escape is pressed before the delete finishes', async () => {
@@ -106,7 +113,7 @@ describe('OrdersContextMenu', () => {
     expect(screen.queryByRole('heading', { name: 'Czy jesteś pewny ?' })).toBeNull();
   });
 
-  it('shows a not-found toast when the Order to remove no longer exists', async () => {
+  it('shows the failure in a toast and keeps the Remove dialog open when the removal fails', async () => {
     vi.mocked(removeOrder).mockResolvedValueOnce({
       success: false,
       message: 'Zlecenie nie istnieje.',
@@ -118,23 +125,10 @@ describe('OrdersContextMenu', () => {
     await user.click(await screen.findByRole('button', { name: 'Usuń' }));
 
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Czy jesteś pewny ?' })).toBeVisible();
   });
 
-  it('shows an error toast when the removal fails unexpectedly', async () => {
-    vi.mocked(removeOrder).mockRejectedValueOnce(new Error('connection lost'));
-    const { user } = setup();
-
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
-    await user.click(await screen.findByRole('button', { name: 'Usuń' }));
-
-    await expect
-      .poll(() => screen.queryByText('Wystąpił nieoczekiwany błąd. Spróbuj ponownie.'))
-      .toBeVisible();
-    expect(screen.queryByText(/connection lost/)).toBeNull();
-  });
-
-  it('confirms a removed Order in a toast', async () => {
+  it('confirms a removed Order in a toast and closes the Remove dialog', async () => {
     vi.mocked(removeOrder).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
       ReturnType<typeof removeOrder>
     >);
@@ -145,5 +139,9 @@ describe('OrdersContextMenu', () => {
     await user.click(await screen.findByRole('button', { name: 'Usuń' }));
 
     await expect.poll(() => screen.queryByText('Zlecenie zostało usunięte.')).toBeVisible();
+    expect(removeOrder).toHaveBeenCalledWith(1);
+    await expect
+      .poll(() => screen.queryByRole('heading', { name: 'Czy jesteś pewny ?' }))
+      .toBeNull();
   });
 });

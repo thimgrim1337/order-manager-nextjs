@@ -1,9 +1,9 @@
 import { FieldGroup } from '@/components/ui/field';
+import { settleWrite } from '@/features/shared/lib/settle-write';
 import { createCity } from '@/lib/actions';
 import { createCitySchema } from '@/lib/dto/city.dto';
 import type { Country } from '@/types/types';
 import { useAppForm } from '../../hooks/useAppForm';
-import useFormSubmit from '../../hooks/useFormSubmit';
 
 export default function CreateCityForm({
   countries,
@@ -12,8 +12,6 @@ export default function CreateCityForm({
   countries: Country[];
   onDialogClose: () => void;
 }) {
-  const { submitForm } = useFormSubmit(createCity, onDialogClose);
-
   const form = useAppForm({
     defaultValues: {
       name: '',
@@ -24,7 +22,8 @@ export default function CreateCityForm({
       onChange: createCitySchema,
     },
     onSubmit: async ({ value }) =>
-      submitForm(value, {
+      settleWrite(() => createCity(value), {
+        closeDialog: onDialogClose,
         errorTitle: 'Nie udało się utworzyć miejscowości.',
         successDescription: `Pomyślnie utworzono nową miejscowość: ${value.name}`,
       }),

@@ -4,12 +4,12 @@ import { useStore } from '@tanstack/react-form';
 import { useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderData } from '@/features/shared/context/order-context';
+import { settleWrite } from '@/features/shared/lib/settle-write';
 import type { ActionResponse } from '@/lib/action-response';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
 import { useAppForm } from '../hooks/useAppForm';
 import useExchangeRate from '../hooks/useExchangeRate';
-import useFormSubmit from '../hooks/useFormSubmit';
 import { getStartingValues, orderFormOptions } from '../lib/order-form-options';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
@@ -27,8 +27,6 @@ export type OrderFormProps = {
 export default function OrderForm({ order, action, onDialogClose }: OrderFormProps) {
   const { cities, countries, currencies, customers, drivers, trucks } = useOrderData();
 
-  const { submitForm } = useFormSubmit(action, onDialogClose);
-
   // Read once per open, so Reset keeps the dates the form opened with.
   const [startingValues] = useState(() => getStartingValues(order));
   const [isEditable, setIsEditable] = useState(!order);
@@ -39,14 +37,12 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     onSubmit: async ({ value }) => {
       if (exchangeRate.error) return;
 
-      submitForm(
-        { ...value, currencyInfo: exchangeRate.currencyInfo },
-        {
-          successDescription: order
-            ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
-            : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
-        },
-      );
+      await settleWrite(() => action({ ...value, currencyInfo: exchangeRate.currencyInfo }), {
+        closeDialog: onDialogClose,
+        successDescription: order
+          ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
+          : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
+      });
     },
   });
 

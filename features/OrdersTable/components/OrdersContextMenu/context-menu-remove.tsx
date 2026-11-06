@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-import { toastOutcome } from '@/features/shared/lib/toast-outcome';
+import { settleWrite } from '@/features/shared/lib/settle-write';
 import { removeOrder } from '@/lib/actions';
 
 import type { ContextMenuOptionProps } from './context-menu';
@@ -20,10 +20,10 @@ export default function ContextMenuRemove({
   onOpenChange,
 }: ContextMenuOptionProps) {
   async function handleOrderRemove(orderId: number) {
-    await toastOutcome(() => removeOrder(orderId), {
+    await settleWrite(() => removeOrder(orderId), {
+      closeDialog: () => onOpenChange(false),
       successDescription: 'Zlecenie zostało usunięte.',
     });
-    onOpenChange(false);
   }
 
   return (

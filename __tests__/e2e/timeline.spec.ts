@@ -36,4 +36,18 @@ test.describe('Timeline', () => {
     await expect(row).toBeVisible();
     await expect(row.getByRole('cell').nth(MONDAY)).toHaveText('Płock');
   });
+
+  test('shows an Order edited from the Timeline without reloading', async ({ page }) => {
+    await page.goto('/timeline?week=2026-W44');
+
+    const row = page.getByRole('row', { name: /WP0997C/ });
+    await row.click();
+    await page.getByRole('button', { name: 'Edytuj' }).click();
+    await page.getByLabel('Miejsca rozładunku').fill('Warszawa');
+    await page.getByRole('option', { name: 'Warszawa' }).click();
+    await page.getByRole('button', { name: 'Zapisz' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Edycja zlecenia' })).not.toBeVisible();
+    await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Warszawa →');
+  });
 });

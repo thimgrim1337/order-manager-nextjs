@@ -1,12 +1,10 @@
 import { FieldGroup } from '@/components/ui/field';
+import { settleWrite } from '@/features/shared/lib/settle-write';
 import { createCustomer } from '@/lib/actions';
 import { createCustomerSchema } from '@/lib/dto/customer.dto';
 import { useAppForm } from '../../hooks/useAppForm';
-import useFormSubmit from '../../hooks/useFormSubmit';
 
 export default function CreateCustomerForm({ onDialogClose }: { onDialogClose: () => void }) {
-  const { submitForm } = useFormSubmit(createCustomer, onDialogClose);
-
   const form = useAppForm({
     defaultValues: {
       name: '',
@@ -16,7 +14,8 @@ export default function CreateCustomerForm({ onDialogClose }: { onDialogClose: (
       onChange: createCustomerSchema,
     },
     onSubmit: async ({ value }) =>
-      submitForm(value, {
+      settleWrite(() => createCustomer(value), {
+        closeDialog: onDialogClose,
         successDescription: `Pomyślnie utworzono nowego zleceniodawcę: ${value.name}`,
       }),
   });

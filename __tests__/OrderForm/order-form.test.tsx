@@ -127,6 +127,20 @@ describe('OrderForm', () => {
       });
     });
 
+    it('keeps the dialog open when the Order is not saved', async () => {
+      vi.mocked(createOrder).mockResolvedValueOnce({
+        success: false,
+        message: 'Numer zlecenia jest już zajęty.',
+      });
+      const { user, onDialogClose } = await setup();
+
+      await fillInNewOrder(user);
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await vi.waitFor(() => expect(createOrder).toHaveBeenCalledOnce());
+      expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
     it('submits a new non-PLN Order with its Exchange Rate', async () => {
       const { user, onDialogClose } = await setup();
 

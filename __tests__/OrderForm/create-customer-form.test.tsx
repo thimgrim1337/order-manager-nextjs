@@ -2,11 +2,9 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/create-customer-form';
+import { createCustomer } from '@/lib/actions';
 
-const submitFormMock = vi.hoisted(() => vi.fn());
-vi.mock('@/features/OrderForm/hooks/useFormSubmit', () => ({
-  default: () => ({ submitForm: submitFormMock }),
-}));
+const onDialogClose = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -14,44 +12,56 @@ beforeEach(() => {
 
 const setup = () => {
   const user = userEvent.setup();
-  render(<CreateCustomerForm onDialogClose={vi.fn()} />);
+  render(<CreateCustomerForm onDialogClose={onDialogClose} />);
 
   return { user };
 };
 
+async function fillAndSubmit(user: ReturnType<typeof userEvent.setup>) {
+  await user.type(screen.getByLabelText('NIP'), 'PL7743241555');
+  await user.type(screen.getByLabelText('Nazwa zleceniodawcy'), 'DEVIL');
+  await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+}
+
 describe('CreateCustomerForm', () => {
-  describe('render', () => {
-    it('render form with inputs and button', () => {
-      setup();
+  it('render form with inputs and button', () => {
+    setup();
 
-      screen.getByLabelText('NIP');
-      screen.getByLabelText('Nazwa zleceniodawcy');
-      screen.getByRole('button', { name: 'Zapisz' });
-    });
+    screen.getByLabelText('NIP');
+    screen.getByLabelText('Nazwa zleceniodawcy');
+    screen.getByRole('button', { name: 'Zapisz' });
   });
 
-  describe('submit', () => {
-    it('call submitForm when click on button', async () => {
-      const { user } = setup();
+  it('creates the Customer and closes the dialog once it is created', async () => {
+    vi.mocked(createCustomer).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
+      ReturnType<typeof createCustomer>
+    >);
+    const { user } = setup();
 
-      const taxInput = screen.getByLabelText('NIP');
-      const nameInput = screen.getByLabelText('Nazwa zleceniodawcy');
-      const submitButton = screen.getByRole('button', { name: 'Zapisz' });
+    await fillAndSubmit(user);
 
-      await user.type(taxInput, 'PL7743241555');
-      await user.type(nameInput, 'DEVIL');
-
-      await user.click(submitButton);
-
-      expect(submitFormMock).toHaveBeenCalledOnce();
-    });
+    expect(createCustomer).toHaveBeenCalledWith({ name: 'DEVIL', tax: 'PL7743241555' });
+    await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
   });
 
-  it('not call submitForm when no or uncorrect data are provided', async () => {
+  it('keeps the dialog open when the Customer is not created', async () => {
+    vi.mocked(createCustomer).mockResolvedValueOnce({
+      success: false,
+      message: 'Zleceniodawca istnieje.',
+    });
+    const { user } = setup();
+
+    await fillAndSubmit(user);
+
+    await vi.waitFor(() => expect(createCustomer).toHaveBeenCalledOnce());
+    expect(onDialogClose).not.toHaveBeenCalled();
+  });
+
+  it('not call createCustomer when no or uncorrect data are provided', async () => {
     const { user } = setup();
 
     await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-    expect(submitFormMock).not.toHaveBeenCalled();
+    expect(createCustomer).not.toHaveBeenCalled();
   });
 });

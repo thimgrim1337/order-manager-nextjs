@@ -1,7 +1,7 @@
 import { cn } from 'cn';
 import { Ban, CheckCircle, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toastOutcome } from '@/features/shared/lib/toast-outcome';
+import { settleWrite } from '@/features/shared/lib/settle-write';
 import { changeOrderStatus } from '@/lib/actions';
 import { ORDER_STATUS } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
@@ -33,9 +33,11 @@ type OrderStatusMenu = {
 };
 
 export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMenu) {
-  async function handleStatusChange(orderId: number, statusId: number) {
-    await toastOutcome(() => changeOrderStatus(orderId, statusId));
-    onDialogClose();
+  async function handleStatusChange(statusId: number, label: string) {
+    await settleWrite(() => changeOrderStatus(order.id, statusId), {
+      closeDialog: onDialogClose,
+      successDescription: `Zlecenie ${order.orderNr} ma teraz status: ${label}.`,
+    });
   }
 
   return (
@@ -50,7 +52,7 @@ export default function OrderStatusMenu({ order, onDialogClose }: OrderStatusMen
               'w-full justify-start h-auto p-4 text-left',
               order.status.id === config.id ? 'font-bold' : undefined,
             )}
-            onClick={async () => handleStatusChange(order.id, config.id)}
+            onClick={() => handleStatusChange(config.id, config.label)}
             aria-label={`status-${status}`}
           >
             <div className="flex items-start gap-3">

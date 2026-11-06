@@ -52,7 +52,6 @@ test.describe('Order test', () => {
 
     // submit
     await page.getByRole('button', { name: 'Zapisz' }).click();
-    await page.keyboard.press('Escape');
 
     await expect(page.getByRole('heading', { name: 'Dodaj nowe zlecenie' })).not.toBeVisible();
 
@@ -137,7 +136,9 @@ test.describe('Order test', () => {
         page.getByRole('heading', { name: 'Zmiana statusu zlecenia' }),
       ).not.toBeVisible();
 
-      await expect(page.getByText('zakończone')).toBeVisible();
+      await expect(
+        page.getByRole('row', { name: orderNr }).getByRole('cell', { name: 'zakończone' }),
+      ).toBeVisible();
     });
 
     test('Delete order', async ({ page }) => {
@@ -151,8 +152,11 @@ test.describe('Order test', () => {
       await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).toBeVisible();
 
       await page.getByRole('button', { name: 'Usuń' }).click();
-      await page.keyboard.press('Escape');
 
+      await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).not.toBeVisible();
+      await expect(
+        page.getByRole('listitem').filter({ hasText: 'Zlecenie zostało usunięte.' }),
+      ).toBeVisible();
       await expect(page.getByRole('cell', { name: orderNr })).not.toBeVisible();
     });
   });
