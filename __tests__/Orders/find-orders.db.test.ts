@@ -4,12 +4,35 @@ import type { dbTransaction } from '@/db/db';
 import { city, customer, driver, loadingPlace, order, truck, unloadingPlace } from '@/db/schemas';
 import type { OrderSortField } from '@/lib/consts';
 import { findOrders } from '@/lib/dal/order.dal';
+import type { OrderQuery } from '@/types/types';
 import { seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
 
+type OrderRefs = Awaited<ReturnType<typeof seedOrderReferences>>;
+
+/** A PLN Order row in progress, 2026-10-27 → 2026-10-29, priced 100, for the given Driver, Customer and Truck. */
+function orderRow(
+  refs: OrderRefs,
+  orderNr: string,
+  ref: { driver: { id: number }; customer: { id: number }; truck: { id: number } },
+) {
+  return {
+    orderNr,
+    startDate: '2026-10-27',
+    endDate: '2026-10-29',
+    driverId: ref.driver.id,
+    truckId: ref.truck.id,
+    customerId: ref.customer.id,
+    currencyId: refs.currencies.pln.id,
+    statusId: refs.statuses.inProgress.id,
+    priceCurrency: '100',
+    pricePLN: '100',
+  };
+}
+
 /**
  * Two Orders whose ids run opposite to their names: the first is Jan Kowalski / Test Firma / WP0997C,
- * the second Anna Nowak / Alfa Trans / AB1234.
+ * the second Anna Nowak / Alfa Trans / AB1234. Returns their ids and the seeded references.
  */
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
@@ -28,23 +51,10 @@ async function seed(trx: dbTransaction) {
 
   const [first, second] = await trx
     .insert(order)
-    .values(
-      orderRefs.map((ref, i) => ({
-        orderNr: `ZL/${i + 1}`,
-        startDate: '2026-10-27',
-        endDate: '2026-10-29',
-        driverId: ref.driver.id,
-        truckId: ref.truck.id,
-        customerId: ref.customer.id,
-        currencyId: refs.currencies.pln.id,
-        statusId: refs.statuses.inProgress.id,
-        priceCurrency: '100',
-        pricePLN: '100',
-      })),
-    )
+    .values(orderRefs.map((ref, i) => orderRow(refs, `ZL/${i + 1}`, ref)))
     .returning({ id: order.id });
 
-  return { first: first.id, second: second.id };
+  return { first: first.id, second: second.id, refs };
 }
 
 /**
@@ -111,10 +121,15 @@ async function seedPolishNames(trx: dbTransaction) {
   return { first: first.id, second: second.id };
 }
 
-const sortedIds = async (trx: dbTransaction, id: OrderSortField, desc: boolean) => {
-  const { data } = await findOrders(trx, { pageIndex: 0, pageSize: 10, sort: { id, desc } });
+/** The ids of the first page of Orders the query finds, checking the count matches the page. */
+const foundIds = async (trx: dbTransaction, query: Omit<OrderQuery, 'pageIndex' | 'pageSize'>) => {
+  const { data, count } = await findOrders(trx, { pageIndex: 0, pageSize: 10, ...query });
+  expect(count).toBe(data.length);
   return data.map((o) => o.id);
 };
+
+const sortedIds = (trx: dbTransaction, id: OrderSortField, desc: boolean) =>
+  foundIds(trx, { sort: { id, desc } });
 
 describe('findOrders sorting', () => {
   it.each([
@@ -142,11 +157,7 @@ describe('findOrders sorting', () => {
     }));
 });
 
-const searchedIds = async (trx: dbTransaction, search: string) => {
-  const { data, count } = await findOrders(trx, { pageIndex: 0, pageSize: 10, search });
-  expect(count).toBe(data.length);
-  return data.map((o) => o.id);
-};
+const searchedIds = (trx: dbTransaction, search: string) => foundIds(trx, { search });
 
 describe('findOrders search', () => {
   it('finds Orders by Customer, Driver or Truck, ignoring case', () =>
@@ -213,5 +224,96 @@ describe('findOrders search', () => {
 
       expect(await searchedIds(trx, 'zl/2')).toEqual([second]);
       expect(await searchedIds(trx, '100 zł')).toEqual([]);
+    }));
+});
+
+describe('findOrders filters', () => {
+  it('includes an Order starting on the Start date filter and excludes one starting the day before', () =>
+    withRollback(async (trx) => {
+      const { first, second } = await seed(trx);
+      await trx.update(order).set({ startDate: '2026-10-26' }).where(eq(order.id, second));
+
+      expect(await foundIds(trx, { startDate: '2026-10-27' })).toEqual([first]);
+      expect(await foundIds(trx, { startDate: '2026-10-26' })).toEqual([first, second]);
+    }));
+
+  it('includes an Order ending on the End date filter and excludes one ending the day after', () =>
+    withRollback(async (trx) => {
+      const { first, second } = await seed(trx);
+      await trx.update(order).set({ endDate: '2026-10-30' }).where(eq(order.id, second));
+
+      expect(await foundIds(trx, { endDate: '2026-10-29' })).toEqual([first]);
+      expect(await foundIds(trx, { endDate: '2026-10-30' })).toEqual([first, second]);
+    }));
+
+  it('includes an Order inside the Start date to End date range and excludes one straddling it', () =>
+    withRollback(async (trx) => {
+      const { first, second } = await seed(trx);
+      await trx
+        .update(order)
+        .set({ startDate: '2026-10-25', endDate: '2026-10-28' })
+        .where(eq(order.id, second));
+
+      expect(await foundIds(trx, { startDate: '2026-10-27', endDate: '2026-10-29' })).toEqual([
+        first,
+      ]);
+      expect(await foundIds(trx, { startDate: '2026-10-25', endDate: '2026-10-29' })).toEqual([
+        first,
+        second,
+      ]);
+    }));
+
+  it('narrows to the Driver, and combines with Search', () =>
+    withRollback(async (trx) => {
+      const { first, second, refs } = await seed(trx);
+      const anna = refs.drivers.anna.id;
+
+      expect(await foundIds(trx, { driverId: anna })).toEqual([second]);
+      expect(await foundIds(trx, { driverId: anna, search: 'alfa' })).toEqual([second]);
+      expect(await foundIds(trx, { driverId: anna, search: 'zl/1' })).toEqual([]);
+      expect(await foundIds(trx, { search: 'zl/1' })).toEqual([first]);
+    }));
+
+  it('narrows to the Status, and combines with Search', () =>
+    withRollback(async (trx) => {
+      const { first, second, refs } = await seed(trx);
+      const { statuses } = refs;
+      await trx.update(order).set({ statusId: statuses.delivered.id }).where(eq(order.id, first));
+
+      expect(await foundIds(trx, { statusId: statuses.delivered.id })).toEqual([first]);
+      expect(await foundIds(trx, { statusId: statuses.inProgress.id })).toEqual([second]);
+      expect(await foundIds(trx, { statusId: statuses.delivered.id, search: 'kowalski' })).toEqual([
+        first,
+      ]);
+      expect(await foundIds(trx, { statusId: statuses.delivered.id, search: 'nowak' })).toEqual([]);
+    }));
+});
+
+describe('findOrders paging', () => {
+  it('returns the requested page and the count of all matching Orders', () =>
+    withRollback(async (trx) => {
+      const { first, second, refs } = await seed(trx);
+      const [third] = await trx
+        .insert(order)
+        .values(
+          orderRow(refs, 'ZL/3', {
+            driver: refs.drivers.jan,
+            customer: refs.customer,
+            truck: refs.truck,
+          }),
+        )
+        .returning({ id: order.id });
+
+      const page = (pageIndex: number, search?: string) =>
+        findOrders(trx, { pageIndex, pageSize: 2, search });
+
+      expect(await page(0)).toMatchObject({ count: 3, data: [{ id: first }, { id: second }] });
+      expect(await page(1)).toMatchObject({ count: 3, data: [{ id: third.id }] });
+      expect(await page(2)).toEqual({ count: 3, data: [] });
+      expect(await page(0, 'kowalski')).toMatchObject({
+        count: 2,
+        data: [{ id: first }, { id: third.id }],
+      });
+      expect(await page(1, 'kowalski')).toEqual({ count: 2, data: [] });
     }));
 });

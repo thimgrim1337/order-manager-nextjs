@@ -83,10 +83,10 @@ _Avoid_: Place, location, town (a Loading Place or Unloading Place is the role a
 ### Views
 
 **Start date**
-The filter, start of the range orders to fetch.
+The filter, start of the range orders to fetch: it keeps Orders whose Start Date is on or after it.
 
 **End date**
-The filter, end of the range orders to fetch.
+The filter, end of the range orders to fetch: it keeps Orders whose End Date is on or before it. Together the two keep only Orders wholly inside the range; an Order straddling either edge is left out, unlike an Order in a Week.
 
 **Orders Table** (_Zlecenia_):
 The searchable, paginated list of all Orders, unrestricted by date unless the user filters it.
