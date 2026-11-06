@@ -63,7 +63,7 @@ A Truck's registration number; unique, so it identifies the Truck.
 _Avoid_: Registration, truck number
 
 **Driver** (_Kierowca_):
-A person who drives Orders. Known by first and last name, shown as "Jan Kowalski" and ordered alphabetically by that name, first name first; no two Drivers share both.
+A person who drives Orders. Known by first and last name, shown as "Jan Kowalski" and ordered by that name, first name first, in Polish alphabetical order; no two Drivers share both.
 _Avoid_: Employee, chauffeur
 
 **Regular Driver** (_Stały kierowca_):

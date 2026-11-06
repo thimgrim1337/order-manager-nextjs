@@ -7,6 +7,7 @@ import { useOrderData } from '@/features/shared/context/order-context';
 import { settleWrite } from '@/features/shared/lib/settle-write';
 import type { ActionResponse } from '@/lib/action-response';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { driverName } from '@/lib/drivers';
 import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
 import { useAppForm } from '../hooks/useAppForm';
 import useExchangeRate from '../hooks/useExchangeRate';
@@ -167,7 +168,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
                 <field.ComboboxField
                   data={drivers.map((driver) => ({
                     value: driver.id,
-                    label: `${driver.firstName} ${driver.lastName}`,
+                    label: driverName(driver),
                   }))}
                   label="Kierowca"
                   placeholder="Wybierz kierowcę"

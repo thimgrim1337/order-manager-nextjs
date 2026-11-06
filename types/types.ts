@@ -1,16 +1,16 @@
 import type { OrderSortField } from '@/lib/consts';
+import type { DriverReadModel } from '@/lib/dal/driver.dal';
 import type { CityDto } from '@/lib/dto/city.dto';
 import type { CountryDto } from '@/lib/dto/country.dto';
 import type { CurrencyDto } from '@/lib/dto/currency.dto';
 import type { CustomerDto } from '@/lib/dto/customer.dto';
-import type { DriverDto } from '@/lib/dto/driver.dto';
 import type { StatusDto } from '@/lib/dto/status.dto';
 import type { TruckDto } from '@/lib/dto/truck.dto';
 
 export type City = CityDto;
 export type Country = CountryDto;
 export type Customer = CustomerDto;
-export type Driver = DriverDto;
+export type Driver = DriverReadModel;
 export type Truck = TruckDto;
 export type Status = StatusDto;
 export type Currency = CurrencyDto;

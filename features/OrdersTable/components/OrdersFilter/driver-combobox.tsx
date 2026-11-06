@@ -9,6 +9,7 @@ import {
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import { useOrderData } from '@/features/shared/context/order-context';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
+import { driverName } from '@/lib/drivers';
 import type { Driver } from '@/types/types';
 
 export default function DriverCombobox() {
@@ -19,7 +20,7 @@ export default function DriverCombobox() {
     <Combobox
       items={drivers}
       value={drivers.find((driver) => driver.id === query.driverId) ?? null}
-      itemToStringLabel={(item: Driver) => `${item.firstName} ${item.lastName}`}
+      itemToStringLabel={driverName}
       itemToStringValue={(item: Driver) => String(item.id)}
       onValueChange={(value) => change({ driverId: value?.id })}
     >
@@ -29,7 +30,7 @@ export default function DriverCombobox() {
         <ComboboxList>
           {(item: Driver) => (
             <ComboboxItem key={item.id} value={item}>
-              {`${item.firstName} ${item.lastName}`}
+              {driverName(item)}
             </ComboboxItem>
           )}
         </ComboboxList>
