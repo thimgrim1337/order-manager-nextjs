@@ -52,4 +52,4 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 ## Placement
 
 - Constants shared across files live in `lib/consts.ts`; module-private constants stay in their module.
-- A domain rule several views share lives in `lib/<concept>.ts` (`prices.ts`, `places.ts`), tested in `__tests__/<concept>.test.ts`.
+- A domain rule several views share lives in `lib/<concept>.ts` (`exchange-rate.ts`, `places.ts`), tested in `__tests__/<concept>.test.ts`.

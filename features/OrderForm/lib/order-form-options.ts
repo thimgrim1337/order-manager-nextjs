@@ -1,8 +1,9 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
-import { CURRENCY, ORDER_STATUS } from '@/lib/consts';
+import { ORDER_STATUS } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
+import { fromStoredExchangeRate, NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
 import type { City } from '@/types/types';
 
 /** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
@@ -26,23 +27,13 @@ export const orderFormOptions = formOptions({
     currencyId: 1,
     loadingPlaces: [] as City[] | [],
     unloadingPlaces: [] as City[] | [],
-    currencyInfo: {
-      table: '',
-      rate: '',
-      date: '',
-    },
+    currencyInfo: NO_EXCHANGE_RATE,
   },
   validators: {
     // Also runs on submit; it holds the Loading/Unloading Date order the Orders module enforces.
     onChange: OrderFormSchema,
   },
 });
-
-/** The Exchange Rate `order` was saved with, if any; NBP's table number isn't stored with it. */
-const getStoredCurrencyInfo = ({ currency }: OrderReadModel) =>
-  currency.id !== CURRENCY.PLN && currency.rate && currency.date
-    ? { table: '', rate: String(currency.rate), date: currency.date }
-    : orderFormOptions.defaultValues.currencyInfo;
 
 /** The form's values for editing `order`, or for a new Order dated from today when there is none. */
 export const getStartingValues = (order?: OrderReadModel) => {
@@ -61,6 +52,6 @@ export const getStartingValues = (order?: OrderReadModel) => {
     currencyId: order.currency.id,
     loadingPlaces: order.loadingPlaces,
     unloadingPlaces: order.unloadingPlaces,
-    currencyInfo: getStoredCurrencyInfo(order),
+    currencyInfo: fromStoredExchangeRate(order.currency),
   };
 };

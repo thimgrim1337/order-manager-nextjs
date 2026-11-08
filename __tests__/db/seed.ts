@@ -3,6 +3,7 @@ import type { dbTransaction } from '@/db/db';
 import { city, country, customer, driver, type order, truck } from '@/db/schemas';
 import seedReference from '@/db/seeds/reference';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
+import { NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
 
 /**
  * Seeds the rows an Order references, inside the test's transaction.
@@ -80,7 +81,7 @@ export function orderFormFor(refs: Awaited<ReturnType<typeof seedOrderReferences
     priceCurrency: '1000',
     loadingPlaces: [warszawa],
     unloadingPlaces: [plock, gdansk],
-    currencyInfo: { rate: '', table: '', date: '' },
+    currencyInfo: NO_EXCHANGE_RATE,
     ...fields,
   });
 }

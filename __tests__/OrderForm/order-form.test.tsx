@@ -6,6 +6,7 @@ import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
 import { worker } from '../mocks/browser';
 import { fakeNbp, NBP_RATES_URL } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
@@ -16,8 +17,6 @@ import { renderWithQueries } from '../utils/wrapper';
 const choices = orderChoices();
 const [plock] = choices.cities;
 const [customer] = choices.customers;
-
-const NO_RATE = { table: '', rate: '', date: '' };
 
 /** NBP answers with a server error. */
 const failNbp = () =>
@@ -90,7 +89,7 @@ describe('OrderForm', () => {
         currencyId: 1,
         loadingPlaces: [plock],
         unloadingPlaces: [plock],
-        currencyInfo: NO_RATE,
+        currencyInfo: NO_EXCHANGE_RATE,
       });
     });
 
@@ -302,7 +301,7 @@ describe('OrderForm', () => {
         currencyId: 1,
         loadingPlaces: [plock],
         unloadingPlaces: [plock],
-        currencyInfo: NO_RATE,
+        currencyInfo: NO_EXCHANGE_RATE,
       });
     });
 

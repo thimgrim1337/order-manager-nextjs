@@ -1,6 +1,7 @@
 import { addDays, getYesterday } from '@/lib/dates';
+import type { ExchangeRate } from '@/lib/exchange-rate';
 import { apiCall } from '@/lib/helpers';
-import type { CurrencyCode, CurrencyInfo } from '@/types/types';
+import type { CurrencyCode } from '@/types/types';
 
 type NBPRatesResponse = {
   table: string;
@@ -23,7 +24,7 @@ export async function getExchangeRate(
   code: CurrencyCode,
   unloadingDate: string,
   today: string,
-): Promise<CurrencyInfo> {
+): Promise<ExchangeRate> {
   const dayBefore = getYesterday(unloadingDate);
   const rangeEnd = dayBefore < today ? dayBefore : today;
   const rangeStart = addDays(rangeEnd, -LOOKBACK_DAYS);

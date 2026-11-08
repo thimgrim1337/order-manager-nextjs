@@ -15,11 +15,6 @@ export type Status = StatusReadModel;
 /** A Currency's code, as the NBP API takes it. */
 export type CurrencyCode = CurrencyReadModel['code'];
 
-export type CurrencyInfo = {
-  date: string;
-  table: string;
-  rate: string;
-};
 export type SortParams = {
   id: OrderSortField;
   desc: boolean;

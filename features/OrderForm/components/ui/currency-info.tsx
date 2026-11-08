@@ -1,6 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { toPricePLN } from "@/lib/prices";
-import { CurrencyInfo as TCurrencyInfo } from "@/types/types";
+import { type ExchangeRate, toPricePLN } from "@/lib/exchange-rate";
 
 export default function CurrencyInfo({
 	currencyCode,
@@ -10,7 +9,7 @@ export default function CurrencyInfo({
 }: {
 	currencyCode: string;
 	isLoading: boolean;
-	currencyInfo?: TCurrencyInfo | null;
+	currencyInfo?: ExchangeRate | null;
 	priceCurrency: string;
 }) {
 	const content = isLoading ? (
