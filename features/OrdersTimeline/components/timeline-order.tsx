@@ -6,7 +6,7 @@ import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
 import Dialog from '@/features/shared/components/ui/dialog';
 import useToggle from '@/features/shared/hooks/use-toggle';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
-import type { OrderDay } from '@/lib/week';
+import type { OrderDay } from '@/lib/order-day';
 import TimelineDetailsCell from './timeline-details';
 import TimelinePlaceCell from './timeline-place';
 

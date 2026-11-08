@@ -9,8 +9,7 @@ import {
   startOfISOWeekYear,
 } from 'date-fns';
 import { formatDate, getToday, parseDate, toDate } from '@/lib/dates';
-import { firstLoadingPlace, lastUnloadingPlace, type OrderPlaces } from '@/lib/places';
-import type { City, Customer, Day } from '@/types/types';
+import type { Day } from '@/types/types';
 
 /** A Monday-to-Sunday Week, held as its Monday (`yyyy-MM-dd`). */
 export type Week = string & { readonly __brand: 'Week' };
@@ -70,62 +69,4 @@ export function parseWeekKey(key: string): Week | undefined {
 
   const weeks = weeksOfYear(Number(match[1]));
   return weeks[Number(match[2]) - 1];
-}
-
-type OrderDayRole = 'none' | 'loading' | 'unloading' | 'loading-unloading' | 'transit';
-
-/** What an Order does on one day of the Week, and what the Timeline shows for it. */
-export type OrderDay = {
-  date: string;
-  role: OrderDayRole;
-  /** On a loading day, and on a transit Monday when the Order continues from an earlier Week. */
-  loadingPlace?: City;
-  /** On an unloading day, and on a transit Sunday when the Order continues into a later Week. */
-  unloadingPlace?: City;
-  /** On a loading day. */
-  customer?: Customer;
-  /** Monday only: the Order started in an earlier Week. */
-  continuesBefore?: true;
-  /** Sunday only: the Order ends in a later Week. */
-  continuesAfter?: true;
-};
-
-type OrderDates = { startDate: string; endDate: string };
-
-type OrderInWeek = OrderDates & OrderPlaces & { customer: Customer };
-
-/**
- * The Order's role on each of the Week's seven days, Monday first, with the places and Customer
- * shown that day. An Order without Loading or Unloading Places shows no place.
- */
-export function orderDays(week: Week, order: OrderInWeek): OrderDay[] {
-  const { monday, sunday } = weekBounds(week);
-  const loadingPlace = firstLoadingPlace(order);
-  const unloadingPlace = lastUnloadingPlace(order);
-
-  return weekDays(week).map(({ date }) => {
-    const role = roleOn(date, order);
-    const day: OrderDay = { date, role };
-    const loads = role === 'loading' || role === 'loading-unloading';
-    const unloads = role === 'unloading' || role === 'loading-unloading';
-    const transit = role === 'transit';
-
-    if (date === monday && order.startDate < monday) day.continuesBefore = true;
-    if (date === sunday && order.endDate > sunday) day.continuesAfter = true;
-    if ((loads || (transit && day.continuesBefore)) && loadingPlace)
-      day.loadingPlace = loadingPlace;
-    if ((unloads || (transit && day.continuesAfter)) && unloadingPlace)
-      day.unloadingPlace = unloadingPlace;
-    if (loads) day.customer = order.customer;
-    return day;
-  });
-}
-
-// yyyy-MM-dd strings sort as dates.
-function roleOn(date: string, { startDate, endDate }: OrderDates): OrderDayRole {
-  if (date === startDate && date === endDate) return 'loading-unloading';
-  if (date === startDate) return 'loading';
-  if (date === endDate) return 'unloading';
-  if (date > startDate && date < endDate) return 'transit';
-  return 'none';
 }

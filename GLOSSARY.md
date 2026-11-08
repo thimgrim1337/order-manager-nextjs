@@ -113,5 +113,5 @@ An Order with at least one day inside the Week (Start Date on or before Sunday a
 _Avoid_: Weekly orders
 
 **Order Day** (_Dzień zlecenia_):
-What an Order does on one day of a Week: loading (Loading date), unloading (Unloading Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later. It also carries what the Timeline shows that day: the Loading Place and the Customer on a loading day, the Unloading Place on an unloading day, and, in transit, the Loading Place on a continuing Monday and the Unloading Place on a continuing Sunday.
+What an Order does on one day of a Week: loading (Loading date), unloading (Unloading Date), both on the same day, transit (between them), or nothing. Monday is marked as continuing from the previous Week when the Order started earlier; Sunday as continuing into the next Week when it ends later. It also carries what the Timeline shows that day: the Loading Place and the Customer on a loading day, the Unloading Place on an unloading day, and, in transit, the Loading Place on a continuing Monday and the Unloading Place on a continuing Sunday. Each Loading or Unloading Place shown carries its City's country.
 _Avoid_: Day status, cell type

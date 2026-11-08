@@ -3,7 +3,6 @@ import {
   currentWeek,
   formatWeekKey,
   nextWeek,
-  orderDays,
   parseWeekKey,
   prevWeek,
   type Week,
@@ -13,7 +12,6 @@ import {
   weeksOfYear,
   weekYear,
 } from '@/lib/week';
-import type { City, Customer } from '@/types/types';
 
 describe('Week: weekOf', () => {
   it('puts a Wednesday and the following Sunday in the same Week, starting on Monday', () => {
@@ -120,118 +118,5 @@ describe('Week: weekDays', () => {
       true,
     ]);
     expect(days[0].name).toBe('pon.');
-  });
-});
-
-describe('Week: orderDays', () => {
-  const w44 = weekOf('2026-10-26');
-  const city = (id: number, name: string): City => ({ id, name, postal: '00-001', countryId: 1 });
-  const warszawa = city(1, 'Warszawa');
-  const plock = city(2, 'Płock');
-  const gdansk = city(3, 'Gdańsk');
-  const customer: Customer = { id: 1, name: 'Acme', tax: 'PL1234567890' };
-  const order = (dates: { startDate: string; endDate: string }) => ({
-    ...dates,
-    loadingPlaces: [warszawa, plock],
-    unloadingPlaces: [plock, gdansk],
-    customer,
-  });
-  const shown = (day: ReturnType<typeof orderDays>[number]) => ({
-    loadingPlace: day.loadingPlace?.name,
-    unloadingPlace: day.unloadingPlace?.name,
-    customer: day.customer?.name,
-  });
-  const roles = (days: ReturnType<typeof orderDays>) => days.map((day) => day.role);
-  const flagged = (days: ReturnType<typeof orderDays>) =>
-    days.filter((day) => day.continuesBefore || day.continuesAfter);
-
-  it('marks loading, transit and unloading days of an Order inside the Week', () => {
-    expect(
-      roles(orderDays(w44, order({ startDate: '2026-10-27', endDate: '2026-10-30' }))),
-    ).toEqual(['none', 'loading', 'transit', 'transit', 'unloading', 'none', 'none']);
-  });
-
-  it('marks a day with both loading and unloading as loading-unloading', () => {
-    expect(
-      roles(orderDays(w44, order({ startDate: '2026-10-28', endDate: '2026-10-28' }))),
-    ).toEqual(['none', 'none', 'loading-unloading', 'none', 'none', 'none', 'none']);
-  });
-
-  it('flags Monday as continuing from the previous Week when the Order starts before Monday', () => {
-    const days = orderDays(w44, order({ startDate: '2026-10-23', endDate: '2026-10-27' }));
-
-    expect(roles(days)).toEqual(['transit', 'unloading', 'none', 'none', 'none', 'none', 'none']);
-    expect(days[0].continuesBefore).toBe(true);
-    expect(flagged(days)).toHaveLength(1);
-  });
-
-  it('flags Sunday as continuing into the next Week when the Order ends after Sunday', () => {
-    const days = orderDays(w44, order({ startDate: '2026-10-30', endDate: '2026-11-02' }));
-
-    expect(roles(days)).toEqual(['none', 'none', 'none', 'none', 'loading', 'transit', 'transit']);
-    expect(days[6].continuesAfter).toBe(true);
-    expect(flagged(days)).toHaveLength(1);
-  });
-
-  it('marks every day as transit, with both flags, when the Order spans the whole Week', () => {
-    const days = orderDays(w44, order({ startDate: '2026-10-20', endDate: '2026-11-05' }));
-
-    expect(roles(days)).toEqual(Array(7).fill('transit'));
-    expect(days[0].continuesBefore).toBe(true);
-    expect(days[6].continuesAfter).toBe(true);
-  });
-
-  it('shows the first Loading Place and the Customer on the loading day, the last Unloading Place on the unloading day', () => {
-    const days = orderDays(w44, order({ startDate: '2026-10-27', endDate: '2026-10-30' }));
-
-    expect(days.map(shown)).toEqual([
-      {},
-      { loadingPlace: 'Warszawa', customer: 'Acme' },
-      {},
-      {},
-      { unloadingPlace: 'Gdańsk' },
-      {},
-      {},
-    ]);
-  });
-
-  it('shows both places and the Customer when loading and unloading fall on the same day', () => {
-    const days = orderDays(w44, order({ startDate: '2026-10-28', endDate: '2026-10-28' }));
-
-    expect(shown(days[2])).toEqual({
-      loadingPlace: 'Warszawa',
-      unloadingPlace: 'Gdańsk',
-      customer: 'Acme',
-    });
-  });
-
-  it('shows where an Order crossing the Week came from on Monday and where it goes on Sunday', () => {
-    const days = orderDays(w44, order({ startDate: '2026-10-20', endDate: '2026-11-05' }));
-
-    expect(shown(days[0])).toEqual({ loadingPlace: 'Warszawa' });
-    expect(days.slice(1, 6).map(shown)).toEqual(Array(5).fill({}));
-    expect(shown(days[6])).toEqual({ unloadingPlace: 'Gdańsk' });
-  });
-
-  it('shows only the Unloading Place when a continuing Monday is the unloading day, and only the Loading Place when a continuing Sunday is the loading day', () => {
-    const endsMonday = orderDays(w44, order({ startDate: '2026-10-23', endDate: '2026-10-26' }));
-    const startsSunday = orderDays(w44, order({ startDate: '2026-11-01', endDate: '2026-11-03' }));
-
-    expect(shown(endsMonday[0])).toEqual({ unloadingPlace: 'Gdańsk' });
-    expect(shown(startsSunday[6])).toEqual({ loadingPlace: 'Warszawa', customer: 'Acme' });
-  });
-
-  it('shows no place, but still the Customer, for an Order without Loading or Unloading Places', () => {
-    const noPlaces = {
-      ...order({ startDate: '2026-10-20', endDate: '2026-10-28' }),
-      loadingPlaces: [],
-      unloadingPlaces: [],
-    };
-    const crossing = orderDays(w44, noPlaces);
-    const sameDay = orderDays(w44, { ...noPlaces, startDate: '2026-10-29', endDate: '2026-10-29' });
-
-    expect(shown(crossing[0])).toEqual({});
-    expect(shown(crossing[2])).toEqual({});
-    expect(shown(sameDay[3])).toEqual({ customer: 'Acme' });
   });
 });

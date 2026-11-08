@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/combobox';
 import useSearchQuery from '@/features/shared/hooks/use-search-query';
 import { searchCities } from '@/lib/actions';
+import { countryOf } from '@/lib/places';
 import type { City, Country } from '@/types/types';
 import { useFieldContext } from '../../context/form-context';
 import FormBase, { type FormControlProps } from './form-base';
@@ -49,7 +50,7 @@ export default function PlacesComboboxField({
           className={'flex-col items-start p-2 [&_button]:hover:text-primary'}
         >
           {selectedCities.map((city) => {
-            const country = props.countries.find((country) => country.id === city.countryId)?.code;
+            const country = countryOf(city, props.countries)?.code;
             return (
               <ComboboxChip key={city.id} className={'w-full justify-between p-4'}>
                 <div className="flex gap-2 text-[.9rem]">

@@ -1,4 +1,4 @@
-import type { City } from '@/types/types';
+import type { City, Country } from '@/types/types';
 
 // The orders_with_details view picks the same Places for the Orders Table's sort and Search.
 export type OrderPlaces = { loadingPlaces: City[]; unloadingPlaces: City[] };
@@ -9,3 +9,7 @@ export const firstLoadingPlace = (order: OrderPlaces): City | undefined => order
 /** The Unloading Place the Timeline and the Orders Table show: the Order's last. */
 export const lastUnloadingPlace = (order: OrderPlaces): City | undefined =>
   order.unloadingPlaces.at(-1);
+
+/** The City's Country among `countries`; undefined when it is not among them. */
+export const countryOf = (city: City, countries: Country[]): Country | undefined =>
+  countries.find((country) => country.id === city.countryId);

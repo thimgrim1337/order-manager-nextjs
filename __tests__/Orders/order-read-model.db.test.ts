@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { city } from '@/db/schemas';
 import { findOrders, findOrdersInWeek } from '@/lib/dal/order.dal';
+import { orderDays } from '@/lib/order-day';
 import { createOrder } from '@/lib/services/orders.services';
-import { orderDays } from '@/lib/week';
 import type { OrderQuery } from '@/types/types';
 import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
@@ -57,7 +57,7 @@ describe('Order read model', () => {
         (order) => order.id === gdanskToWarszawa,
       );
       if (!inTimeline) throw new Error('Order missing from the Timeline');
-      const days = orderDays(orderWeek, inTimeline).filter((day) => day.role !== 'none');
+      const days = orderDays(orderWeek, inTimeline, []).filter((day) => day.kind !== 'none');
       expect(days.at(0)?.loadingPlace?.name).toBe('Gdańsk');
       expect(days.at(-1)?.unloadingPlace?.name).toBe('Warszawa');
 

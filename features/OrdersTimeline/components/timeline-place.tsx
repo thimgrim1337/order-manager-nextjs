@@ -1,7 +1,5 @@
 import { TableCell } from '@/components/ui/table';
-import { useOrderChoices } from '@/features/shared/context/order-choices-context';
-import type { OrderDay } from '@/lib/week';
-import type { City } from '@/types/types';
+import type { OrderDay, ShownCity } from '@/lib/order-day';
 
 export default function TimelinePlaceCell({
   day,
@@ -10,16 +8,11 @@ export default function TimelinePlaceCell({
   day: OrderDay;
   borderColor: string;
 }) {
-  const { countries } = useOrderChoices();
-
-  const getCountryCode = (countryId: number) =>
-    countries?.find((country) => country.id === countryId)?.code;
-
-  if (day.role === 'none') return <TableCell />;
+  if (day.kind === 'none') return <TableCell />;
 
   const border = `border-b-4 ${borderColor} relative`;
 
-  if (day.role === 'transit') {
+  if (day.kind === 'transit') {
     return (
       <TableCell className={border}>
         <div className="flex justify-between text-muted-foreground">
@@ -30,20 +23,12 @@ export default function TimelinePlaceCell({
     );
   }
 
-  const renderPlace = (place?: City) =>
-    place && (
-      <>
-        <span className={`flag:${getCountryCode(place.countryId)}`} />
-        <span>{place.name}</span>
-      </>
-    );
-
   return (
     <TableCell className={border}>
       <div className="flex gap-2 items-center">
-        {renderPlace(day.loadingPlace)}
-        {day.role === 'loading-unloading' && <span>→</span>}
-        {renderPlace(day.unloadingPlace)}
+        <CityWithFlag city={day.loadingPlace} />
+        {day.kind === 'loading-unloading' && <span>→</span>}
+        <CityWithFlag city={day.unloadingPlace} />
       </div>
       {day.customer && (
         <span className="text-[.8rem] text-muted-foreground absolute bottom-1 max-w-75 truncate">
@@ -51,5 +36,18 @@ export default function TimelinePlaceCell({
         </span>
       )}
     </TableCell>
+  );
+}
+
+function CityWithFlag({ city }: { city?: ShownCity }) {
+  if (!city) return null;
+
+  return (
+    <>
+      {city.country && (
+        <span role="img" aria-label={city.country.code} className={`flag:${city.country.code}`} />
+      )}
+      <span>{city.name}</span>
+    </>
   );
 }
