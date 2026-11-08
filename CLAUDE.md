@@ -18,7 +18,7 @@ It's Transport Order Manager. The core functionality is CRUD orders and display 
 ## Development Commands
 
 - 'pnpm add' - Install dependencies (NOT npm)
-- 'pnpm dev' - Start the db container, migrate it, and the Next dev server on :3000. If :3000 is down, start it in the background and read its log; use it to check UI acceptance criteria.
+- 'pnpm dev' - Start the db container, migrate it, and the Next dev server on :3000. If :3000 is down, start it in the background and read its log; use it to check UI acceptance criteria (`pnpm screenshot '/timeline?week=2026-W45' <scratchpad>/out.png`, then read the PNG).
 - 'pnpm check' - Run Biome check --write
 - 'pnpm typecheck' - Run tsc --noEmit for the app (with `noUncheckedIndexedAccess`) and for `__tests__/` (its own tsconfig, without it)
 - 'pnpm exec vitest --run [path]' - Run tests once. Two projects: `browser` (Chromium; module state persists across tests, `vi.resetModules` reloads nothing) and `db` (node, `*.db.test.ts` against real Postgres). The `db` project needs the `db-test` container up ('NODE_ENV=test docker compose up db-test -d'); it migrates it, and each test runs inside `withRollback` (`__tests__/db/with-rollback.ts`). Pick one with '--project browser|db'. 'pnpm test' is watch mode. The pre-commit hook runs lint-staged, typecheck, knip and the full suite, so let the commit be the final full run.

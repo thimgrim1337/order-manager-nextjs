@@ -6,6 +6,7 @@
     "dev": "docker compose up db -d --wait && pnpm db:migrate && next dev",
     "build": "next build",
     "start": "next start",
+    "screenshot": "node scripts/screenshot.mjs",
     "check": "biome check --write",
     "typecheck": "tsc --noEmit && tsc --noEmit -p __tests__ && tsc -p __tests__ --listFilesOnly | grep -q '/__tests__/'",
     "knip": "knip",

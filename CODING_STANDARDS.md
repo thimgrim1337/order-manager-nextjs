@@ -43,7 +43,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 
 ## Accessibility
 
-- Icon-only controls get an English `aria-label` (e.g. `Next week`). E2E tests find elements by role and accessible name.
+- Every `aria-label` is English (e.g. `Next week`); visible UI text stays Polish. E2E tests find elements by role and accessible name.
 
 ## Types
 
