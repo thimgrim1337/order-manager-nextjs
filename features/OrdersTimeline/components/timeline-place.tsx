@@ -1,5 +1,7 @@
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { TableCell } from '@/components/ui/table';
 import type { OrderDay, ShownCity } from '@/lib/order-day';
+import { cn } from '@/lib/utils';
 
 export default function TimelinePlaceCell({
   day,
@@ -10,14 +12,20 @@ export default function TimelinePlaceCell({
 }) {
   if (day.kind === 'none') return <TableCell />;
 
-  const border = `border-b-4 ${borderColor} relative`;
+  const border = cn(
+    'border-b-4 relative',
+    borderColor,
+    day.continuesBefore && 'pl-5',
+    day.continuesAfter && 'pr-5',
+  );
 
   if (day.kind === 'transit') {
     return (
       <TableCell className={border}>
+        <ContinuingMarks day={day} />
         <div className="flex justify-between text-muted-foreground">
-          {day.loadingPlace && <span>← {day.loadingPlace.name}</span>}
-          {day.unloadingPlace && <span className="ml-auto">{day.unloadingPlace.name} →</span>}
+          {day.loadingPlace && <span>{day.loadingPlace.name}</span>}
+          {day.unloadingPlace && <span className="ml-auto">{day.unloadingPlace.name}</span>}
         </div>
       </TableCell>
     );
@@ -25,6 +33,7 @@ export default function TimelinePlaceCell({
 
   return (
     <TableCell className={border}>
+      <ContinuingMarks day={day} />
       <div className="flex gap-2 items-center">
         <CityWithFlag city={day.loadingPlace} />
         {day.kind === 'loading-unloading' && <span>→</span>}
@@ -49,5 +58,43 @@ function CityWithFlag({ city }: { city?: ShownCity }) {
       )}
       <span>{city.name}</span>
     </>
+  );
+}
+
+/** Shows that the Order runs on beyond the Week: at Monday's left edge, at Sunday's right edge. */
+function ContinuingMarks({ day }: { day: OrderDay }) {
+  return (
+    <>
+      {day.continuesBefore && (
+        <ContinuingMark label="Kontynuacja z poprzedniego tygodnia" className="left-0.5">
+          <ChevronsLeft aria-hidden className="size-4" />
+        </ContinuingMark>
+      )}
+      {day.continuesAfter && (
+        <ContinuingMark label="Kontynuacja w następnym tygodniu" className="right-0.5">
+          <ChevronsRight aria-hidden className="size-4" />
+        </ContinuingMark>
+      )}
+    </>
+  );
+}
+
+function ContinuingMark({
+  label,
+  className,
+  children,
+}: {
+  label: string;
+  className: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      className={cn('absolute top-1/2 -translate-y-1/2 text-muted-foreground', className)}
+    >
+      {children}
+    </span>
   );
 }

@@ -27,7 +27,7 @@ test.describe('Timeline', () => {
     const row = page.getByRole('row', { name: /WP0997C/ });
     await expect(row).toBeVisible();
     await expect(row.getByRole('cell').nth(FRIDAY)).toContainText('Warszawa');
-    await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Płock →');
+    await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Płock');
 
     await page.getByRole('button', { name: 'Next week' }).click();
 
@@ -48,6 +48,6 @@ test.describe('Timeline', () => {
     await page.getByRole('button', { name: 'Zapisz' }).click();
 
     await expect(page.getByRole('heading', { name: 'Edycja zlecenia' })).not.toBeVisible();
-    await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Warszawa →');
+    await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Warszawa');
   });
 });

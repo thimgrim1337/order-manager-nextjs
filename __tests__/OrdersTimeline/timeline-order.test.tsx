@@ -42,10 +42,19 @@ function renderRow(dates: { startDate: string; endDate: string }) {
   return screen.getAllByRole('cell').slice(1);
 }
 
-const flags = (cell: HTMLElement) =>
+const continuesFromPreviousWeek = 'Kontynuacja z poprzedniego tygodnia';
+const continuesIntoNextWeek = 'Kontynuacja w następnym tygodniu';
+
+const markLabels = [continuesFromPreviousWeek, continuesIntoNextWeek];
+
+const imgLabels = (cell: HTMLElement) =>
   within(cell)
     .queryAllByRole('img')
-    .map((flag) => flag.getAttribute('aria-label'));
+    .map((img) => img.getAttribute('aria-label') ?? '');
+
+const marks = (cell: HTMLElement) => imgLabels(cell).filter((label) => markLabels.includes(label));
+
+const flags = (cell: HTMLElement) => imgLabels(cell).filter((label) => !markLabels.includes(label));
 
 describe('Timeline row', () => {
   it('shows the loading day with its Place, flag and Customer, transit days, and the unloading day with its Place and flag', () => {
@@ -77,10 +86,36 @@ describe('Timeline row', () => {
   it('shows, for an Order crossing both edges of the Week, where it came from on Monday and where it goes on Sunday', () => {
     const cells = renderRow({ startDate: '2026-10-20', endDate: '2026-11-05' });
 
-    expect(cells[0]).toHaveTextContent('← Warszawa');
+    expect(cells[0]).toHaveTextContent(/^Warszawa$/);
     expect(cells.slice(1, 6).map((cell) => cell.textContent)).toEqual(Array(5).fill(''));
-    expect(cells[6]).toHaveTextContent('Berlin →');
+    expect(cells[6]).toHaveTextContent(/^Berlin$/);
     expect(cells.flatMap(flags)).toEqual([]);
     expect(cells.every((cell) => cell.classList.contains('border-red-500'))).toBe(true);
+  });
+
+  it('marks Monday as continuing from the previous Week and Sunday as continuing into the next', () => {
+    const cells = renderRow({ startDate: '2026-10-20', endDate: '2026-11-05' });
+
+    expect(marks(cells[0] as HTMLElement)).toEqual([continuesFromPreviousWeek]);
+    expect(cells.slice(1, 6).flatMap(marks)).toEqual([]);
+    expect(marks(cells[6] as HTMLElement)).toEqual([continuesIntoNextWeek]);
+  });
+
+  it('marks an unloading Monday as continuing from the previous Week', () => {
+    const cells = renderRow({ startDate: '2026-10-22', endDate: '2026-10-26' });
+
+    expect(marks(cells[0] as HTMLElement)).toEqual([continuesFromPreviousWeek]);
+  });
+
+  it('marks a loading Sunday as continuing into the next Week', () => {
+    const cells = renderRow({ startDate: '2026-11-01', endDate: '2026-11-03' });
+
+    expect(marks(cells[6] as HTMLElement)).toEqual([continuesIntoNextWeek]);
+  });
+
+  it('marks nothing for an Order inside the Week', () => {
+    const cells = renderRow({ startDate: '2026-10-26', endDate: '2026-11-01' });
+
+    expect(cells.flatMap(marks)).toEqual([]);
   });
 });
