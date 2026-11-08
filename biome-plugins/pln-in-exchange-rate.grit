@@ -1,0 +1,12 @@
+or {
+  `$_ === CURRENCY.PLN`,
+  `$_ !== CURRENCY.PLN`,
+  `CURRENCY.PLN === $_`,
+  `CURRENCY.PLN !== $_`
+} as $compare where {
+  $filename <: not or {
+    r".*lib/exchange-rate\.ts",
+    r".*__tests__/.*"
+  },
+  register_diagnostic(span=$compare, message="Ask @/lib/exchange-rate whether a Currency has an Exchange Rate: it alone decides that PLN has none.")
+}

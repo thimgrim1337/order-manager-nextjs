@@ -25,6 +25,7 @@
     "./biome-plugins/cache-invalidation-in-module.grit",
     "./biome-plugins/use-cache-life.grit",
     "./biome-plugins/money-in-exchange-rate.grit",
+    "./biome-plugins/pln-in-exchange-rate.grit",
     "./biome-plugins/query-module-parsers.grit",
     "./biome-plugins/dal-named-columns.grit",
     "./biome-plugins/dal-get-calls-find.grit",
