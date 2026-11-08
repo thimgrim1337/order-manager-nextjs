@@ -73,11 +73,11 @@ _Avoid_: Assigned driver, truck owner
 ### Customers and Cities
 
 **Customer** (_Zleceniodawca_):
-The company an Order is carried out for. Its name and its tax number (_NIP_) are each unique: a Customer with either already taken cannot be created.
+The company an Order is carried out for. Its name and its tax number (_NIP_) are each unique: a Customer with either already taken cannot be created. Customers are ordered by name in Polish alphabetical order.
 _Avoid_: Client, contractor
 
 **City** (_Miejscowość_):
-A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created.
+A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created. Cities are ordered by name in Polish alphabetical order.
 _Avoid_: Place, location, town (a Loading Place or Unloading Place is the role a City plays in an Order)
 
 ### Views

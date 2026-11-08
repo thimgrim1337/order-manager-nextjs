@@ -45,4 +45,17 @@ describe('findCustomers', () => {
 
       expect(customers.map((c) => c.name)).toEqual(['Anioł Logistyka', 'Devil Transport']);
     }));
+
+  it('orders the matches by name in Polish alphabetical order', () =>
+    withRollback(async (trx) => {
+      await seedCustomers(trx, [
+        { name: 'Zenit', tax: 'PL1111111111' },
+        { name: 'Śląsk Trans', tax: 'PL2222222222' },
+        { name: 'Sokół', tax: 'PL3333333333' },
+      ]);
+
+      const customers = await findCustomers(trx, 'PL');
+
+      expect(customers.map((c) => c.name)).toEqual(['Sokół', 'Śląsk Trans', 'Zenit']);
+    }));
 });

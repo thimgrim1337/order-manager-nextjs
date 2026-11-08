@@ -3,9 +3,10 @@ import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { customer } from '@/db/schemas';
 import { CACHE_TAG, SEARCH_LIMIT } from '@/lib/consts';
+import { inPolishOrder } from '@/lib/polish-order';
 import { toSearchTerm } from '../utils';
 
-/** Customers whose name or tax number contains `search`, ignoring case, by name. */
+/** Customers whose name or tax number contains `search`, ignoring case, by name in Polish alphabetical order. */
 export async function findCustomers(database: db | dbTransaction, search?: string) {
   const searchTerm = toSearchTerm(search);
 
@@ -17,7 +18,7 @@ export async function findCustomers(database: db | dbTransaction, search?: strin
         ? or(ilike(customer.name, searchTerm), ilike(customer.tax, searchTerm))
         : undefined,
     )
-    .orderBy(customer.name)
+    .orderBy(inPolishOrder(customer.name))
     .limit(SEARCH_LIMIT);
 }
 

@@ -43,6 +43,15 @@ describe('findCities', () => {
       ]);
     }));
 
+  it('orders Cities by name in Polish alphabetical order', () =>
+    withRollback(async (trx) => {
+      await seedCities(trx, ['Mława', 'Łódź', 'Lublin']);
+
+      const cities = await findCities(trx);
+
+      expect(cities.map((c) => c.name)).toEqual(['Lublin', 'Łódź', 'Mława']);
+    }));
+
   it('finds a City beyond the first 10 by name', () =>
     withRollback(async (trx) => {
       const first = Array.from({ length: 10 }, (_, i) => `Aaa ${String(i).padStart(2, '0')}`);

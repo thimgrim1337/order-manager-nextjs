@@ -1,11 +1,8 @@
-import { type AnyColumn, sql } from 'drizzle-orm';
 import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { driver } from '@/db/schemas';
 import { CACHE_TAG } from '@/lib/consts';
-
-// The database's default collation may sort by bytes (see migration 0002), so name it.
-const inPolishOrder = (column: AnyColumn) => sql`${column} COLLATE "pl-PL-x-icu"`;
+import { inPolishOrder } from '@/lib/polish-order';
 
 /** Every Driver, by first then last name in Polish alphabetical order. */
 export async function findDrivers(database: db | dbTransaction) {
