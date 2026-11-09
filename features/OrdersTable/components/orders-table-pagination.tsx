@@ -19,14 +19,16 @@ export function OrdersTablePagination<TData>({ table }: DataTablePagination<TDat
     <div className="flex items-center justify-end p-2">
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Wierszy na stronę</p>
+          <p id="orders-page-size-label" className="text-sm font-medium">
+            Wierszy na stronę
+          </p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-17.5">
+            <SelectTrigger className="h-8 w-17.5" aria-labelledby="orders-page-size-label">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">

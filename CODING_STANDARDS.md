@@ -43,9 +43,12 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 
 ## Accessibility
 
-- A control with visible label text takes its accessible name from that text and has no `aria-label` (WCAG 2.5.3 Label in Name). A displayed value is not a label: a select trigger showing the chosen Week still gets one.
-- Every other `aria-label` (an icon-only control, a `role="img"` mark) is Polish like the rest of the UI (e.g. `Następny tydzień`); the page is `<html lang="pl">`. A code that reads the same in any language, like a flag's country code, stays as it is.
+An element's accessible name is whatever a screen reader announces for it: its text, an `aria-label`, an `aria-labelledby` target, or `sr-only` text. The rules cover every name the app renders, `components/ui/` (shadcn) included.
+
+- A control with visible label text takes its name from that text (WCAG 2.5.3 Label in Name): its own content, or the visible label beside it through `aria-labelledby`, and no `aria-label`. A displayed value is not a label: a select trigger showing the chosen Week still gets one.
+- Every other name (an icon-only control, a `role="img"` mark, `sr-only` text) is Polish like the rest of the UI (e.g. `Następny tydzień`); the page is `<html lang="pl">`. A code that reads the same in any language, like a flag's country code, stays as it is.
 - Tests find elements by role and their Polish accessible name. When the name also takes in the control's description text (the Status menu buttons), match its start: `/^zakończone/`.
+- `__tests__/e2e/a11y.spec.ts` runs axe (WCAG 2.1 A/AA plus Label in Name) on each page; a new page or dialog gets a scan there.
 
 ## Types
 

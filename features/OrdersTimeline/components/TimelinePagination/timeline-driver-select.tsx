@@ -26,7 +26,7 @@ export default function TimelinePaginationDriverSelect() {
       value={query.driverId ?? null}
       onValueChange={(value) => change({ driverId: value ? +value : undefined })}
     >
-      <SelectTrigger className={'min-w-45'}>
+      <SelectTrigger className={'min-w-45'} aria-label="Kierowca">
         <SelectValue placeholder="Wszyscy kierowcy"></SelectValue>
       </SelectTrigger>
       <SelectContent alignItemWithTrigger={false}>
