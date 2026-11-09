@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
-import { cleanupTestData, seedOrder, seedTestData } from './helpers/seed';
+import db from '@/db/db';
+import { seedOrder, seedOrderReferences } from '../db/seed';
+import { cleanupTestData } from './helpers/seed';
 
 /**
  * WCAG 2.1 A/AA, plus Label in Name (2.5.3), which axe leaves off by default.
@@ -36,9 +38,9 @@ async function violations(page: Page, { describedControls }: { describedControls
 test.describe('Accessibility', () => {
   test.beforeEach(async () => {
     await cleanupTestData();
-    const data = await seedTestData();
+    const refs = await seedOrderReferences(db);
     // Crosses into the next Week, so the Timeline shows a continuing mark.
-    await seedOrder(data, {
+    await seedOrder(db, refs, {
       orderNr: 'E2E-A11Y-001',
       startDate: '2026-10-30',
       endDate: '2026-11-02',

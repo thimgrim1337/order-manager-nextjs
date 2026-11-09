@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
+import db from '@/db/db';
+import { seedOrder, seedOrderReferences } from '../db/seed';
 import { cacheEmptySearch, searchCombobox } from './helpers/combobox';
-import { cleanupTestData, dayOfThisMonth, seedOrder, seedTestData } from './helpers/seed';
+import { cleanupTestData, dayOfThisMonth } from './helpers/seed';
 
 const SEEDED_ORDER = {
   orderNr: 'E2E-001',
@@ -19,7 +21,7 @@ test.describe('Order test', () => {
   });
 
   test('Create new order and display in table', async ({ page }) => {
-    await seedTestData();
+    await seedOrderReferences(db);
     await page.goto('/orders');
 
     await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
@@ -59,7 +61,7 @@ test.describe('Order test', () => {
   });
 
   test('Create a Customer and a City and pick them in the order form', async ({ page }) => {
-    await seedTestData();
+    await seedOrderReferences(db);
     await page.goto('/orders');
 
     await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
@@ -83,7 +85,7 @@ test.describe('Order test', () => {
     await page.getByRole('button', { name: 'Dodaj nowe miejsce' }).click();
     const cityDialog = page.getByRole('dialog', { name: 'Dodawanie nowego miejsca' });
     await cityDialog.getByLabel('Kod kraju').click();
-    await page.getByRole('option', { name: 'PL Poland' }).click();
+    await page.getByRole('option', { name: 'PL Polska' }).click();
     await cityDialog.getByLabel('Kod pocztowy').fill('30-001');
     await cityDialog.getByLabel('Nazwa miejscowości').fill('Kraków');
     await cityDialog.getByRole('button', { name: 'Zapisz' }).click();
@@ -96,7 +98,7 @@ test.describe('Order test', () => {
 
   test.describe('with a seeded Order', () => {
     test.beforeEach(async () => {
-      await seedOrder(await seedTestData(), SEEDED_ORDER);
+      await seedOrder(db, await seedOrderReferences(db), SEEDED_ORDER);
     });
 
     test('Edit order price and display in table', async ({ page }) => {

@@ -6,72 +6,12 @@ import {
   currency as currencies,
   customer as customers,
   driver as drivers,
-  loadingPlace as loadingPlaces,
-  order as orders,
   status as statuses,
   truck as trucks,
-  unloadingPlace as unloadingPlaces,
 } from '@/db/schemas';
-import seedReference from '@/db/seeds/reference';
 import { ENV } from '@/env';
 import { getToday } from '@/lib/dates';
 import { assertTestDatabase } from '../../db/assert-test-database';
-
-export async function seedTestData() {
-  const [country] = await db
-    .insert(countries)
-    .values({
-      name: 'Poland',
-      code: 'PL',
-    })
-    .returning();
-
-  const [customer] = await db
-    .insert(customers)
-    .values({
-      name: 'Test Firma',
-      tax: 'PL1234567890',
-    })
-    .returning();
-
-  const [driver] = await db
-    .insert(drivers)
-    .values({
-      firstName: 'Jan',
-      lastName: 'Kowalski',
-    })
-    .returning();
-
-  const [truck] = await db
-    .insert(trucks)
-    .values({
-      plate: 'WP0997C',
-      driverId: driver.id,
-      insuranceEndAt: '2027-01-01',
-      serviceEndAt: '2027-01-01',
-    })
-    .returning();
-
-  const dbCities = await db
-    .insert(cities)
-    .values([
-      {
-        name: 'Warszawa',
-        postal: '00-001',
-        countryId: country.id,
-      },
-      {
-        name: 'Płock',
-        postal: '09-400',
-        countryId: country.id,
-      },
-    ])
-    .returning();
-
-  const { statuses, currencies } = await seedReference(db);
-
-  return { customer, driver, truck, dbCities, statuses, currencies };
-}
 
 /**
  * `yyyy-MM-dd` for `day` of the current (Warsaw) month: the month the date picker opens on,
@@ -79,36 +19,6 @@ export async function seedTestData() {
  */
 export function dayOfThisMonth(day: number) {
   return `${getToday().slice(0, 8)}${String(day).padStart(2, '0')}`;
-}
-
-/** Warszawa → Płock, for the seeded Customer, Driver and Truck. */
-export async function seedOrder(
-  data: Awaited<ReturnType<typeof seedTestData>>,
-  fields: { orderNr: string; startDate: string; endDate: string },
-) {
-  const [loadingCity, unloadingCity] = data.dbCities;
-  const [dbOrder] = await db
-    .insert(orders)
-    .values({
-      ...fields,
-      customerId: data.customer.id,
-      driverId: data.driver.id,
-      truckId: data.truck.id,
-      statusId: data.statuses.inProgress.id,
-      currencyId: data.currencies.pln.id,
-      priceCurrency: '1000',
-      pricePLN: '1000',
-    })
-    .returning();
-
-  await db
-    .insert(loadingPlaces)
-    .values({ orderId: dbOrder.id, placeId: loadingCity.id, position: 0 });
-  await db
-    .insert(unloadingPlaces)
-    .values({ orderId: dbOrder.id, placeId: unloadingCity.id, position: 0 });
-
-  return dbOrder;
 }
 
 export async function cleanupTestData() {

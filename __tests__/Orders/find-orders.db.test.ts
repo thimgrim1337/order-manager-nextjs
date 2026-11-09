@@ -1,11 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { city, customer, driver, loadingPlace, order, truck, unloadingPlace } from '@/db/schemas';
+import { city, customer, driver, order, truck } from '@/db/schemas';
 import type { OrderSortField } from '@/lib/consts';
 import { findOrders } from '@/lib/dal/order.dal';
 import type { OrderQuery } from '@/types/types';
-import { orderRowFor, seedOrderReferences } from '../db/seed';
+import { orderRowFor, seedOrder, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
 
 /**
@@ -69,22 +69,19 @@ async function seedPolishNames(trx: dbTransaction) {
       })),
     )
     .returning();
-  const orderRow = orderRowFor(refs);
-  const [first, second] = await trx
-    .insert(order)
-    .values([
-      orderRow({ driverId: zenon.id, customerId: zaklad.id }),
-      orderRow({ orderNr: 'ZL/2', driverId: lukasz.id, customerId: lodzka.id }),
-    ])
-    .returning({ id: order.id });
-  await trx.insert(loadingPlace).values([
-    { orderId: first.id, placeId: zamosc.id, position: 0 },
-    { orderId: second.id, placeId: lodz.id, position: 0 },
-  ]);
-  await trx.insert(unloadingPlace).values([
-    { orderId: first.id, placeId: zgierz.id, position: 0 },
-    { orderId: second.id, placeId: lowicz.id, position: 0 },
-  ]);
+  const first = await seedOrder(trx, refs, {
+    driverId: zenon.id,
+    customerId: zaklad.id,
+    loadingPlaces: [zamosc],
+    unloadingPlaces: [zgierz],
+  });
+  const second = await seedOrder(trx, refs, {
+    orderNr: 'ZL/2',
+    driverId: lukasz.id,
+    customerId: lodzka.id,
+    loadingPlaces: [lodz],
+    unloadingPlaces: [lowicz],
+  });
 
   return { first: first.id, second: second.id };
 }

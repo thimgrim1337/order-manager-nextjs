@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { cleanupTestData, seedOrder, seedTestData } from './helpers/seed';
+import db from '@/db/db';
+import { seedOrder, seedOrderReferences } from '../db/seed';
+import { cleanupTestData } from './helpers/seed';
 
 // Cell 0 holds the Truck and Driver; cells 1–7 are Monday to Sunday.
 const MONDAY = 1;
@@ -9,8 +11,8 @@ const SUNDAY = 7;
 test.describe('Timeline', () => {
   test.beforeEach(async () => {
     await cleanupTestData();
-    const data = await seedTestData();
-    await seedOrder(data, {
+    const refs = await seedOrderReferences(db);
+    await seedOrder(db, refs, {
       orderNr: 'E2E-TL-001',
       startDate: '2026-10-30',
       endDate: '2026-11-02',

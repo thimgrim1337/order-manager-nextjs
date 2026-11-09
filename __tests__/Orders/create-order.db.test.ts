@@ -14,11 +14,10 @@ vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
-  const { jan } = refs.drivers;
 
   const orderForm = orderFormFor(refs);
 
-  return { orderForm, refs, jan, eur: refs.currencies.eur, dbTruck: refs.truck };
+  return { orderForm, refs, eur: refs.currencies.eur, dbTruck: refs.truck };
 }
 
 const orderWeek = week('2026-W44');
@@ -49,12 +48,14 @@ describe('createOrder', () => {
 
   it("assigns the Order's Driver to its Truck", () =>
     withRollback(async (trx) => {
-      const { orderForm, jan, dbTruck } = await seed(trx);
+      const { orderForm, refs, dbTruck } = await seed(trx);
+      const { anna } = refs.drivers;
 
-      await createOrder(trx, orderForm());
+      // The Truck's Regular Driver is Jan.
+      await createOrder(trx, orderForm({ driverId: anna.id }));
 
       const [savedTruck] = await trx.select().from(truck).where(eq(truck.id, dbTruck.id));
-      expect(savedTruck.driverId).toBe(jan.id);
+      expect(savedTruck.driverId).toBe(anna.id);
     }));
 
   it('converts an EUR price to PLN at the submitted exchange rate', () =>
