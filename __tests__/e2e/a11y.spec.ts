@@ -76,4 +76,13 @@ test.describe('Accessibility', () => {
     await expect(page.getByRole('row', { name: /WP0997C/ })).toBeVisible();
     expect(await violations(page)).toEqual([]);
   });
+
+  test('the edit-Order dialog, with its Loading and Unloading Places picked', async ({ page }) => {
+    await page.goto('/timeline?week=2026-W44');
+    await page.getByRole('row', { name: /WP0997C/ }).click();
+    await expect(page.getByRole('heading', { name: 'Edycja zlecenia E2E-A11Y-001' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Usuń Warszawa' })).toBeAttached();
+    await expect(page.getByRole('button', { name: 'Usuń Płock' })).toBeAttached();
+    expect(await violations(page)).toEqual([]);
+  });
 });

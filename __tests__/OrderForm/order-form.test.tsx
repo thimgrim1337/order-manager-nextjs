@@ -305,6 +305,25 @@ describe('OrderForm', () => {
       });
     });
 
+    it('removes a picked Unloading Place by its named button', async () => {
+      const zgierz = { id: 11, name: 'Zgierz', postal: '95-100', countryId: 1 };
+      const { user, onDialogClose } = await editSetup({
+        ...order,
+        loadingPlaces: [zgierz],
+        unloadingPlaces: [plock, zgierz],
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      await user.click(screen.getByRole('button', { name: 'Usuń Płock' }));
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(updateOrder).toHaveBeenCalledWith(
+        7,
+        expect.objectContaining({ loadingPlaces: [zgierz], unloadingPlaces: [zgierz] }),
+      );
+    });
+
     it("defaults the Driver to the picked Truck's Regular Driver", async () => {
       const { user } = await editSetup({ ...order, truck: choices.trucks[1] });
 

@@ -52,7 +52,11 @@ export default function PlacesComboboxField({
           {selectedCities.map((city) => {
             const country = countryOf(city, props.countries)?.code;
             return (
-              <ComboboxChip key={city.id} className={'w-full justify-between p-4'}>
+              <ComboboxChip
+                key={city.id}
+                className={'w-full justify-between p-4'}
+                removeLabel={`Usuń ${city.name}`}
+              >
                 <div className="flex gap-2 text-[.9rem]">
                   <span>{country}</span>
                   <span>{city.postal}</span>
