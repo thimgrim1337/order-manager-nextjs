@@ -130,7 +130,7 @@ test.describe('Order test', () => {
 
       await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
 
-      await page.getByRole('button', { name: /^zakończone/ }).click();
+      await page.getByRole('button', { name: 'zakończone' }).click();
 
       await expect(
         page.getByRole('heading', { name: 'Zmiana statusu zlecenia' }),

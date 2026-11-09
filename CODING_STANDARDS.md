@@ -47,8 +47,8 @@ An element's accessible name is whatever a screen reader announces for it: its t
 
 - A control with visible label text takes its name from that text (WCAG 2.5.3 Label in Name): its own content, or the visible label beside it through `aria-labelledby`, and no `aria-label`. A displayed value is not a label: a select trigger showing the chosen Week still gets one.
 - Every other name (an icon-only control, a `role="img"` mark, `sr-only` text) is Polish like the rest of the UI (e.g. `Następny tydzień`); the page is `<html lang="pl">`. A code that reads the same in any language, like a flag's country code, stays as it is.
-- Tests find elements by role and their Polish accessible name. When the name also takes in the control's description text (the Status menu buttons), match its start: `/^zakończone/`.
-- `__tests__/e2e/a11y.spec.ts` runs axe (WCAG 2.1 A/AA plus Label in Name) on each page; a new page or dialog gets a scan there.
+- Tests find elements by role and their Polish accessible name.
+- `__tests__/e2e/a11y.spec.ts` runs axe (WCAG 2.1 A/AA plus Label in Name) on each page; a new page or dialog gets a scan there axe counts a control's visible description as part of its label, so a control named by `aria-labelledby` and described by `aria-describedby` (the Status menu buttons) is passed as `describedControls`, which skips Label in Name for it alone.
 
 ## Types
 

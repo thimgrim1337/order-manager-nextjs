@@ -27,7 +27,22 @@ const setup = () => {
   return { user };
 };
 
+const openStatusDialog = async (user: ReturnType<typeof userEvent.setup>) => {
+  await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+  await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+};
+
 describe('OrdersContextMenu', () => {
+  it('names each Status button by its label and describes it by its description', async () => {
+    const { user } = setup();
+
+    await openStatusDialog(user);
+
+    expect(await screen.findByRole('button', { name: 'zakończone' })).toHaveAccessibleDescription(
+      'Zlecenie zostało zakończone.',
+    );
+  });
+
   it('keeps the Status dialog closed when Escape is pressed before the save finishes', async () => {
     const save = deferred();
     vi.mocked(changeOrderStatus).mockReturnValueOnce(
@@ -37,9 +52,8 @@ describe('OrdersContextMenu', () => {
     );
     const { user } = setup();
 
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
+    await openStatusDialog(user);
+    await user.click(await screen.findByRole('button', { name: 'zakończone' }));
     await user.keyboard('{Escape}');
 
     await expect
@@ -58,9 +72,8 @@ describe('OrdersContextMenu', () => {
     });
     const { user } = setup();
 
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
+    await openStatusDialog(user);
+    await user.click(await screen.findByRole('button', { name: 'zakończone' }));
 
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
@@ -75,12 +88,13 @@ describe('OrdersContextMenu', () => {
     );
     const { user } = setup();
 
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.dblClick(await screen.findByRole('button', { name: /^zakończone/ }));
+    await openStatusDialog(user);
+    await user.dblClick(await screen.findByRole('button', { name: 'zakończone' }));
 
-    expect(screen.getByRole('button', { name: /^zakończone/ })).toHaveTextContent('Wysyłanie');
-    for (const status of [/^w trakcie/, /^anulowane/, /^zakończone/]) {
+    expect(screen.getByRole('button', { name: 'zakończone' })).toHaveAccessibleDescription(
+      'Wysyłanie',
+    );
+    for (const status of ['w trakcie', 'anulowane', 'zakończone']) {
       const button = screen.getByRole('button', { name: status });
       expect(button).toBeDisabled();
       await user.click(button);
@@ -99,17 +113,15 @@ describe('OrdersContextMenu', () => {
     );
     const { user } = setup();
 
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
+    await openStatusDialog(user);
+    await user.click(await screen.findByRole('button', { name: 'zakończone' }));
     await user.keyboard('{Escape}');
     await expect
       .poll(() => screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' }))
       .toBeNull();
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
+    await openStatusDialog(user);
 
-    const button = await screen.findByRole('button', { name: /^anulowane/ });
+    const button = await screen.findByRole('button', { name: 'anulowane' });
     expect(button).toBeDisabled();
     await user.click(button);
     expect(changeOrderStatus).toHaveBeenCalledOnce();
@@ -124,12 +136,11 @@ describe('OrdersContextMenu', () => {
     });
     const { user } = setup();
 
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
+    await openStatusDialog(user);
+    await user.click(await screen.findByRole('button', { name: 'zakończone' }));
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
 
-    const retry = screen.getByRole('button', { name: /^anulowane/ });
+    const retry = screen.getByRole('button', { name: 'anulowane' });
     await expect.poll(() => retry).toBeEnabled();
     await user.click(retry);
 
@@ -142,9 +153,8 @@ describe('OrdersContextMenu', () => {
     >);
     const { user } = setup();
 
-    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
-    await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
+    await openStatusDialog(user);
+    await user.click(await screen.findByRole('button', { name: 'zakończone' }));
 
     await expect
       .poll(() => screen.queryByText('Zlecenie ZL-001 ma teraz status: zakończone.'))
