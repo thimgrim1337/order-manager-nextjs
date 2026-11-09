@@ -28,8 +28,14 @@ export default defineConfig({
   /* Spec files share the db-test database and truncate it, so they must not run in parallel. */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  /* `line` locally keeps a failure's assertion in a short terminal output. */
-  reporter: process.env.CI ? 'html' : 'line',
+  /* `line` locally keeps a failure's assertion in a short terminal output; failures.txt keeps it after the run. */
+  reporter: [
+    [process.env.CI ? 'html' : 'line'],
+    [
+      './__tests__/e2e/helpers/failures-reporter.ts',
+      { outputFile: './__tests__/e2e/test-results/failures.txt' },
+    ],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
