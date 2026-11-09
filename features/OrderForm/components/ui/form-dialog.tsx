@@ -5,6 +5,8 @@ import Dialog, { DialogProps } from "@/features/shared/components/ui/dialog";
 export type FormDialogProps = Omit<DialogProps, "trigger"> & {
 	triggerTitle?: string;
 	hideTriggerTitle?: boolean;
+	/** The trigger's accessible name, in English; `title` stays the Polish heading. */
+	triggerAriaLabel: string;
 };
 
 export default function FormDialog(props: FormDialogProps) {
@@ -13,7 +15,7 @@ export default function FormDialog(props: FormDialogProps) {
 		: (props.triggerTitle ?? props.title);
 
 	const trigger = (
-		<Button className={"group font-medium flex"} aria-label={props.title}>
+		<Button className={"group font-medium flex"} aria-label={props.triggerAriaLabel}>
 			{triggerLabel}
 
 			<Plus className="transition-transform group-hover:rotate-45 group-hover:scale-125" />

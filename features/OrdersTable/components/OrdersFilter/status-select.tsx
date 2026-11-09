@@ -6,18 +6,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
-import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
-import type { Status } from '@/types/types';
+import {
+  STATUS_PRESENTATIONS,
+  type StatusPresentation,
+} from '@/features/shared/lib/status-presentation';
 
 export default function StatusSelect() {
-  const { statuses } = useOrderChoices();
   const { query, change } = useUrlQuery(ordersTableQuery);
 
   return (
     <Select
-      value={statuses.find((status) => status.id === query.statusId) ?? null}
-      itemToStringLabel={(status: Status) => status.name}
+      value={STATUS_PRESENTATIONS.find((status) => status.id === query.statusId) ?? null}
+      itemToStringLabel={(status: StatusPresentation) => status.label}
       itemToStringValue={(status) => String(status.id)}
       onValueChange={(value) => change({ statusId: value?.id })}
     >
@@ -26,9 +27,9 @@ export default function StatusSelect() {
       </SelectTrigger>
       <SelectContent alignItemWithTrigger={false}>
         <SelectItem value={null}>Wszystkie</SelectItem>
-        {statuses?.map((status) => (
+        {STATUS_PRESENTATIONS.map((status) => (
           <SelectItem key={status.id} value={status}>
-            {status.name}
+            {status.label}
           </SelectItem>
         ))}
       </SelectContent>

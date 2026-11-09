@@ -15,6 +15,7 @@ export default function CreateCustomer() {
       onOpenChange={setIsModalOpen}
       icon={<HousePlus />}
       title={'Dodawanie nowego zleceniodawcy'}
+      triggerAriaLabel="New customer"
       description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
       hideTriggerTitle
     >

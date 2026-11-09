@@ -1,29 +1,7 @@
 import { cn } from 'cn';
-import { Ban, CheckCircle, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ORDER_STATUS } from '@/lib/consts';
+import { STATUS_PRESENTATIONS } from '@/features/shared/lib/status-presentation';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
-
-const statusConfig = {
-  pending: {
-    id: ORDER_STATUS.InProgress,
-    label: 'w trakcie',
-    icon: Truck,
-    description: 'Zlecenie zostało rozpoczęte.',
-  },
-  cancelled: {
-    id: ORDER_STATUS.Cancelled,
-    label: 'anulowane',
-    icon: Ban,
-    description: 'Zlecenie zostało anulowane.',
-  },
-  delivered: {
-    id: ORDER_STATUS.Delivered,
-    label: 'zakończone',
-    icon: CheckCircle,
-    description: 'Zlecenie zostało zakończone.',
-  },
-};
 
 type OrderStatusMenu = {
   order: OrderReadModel;
@@ -39,30 +17,30 @@ export default function OrderStatusMenu({
 }: OrderStatusMenu) {
   return (
     <div className="space-y-3">
-      {Object.entries(statusConfig).map(([status, config]) => {
-        const Icon = config.icon;
+      {STATUS_PRESENTATIONS.map((status) => {
+        const Icon = status.icon;
         return (
           <Button
-            key={status}
+            key={status.id}
             variant={'outline'}
             className={cn(
               'w-full justify-start h-auto p-4 text-left',
-              order.status.id === config.id ? 'font-bold' : undefined,
+              order.status.id === status.id ? 'font-bold' : undefined,
             )}
             disabled={sendingStatusId !== undefined}
-            onClick={() => onStatusChange(config.id, config.label)}
-            aria-label={`status-${status}`}
+            onClick={() => onStatusChange(status.id, status.label)}
+            aria-label={status.accessibleName}
           >
             <div className="flex items-start gap-3">
               <Icon className="size-6 mt-0.5 shrink-0" />
               <div className="space-y-1">
                 <div
-                  className={cn(order.status.id === config.id ? 'font-extrabold' : 'font-medium')}
+                  className={cn(order.status.id === status.id ? 'font-extrabold' : 'font-medium')}
                 >
-                  {config.label}
+                  {status.label}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {sendingStatusId === config.id ? 'Wysyłanie' : config.description}
+                  {sendingStatusId === status.id ? 'Wysyłanie' : status.description}
                 </div>
               </div>
             </div>

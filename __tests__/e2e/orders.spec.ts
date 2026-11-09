@@ -22,7 +22,7 @@ test.describe('Order test', () => {
     await seedTestData();
     await page.goto('/orders');
 
-    await page.getByRole('button', { name: 'Dodaj nowe zlecenie ' }).click();
+    await page.getByRole('button', { name: 'New order' }).click();
 
     await page.getByLabel('Zleceniodawca').fill('Test');
     await page.getByRole('option', { name: 'Test Firma' }).click();
@@ -62,12 +62,12 @@ test.describe('Order test', () => {
     await seedTestData();
     await page.goto('/orders');
 
-    await page.getByRole('button', { name: 'Dodaj nowe zlecenie ' }).click();
+    await page.getByRole('button', { name: 'New order' }).click();
 
     // A stale cached search would still find nothing after creating.
     await cacheEmptySearch(page, 'Zleceniodawca', 'Nowa');
 
-    await page.getByRole('button', { name: 'Dodawanie nowego zleceniodawcy' }).click();
+    await page.getByRole('button', { name: 'New customer' }).click();
     const customerDialog = page.getByRole('dialog', { name: 'Dodawanie nowego zleceniodawcy' });
     await customerDialog.getByLabel('Nazwa zleceniodawcy').fill('Nowa Firma');
     await customerDialog.getByLabel('NIP').fill('PL9876543210');
@@ -80,7 +80,7 @@ test.describe('Order test', () => {
 
     await cacheEmptySearch(page, 'Miejsca załadunku', 'Kra');
 
-    await page.getByRole('button', { name: 'Dodawanie nowego miejsca' }).click();
+    await page.getByRole('button', { name: 'New city' }).click();
     const cityDialog = page.getByRole('dialog', { name: 'Dodawanie nowego miejsca' });
     await cityDialog.getByLabel('Kod kraju').click();
     await page.getByRole('option', { name: 'PL Poland' }).click();
@@ -130,7 +130,7 @@ test.describe('Order test', () => {
 
       await expect(page.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
 
-      await page.getByRole('button', { name: 'status-delivered' }).click();
+      await page.getByRole('button', { name: 'Delivered' }).click();
 
       await expect(
         page.getByRole('heading', { name: 'Zmiana statusu zlecenia' }),

@@ -1,12 +1,12 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
+import StatusBadge from '@/features/shared/components/ui/status-badge';
 import type { OrderSortField } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { formatDate } from '@/lib/dates';
 import { driverName } from '@/lib/drivers';
 import { firstLoadingPlace, lastUnloadingPlace } from '@/lib/places';
-import StatusBadge from '../components/ui/status-bagde';
 
 /** Every column is sortable: its `accessorKey` is its id, and the id is the sort field the URL and DAL read. */
 type OrderColumn = ColumnDef<OrderReadModel> & { accessorKey: OrderSortField };
@@ -38,7 +38,7 @@ export const columns: OrderColumn[] = [
   },
   {
     accessorKey: 'statusId',
-    cell: ({ row }) => <StatusBadge status={row.original.status} />,
+    cell: ({ row }) => <StatusBadge statusId={row.original.status.id} />,
     header: 'Status',
   },
   {

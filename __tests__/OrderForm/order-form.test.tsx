@@ -261,7 +261,7 @@ describe('OrderForm', () => {
       customer,
       driver: choices.drivers[1],
       truck: choices.trucks[0],
-      status: choices.statuses[0],
+      status: { id: 1, name: 'w trakcie' },
       currency: { ...choices.currencies[0], rate: 1, date: '' },
       priceCurrency: '1000',
       pricePLN: '1000',

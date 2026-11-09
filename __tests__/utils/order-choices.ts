@@ -33,9 +33,4 @@ export const orderChoices = (): OrderChoices => ({
     { id: 2, code: 'EUR' },
     { id: 3, code: 'USD' },
   ],
-  statuses: [
-    { id: 1, name: 'w trakcie' },
-    { id: 2, name: 'anulowane' },
-    { id: 3, name: 'zakończone' },
-  ],
 });

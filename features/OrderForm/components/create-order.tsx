@@ -15,6 +15,7 @@ export default function CreateOrder() {
       onOpenChange={setIsModalOpen}
       icon={<FilePlus />}
       title={'Dodaj nowe zlecenie'}
+      triggerAriaLabel="New order"
       description="Wypełnij wszystkie pola aby dodać nowe zlecenie."
       className="min-w-5xl"
     >

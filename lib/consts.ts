@@ -16,7 +16,6 @@ export const CACHE_TAG = {
   Orders: 'orders',
   Trucks: 'trucks',
   Drivers: 'drivers',
-  Status: 'status',
   Countries: 'countries',
   Customers: 'customers',
   Cities: 'cities',
