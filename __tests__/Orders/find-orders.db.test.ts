@@ -5,8 +5,8 @@ import { city, customer, driver, order, truck } from '@/db/schemas';
 import type { OrderSortField } from '@/lib/consts';
 import { findOrders } from '@/lib/dal/order.dal';
 import type { OrderQuery } from '@/types/types';
-import { orderRowFor, seedOrder, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { orderRowFor, seedOrder, seedOrderReferences } from '../fixtures/order';
 
 /**
  * Two Orders whose ids run opposite to their names: the first is Jan Kowalski / Test Firma / WP0997C,

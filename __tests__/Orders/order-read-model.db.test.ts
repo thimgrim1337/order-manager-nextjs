@@ -5,8 +5,8 @@ import { findOrders, findOrdersInWeek } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import { createOrder } from '@/lib/services/orders.services';
 import type { OrderQuery } from '@/types/types';
-import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { orderFormFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.

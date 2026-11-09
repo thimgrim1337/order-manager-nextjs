@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import db from '@/db/db';
-import { seedOrder, seedOrderReferences } from '../db/seed';
+import { seedOrder, seedOrderReferences } from '../fixtures/order';
 import { cleanupTestData } from './helpers/seed';
 
 /**

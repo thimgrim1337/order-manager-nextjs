@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import db from '@/db/db';
-import { seedOrder, seedOrderReferences } from '../db/seed';
+import { seedOrder, seedOrderReferences } from '../fixtures/order';
 import { cacheEmptySearch, searchCombobox } from './helpers/combobox';
 import { cleanupTestData, dayOfThisMonth } from './helpers/seed';
 

@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { changeOrderStatus, createOrder } from '@/lib/services/orders.services';
-import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { orderFormFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.

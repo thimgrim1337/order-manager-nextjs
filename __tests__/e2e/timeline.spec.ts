@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import db from '@/db/db';
-import { seedOrder, seedOrderReferences } from '../db/seed';
+import { seedOrder, seedOrderReferences } from '../fixtures/order';
 import { cleanupTestData } from './helpers/seed';
 
 // Cell 0 holds the Truck and Driver; cells 1–7 are Monday to Sunday.

@@ -9,7 +9,7 @@ This is NextJS 16 App Router app, using shadcn for styling and drizzle for dateb
 - 'db/' - Database migrations and schemas. A migration touching existing rows or the orders view: read `docs/agents/migrations.md`.
 - 'features/' - App features,
 - 'lib/' - Utilites, API helpers, DTO and DAL
-- '__tests__/' - Tests: `*.test.ts` (browser), `*.db.test.ts` (db, seed in `__tests__/db/seed.ts`), `__tests__/e2e/*.spec.ts` (Playwright, seed in `__tests__/e2e/helpers/seed.ts`)
+- '__tests__/' - Tests: `*.test.ts` (browser), `*.db.test.ts` (db), `__tests__/e2e/*.spec.ts` (Playwright, cleanup in `__tests__/e2e/helpers/seed.ts`). Both db and e2e seed Orders through `__tests__/fixtures/order.ts`, passing a transaction or the global db.
 
 ## Purpose
 
@@ -22,7 +22,7 @@ It's Transport Order Manager. The core functionality is CRUD orders and display 
 - 'pnpm check' - Run Biome check --write
 - 'pnpm typecheck' - Run tsc --noEmit for the app (with `noUncheckedIndexedAccess`) and for `__tests__/` (its own tsconfig, without it)
 - 'pnpm exec vitest --run [path]' - Run tests once. Two projects: `browser` (Chromium; module state persists across tests, `vi.resetModules` reloads nothing) and `db` (node, `*.db.test.ts` against real Postgres). The `db` project needs the `db-test` container up ('NODE_ENV=test docker compose up db-test -d'); it migrates it, and each test runs inside `withRollback` (`__tests__/db/with-rollback.ts`). Pick one with '--project browser|db'. 'pnpm test' is watch mode. The pre-commit hook runs lint-staged, typecheck, knip and the full suite, so let the commit be the final full run.
-- 'pnpm test:e2e' - Playwright against the db-test container and a production build on :3001; if that port is taken, set `E2E_PORT`. `pnpm test:e2e:run [file] -g …` reuses the last build, and refuses it once the app's sources changed. A change to what a page renders: run that page's spec (`__tests__/e2e/<page>.spec.ts`) before committing; the pre-commit hook runs no e2e.
+- 'pnpm test:e2e' - Playwright against the db-test container and a production build on :3001; if that port is taken, set `E2E_PORT`. `pnpm test:e2e:run [file] -g …` reuses the last build, and refuses it once the app's sources changed. A change to what a page renders: run that page's spec (`__tests__/e2e/<page>.spec.ts`) before committing; the pre-commit hook runs no e2e. A red run: read `__tests__/e2e/test-results/failures.txt` before rerunning, which overwrites it.
 
 ## Agent skills
 

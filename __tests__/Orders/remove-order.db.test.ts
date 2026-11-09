@@ -4,8 +4,8 @@ import type { dbTransaction } from '@/db/db';
 import { loadingPlace, unloadingPlace } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder, removeOrder } from '@/lib/services/orders.services';
-import { orderFormFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { orderFormFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.

@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { order } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
-import { orderRowFor, seedOrderReferences } from '../db/seed';
 import { withRollback } from '../db/with-rollback';
+import { orderRowFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 async function seed(trx: dbTransaction) {
