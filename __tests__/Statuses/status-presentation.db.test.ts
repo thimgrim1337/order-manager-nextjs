@@ -17,6 +17,12 @@ describe('statusPresentation', () => {
     }
   });
 
+  it('colours in progress amber, cancelled red and delivered green', () => {
+    expect(statusPresentation(ORDER_STATUS.InProgress).color).toBe('bg-amber-600');
+    expect(statusPresentation(ORDER_STATUS.Cancelled).color).toBe('bg-red-600');
+    expect(statusPresentation(ORDER_STATUS.Delivered).color).toBe('bg-green-600');
+  });
+
   it('labels each seeded Status with its name', () =>
     withRollback(async (trx) => {
       await seedReference(trx);
