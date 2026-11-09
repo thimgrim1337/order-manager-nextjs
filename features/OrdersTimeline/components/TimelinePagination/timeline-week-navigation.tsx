@@ -23,13 +23,13 @@ export default function TimelinePaginationWeekNavigation() {
   return (
     <div className="flex gap-2 justify-end items-center">
       <TimelinePaginationWeekSelect />
-      <Button variant={'outline'} onClick={handlePrevious} aria-label="Previous week">
+      <Button variant={'outline'} onClick={handlePrevious} aria-label="Poprzedni tydzień">
         <ChevronLeft />
       </Button>
-      <Button variant={'outline'} onClick={handlePresent} aria-label="Current week">
+      <Button variant={'outline'} onClick={handlePresent} aria-label="Bieżący tydzień">
         <Calendar1 />
       </Button>
-      <Button variant={'outline'} onClick={handleForward} aria-label="Next week">
+      <Button variant={'outline'} onClick={handleForward} aria-label="Następny tydzień">
         <ChevronRight />
       </Button>
     </div>

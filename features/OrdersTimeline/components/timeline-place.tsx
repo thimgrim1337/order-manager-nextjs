@@ -66,12 +66,12 @@ function ContinuingMarks({ day }: { day: OrderDay }) {
   return (
     <>
       {day.continuesBefore && (
-        <ContinuingMark label="Continues from previous week" className="left-0.5">
+        <ContinuingMark label="Ciąg dalszy z poprzedniego tygodnia" className="left-0.5">
           <ChevronsLeft aria-hidden className="size-4" />
         </ContinuingMark>
       )}
       {day.continuesAfter && (
-        <ContinuingMark label="Continues into next week" className="right-0.5">
+        <ContinuingMark label="Ciąg dalszy w następnym tygodniu" className="right-0.5">
           <ChevronsRight aria-hidden className="size-4" />
         </ContinuingMark>
       )}

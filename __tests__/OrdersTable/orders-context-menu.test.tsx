@@ -39,7 +39,7 @@ describe('OrdersContextMenu', () => {
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: 'Delivered' }));
+    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
     await user.keyboard('{Escape}');
 
     await expect
@@ -60,7 +60,7 @@ describe('OrdersContextMenu', () => {
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: 'Delivered' }));
+    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
 
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Zmiana statusu zlecenia' })).toBeVisible();
@@ -77,10 +77,10 @@ describe('OrdersContextMenu', () => {
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.dblClick(await screen.findByRole('button', { name: 'Delivered' }));
+    await user.dblClick(await screen.findByRole('button', { name: /^zakończone/ }));
 
-    expect(screen.getByRole('button', { name: 'Delivered' })).toHaveTextContent('Wysyłanie');
-    for (const status of ['In progress', 'Cancelled', 'Delivered']) {
+    expect(screen.getByRole('button', { name: /^zakończone/ })).toHaveTextContent('Wysyłanie');
+    for (const status of [/^w trakcie/, /^anulowane/, /^zakończone/]) {
       const button = screen.getByRole('button', { name: status });
       expect(button).toBeDisabled();
       await user.click(button);
@@ -101,7 +101,7 @@ describe('OrdersContextMenu', () => {
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: 'Delivered' }));
+    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
     await user.keyboard('{Escape}');
     await expect
       .poll(() => screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' }))
@@ -109,7 +109,7 @@ describe('OrdersContextMenu', () => {
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
 
-    const button = await screen.findByRole('button', { name: 'Cancelled' });
+    const button = await screen.findByRole('button', { name: /^anulowane/ });
     expect(button).toBeDisabled();
     await user.click(button);
     expect(changeOrderStatus).toHaveBeenCalledOnce();
@@ -126,10 +126,10 @@ describe('OrdersContextMenu', () => {
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: 'Delivered' }));
+    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
     await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
 
-    const retry = screen.getByRole('button', { name: 'Cancelled' });
+    const retry = screen.getByRole('button', { name: /^anulowane/ });
     await expect.poll(() => retry).toBeEnabled();
     await user.click(retry);
 
@@ -144,7 +144,7 @@ describe('OrdersContextMenu', () => {
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
     await user.click(await screen.findByRole('menuitem', { name: 'Status' }));
-    await user.click(await screen.findByRole('button', { name: 'Delivered' }));
+    await user.click(await screen.findByRole('button', { name: /^zakończone/ }));
 
     await expect
       .poll(() => screen.queryByText('Zlecenie ZL-001 ma teraz status: zakończone.'))

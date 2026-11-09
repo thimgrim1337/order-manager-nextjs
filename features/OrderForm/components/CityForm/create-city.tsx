@@ -15,7 +15,7 @@ export default function CreateCity({ countries }: { countries: Country[] }) {
       onOpenChange={setIsModalOpen}
       icon={<MapPinPlus />}
       title={'	Dodawanie nowego miejsca'}
-      triggerAriaLabel="New city"
+      triggerAriaLabel="Dodaj nowe miejsce"
       description="Wypełnij wszystkie pola aby dodać nowe miejsce."
       hideTriggerTitle
     >

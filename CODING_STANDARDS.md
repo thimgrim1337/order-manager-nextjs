@@ -43,7 +43,9 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 
 ## Accessibility
 
-- Every `aria-label` is English (e.g. `Next week`); visible UI text stays Polish. E2E tests find elements by role and accessible name.
+- A control with visible label text takes its accessible name from that text and has no `aria-label` (WCAG 2.5.3 Label in Name). A displayed value is not a label: a select trigger showing the chosen Week still gets one.
+- Every other `aria-label` (an icon-only control, a `role="img"` mark) is Polish like the rest of the UI (e.g. `Następny tydzień`); the page is `<html lang="pl">`. A code that reads the same in any language, like a flag's country code, stays as it is.
+- Tests find elements by role and their Polish accessible name. When the name also takes in the control's description text (the Status menu buttons), match its start: `/^zakończone/`.
 
 ## Types
 

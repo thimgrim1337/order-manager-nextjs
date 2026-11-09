@@ -42,8 +42,8 @@ function renderRow(dates: { startDate: string; endDate: string }) {
   return screen.getAllByRole('cell').slice(1);
 }
 
-const continuesFromPreviousWeek = 'Continues from previous week';
-const continuesIntoNextWeek = 'Continues into next week';
+const continuesFromPreviousWeek = 'Ciąg dalszy z poprzedniego tygodnia';
+const continuesIntoNextWeek = 'Ciąg dalszy w następnym tygodniu';
 
 const markLabels = [continuesFromPreviousWeek, continuesIntoNextWeek];
 

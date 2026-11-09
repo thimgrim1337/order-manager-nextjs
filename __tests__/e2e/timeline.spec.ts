@@ -29,10 +29,10 @@ test.describe('Timeline', () => {
     await expect(row.getByRole('cell').nth(FRIDAY)).toContainText('Warszawa');
     await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Płock');
 
-    await page.getByRole('button', { name: 'Next week' }).click();
+    await page.getByRole('button', { name: 'Następny tydzień' }).click();
 
     await expect(page).toHaveURL(/week=2026-W45/);
-    await expect(page.getByRole('combobox', { name: 'Week' })).toContainText('45');
+    await expect(page.getByRole('combobox', { name: 'Tydzień' })).toContainText('45');
     await expect(row).toBeVisible();
     await expect(row.getByRole('cell').nth(MONDAY)).toHaveText('Płock');
   });

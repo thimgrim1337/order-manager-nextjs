@@ -132,6 +132,7 @@ export function SidebarTrigger() {
       onClick={toggleSidebar}
       variant={'ghost'}
       className={'min-h-screen'}
+      aria-label="Przełącz panel boczny"
     >
       <ChevronsLeftRight />
     </Button>

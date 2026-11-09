@@ -29,7 +29,6 @@ export default function OrderStatusMenu({
             )}
             disabled={sendingStatusId !== undefined}
             onClick={() => onStatusChange(status.id, status.label)}
-            aria-label={status.accessibleName}
           >
             <div className="flex items-start gap-3">
               <Icon className="size-6 mt-0.5 shrink-0" />

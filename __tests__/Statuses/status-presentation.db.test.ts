@@ -10,7 +10,6 @@ describe('statusPresentation', () => {
     for (const id of Object.values(ORDER_STATUS)) {
       expect(statusPresentation(id)).toMatchObject({
         label: expect.any(String),
-        accessibleName: expect.any(String),
         color: expect.any(String),
         description: expect.any(String),
       });
