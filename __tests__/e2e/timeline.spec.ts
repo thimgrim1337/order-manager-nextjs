@@ -42,12 +42,14 @@ test.describe('Timeline', () => {
 
     const row = page.getByRole('row', { name: /WP0997C/ });
     await row.click();
+    const title = page.getByRole('heading', { name: 'Edycja zlecenia E2E-TL-001' });
+    await expect(title).toBeVisible();
     await page.getByRole('button', { name: 'Edytuj' }).click();
     await page.getByLabel('Miejsca rozładunku').fill('Warszawa');
     await page.getByRole('option', { name: 'Warszawa' }).click();
     await page.getByRole('button', { name: 'Zapisz' }).click();
 
-    await expect(page.getByRole('heading', { name: 'Edycja zlecenia' })).not.toBeVisible();
+    await expect(title).not.toBeVisible();
     await expect(row.getByRole('cell').nth(SUNDAY)).toHaveText('Warszawa');
   });
 });

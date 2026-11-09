@@ -1,10 +1,15 @@
 import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import TimelineOrder from '@/features/OrdersTimeline/components/timeline-order';
+import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
+import { updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import type { City, Country } from '@/types/types';
+import { orderChoices } from '../utils/order-choices';
 import { week } from '../utils/week';
+import { renderWithQueries } from '../utils/wrapper';
 
 const w44 = week('2026-W44');
 const poland: Country = { id: 1, name: 'Poland', code: 'PL' };
@@ -117,5 +122,58 @@ describe('Timeline row', () => {
     const cells = renderRow({ startDate: '2026-10-26', endDate: '2026-11-01' });
 
     expect(cells.flatMap(marks)).toEqual([]);
+  });
+});
+
+describe('Timeline row edit', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('opens the edit-Order dialog on click and saves the changed Order under its id', async () => {
+    vi.mocked(updateOrder).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
+      ReturnType<typeof updateOrder>
+    >);
+    const choices = orderChoices();
+    const [plock] = choices.cities;
+    const edited = {
+      ...order({ startDate: '2026-10-27', endDate: '2026-10-30' }),
+      customer: choices.customers[0],
+      driver: choices.drivers[0],
+      truck: choices.trucks[0],
+      currency: { ...choices.currencies[0], rate: 1, date: '' },
+      priceCurrency: '1000',
+      pricePLN: '1000',
+      loadingPlaces: [plock],
+      unloadingPlaces: [plock],
+    } as OrderReadModel;
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    await renderWithQueries(
+      <OrderChoicesProvider choices={choices}>
+        <table>
+          <tbody>
+            <TimelineOrder order={edited} days={[]} borderColor="border-red-500" />
+          </tbody>
+        </table>
+      </OrderChoicesProvider>,
+    );
+
+    await user.click(screen.getByRole('row'));
+    expect(await screen.findByRole('heading', { name: 'Edycja zlecenia ZL/1' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+    const price = screen.getByLabelText('Cena w walucie');
+    await user.clear(price);
+    await user.type(price, '2500');
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+    await vi.waitFor(() =>
+      expect(updateOrder).toHaveBeenCalledExactlyOnceWith(
+        1,
+        expect.objectContaining({ orderNr: 'ZL/1', priceCurrency: '2500' }),
+      ),
+    );
+    await expect
+      .poll(() => screen.queryByRole('heading', { name: 'Edycja zlecenia ZL/1' }))
+      .toBeNull();
   });
 });

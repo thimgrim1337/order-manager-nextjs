@@ -5,8 +5,8 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
+import EditOrderDialog from '@/features/OrderForm/components/edit-order-dialog';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
-import ContextMenuOrderEdit from './context-menu-edit';
 import ContextMenuRemove from './context-menu-remove';
 import ContextMenuStatus from './context-menu-status';
 
@@ -50,7 +50,7 @@ export default function OrdersContextMenu({
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-      <ContextMenuOrderEdit {...dialogProps('edit')} />
+      <EditOrderDialog {...dialogProps('edit')} />
       <ContextMenuStatus {...dialogProps('status')} />
       <ContextMenuRemove {...dialogProps('remove')} />
     </>

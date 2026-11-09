@@ -1,9 +1,7 @@
 'use client';
 
-import { SquarePen } from 'lucide-react';
 import { TableRow } from '@/components/ui/table';
-import EditOrderForm from '@/features/OrderForm/components/edit-order-form';
-import Dialog from '@/features/shared/components/ui/dialog';
+import EditOrderDialog from '@/features/OrderForm/components/edit-order-dialog';
 import useToggle from '@/features/shared/hooks/use-toggle';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import type { OrderDay } from '@/lib/order-day';
@@ -19,8 +17,7 @@ export default function TimelineOrder({
   days: OrderDay[];
   borderColor: string;
 }) {
-  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal, setTrue: openModal }] =
-    useToggle();
+  const [isModalOpen, { setValue: setIsModalOpen, setTrue: openModal }] = useToggle();
 
   return (
     <>
@@ -30,18 +27,7 @@ export default function TimelineOrder({
           <TimelinePlaceCell key={day.date} day={day} borderColor={borderColor} />
         ))}
       </TableRow>
-      {
-        <Dialog
-          isOpen={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          title="Edycja zlecenia"
-          description={`Wprowadź dane aby edytować zlecenie nr ${order.orderNr}`}
-          icon={<SquarePen />}
-          className="min-w-5xl"
-        >
-          <EditOrderForm order={order} onDialogClose={closeModal} />
-        </Dialog>
-      }
+      <EditOrderDialog order={order} isModalOpen={isModalOpen} onOpenChange={setIsModalOpen} />
     </>
   );
 }
