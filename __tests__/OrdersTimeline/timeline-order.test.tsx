@@ -11,6 +11,7 @@ import { orderChoices } from '../utils/order-choices';
 import { place } from '../utils/place';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
+import { writeResponse } from '../utils/write-response';
 
 const w44 = week('2026-W44');
 const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
@@ -132,9 +133,7 @@ describe('Timeline row edit', () => {
   });
 
   it('opens the edit-Order dialog on click and saves the changed Order under its id', async () => {
-    vi.mocked(updateOrder).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
-      ReturnType<typeof updateOrder>
-    >);
+    vi.mocked(updateOrder).mockResolvedValueOnce(writeResponse.succeeded());
     const choices = orderChoices();
     const plock = place(choices.cities[0], choices.countries[0]);
     const edited = {

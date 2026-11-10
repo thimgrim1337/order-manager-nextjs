@@ -49,9 +49,25 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
         successDescription: order
           ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
           : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
+        showOnField: ({ reason, message }) => {
+          if (reason !== 'OrderNrTaken') return false;
+          setOrderNrRefusal(message);
+          return true;
+        },
       });
     },
   });
+
+  /**
+   * Shows a refused write's message on the Order Number, or drops it with `undefined`. TanStack
+   * clears an `onServer` error only on a field with its own validators, so the listeners drop it.
+   */
+  const setOrderNrRefusal = (message: string | undefined) =>
+    form.setFieldMeta('orderNr', (meta) => ({
+      ...meta,
+      errorMap: { ...meta.errorMap, onServer: message && { message } },
+    }));
+  const clearOrderNrRefusal = () => setOrderNrRefusal(undefined);
 
   const { endDate, currencyId, priceCurrency } = useStore(form.store, (state) => state.values);
   // A preview: the Orders module works out the rate the Order is saved with the same way.
@@ -71,7 +87,13 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
         <fieldset disabled={!isEditable}>
           <FieldGroup className="flex-row justify-between">
             <div className="flex-1 flex gap-2 items-end min-w-0">
-              <form.AppField name="customerId">
+              <form.AppField
+                name="customerId"
+                listeners={{
+                  // The Order Number is unique per Customer, so another Customer may use it.
+                  onChange: clearOrderNrRefusal,
+                }}
+              >
                 {(field) => (
                   <field.CustomersComboboxField
                     // Editing, the Order's own Customer may lie outside the preloaded ones.
@@ -83,7 +105,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
               <CreateCustomer />
             </div>
 
-            <form.AppField name="orderNr">
+            <form.AppField name="orderNr" listeners={{ onChange: clearOrderNrRefusal }}>
               {(field) => <field.InputField label="Numer zlecenia" />}
             </form.AppField>
           </FieldGroup>

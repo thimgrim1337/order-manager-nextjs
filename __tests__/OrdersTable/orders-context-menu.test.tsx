@@ -6,6 +6,7 @@ import { changeOrderStatus, removeOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { deferred } from '../utils/deferred';
 import { renderWithToaster } from '../utils/render-with-toaster';
+import { writeResponse } from '../utils/write-response';
 
 const order = {
   id: 1,
@@ -46,9 +47,7 @@ describe('OrdersContextMenu', () => {
   it('keeps the Status dialog closed when Escape is pressed before the save finishes', async () => {
     const save = deferred();
     vi.mocked(changeOrderStatus).mockReturnValueOnce(
-      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<
-        typeof changeOrderStatus
-      >,
+      save.promise.then(() => writeResponse.succeeded()),
     );
     const { user } = setup();
 
@@ -66,10 +65,7 @@ describe('OrdersContextMenu', () => {
   });
 
   it('shows the failure in a toast and keeps the Status dialog open when the change fails', async () => {
-    vi.mocked(changeOrderStatus).mockResolvedValueOnce({
-      success: false,
-      message: 'Zlecenie nie istnieje.',
-    });
+    vi.mocked(changeOrderStatus).mockResolvedValueOnce(writeResponse.refused('NotFound'));
     const { user } = setup();
 
     await openStatusDialog(user);
@@ -82,9 +78,7 @@ describe('OrdersContextMenu', () => {
   it('sends one Status change while it runs, whichever Status button is clicked', async () => {
     const save = deferred();
     vi.mocked(changeOrderStatus).mockReturnValueOnce(
-      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<
-        typeof changeOrderStatus
-      >,
+      save.promise.then(() => writeResponse.succeeded()),
     );
     const { user } = setup();
 
@@ -107,9 +101,7 @@ describe('OrdersContextMenu', () => {
   it('sends no second Status change from a Status dialog reopened while the first runs', async () => {
     const save = deferred();
     vi.mocked(changeOrderStatus).mockReturnValueOnce(
-      save.promise.then(() => ({ success: true, data: {} })) as ReturnType<
-        typeof changeOrderStatus
-      >,
+      save.promise.then(() => writeResponse.succeeded()),
     );
     const { user } = setup();
 
@@ -130,10 +122,7 @@ describe('OrdersContextMenu', () => {
   });
 
   it('lets the user retry the Status change once it failed', async () => {
-    vi.mocked(changeOrderStatus).mockResolvedValueOnce({
-      success: false,
-      message: 'Zlecenie nie istnieje.',
-    });
+    vi.mocked(changeOrderStatus).mockResolvedValueOnce(writeResponse.refused('NotFound'));
     const { user } = setup();
 
     await openStatusDialog(user);
@@ -148,9 +137,7 @@ describe('OrdersContextMenu', () => {
   });
 
   it('confirms a changed Status in a toast and closes the Status dialog', async () => {
-    vi.mocked(changeOrderStatus).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
-      ReturnType<typeof changeOrderStatus>
-    >);
+    vi.mocked(changeOrderStatus).mockResolvedValueOnce(writeResponse.succeeded());
     const { user } = setup();
 
     await openStatusDialog(user);
@@ -168,7 +155,7 @@ describe('OrdersContextMenu', () => {
   it('keeps the Remove dialog closed when Escape is pressed before the delete finishes', async () => {
     const remove = deferred();
     vi.mocked(removeOrder).mockReturnValueOnce(
-      remove.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof removeOrder>,
+      remove.promise.then(() => writeResponse.succeeded()),
     );
     const { user } = setup();
 
@@ -187,10 +174,7 @@ describe('OrdersContextMenu', () => {
   });
 
   it('shows the failure in a toast and keeps the Remove dialog open when the removal fails', async () => {
-    vi.mocked(removeOrder).mockResolvedValueOnce({
-      success: false,
-      message: 'Zlecenie nie istnieje.',
-    });
+    vi.mocked(removeOrder).mockResolvedValueOnce(writeResponse.refused('NotFound'));
     const { user } = setup();
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
@@ -204,7 +188,7 @@ describe('OrdersContextMenu', () => {
   it('sends one removal while it runs, however often "Usuń" is clicked', async () => {
     const remove = deferred();
     vi.mocked(removeOrder).mockReturnValueOnce(
-      remove.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof removeOrder>,
+      remove.promise.then(() => writeResponse.succeeded()),
     );
     const { user } = setup();
 
@@ -221,10 +205,7 @@ describe('OrdersContextMenu', () => {
   });
 
   it('lets the user retry the removal once it failed', async () => {
-    vi.mocked(removeOrder).mockResolvedValueOnce({
-      success: false,
-      message: 'Zlecenie nie istnieje.',
-    });
+    vi.mocked(removeOrder).mockResolvedValueOnce(writeResponse.refused('NotFound'));
     const { user } = setup();
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
@@ -240,9 +221,7 @@ describe('OrdersContextMenu', () => {
   });
 
   it('confirms a removed Order in a toast and closes the Remove dialog', async () => {
-    vi.mocked(removeOrder).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
-      ReturnType<typeof removeOrder>
-    >);
+    vi.mocked(removeOrder).mockResolvedValueOnce(writeResponse.succeeded());
     const { user } = setup();
 
     await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });

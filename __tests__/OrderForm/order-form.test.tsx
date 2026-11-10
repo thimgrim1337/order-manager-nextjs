@@ -1,6 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
+import { Toaster } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
@@ -13,6 +14,7 @@ import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
 import { place } from '../utils/place';
 import { renderWithQueries } from '../utils/wrapper';
+import { writeResponse } from '../utils/write-response';
 
 const choices = orderChoices();
 const [plock] = choices.cities;
@@ -25,9 +27,7 @@ const failNbp = () =>
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(searchCustomers).mockResolvedValue([customer]);
-  vi.mocked(createOrder).mockResolvedValue({ success: true, data: {} } as Awaited<
-    ReturnType<typeof createOrder>
-  >);
+  vi.mocked(createOrder).mockResolvedValue(writeResponse.succeeded());
   vi.useFakeTimers({ toFake: ['Date'] });
   // Monday 2026-11-02 12:00 in Warsaw, so the date pickers show November 2026.
   vi.setSystemTime(new Date('2026-11-02T11:00:00Z'));
@@ -44,6 +44,8 @@ const setup = async (props: Partial<OrderFormProps> = {}) => {
   const { unmount } = await renderWithQueries(
     <OrderChoicesProvider choices={choices}>
       <OrderForm action={createOrder} onDialogClose={onDialogClose} {...props} />
+      {/* sonner's own, as in `renderWithToaster`, which can't wrap `renderWithQueries`. */}
+      <Toaster />
     </OrderChoicesProvider>,
   );
 
@@ -92,24 +94,68 @@ describe('OrderForm', () => {
       });
     });
 
-    it('keeps the dialog open when the Order is not saved', async () => {
-      vi.mocked(createOrder).mockResolvedValueOnce({
-        success: false,
-        message: 'Numer zlecenia jest już zajęty.',
-      });
+    it("shows a refused Order's reason in a toast and keeps the dialog open", async () => {
+      vi.mocked(createOrder).mockResolvedValueOnce(writeResponse.refused('UnknownTruck'));
       const { user, onDialogClose } = await setup();
 
       await fillInNewOrder(user);
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(createOrder).toHaveBeenCalledOnce());
+      await expect.poll(() => screen.queryByText('Wybrany pojazd nie istnieje.')).toBeVisible();
       expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
+    describe('an Order Number the Customer already uses', () => {
+      const ORDER_NR_TAKEN = 'Zlecenie o tym numerze już istnieje.';
+
+      const saveTakenOrderNr = async () => {
+        vi.mocked(createOrder).mockResolvedValueOnce(writeResponse.refused('OrderNrTaken'));
+        const rendered = await setup();
+        await fillInNewOrder(rendered.user);
+        await rendered.user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await screen.findByText(ORDER_NR_TAKEN);
+        return rendered;
+      };
+
+      it('shows the error on the Order Number field instead of a toast', async () => {
+        const { onDialogClose } = await saveTakenOrderNr();
+
+        expect(screen.getByLabelText('Numer zlecenia')).toHaveAttribute('aria-invalid', 'true');
+        expect(screen.getAllByText(ORDER_NR_TAKEN)).toHaveLength(1);
+        expect(screen.queryByText('Niepowodzenie')).toBeNull();
+        expect(onDialogClose).not.toHaveBeenCalled();
+      });
+
+      it('clears the error and saves once the Order Number changes', async () => {
+        const { user, onDialogClose } = await saveTakenOrderNr();
+
+        await user.type(screen.getByLabelText('Numer zlecenia'), 'A');
+
+        expect(screen.queryByText(ORDER_NR_TAKEN)).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(createOrder).toHaveBeenLastCalledWith(
+          expect.objectContaining({ orderNr: 'ZL-12A' }),
+        );
+      });
+
+      it('clears the error once another Customer is picked, who may use the same Order Number', async () => {
+        vi.mocked(searchCustomers).mockResolvedValue([{ id: 5, name: 'ANGEL', tax: '5260250995' }]);
+        const { user } = await saveTakenOrderNr();
+
+        await user.clear(screen.getByLabelText('Zleceniodawca'));
+        await user.type(screen.getByLabelText('Zleceniodawca'), 'ANG');
+        await user.click(await screen.findByRole('option', { name: 'ANGEL' }));
+
+        expect(screen.queryByText(ORDER_NR_TAKEN)).toBeNull();
+        expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
+      });
     });
 
     it('sends one Order while it is being saved, however often Zapisz is clicked', async () => {
       const save = deferred();
       vi.mocked(createOrder).mockReturnValueOnce(
-        save.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof createOrder>,
+        save.promise.then(() => writeResponse.succeeded()),
       );
       const { user } = await setup();
 
@@ -272,9 +318,7 @@ describe('OrderForm', () => {
       setup({ order: edited, action: (input) => updateOrder(edited.id, input) });
 
     beforeEach(() => {
-      vi.mocked(updateOrder).mockResolvedValue({ success: true, data: {} } as Awaited<
-        ReturnType<typeof updateOrder>
-      >);
+      vi.mocked(updateOrder).mockResolvedValue(writeResponse.succeeded());
     });
 
     it('starts locked on the Order and submits the changed Order under its id', async () => {

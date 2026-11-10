@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/create-customer-form';
 import { createCustomer } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
+import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
 
@@ -34,9 +35,7 @@ describe('CreateCustomerForm', () => {
   });
 
   it('creates the Customer and closes the dialog once it is created', async () => {
-    vi.mocked(createCustomer).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
-      ReturnType<typeof createCustomer>
-    >);
+    vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded());
     const { user } = setup();
 
     await fillAndSubmit(user);
@@ -48,7 +47,7 @@ describe('CreateCustomerForm', () => {
   it('sends one Customer while it is being created, however often Zapisz is clicked', async () => {
     const create = deferred();
     vi.mocked(createCustomer).mockReturnValueOnce(
-      create.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof createCustomer>,
+      create.promise.then(() => writeResponse.succeeded()),
     );
     const { user } = setup();
 
@@ -63,10 +62,7 @@ describe('CreateCustomerForm', () => {
   });
 
   it('keeps the dialog open when the Customer is not created', async () => {
-    vi.mocked(createCustomer).mockResolvedValueOnce({
-      success: false,
-      message: 'Zleceniodawca istnieje.',
-    });
+    vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused('CustomerTaken'));
     const { user } = setup();
 
     await fillAndSubmit(user);

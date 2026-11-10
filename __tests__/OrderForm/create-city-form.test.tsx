@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CreateCityForm from '@/features/OrderForm/components/CityForm/create-city-form';
 import { createCity } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
+import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
 
@@ -42,9 +43,7 @@ describe('CreateCityForm', () => {
   });
 
   it('creates the City and closes the dialog once it is created', async () => {
-    vi.mocked(createCity).mockResolvedValueOnce({ success: true, data: {} } as Awaited<
-      ReturnType<typeof createCity>
-    >);
+    vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded());
     const { user } = setup();
 
     await fillAndSubmit(user);
@@ -55,9 +54,7 @@ describe('CreateCityForm', () => {
 
   it('sends one City while it is being created, however often Zapisz is clicked', async () => {
     const create = deferred();
-    vi.mocked(createCity).mockReturnValueOnce(
-      create.promise.then(() => ({ success: true, data: {} })) as ReturnType<typeof createCity>,
-    );
+    vi.mocked(createCity).mockReturnValueOnce(create.promise.then(() => writeResponse.succeeded()));
     const { user } = setup();
 
     await fillAndSubmit(user);
@@ -71,10 +68,7 @@ describe('CreateCityForm', () => {
   });
 
   it('keeps the dialog open when the City is not created', async () => {
-    vi.mocked(createCity).mockResolvedValueOnce({
-      success: false,
-      message: 'Miejscowość istnieje.',
-    });
+    vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityTaken'));
     const { user } = setup();
 
     await fillAndSubmit(user);
