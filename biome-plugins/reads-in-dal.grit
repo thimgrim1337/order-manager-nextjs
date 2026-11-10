@@ -1,0 +1,8 @@
+`$db.select($_)` as $call where {
+  $filename <: not or {
+    r".*lib/dal/[^/]+\.dal\.ts",
+    r".*__tests__/.*",
+    r".*db/seeds/.*"
+  },
+  register_diagnostic(span=$call, message="Read through a find*(database, …) in lib/dal/<entity>.dal.ts.")
+}

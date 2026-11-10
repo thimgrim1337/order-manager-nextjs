@@ -29,7 +29,8 @@
     "./biome-plugins/query-module-parsers.grit",
     "./biome-plugins/dal-named-columns.grit",
     "./biome-plugins/dal-get-calls-find.grit",
-    "./biome-plugins/dal-file-queries.grit"
+    "./biome-plugins/dal-file-queries.grit",
+    "./biome-plugins/reads-in-dal.grit"
   ],
   "formatter": {
     "enabled": true,
