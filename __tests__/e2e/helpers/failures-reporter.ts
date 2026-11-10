@@ -4,7 +4,7 @@ import { stripVTControlCharacters } from 'node:util';
 import type { Reporter, TestCase, TestResult } from '@playwright/test/reporter';
 
 /**
- * Writes each failed test's title, location and errors to `outputFile` once the run ends,
+ * Writes each failed test's title, location, attached files (trace, screenshot) and errors to `outputFile` once the run ends,
  * so a red run stays readable after its terminal output is cut or scrolled away.
  */
 export default class FailuresReporter implements Reporter {
@@ -21,10 +21,14 @@ export default class FailuresReporter implements Reporter {
 
     const where = `${relative(process.cwd(), test.location.file)}:${test.location.line}`;
     const errors = result.errors.map((error) => stripVTControlCharacters(error.message ?? ''));
+    const attachments = result.attachments.flatMap(({ name, path }) =>
+      path ? [`  ${name}: ${relative(process.cwd(), path)}`] : [],
+    );
     this.failures.push(
       [
         `✘ ${test.titlePath().filter(Boolean).join(' › ')} (${result.status}, retry ${result.retry})`,
         `  at ${where}`,
+        ...attachments,
         ...errors,
       ].join('\n'),
     );

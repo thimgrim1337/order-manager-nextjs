@@ -4,6 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 loadEnvConfig(process.cwd());
 
 const port = process.env.E2E_PORT ?? '3001';
+const resultsDir = './__tests__/e2e/test-results';
 
 /**
  * Read environment variables from file.
@@ -18,7 +19,7 @@ const port = process.env.E2E_PORT ?? '3001';
  */
 export default defineConfig({
   testDir: './__tests__/e2e',
-  outputDir: './__tests__/e2e/test-results',
+  outputDir: resultsDir,
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -31,18 +32,16 @@ export default defineConfig({
   /* `line` locally keeps a failure's assertion in a short terminal output; failures.txt keeps it after the run. */
   reporter: [
     [process.env.CI ? 'html' : 'line'],
-    [
-      './__tests__/e2e/helpers/failures-reporter.ts',
-      { outputFile: './__tests__/e2e/test-results/failures.txt' },
-    ],
+    ['./__tests__/e2e/helpers/failures-reporter.ts', { outputFile: `${resultsDir}/failures.txt` }],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: `http://localhost:${port}`,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    /* CI traces its first retry. Locally, where nothing retries, keep a failed test's trace.
+       No DOM snapshots: with the system Chromium they hang the trace's save until the test times out. */
+    trace: process.env.CI ? 'on-first-retry' : { mode: 'retain-on-failure', snapshots: false },
     screenshot: 'only-on-failure',
   },
 
@@ -90,7 +89,10 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     // Serves the build made by `pnpm test:e2e` (or the CI build step); a leftover server would serve a stale build.
-    command: `pnpm start -p ${port}`,
+    // Locally its log goes to a file, so a red run's server errors outlast the terminal output; CI keeps them in the job log.
+    command: process.env.CI
+      ? `pnpm start -p ${port}`
+      : `mkdir -p ${resultsDir} && pnpm start -p ${port} > ${resultsDir}/server.log 2>&1`,
     url: `http://localhost:${port}`,
     reuseExistingServer: false,
     // env: {
