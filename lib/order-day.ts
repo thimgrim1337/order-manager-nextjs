@@ -1,22 +1,22 @@
-import type { CityReadModel } from '@/lib/dal/city.dal';
-import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
-import { countryOf, firstLoadingPlace, lastUnloadingPlace, type OrderPlaces } from '@/lib/places';
+import {
+  firstLoadingPlace,
+  lastUnloadingPlace,
+  type OrderPlaces,
+  type PlaceReadModel,
+} from '@/lib/places';
 import { type Week, weekBounds, weekDays } from '@/lib/week';
 
 type OrderDayKind = 'none' | 'loading' | 'unloading' | 'loading-unloading' | 'transit';
-
-/** A Loading or Unloading Place the Timeline shows, with its City's Country (none when not among those given). */
-export type ShownCity = CityReadModel & { country: CountryReadModel | undefined };
 
 /** What an Order does on one day of the Week, and what the Timeline shows for it. */
 export type OrderDay = {
   date: string;
   kind: OrderDayKind;
   /** On a loading day, and on a transit Monday when the Order continues from an earlier Week. */
-  loadingPlace?: ShownCity;
+  loadingPlace?: PlaceReadModel;
   /** On an unloading day, and on a transit Sunday when the Order continues into a later Week. */
-  unloadingPlace?: ShownCity;
+  unloadingPlace?: PlaceReadModel;
   /** On a loading day. */
   customer?: CustomerReadModel;
   /** Monday only: the Order started in an earlier Week. */
@@ -30,20 +30,14 @@ type OrderDates = { startDate: string; endDate: string };
 type OrderInWeek = OrderDates & OrderPlaces & { customer: CustomerReadModel };
 
 /**
- * The Order's kind of day on each of the Week's seven days, Monday first, with the Places (and their
- * Countries, from `countries`) and Customer shown that day. An Order without Loading or Unloading
+ * The Order's kind of day on each of the Week's seven days, Monday first, with the Places (with their
+ * Countries) and Customer shown that day. An Order without Loading or Unloading
  * Places shows no place.
  */
-export function orderDays(
-  week: Week,
-  order: OrderInWeek,
-  countries: CountryReadModel[],
-): OrderDay[] {
+export function orderDays(week: Week, order: OrderInWeek): OrderDay[] {
   const { monday, sunday } = weekBounds(week);
-  const shown = (place: CityReadModel | undefined): ShownCity | undefined =>
-    place && { ...place, country: countryOf(place, countries) };
-  const loadingPlace = shown(firstLoadingPlace(order));
-  const unloadingPlace = shown(lastUnloadingPlace(order));
+  const loadingPlace = firstLoadingPlace(order);
+  const unloadingPlace = lastUnloadingPlace(order);
 
   return weekDays(week).map(({ date }) => {
     const kind = kindOn(date, order);

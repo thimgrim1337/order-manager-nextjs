@@ -1,7 +1,6 @@
 import { Table } from '@/components/ui/table';
 import OrderChoicesLoader from '@/features/shared/components/order-choices-loader';
 import type { RawSearchParams } from '@/features/shared/lib/search-param-parsers';
-import { getAllCountries } from '@/lib/dal/country.dal';
 import { getOrdersInWeek } from '@/lib/dal/order.dal';
 import { weekDays } from '@/lib/week';
 import { parse } from '../lib/timeline-query';
@@ -16,16 +15,13 @@ export default async function TimelineContent({ searchParamsPromise }: TimelineC
   const query = parse(await searchParamsPromise);
 
   const weekdays = weekDays(query.week);
-  const [orders, countries] = await Promise.all([
-    getOrdersInWeek(query.week, { driverId: query.driverId }),
-    getAllCountries(),
-  ]);
+  const orders = await getOrdersInWeek(query.week, { driverId: query.driverId });
 
   return (
     <OrderChoicesLoader>
       <Table>
         <TimelineHead weekdays={weekdays} />
-        <TimelineBody week={query.week} orders={orders} countries={countries} />
+        <TimelineBody week={query.week} orders={orders} />
       </Table>
       <TimelinePagination />
     </OrderChoicesLoader>

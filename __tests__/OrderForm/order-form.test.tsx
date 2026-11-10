@@ -12,6 +12,7 @@ import { fakeNbp, NBP_RATES_URL } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
 import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
+import { place } from '../utils/place';
 import { renderWithQueries } from '../utils/wrapper';
 
 const choices = orderChoices();
@@ -253,6 +254,9 @@ describe('OrderForm', () => {
   });
 
   describe('edit', () => {
+    // The Order's Places carry their Country, as the Order read model gives them.
+    const [poland] = choices.countries;
+    const plockPlace = place(plock, poland);
     const order: OrderReadModel = {
       id: 7,
       orderNr: 'ZL-7',
@@ -265,8 +269,8 @@ describe('OrderForm', () => {
       currency: { ...choices.currencies[0], rate: 1, date: '' },
       priceCurrency: '1000',
       pricePLN: '1000',
-      loadingPlaces: [plock],
-      unloadingPlaces: [plock],
+      loadingPlaces: [plockPlace],
+      unloadingPlaces: [plockPlace],
     };
     const editSetup = (edited: OrderReadModel = order) =>
       setup({ order: edited, action: (formData) => updateOrder(edited.id, formData) });
@@ -299,18 +303,21 @@ describe('OrderForm', () => {
         statusId: 1,
         priceCurrency: '2500',
         currencyId: 1,
-        loadingPlaces: [plock],
-        unloadingPlaces: [plock],
+        loadingPlaces: [plockPlace],
+        unloadingPlaces: [plockPlace],
         currencyInfo: NO_EXCHANGE_RATE,
       });
     });
 
     it('removes a picked Unloading Place by its named button', async () => {
-      const zgierz = { id: 11, name: 'Zgierz', postal: '95-100', countryId: 1 };
+      const zgierz = place(
+        { id: 11, name: 'Zgierz', postal: '95-100', countryId: poland.id },
+        poland,
+      );
       const { user, onDialogClose } = await editSetup({
         ...order,
         loadingPlaces: [zgierz],
-        unloadingPlaces: [plock, zgierz],
+        unloadingPlaces: [plockPlace, zgierz],
       });
 
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));

@@ -1,20 +1,11 @@
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
-import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import type { Week } from '@/lib/week';
 import { timelineColor } from '../lib/timeline-color';
 import TimelineOrder from './timeline-order';
 
-export default function TimelineBody({
-  week,
-  orders,
-  countries,
-}: {
-  week: Week;
-  orders: OrderReadModel[];
-  countries: CountryReadModel[];
-}) {
+export default function TimelineBody({ week, orders }: { week: Week; orders: OrderReadModel[] }) {
   return (
     <TableBody>
       {orders.length ? (
@@ -22,7 +13,7 @@ export default function TimelineBody({
           <TimelineOrder
             key={order.id}
             order={order}
-            days={orderDays(week, order, countries)}
+            days={orderDays(week, order)}
             borderColor={timelineColor(order.id)}
           />
         ))

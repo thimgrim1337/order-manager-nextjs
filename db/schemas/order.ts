@@ -13,6 +13,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import {
   type city,
+  type country,
   currency,
   customer,
   driver,
@@ -21,6 +22,9 @@ import {
   truck,
   unloadingPlace,
 } from '.';
+
+/** A Loading or Unloading Place as the view gives it: its City with the City's Country. */
+type Place = typeof city.$inferSelect & { country: typeof country.$inferSelect };
 
 const order = pgTable(
   'orders',
@@ -105,8 +109,8 @@ export const ordersWithDetailsView = pgView('orders_with_details', {
   driver: json('driver').$type<typeof driver.$inferSelect>().notNull(),
   truck: json('truck').$type<typeof truck.$inferSelect>().notNull(),
   status: json('status').$type<typeof status.$inferSelect>().notNull(),
-  loadingPlaces: json('loading_places').$type<(typeof city.$inferSelect)[]>().notNull(),
-  unloadingPlaces: json('unloading_places').$type<(typeof city.$inferSelect)[]>().notNull(),
+  loadingPlaces: json('loading_places').$type<Place[]>().notNull(),
+  unloadingPlaces: json('unloading_places').$type<Place[]>().notNull(),
   currency: json('currency_info')
     .$type<{
       id: number;

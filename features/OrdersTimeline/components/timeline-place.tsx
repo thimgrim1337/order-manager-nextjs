@@ -1,6 +1,7 @@
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { TableCell } from '@/components/ui/table';
-import type { OrderDay, ShownCity } from '@/lib/order-day';
+import type { OrderDay } from '@/lib/order-day';
+import type { PlaceReadModel } from '@/lib/places';
 import { cn } from '@/lib/utils';
 
 export default function TimelinePlaceCell({
@@ -48,14 +49,12 @@ export default function TimelinePlaceCell({
   );
 }
 
-function CityWithFlag({ city }: { city?: ShownCity }) {
+function CityWithFlag({ city }: { city?: PlaceReadModel }) {
   if (!city) return null;
 
   return (
     <>
-      {city.country && (
-        <span role="img" aria-label={city.country.code} className={`flag:${city.country.code}`} />
-      )}
+      <span role="img" aria-label={city.country.code} className={`flag:${city.country.code}`} />
       <span>{city.name}</span>
     </>
   );

@@ -4,19 +4,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import TimelineOrder from '@/features/OrdersTimeline/components/timeline-order';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { updateOrder } from '@/lib/actions';
-import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import { orderChoices } from '../utils/order-choices';
+import { place } from '../utils/place';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
 
 const w44 = week('2026-W44');
 const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
 const germany: CountryReadModel = { id: 2, name: 'Germany', code: 'DE' };
-const warszawa: CityReadModel = { id: 1, name: 'Warszawa', postal: '00-001', countryId: poland.id };
-const berlin: CityReadModel = { id: 2, name: 'Berlin', postal: '10115', countryId: germany.id };
+const warszawa = place({ id: 1, name: 'Warszawa', postal: '00-001', countryId: poland.id }, poland);
+const berlin = place({ id: 2, name: 'Berlin', postal: '10115', countryId: germany.id }, germany);
 
 const order = (dates: { startDate: string; endDate: string }) =>
   ({
@@ -39,7 +39,7 @@ function renderRow(dates: { startDate: string; endDate: string }) {
       <tbody>
         <TimelineOrder
           order={theOrder}
-          days={orderDays(w44, theOrder, [poland, germany])}
+          days={orderDays(w44, theOrder)}
           borderColor="border-red-500"
         />
       </tbody>
@@ -136,7 +136,7 @@ describe('Timeline row edit', () => {
       ReturnType<typeof updateOrder>
     >);
     const choices = orderChoices();
-    const [plock] = choices.cities;
+    const plock = place(choices.cities[0], choices.countries[0]);
     const edited = {
       ...order({ startDate: '2026-10-27', endDate: '2026-10-30' }),
       customer: choices.customers[0],

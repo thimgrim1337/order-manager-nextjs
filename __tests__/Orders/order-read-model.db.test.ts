@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { city } from '@/db/schemas';
+import { city, country } from '@/db/schemas';
 import { findOrders, findOrdersInWeek, type OrderQuery } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import { createOrder } from '@/lib/services/orders.services';
@@ -42,6 +42,32 @@ describe('Order read model', () => {
       ]);
     }));
 
+  it("gives each Loading and Unloading Place its City's Country, in the Orders Table and the Timeline", () =>
+    withRollback(async (trx) => {
+      const refs = await seedOrderReferences(trx);
+      const [germany] = await trx
+        .insert(country)
+        .values({ name: 'Niemcy', code: 'DE' })
+        .returning();
+      const [berlin] = await trx
+        .insert(city)
+        .values({ name: 'Berlin', postal: '10115', countryId: germany.id })
+        .returning();
+      await createOrder(trx, orderFormFor(refs)({ unloadingPlaces: [refs.cities.plock, berlin] }));
+      const polska = { id: refs.cities.warszawa.countryId, name: 'Polska', code: 'PL' };
+      const niemcy = { id: germany.id, name: 'Niemcy', code: 'DE' };
+
+      const {
+        data: [inTable],
+      } = await findOrders(trx, { pageIndex: 0, pageSize: 10 });
+      const [inTimeline] = await findOrdersInWeek(trx, orderWeek);
+
+      for (const order of [inTable, inTimeline]) {
+        expect(order?.loadingPlaces.map((place) => place.country)).toEqual([polska]);
+        expect(order?.unloadingPlaces.map((place) => place.country)).toEqual([polska, niemcy]);
+      }
+    }));
+
   it('agrees on the first Loading Place and last Unloading Place entered, whatever the City ids', () =>
     withRollback(async (trx) => {
       const { gdanskToWarszawa, plockToSzczecin } = await seedOutOfIdOrder(trx);
@@ -56,7 +82,7 @@ describe('Order read model', () => {
         (order) => order.id === gdanskToWarszawa,
       );
       if (!inTimeline) throw new Error('Order missing from the Timeline');
-      const days = orderDays(orderWeek, inTimeline, []).filter((day) => day.kind !== 'none');
+      const days = orderDays(orderWeek, inTimeline).filter((day) => day.kind !== 'none');
       expect(days.at(0)?.loadingPlace?.name).toBe('Gdańsk');
       expect(days.at(-1)?.unloadingPlace?.name).toBe('Warszawa');
 

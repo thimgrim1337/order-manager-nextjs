@@ -1,20 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import { type OrderDay, orderDays } from '@/lib/order-day';
+import { place } from './utils/place';
 import { week } from './utils/week';
 
 describe('Order Day: orderDays', () => {
   const w44 = week('2026-W44');
   const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
   const germany: CountryReadModel = { id: 2, name: 'Germany', code: 'DE' };
-  const city = (id: number, name: string, country: CountryReadModel): CityReadModel => ({
-    id,
-    name,
-    postal: '00-001',
-    countryId: country.id,
-  });
+  const city = (id: number, name: string, country: CountryReadModel) =>
+    place({ id, name, postal: '00-001', countryId: country.id }, country);
   const warszawa = city(1, 'Warszawa', poland);
   const plock = city(2, 'Płock', poland);
   const berlin = city(3, 'Berlin', germany);
@@ -25,8 +21,7 @@ describe('Order Day: orderDays', () => {
     unloadingPlaces: [plock, berlin],
     customer,
   });
-  const daysOf = (order: Parameters<typeof orderDays>[1]) =>
-    orderDays(w44, order, [poland, germany]);
+  const daysOf = (order: Parameters<typeof orderDays>[1]) => orderDays(w44, order);
   const shown = (day: OrderDay) => ({
     loadingPlace: day.loadingPlace?.name,
     unloadingPlace: day.unloadingPlace?.name,
@@ -138,16 +133,10 @@ describe('Order Day: orderDays', () => {
     expect(shown(sameDay[3])).toEqual({ customer: 'Acme' });
   });
 
-  it('gives each shown Place its Country, and none for a Country it is not given', () => {
+  it("shows each Place with its City's Country", () => {
     const days = daysOf(order({ startDate: '2026-10-28', endDate: '2026-10-28' }));
-    const unknownCountry = orderDays(
-      w44,
-      order({ startDate: '2026-10-28', endDate: '2026-10-28' }),
-      [germany],
-    );
 
     expect(days[2]?.loadingPlace?.country).toEqual(poland);
     expect(days[2]?.unloadingPlace?.country).toEqual(germany);
-    expect(unknownCountry[2]?.loadingPlace).toMatchObject({ name: 'Warszawa', country: undefined });
   });
 });
