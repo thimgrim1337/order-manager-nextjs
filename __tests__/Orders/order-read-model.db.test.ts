@@ -6,7 +6,7 @@ import { orderDays } from '@/lib/order-day';
 import { createOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
 import { fakeNbp } from '../fakes/nbp';
-import { orderFormFor, seedOrderReferences } from '../fixtures/order';
+import { orderInputFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
@@ -18,7 +18,7 @@ describe('Order read model', () => {
   it('gives the Orders Table and the Timeline the same Order', () =>
     withRollback(async (trx) => {
       const refs = await seedOrderReferences(trx);
-      await createOrder(trx, orderFormFor(refs)(), fakeNbp([]));
+      await createOrder(trx, orderInputFor(refs)(), fakeNbp([]));
 
       const {
         data: [inTable],
@@ -56,7 +56,7 @@ describe('Order read model', () => {
         .returning();
       await createOrder(
         trx,
-        orderFormFor(refs)({ unloadingPlaces: [refs.cities.plock, berlin] }),
+        orderInputFor(refs)({ unloadingPlaces: [refs.cities.plock.id, berlin.id] }),
         fakeNbp([]),
       );
       const polska = { id: refs.cities.warszawa.countryId, name: 'Polska', code: 'PL' };
@@ -117,16 +117,19 @@ async function seedOutOfIdOrder(trx: dbTransaction) {
     .insert(city)
     .values({ name: 'Szczecin', postal: '70-001', countryId: warszawa.countryId })
     .returning();
-  const orderForm = orderFormFor(refs);
+  const orderInput = orderInputFor(refs);
 
   const [, gdanskToWarszawa] = await createOrder(
     trx,
-    orderForm({ loadingPlaces: [gdansk, warszawa], unloadingPlaces: [plock, warszawa] }),
+    orderInput({
+      loadingPlaces: [gdansk.id, warszawa.id],
+      unloadingPlaces: [plock.id, warszawa.id],
+    }),
     fakeNbp([]),
   );
   const [, plockToSzczecin] = await createOrder(
     trx,
-    orderForm({ orderNr: 'ZL/2', loadingPlaces: [plock], unloadingPlaces: [szczecin] }),
+    orderInput({ orderNr: 'ZL/2', loadingPlaces: [plock.id], unloadingPlaces: [szczecin.id] }),
     fakeNbp([]),
   );
   if (!gdanskToWarszawa || !plockToSzczecin) throw new Error('Seed Orders were not created');

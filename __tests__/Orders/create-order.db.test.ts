@@ -8,7 +8,7 @@ import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
 import { failingNbp, fakeNbp } from '../fakes/nbp';
-import { orderFormFor, seedOrderReferences } from '../fixtures/order';
+import { orderInputFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
@@ -17,9 +17,9 @@ vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
 
-  const orderForm = orderFormFor(refs);
+  const orderInput = orderInputFor(refs);
 
-  return { orderForm, refs, eur: refs.currencies.eur, dbTruck: refs.truck };
+  return { orderInput, refs, eur: refs.currencies.eur, dbTruck: refs.truck };
 }
 
 const orderWeek = week('2026-W44');
@@ -38,14 +38,14 @@ describe('createOrder', () => {
 
   it('saves the Loading and Unloading Places in the order entered', () =>
     withRollback(async (trx) => {
-      const { orderForm, refs } = await seed(trx);
+      const { orderInput, refs } = await seed(trx);
 
       const { warszawa, plock, gdansk } = refs.cities;
 
       // Gdańsk has a higher City id than Płock.
       const [failure, created] = await createOrder(
         trx,
-        orderForm({ loadingPlaces: [warszawa], unloadingPlaces: [gdansk, plock] }),
+        orderInput({ loadingPlaces: [warszawa.id], unloadingPlaces: [gdansk.id, plock.id] }),
         fakeNbp([]),
       );
 
@@ -58,11 +58,11 @@ describe('createOrder', () => {
 
   it("assigns the Order's Driver to its Truck", () =>
     withRollback(async (trx) => {
-      const { orderForm, refs, dbTruck } = await seed(trx);
+      const { orderInput, refs, dbTruck } = await seed(trx);
       const { anna } = refs.drivers;
 
       // The Truck's Regular Driver is Jan.
-      await createOrder(trx, orderForm({ driverId: anna.id }), fakeNbp([]));
+      await createOrder(trx, orderInput({ driverId: anna.id }), fakeNbp([]));
 
       const [savedTruck] = await trx.select().from(truck).where(eq(truck.id, dbTruck.id));
       expect(savedTruck.driverId).toBe(anna.id);
@@ -70,7 +70,7 @@ describe('createOrder', () => {
 
   it("stores NBP's rate for its Unloading Date", () =>
     withRollback(async (trx) => {
-      const { orderForm, eur } = await seed(trx);
+      const { orderInput, eur } = await seed(trx);
       const nbp = fakeNbp([
         { no: '209/A/NBP/2026', mid: 4.2401, effectiveDate: '2026-10-27' },
         { no: '210/A/NBP/2026', mid: 4.2512, effectiveDate: '2026-10-28' },
@@ -80,7 +80,7 @@ describe('createOrder', () => {
       // Unloading on 2026-10-29.
       const [failure, created] = await createOrder(
         trx,
-        orderForm({
+        orderInput({
           currencyId: eur.id,
           priceCurrency: '1000',
         }),
@@ -98,7 +98,7 @@ describe('createOrder', () => {
 
   it("stores NBP's latest rate by the company's day for an Unloading Date after it", () =>
     withRollback(async (trx) => {
-      const { orderForm, eur } = await seed(trx);
+      const { orderInput, eur } = await seed(trx);
       const nbp = fakeNbp(
         [
           { no: '203/A/NBP/2026', mid: 4.2333, effectiveDate: '2026-10-20' },
@@ -112,7 +112,7 @@ describe('createOrder', () => {
       // Unloading on 2026-10-29.
       const [, created] = await createOrder(
         trx,
-        orderForm({ currencyId: eur.id, priceCurrency: '1000' }),
+        orderInput({ currencyId: eur.id, priceCurrency: '1000' }),
         nbp,
         now,
       );
@@ -122,12 +122,12 @@ describe('createOrder', () => {
 
   it('rounds a PLN price on half a grosz up', () =>
     withRollback(async (trx) => {
-      const { orderForm, eur } = await seed(trx);
+      const { orderInput, eur } = await seed(trx);
       const nbp = fakeNbp([{ no: '210/A/NBP/2026', mid: 4.1235, effectiveDate: '2026-10-28' }]);
 
       const [, created] = await createOrder(
         trx,
-        orderForm({ currencyId: eur.id, priceCurrency: '1070' }),
+        orderInput({ currencyId: eur.id, priceCurrency: '1070' }),
         nbp,
       );
 
@@ -137,10 +137,10 @@ describe('createOrder', () => {
 
   it('creates a PLN Order without asking NBP', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
+      const { orderInput } = await seed(trx);
       const nbp = fakeNbp([]);
 
-      const [failure, created] = await createOrder(trx, orderForm({ priceCurrency: '1000' }), nbp);
+      const [failure, created] = await createOrder(trx, orderInput({ priceCurrency: '1000' }), nbp);
 
       expect(failure).toBeNull();
       expect(created).toMatchObject({ pricePLN: '1000.00', exchangeRate: '1.0000' });
@@ -149,11 +149,11 @@ describe('createOrder', () => {
 
   it('reports an EUR Order NBP published no rate for, and saves nothing', () =>
     withRollback(async (trx) => {
-      const { orderForm, eur } = await seed(trx);
+      const { orderInput, eur } = await seed(trx);
 
       const result = await createOrder(
         trx,
-        orderForm({ currencyId: eur.id, priceCurrency: '1000' }),
+        orderInput({ currencyId: eur.id, priceCurrency: '1000' }),
         fakeNbp([]),
       );
 
@@ -164,11 +164,11 @@ describe('createOrder', () => {
 
   it('reports an EUR Order while NBP is unavailable, and saves nothing', () =>
     withRollback(async (trx) => {
-      const { orderForm, eur } = await seed(trx);
+      const { orderInput, eur } = await seed(trx);
 
       const result = await createOrder(
         trx,
-        orderForm({ currencyId: eur.id, priceCurrency: '1000' }),
+        orderInput({ currencyId: eur.id, priceCurrency: '1000' }),
         failingNbp({ reason: 'NbpUnavailable' }),
       );
 
@@ -179,11 +179,11 @@ describe('createOrder', () => {
 
   it('rejects an unknown Currency, and saves nothing', () =>
     withRollback(async (trx) => {
-      const { orderForm, eur } = await seed(trx);
+      const { orderInput, eur } = await seed(trx);
 
       const [failure] = await createOrder(
         trx,
-        orderForm({ currencyId: eur.id + 100 }),
+        orderInput({ currencyId: eur.id + 100 }),
         fakeNbp([]),
       );
 
@@ -193,10 +193,10 @@ describe('createOrder', () => {
 
   it('reports an Order Number already used for the Customer, and saves nothing', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
-      await createOrder(trx, orderForm({ orderNr: 'ZL/7' }), fakeNbp([]));
+      const { orderInput } = await seed(trx);
+      await createOrder(trx, orderInput({ orderNr: 'ZL/7' }), fakeNbp([]));
 
-      const [failure] = await createOrder(trx, orderForm({ orderNr: 'ZL/7' }), fakeNbp([]));
+      const [failure] = await createOrder(trx, orderInput({ orderNr: 'ZL/7' }), fakeNbp([]));
 
       expect(failure).toEqual({ reason: 'OrderNrTaken' });
       expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(1);
@@ -204,11 +204,11 @@ describe('createOrder', () => {
 
   it('rejects a Loading Date after the Unloading Date, and saves nothing', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
+      const { orderInput } = await seed(trx);
 
       const [failure] = await createOrder(
         trx,
-        orderForm({ startDate: '2026-10-29', endDate: '2026-10-28' }),
+        orderInput({ startDate: '2026-10-29', endDate: '2026-10-28' }),
         fakeNbp([]),
       );
 
@@ -218,27 +218,27 @@ describe('createOrder', () => {
 
   it('invalidates cached Orders once the Order is created', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
+      const { orderInput } = await seed(trx);
 
-      await createOrder(trx, orderForm(), fakeNbp([]));
+      await createOrder(trx, orderInput(), fakeNbp([]));
 
       expect(updateTag).toHaveBeenCalledWith('orders');
     }));
 
   it('invalidates cached Trucks once the Order is created, since it assigns its Driver to its Truck', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
+      const { orderInput } = await seed(trx);
 
-      await createOrder(trx, orderForm(), fakeNbp([]));
+      await createOrder(trx, orderInput(), fakeNbp([]));
 
       expect(updateTag).toHaveBeenCalledWith('trucks');
     }));
 
   it('invalidates nothing when the Order is not created', () =>
     withRollback(async (trx) => {
-      const { orderForm } = await seed(trx);
+      const { orderInput } = await seed(trx);
 
-      await createOrder(trx, orderForm({ orderNr: '' }), fakeNbp([]));
+      await createOrder(trx, orderInput({ orderNr: '' }), fakeNbp([]));
 
       expect(updateTag).not.toHaveBeenCalled();
     }));

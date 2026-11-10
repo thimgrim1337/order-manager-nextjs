@@ -26,7 +26,7 @@ export default function EditOrderDialog({
     >
       <OrderForm
         order={order}
-        action={(formData) => updateOrder(order.id, formData)}
+        action={(input) => updateOrder(order.id, input)}
         onDialogClose={() => onOpenChange(false)}
       />
     </Dialog>

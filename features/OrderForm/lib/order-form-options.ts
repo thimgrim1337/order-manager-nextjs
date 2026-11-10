@@ -3,6 +3,7 @@ import { ORDER_STATUS } from '@/lib/consts';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
+import type { OrderInputDto } from '@/lib/dto/order.dto';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
 import { fromStoredExchangeRate, type StoredExchangeRate } from '@/lib/exchange-rate';
 
@@ -54,14 +55,26 @@ export const getStartingValues = (order?: OrderReadModel) => {
   };
 };
 
-type StartingValues = ReturnType<typeof getStartingValues>;
+/** What the form holds, from opening to submit. */
+type FormValues = ReturnType<typeof getStartingValues>;
+
+/** The Order input the form's values save as: its picked Places as City ids, in picked order. */
+export const toOrderInput = ({
+  loadingPlaces,
+  unloadingPlaces,
+  ...fields
+}: FormValues): OrderInputDto => ({
+  ...fields,
+  loadingPlaces: loadingPlaces.map((city) => city.id),
+  unloadingPlaces: unloadingPlaces.map((city) => city.id),
+});
 
 /**
  * The Exchange Rate the form starts with, for the Unloading Date and Currency it opened with:
  * `order`'s stored one, or none for a new Order.
  */
 export const getStartingExchangeRate = (
-  { endDate, currencyId }: StartingValues,
+  { endDate, currencyId }: FormValues,
   order?: OrderReadModel,
 ): StoredExchangeRate => ({
   endDate,

@@ -11,7 +11,7 @@ import {
   unloadingPlace,
 } from '@/db/schemas';
 import seedReference from '@/db/seeds/reference';
-import type { OrderFormDto } from '@/lib/dto/order.dto';
+import type { OrderInputDto } from '@/lib/dto/order.dto';
 
 /**
  * Seeds the rows an Order references: into a db test's transaction, or into the global db for e2e.
@@ -85,11 +85,11 @@ export function orderRowFor(refs: OrderReferences) {
   });
 }
 
-/** A valid PLN Order form for the seeded references: Warszawa → Płock, Gdańsk, driven by Jan. */
-export function orderFormFor(refs: OrderReferences) {
+/** A valid PLN Order input for the seeded references: Warszawa → Płock, Gdańsk, driven by Jan. */
+export function orderInputFor(refs: OrderReferences) {
   const { warszawa, plock, gdansk } = refs.cities;
 
-  return (fields: Partial<OrderFormDto> = {}): OrderFormDto => ({
+  return (fields: Partial<OrderInputDto> = {}): OrderInputDto => ({
     orderNr: 'ZL/1',
     startDate: '2026-10-27',
     endDate: '2026-10-29',
@@ -99,8 +99,8 @@ export function orderFormFor(refs: OrderReferences) {
     customerId: refs.customer.id,
     currencyId: refs.currencies.pln.id,
     priceCurrency: '1000',
-    loadingPlaces: [warszawa],
-    unloadingPlaces: [plock, gdansk],
+    loadingPlaces: [warszawa.id],
+    unloadingPlaces: [plock.id, gdansk.id],
     ...fields,
   });
 }

@@ -6,7 +6,7 @@ import { ORDER_STATUS, ZOD_ERROR_MESSAGES } from '../consts';
 import { toDate } from '../dates';
 import { selectCitySchema as City } from './city.dto';
 
-const OrderFormFields = z.object({
+const OrderFields = z.object({
   orderNr: z
     .string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Numer zlecenia nie może być pusty.' })
@@ -35,15 +35,26 @@ const OrderFormFields = z.object({
       error: 'Cena musi być wyższa od zera.',
     })
     .trim(),
-  loadingPlaces: z
-    .array(City, { error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: 'Wybierz co najmniej 1 miejsce załadunku.' }),
-  unloadingPlaces: z
-    .array(City, { error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
 });
 
-const OrderDates = OrderFormFields.pick({ startDate: true, endDate: true });
+/** An Order's Loading and Unloading Places, each list holding at least one, in the order entered. */
+const withPlaces = <Place extends z.ZodType>(place: Place) =>
+  OrderFields.extend({
+    loadingPlaces: z
+      .array(place, { error: ZOD_ERROR_MESSAGES.FieldRequired })
+      .min(1, { error: 'Wybierz co najmniej 1 miejsce załadunku.' }),
+    unloadingPlaces: z
+      .array(place, { error: ZOD_ERROR_MESSAGES.FieldRequired })
+      .min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
+  });
+
+/** On the form, the Loading and Unloading Places are the Cities the user picked. */
+const OrderFormFields = withPlaces(City);
+
+/** On the Order input, the Loading and Unloading Places are City ids. */
+const OrderInputFields = withPlaces(z.int().positive());
+
+const OrderDates = OrderFields.pick({ startDate: true, endDate: true });
 
 const isLoadingAfterUnloading = ({ startDate, endDate }: z.infer<typeof OrderDates>) =>
   isAfter(toDate(startDate), toDate(endDate));
@@ -53,18 +64,27 @@ const onlyWhenDatesValid = {
   when: ({ value }: { value: unknown }) => OrderDates.safeParse(value).success,
 };
 
-/** The Order form, shared by the form's validation and the Orders module's. */
-export const OrderFormSchema = OrderFormFields.refine((order) => !isLoadingAfterUnloading(order), {
-  error: 'Data załadunku nie może być późniejsza niż data rozładunku.',
-  path: ['startDate'],
-  ...onlyWhenDatesValid,
-}).refine((order) => !isLoadingAfterUnloading(order), {
-  error: 'Data rozładunku nie może być wcześniejsza niż data załadunku.',
-  path: ['endDate'],
-  ...onlyWhenDatesValid,
-});
+/** Holds the Loading Date no later than the Unloading Date, on the form and on the Order input. */
+const withOrderedDates = <T extends z.ZodType<z.infer<typeof OrderDates>>>(fields: T) =>
+  fields
+    .refine((order) => !isLoadingAfterUnloading(order), {
+      error: 'Data załadunku nie może być późniejsza niż data rozładunku.',
+      path: ['startDate'],
+      ...onlyWhenDatesValid,
+    })
+    .refine((order) => !isLoadingAfterUnloading(order), {
+      error: 'Data rozładunku nie może być wcześniejsza niż data załadunku.',
+      path: ['endDate'],
+      ...onlyWhenDatesValid,
+    });
+
+/** The Order form's validation. */
+export const OrderFormSchema = withOrderedDates(OrderFormFields);
+
+/** What the Orders module saves an Order from: its fields, with its Places as City ids. */
+export const OrderInputSchema = withOrderedDates(OrderInputFields);
 
 export const selectOrderSchema = createSelectSchema(order);
 
-export type OrderFormDto = z.infer<typeof OrderFormSchema>;
+export type OrderInputDto = z.infer<typeof OrderInputSchema>;
 export type OrderDto = z.infer<typeof selectOrderSchema>;

@@ -87,8 +87,8 @@ describe('OrderForm', () => {
         statusId: 1,
         priceCurrency: '1000',
         currencyId: 1,
-        loadingPlaces: [plock],
-        unloadingPlaces: [plock],
+        loadingPlaces: [plock.id],
+        unloadingPlaces: [plock.id],
       });
     });
 
@@ -180,7 +180,10 @@ describe('OrderForm', () => {
       await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
       expect(searchCities).toHaveBeenCalledWith('Zgi');
       expect(createOrder).toHaveBeenCalledWith(
-        expect.objectContaining({ loadingPlaces: [plock], unloadingPlaces: [plock, zgierz] }),
+        expect.objectContaining({
+          loadingPlaces: [plock.id],
+          unloadingPlaces: [plock.id, zgierz.id],
+        }),
       );
     });
 
@@ -266,7 +269,7 @@ describe('OrderForm', () => {
       unloadingPlaces: [plockPlace],
     };
     const editSetup = (edited: OrderReadModel = order) =>
-      setup({ order: edited, action: (formData) => updateOrder(edited.id, formData) });
+      setup({ order: edited, action: (input) => updateOrder(edited.id, input) });
 
     beforeEach(() => {
       vi.mocked(updateOrder).mockResolvedValue({ success: true, data: {} } as Awaited<
@@ -296,8 +299,8 @@ describe('OrderForm', () => {
         statusId: 1,
         priceCurrency: '2500',
         currencyId: 1,
-        loadingPlaces: [plockPlace],
-        unloadingPlaces: [plockPlace],
+        loadingPlaces: [plockPlace.id],
+        unloadingPlaces: [plockPlace.id],
       });
     });
 
@@ -319,7 +322,7 @@ describe('OrderForm', () => {
       await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
       expect(updateOrder).toHaveBeenCalledWith(
         7,
-        expect.objectContaining({ loadingPlaces: [zgierz], unloadingPlaces: [zgierz] }),
+        expect.objectContaining({ loadingPlaces: [zgierz.id], unloadingPlaces: [zgierz.id] }),
       );
     });
 

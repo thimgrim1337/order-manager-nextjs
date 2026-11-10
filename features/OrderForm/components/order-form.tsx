@@ -8,13 +8,14 @@ import { settleWrite } from '@/features/shared/lib/settle-write';
 import type { ActionResponse } from '@/lib/action-response';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { driverName } from '@/lib/drivers';
-import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
+import type { OrderDto, OrderInputDto } from '@/lib/dto/order.dto';
 import { useAppForm } from '../hooks/useAppForm';
 import useExchangeRate from '../hooks/useExchangeRate';
 import {
   getStartingExchangeRate,
   getStartingValues,
   orderFormOptions,
+  toOrderInput,
 } from '../lib/order-form-options';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
@@ -24,7 +25,7 @@ export type OrderFormProps = {
   /** The Order to edit, locked until the user asks to edit it; without one the form creates an Order. */
   order?: OrderReadModel;
   /** Saves the filled-in Order through the Orders module. */
-  action: (formData: OrderFormDto) => Promise<ActionResponse<OrderDto>>;
+  action: (input: OrderInputDto) => Promise<ActionResponse<OrderDto>>;
   onDialogClose: () => void;
 };
 
@@ -43,7 +44,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     onSubmit: async ({ value }) => {
       if (exchangeRate.error) return;
 
-      await settleWrite(() => action(value), {
+      await settleWrite(() => action(toOrderInput(value)), {
         closeDialog: onDialogClose,
         successDescription: order
           ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`

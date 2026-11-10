@@ -4,7 +4,7 @@ import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { changeOrderStatus, createOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
 import { fakeNbp } from '../fakes/nbp';
-import { orderFormFor, seedOrderReferences } from '../fixtures/order';
+import { orderInputFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
 // updateTag throws outside a Server Action.
@@ -13,7 +13,7 @@ vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
 
-  const [, created] = await createOrder(trx, orderFormFor(refs)(), fakeNbp([]));
+  const [, created] = await createOrder(trx, orderInputFor(refs)(), fakeNbp([]));
   if (!created) throw new Error('Seed Order was not created');
 
   return { created, delivered: refs.statuses.delivered };

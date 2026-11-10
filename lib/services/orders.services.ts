@@ -9,11 +9,10 @@ import { findCurrency } from '../dal/currency.dal';
 import { findOrderExchangeRate } from '../dal/order.dal';
 import { getToday } from '../dates';
 import { isForeignKeyViolation, isUniqueViolation } from '../db-errors';
-import type { CityDto } from '../dto/city.dto';
 import {
   type OrderDto,
-  type OrderFormDto,
-  OrderFormSchema,
+  type OrderInputDto,
+  OrderInputSchema,
   selectOrderSchema,
 } from '../dto/order.dto';
 import { error, ok, type Result } from '../error';
@@ -64,11 +63,11 @@ export async function createOrder(
   nbp: Nbp,
   now?: Date,
 ): Promise<Result<OrderDto, CreateOrderFailure>> {
-  const [invalid, form] = validateOrderForm(input);
+  const [invalid, orderInput] = validateOrderInput(input);
   if (invalid) return error(invalid);
 
   // Priced before the transaction, so it holds no connection while NBP is asked.
-  const [unpriced, priced] = await priceOrder(database, form, nbp, now);
+  const [unpriced, priced] = await priceOrder(database, orderInput, nbp, now);
   if (unpriced) return error(unpriced);
   const { loadingPlaces, unloadingPlaces, fields } = priced;
 
@@ -108,7 +107,7 @@ export async function updateOrder(
   const [invalidId, orderId] = parseId(orderIdInput);
   if (invalidId) return error(invalidId);
 
-  const [invalid, form] = validateOrderForm(input);
+  const [invalid, orderInput] = validateOrderInput(input);
   if (invalid) return error(invalid);
 
   const storedOrder = await findOrderExchangeRate(database, orderId);
@@ -120,7 +119,7 @@ export async function updateOrder(
   };
 
   // Priced before the transaction, so it holds no connection while NBP is asked.
-  const [unpriced, priced] = await priceOrder(database, form, nbp, now, stored);
+  const [unpriced, priced] = await priceOrder(database, orderInput, nbp, now, stored);
   if (unpriced) return error(unpriced);
   const { loadingPlaces, unloadingPlaces, fields } = priced;
 
@@ -217,27 +216,27 @@ function parseId(input: unknown) {
   return ok(validation.data);
 }
 
-/** Validates the Order form from a Server Action's untrusted input. */
-function validateOrderForm(input: unknown) {
-  const validation = OrderFormSchema.safeParse(input);
+/** Validates the Order input from a Server Action's untrusted input. */
+function validateOrderInput(input: unknown) {
+  const validation = OrderInputSchema.safeParse(input);
   if (!validation.success) return invalidData(z.prettifyError(validation.error));
 
   return ok(validation.data);
 }
 
 /**
- * Turns the Order form's price into the Order's PLN price, at `stored`'s Exchange Rate while the
- * form keeps its Unloading Date and Currency, otherwise at the one `nbp` gives as of the company's
+ * Turns the Order input's price into the Order's PLN price, at `stored`'s Exchange Rate while the
+ * input keeps its Unloading Date and Currency, otherwise at the one `nbp` gives as of the company's
  * day at `now`.
  */
 async function priceOrder(
   database: db | dbTransaction,
-  form: OrderFormDto,
+  orderInput: OrderInputDto,
   nbp: Nbp,
   now: Date | undefined,
   stored?: StoredExchangeRate,
 ) {
-  const { loadingPlaces, unloadingPlaces, ...fields } = form;
+  const { loadingPlaces, unloadingPlaces, ...fields } = orderInput;
 
   const orderCurrency = await findCurrency(database, fields.currencyId);
   if (!orderCurrency) return invalidData('Nieznana waluta.');
@@ -262,11 +261,11 @@ async function priceOrder(
 async function insertPlaces(
   trx: dbTransaction,
   orderId: number,
-  loadingPlaces: CityDto[],
-  unloadingPlaces: CityDto[],
+  loadingPlaces: OrderInputDto['loadingPlaces'],
+  unloadingPlaces: OrderInputDto['unloadingPlaces'],
 ) {
-  const inEnteredOrder = (places: CityDto[]) =>
-    places.map((city, position) => ({ orderId, placeId: city.id, position }));
+  const inEnteredOrder = (cityIds: OrderInputDto['loadingPlaces']) =>
+    cityIds.map((placeId, position) => ({ orderId, placeId, position }));
 
   await trx.insert(loadingPlace).values(inEnteredOrder(loadingPlaces));
   await trx.insert(unloadingPlace).values(inEnteredOrder(unloadingPlaces));
