@@ -2,17 +2,12 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import { failureMessage } from '@/lib/action-response';
 import { getToday } from '@/lib/dates';
-import {
-  exchangeRateSource,
-  findExchangeRate,
-  NO_EXCHANGE_RATE,
-  type StoredExchangeRate,
-} from '@/lib/exchange-rate';
+import { exchangeRateSource, findExchangeRate, type StoredExchangeRate } from '@/lib/exchange-rate';
 import { nbpApi } from '@/lib/nbp';
 
 /**
- * The Exchange Rate an Order dated `endDate` in `currencyId` is saved with: the `stored` one while
- * its Unloading Date and Currency hold, otherwise the one NBP answers with.
+ * The Exchange Rate an Order dated `endDate` in `currencyId` is saved with, as the form previews it:
+ * the `stored` one while its Unloading Date and Currency hold, otherwise the one NBP answers with.
  */
 export default function useExchangeRate(
   stored: StoredExchangeRate,
@@ -56,7 +51,7 @@ export default function useExchangeRate(
   return {
     currencyCode,
     // Without one, not the last Currency's rate, which would price this one with it.
-    currencyInfo: rateQuery.data ?? NO_EXCHANGE_RATE,
+    currencyInfo: rateQuery.data ?? null,
     isLoading: rateQuery.isLoading,
     error: rateQuery.isError
       ? rateQuery.error.message || 'Wystąpił błąd podczas pobierania kursu.'

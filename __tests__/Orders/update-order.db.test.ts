@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { updateTag } from 'next/cache';
 import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { truck } from '@/db/schemas';
+import { currency, truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder, updateOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
@@ -27,18 +27,23 @@ async function seed(trx: dbTransaction) {
 const orderWeek = week('2026-W44');
 
 describe('updateOrder', () => {
-  it('recomputes the PLN price when the price and currency change to EUR', () =>
+  it("keeps an EUR Order's stored rate while its Unloading Date and Currency hold, without asking NBP", () =>
     withRollback(async (trx) => {
-      const { orderForm, refs, created } = await seed(trx);
+      const { orderForm, refs } = await seed(trx);
+      const eurForm = orderForm({ currencyId: refs.currencies.eur.id, priceCurrency: '1000' });
+      const [, eurOrder] = await createOrder(
+        trx,
+        { ...eurForm, orderNr: 'ZL/2' },
+        fakeNbp([{ no: '210/A/NBP/2026', mid: 4.2512, effectiveDate: '2026-10-28' }]),
+      );
+      if (!eurOrder) throw new Error('Seed EUR Order was not created');
+      const nbp = fakeNbp([{ no: '210/A/NBP/2026', mid: 4.9999, effectiveDate: '2026-10-28' }]);
 
       const [failure, updated] = await updateOrder(
         trx,
-        created.id,
-        orderForm({
-          currencyId: refs.currencies.eur.id,
-          priceCurrency: '500',
-          currencyInfo: { rate: '4.2512', table: '210/A/NBP/2026', date: '2026-10-28' },
-        }),
+        eurOrder.id,
+        { ...eurForm, orderNr: 'ZL/2', priceCurrency: '500' },
+        nbp,
       );
 
       expect(failure).toBeNull();
@@ -48,9 +53,77 @@ describe('updateOrder', () => {
         exchangeRate: '4.2512',
         exchangeDate: '2026-10-28',
       });
+      expect(nbp.requests).toEqual([]);
     }));
 
-  it('rejects an EUR price without an exchange rate, keeping the saved PLN price', () =>
+  it("stores NBP's rate for the new Currency once it changes", () =>
+    withRollback(async (trx) => {
+      const { orderForm, refs } = await seed(trx);
+      // Past the seeded Currencies' ids, which leave the identity sequence where it started.
+      const [usd] = await trx
+        .insert(currency)
+        .overridingSystemValue()
+        .values({ id: 3, code: 'USD' })
+        .returning();
+      const eurForm = orderForm({ currencyId: refs.currencies.eur.id, orderNr: 'ZL/2' });
+      const [, eurOrder] = await createOrder(
+        trx,
+        eurForm,
+        fakeNbp([{ no: '210/A/NBP/2026', mid: 4.2512, effectiveDate: '2026-10-28' }]),
+      );
+      if (!eurOrder) throw new Error('Seed EUR Order was not created');
+      // The fake publishes these for every Currency.
+      const nbp = fakeNbp([{ no: '210/A/NBP/2026', mid: 3.6512, effectiveDate: '2026-10-28' }]);
+
+      const [failure, updated] = await updateOrder(
+        trx,
+        eurOrder.id,
+        { ...eurForm, currencyId: usd.id, priceCurrency: '500' },
+        nbp,
+      );
+
+      expect(failure).toBeNull();
+      expect(updated).toMatchObject({
+        priceCurrency: '500.00',
+        pricePLN: '1825.60',
+        exchangeRate: '3.6512',
+        exchangeDate: '2026-10-28',
+      });
+      expect(nbp.requests.map((request) => request.code)).toEqual(['USD']);
+    }));
+
+  it("stores NBP's rate for the new Unloading Date once it changes", () =>
+    withRollback(async (trx) => {
+      const { orderForm, refs } = await seed(trx);
+      const eurForm = orderForm({ currencyId: refs.currencies.eur.id, orderNr: 'ZL/2' });
+      const [, eurOrder] = await createOrder(
+        trx,
+        eurForm,
+        fakeNbp([{ no: '210/A/NBP/2026', mid: 4.2512, effectiveDate: '2026-10-28' }]),
+      );
+      if (!eurOrder) throw new Error('Seed EUR Order was not created');
+      const nbp = fakeNbp([
+        { no: '210/A/NBP/2026', mid: 4.2512, effectiveDate: '2026-10-28' },
+        { no: '212/A/NBP/2026', mid: 4.2699, effectiveDate: '2026-10-30' },
+      ]);
+
+      // Unloading on Saturday 2026-10-31 instead of 2026-10-29.
+      const [failure, updated] = await updateOrder(
+        trx,
+        eurOrder.id,
+        { ...eurForm, endDate: '2026-10-31' },
+        nbp,
+      );
+
+      expect(failure).toBeNull();
+      expect(updated).toMatchObject({
+        pricePLN: '4269.90',
+        exchangeRate: '4.2699',
+        exchangeDate: '2026-10-30',
+      });
+    }));
+
+  it('reports an EUR Order NBP published no rate for, keeping the saved PLN price', () =>
     withRollback(async (trx) => {
       const { orderForm, refs, created } = await seed(trx);
 
@@ -58,9 +131,10 @@ describe('updateOrder', () => {
         trx,
         created.id,
         orderForm({ currencyId: refs.currencies.eur.id, priceCurrency: '500' }),
+        fakeNbp([]),
       );
 
-      expect(failure?.reason).toBe('InvalidData');
+      expect(failure).toEqual({ reason: 'ExchangeRateNotPublished' });
       const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved.pricePLN).toBe('1000.00');
     }));
@@ -73,6 +147,7 @@ describe('updateOrder', () => {
         trx,
         created.id,
         orderForm({ startDate: '2026-10-29', endDate: '2026-10-28' }),
+        fakeNbp([]),
       );
 
       expect(failure?.reason).toBe('InvalidData');
@@ -89,6 +164,7 @@ describe('updateOrder', () => {
         trx,
         created.id,
         orderForm({ loadingPlaces: [gdansk], unloadingPlaces: [plock, warszawa] }),
+        fakeNbp([]),
       );
 
       const [saved] = await findOrdersInWeek(trx, orderWeek);
@@ -100,7 +176,12 @@ describe('updateOrder', () => {
     withRollback(async (trx) => {
       const { orderForm, refs, created } = await seed(trx);
 
-      await updateOrder(trx, created.id, orderForm({ driverId: refs.drivers.anna.id }));
+      await updateOrder(
+        trx,
+        created.id,
+        orderForm({ driverId: refs.drivers.anna.id }),
+        fakeNbp([]),
+      );
 
       const [savedTruck] = await trx.select().from(truck).where(eq(truck.id, refs.truck.id));
       expect(savedTruck.driverId).toBe(refs.drivers.anna.id);
@@ -111,7 +192,12 @@ describe('updateOrder', () => {
       const { orderForm, refs, created } = await seed(trx);
       vi.mocked(updateTag).mockClear();
 
-      await updateOrder(trx, created.id, orderForm({ driverId: refs.drivers.anna.id }));
+      await updateOrder(
+        trx,
+        created.id,
+        orderForm({ driverId: refs.drivers.anna.id }),
+        fakeNbp([]),
+      );
 
       expect(updateTag).toHaveBeenCalledWith('trucks');
     }));
@@ -120,7 +206,7 @@ describe('updateOrder', () => {
     withRollback(async (trx) => {
       const { orderForm } = await seed(trx);
 
-      const [failure] = await updateOrder(trx, 1.5, orderForm());
+      const [failure] = await updateOrder(trx, 1.5, orderForm(), fakeNbp([]));
 
       expect(failure?.reason).toBe('InvalidData');
     }));
@@ -129,7 +215,7 @@ describe('updateOrder', () => {
     withRollback(async (trx) => {
       const { orderForm, created } = await seed(trx);
 
-      const [failure] = await updateOrder(trx, created.id + 1, orderForm());
+      const [failure] = await updateOrder(trx, created.id + 1, orderForm(), fakeNbp([]));
 
       expect(failure).toEqual({ reason: 'NotFound' });
     }));

@@ -12,7 +12,6 @@ import {
 } from '@/db/schemas';
 import seedReference from '@/db/seeds/reference';
 import type { OrderFormDto } from '@/lib/dto/order.dto';
-import { NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
 
 /**
  * Seeds the rows an Order references: into a db test's transaction, or into the global db for e2e.
@@ -102,7 +101,6 @@ export function orderFormFor(refs: OrderReferences) {
     priceCurrency: '1000',
     loadingPlaces: [warszawa],
     unloadingPlaces: [plock, gdansk],
-    currencyInfo: NO_EXCHANGE_RATE,
     ...fields,
   });
 }

@@ -39,7 +39,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 
 ## Forms
 
-- A value a form fetches (like the Order form's Exchange Rate) stays outside its TanStack Form state, with no `useEffect` copying it in: its error goes through a field's `error` prop and `FormControls`' `isBlocked`, and `onSubmit` adds the value. See `docs/adr/0001-fetched-values-stay-outside-the-form.md`.
+- A value a form fetches (like the Order form's Exchange Rate) stays outside its TanStack Form state, with no `useEffect` copying it in: its error goes through a field's `error` prop and `FormControls`' `isBlocked`. Where the server decides the value too (the Exchange Rate), `onSubmit` sends none and the fetched one is only a preview. See `docs/adr/0001-fetched-values-stay-outside-the-form.md`.
 
 ## Accessibility
 

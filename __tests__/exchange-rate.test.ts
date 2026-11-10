@@ -4,7 +4,6 @@ import {
   exchangeRateSource,
   findExchangeRate,
   fromStoredExchangeRate,
-  NO_EXCHANGE_RATE,
   toPricePLN,
   toStoredPrice,
 } from '@/lib/exchange-rate';
@@ -12,14 +11,14 @@ import { failingNbp, fakeNbp } from './fakes/nbp';
 
 const EUR = { id: CURRENCY.EUR, code: 'EUR' };
 
-const EUR_RATE = { table: '', rate: '4.2', date: '2026-10-29' };
+const EUR_RATE = { table: null, rate: '4.2', date: '2026-10-29' };
 
 describe('Exchange Rate: exchangeRateSource', () => {
   it('has none for a PLN Order', () => {
     const stored = {
       endDate: '2026-10-30',
       currencyId: CURRENCY.PLN,
-      currencyInfo: NO_EXCHANGE_RATE,
+      currencyInfo: null,
     };
 
     expect(exchangeRateSource(stored, '2026-10-30', CURRENCY.PLN)).toEqual({ kind: 'none' });
@@ -51,7 +50,7 @@ describe('Exchange Rate: exchangeRateSource', () => {
     const stored = {
       endDate: '2026-10-30',
       currencyId: CURRENCY.EUR,
-      currencyInfo: NO_EXCHANGE_RATE,
+      currencyInfo: null,
     };
 
     expect(exchangeRateSource(stored, '2026-10-30', CURRENCY.EUR)).toEqual({ kind: 'fetch' });
@@ -61,34 +60,28 @@ describe('Exchange Rate: exchangeRateSource', () => {
 describe('Exchange Rate: fromStoredExchangeRate', () => {
   it("is a foreign Order's stored rate and date, without NBP's table number", () => {
     expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 4.2512, date: '2026-10-28' })).toEqual({
-      table: '',
+      table: null,
       rate: '4.2512',
       date: '2026-10-28',
     });
   });
 
   it('is none for a PLN Order, stored at a rate of 1', () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.PLN, rate: 1, date: '2026-10-28' })).toEqual(
-      NO_EXCHANGE_RATE,
-    );
+    expect(fromStoredExchangeRate({ id: CURRENCY.PLN, rate: 1, date: '2026-10-28' })).toBeNull();
   });
 
   it('is none for a foreign Order stored without a rate', () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 0, date: '2026-10-28' })).toEqual(
-      NO_EXCHANGE_RATE,
-    );
+    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 0, date: '2026-10-28' })).toBeNull();
   });
 
   it('is none for a foreign Order stored without a date', () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 4.2512, date: null })).toEqual(
-      NO_EXCHANGE_RATE,
-    );
+    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 4.2512, date: null })).toBeNull();
   });
 });
 
 describe('Exchange Rate: toStoredPrice', () => {
   it('stores a PLN Order at its own Price, a rate of 1 and no date', () => {
-    expect(toStoredPrice(CURRENCY.PLN, '1000', NO_EXCHANGE_RATE)).toEqual({
+    expect(toStoredPrice(CURRENCY.PLN, '1000', null)).toEqual({
       pricePLN: '1000',
       exchangeRate: '1',
       exchangeDate: null,
@@ -106,7 +99,7 @@ describe('Exchange Rate: toStoredPrice', () => {
   });
 
   it('stores nothing for a foreign Order without a rate, which would price it as PLN', () => {
-    expect(toStoredPrice(CURRENCY.EUR, '1000', NO_EXCHANGE_RATE)).toBeNull();
+    expect(toStoredPrice(CURRENCY.EUR, '1000', null)).toBeNull();
   });
 });
 
@@ -131,7 +124,7 @@ describe('Exchange Rate: findExchangeRate', () => {
 
     expect(
       await findExchangeRate(nbp, { id: CURRENCY.PLN, code: 'PLN' }, '2026-11-03', '2026-11-04'),
-    ).toEqual([null, NO_EXCHANGE_RATE]);
+    ).toEqual([null, null]);
     expect(nbp.requests).toEqual([]);
   });
 

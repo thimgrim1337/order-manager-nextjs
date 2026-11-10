@@ -41,14 +41,6 @@ const OrderFormFields = z.object({
   unloadingPlaces: z
     .array(City, { error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
-  currencyInfo: z.object(
-    {
-      rate: z.string(),
-      table: z.string(),
-      date: z.string(),
-    },
-    { error: ZOD_ERROR_MESSAGES.FieldRequired },
-  ),
 });
 
 const OrderDates = OrderFormFields.pick({ startDate: true, endDate: true });

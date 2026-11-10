@@ -20,7 +20,7 @@ export async function updateOrder(
   orderId: number,
   formData: OrderFormDto,
 ): Promise<ActionResponse<OrderDto>> {
-  return toActionResponse(await Orders.updateOrder(db, orderId, formData));
+  return toActionResponse(await Orders.updateOrder(db, orderId, formData, nbpApi));
 }
 
 export async function changeOrderStatus(

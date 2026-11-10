@@ -6,7 +6,6 @@ import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
-import { NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
 import { worker } from '../mocks/browser';
 import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
@@ -90,7 +89,6 @@ describe('OrderForm', () => {
         currencyId: 1,
         loadingPlaces: [plock],
         unloadingPlaces: [plock],
-        currencyInfo: NO_EXCHANGE_RATE,
       });
     });
 
@@ -126,7 +124,7 @@ describe('OrderForm', () => {
       await act(async () => save.resolve());
     });
 
-    it('submits a new non-PLN Order with its Exchange Rate', async () => {
+    it('submits a new non-PLN Order without an Exchange Rate, which the Orders module works out', async () => {
       const { user, onDialogClose } = await setup();
 
       await fillInNewOrder(user);
@@ -136,12 +134,8 @@ describe('OrderForm', () => {
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
       await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
-      expect(createOrder).toHaveBeenCalledWith(
-        expect.objectContaining({
-          currencyId: 2,
-          currencyInfo: { table: '107/NBP/A', rate: '4.25', date: '2021-01-15' },
-        }),
-      );
+      expect(createOrder).toHaveBeenCalledWith(expect.objectContaining({ currencyId: 2 }));
+      expect(vi.mocked(createOrder).mock.calls[0]?.[0]).not.toHaveProperty('currencyInfo');
     });
 
     it("saves a EUR Order unloading after the new year's holiday with the rate from before it", async () => {
@@ -169,7 +163,6 @@ describe('OrderForm', () => {
         expect.objectContaining({
           endDate: '2027-01-07',
           currencyId: 2,
-          currencyInfo: { table: '002/A/NBP/2027', rate: '4.24', date: '2027-01-05' },
         }),
       );
     });
@@ -305,7 +298,6 @@ describe('OrderForm', () => {
         currencyId: 1,
         loadingPlaces: [plockPlace],
         unloadingPlaces: [plockPlace],
-        currencyInfo: NO_EXCHANGE_RATE,
       });
     });
 
@@ -354,7 +346,6 @@ describe('OrderForm', () => {
         priceCurrency: '1000',
         pricePLN: '4200.00',
       };
-      const storedRate = { table: '', rate: '4.2', date: '2026-10-29' };
 
       /** NBP has an Exchange Rate for EUR only. */
       const nbpHasEurRateOnly = () =>
@@ -392,7 +383,6 @@ describe('OrderForm', () => {
           expect.objectContaining({
             priceCurrency: '2000',
             currencyId: 2,
-            currencyInfo: storedRate,
           }),
         );
       });
@@ -411,7 +401,7 @@ describe('OrderForm', () => {
         await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
         expect(updateOrder).toHaveBeenCalledWith(
           7,
-          expect.objectContaining({ endDate: '2026-11-13', currencyInfo: storedRate }),
+          expect.objectContaining({ endDate: '2026-11-13' }),
         );
       });
 
@@ -430,7 +420,6 @@ describe('OrderForm', () => {
           7,
           expect.objectContaining({
             endDate: '2026-11-20',
-            currencyInfo: { table: '211/A/NBP/2026', rate: '4.25', date: '2026-10-30' },
           }),
         );
       });
@@ -454,7 +443,6 @@ describe('OrderForm', () => {
           7,
           expect.objectContaining({
             currencyId: 2,
-            currencyInfo: { table: '211/A/NBP/2026', rate: '4.25', date: '2026-10-30' },
           }),
         );
       });

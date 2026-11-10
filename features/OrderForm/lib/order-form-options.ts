@@ -4,7 +4,7 @@ import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
-import { fromStoredExchangeRate, NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
+import { fromStoredExchangeRate, type StoredExchangeRate } from '@/lib/exchange-rate';
 
 /** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
 const getDefaultOrderDates = () => {
@@ -27,7 +27,6 @@ export const orderFormOptions = formOptions({
     currencyId: 1,
     loadingPlaces: [] as CityReadModel[] | [],
     unloadingPlaces: [] as CityReadModel[] | [],
-    currencyInfo: NO_EXCHANGE_RATE,
   },
   validators: {
     // Also runs on submit; it holds the Loading/Unloading Date order the Orders module enforces.
@@ -52,6 +51,20 @@ export const getStartingValues = (order?: OrderReadModel) => {
     currencyId: order.currency.id,
     loadingPlaces: order.loadingPlaces,
     unloadingPlaces: order.unloadingPlaces,
-    currencyInfo: fromStoredExchangeRate(order.currency),
   };
 };
+
+type StartingValues = ReturnType<typeof getStartingValues>;
+
+/**
+ * The Exchange Rate the form starts with, for the Unloading Date and Currency it opened with:
+ * `order`'s stored one, or none for a new Order.
+ */
+export const getStartingExchangeRate = (
+  { endDate, currencyId }: StartingValues,
+  order?: OrderReadModel,
+): StoredExchangeRate => ({
+  endDate,
+  currencyId,
+  currencyInfo: order ? fromStoredExchangeRate(order.currency) : null,
+});

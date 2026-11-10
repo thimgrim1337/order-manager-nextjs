@@ -4,15 +4,15 @@ import { addDays, getYesterday } from './dates';
 import { error, ok, type Result } from './error';
 import type { Nbp } from './nbp';
 
-/** An Exchange Rate as the Order form submits it: NBP's table number, mid rate and its date. */
+/**
+ * An Exchange Rate: NBP's mid rate, its date and its table number, which an Order's stored rate
+ * comes without. A PLN Order has none (null).
+ */
 export type ExchangeRate = {
   date: string;
-  table: string;
+  table: string | null;
   rate: string;
 };
-
-/** No Exchange Rate: a PLN Order's, or a foreign one's not yet fetched. */
-export const NO_EXCHANGE_RATE: ExchangeRate = { table: '', rate: '', date: '' };
 
 /** A PLN Order has no Exchange Rate; any other Currency needs one. */
 const hasExchangeRate = (currencyId: number) => currencyId !== CURRENCY.PLN;
@@ -34,8 +34,8 @@ export async function findExchangeRate(
   currency: CurrencyReadModel,
   unloadingDate: string,
   today: string,
-): Promise<Result<ExchangeRate, NoExchangeRate>> {
-  if (!hasExchangeRate(currency.id)) return ok(NO_EXCHANGE_RATE);
+): Promise<Result<ExchangeRate | null, NoExchangeRate>> {
+  if (!hasExchangeRate(currency.id)) return ok(null);
 
   const dayBefore = getYesterday(unloadingDate);
   const rangeEnd = dayBefore < today ? dayBefore : today;
@@ -57,7 +57,7 @@ export async function findExchangeRate(
 export type StoredExchangeRate = {
   endDate: string;
   currencyId: number;
-  currencyInfo: ExchangeRate;
+  currencyInfo: ExchangeRate | null;
 };
 
 /**
@@ -71,9 +71,9 @@ export function exchangeRateSource(
 ): { kind: 'none' } | { kind: 'stored'; currencyInfo: ExchangeRate } | { kind: 'fetch' } {
   if (!hasExchangeRate(currencyId)) return { kind: 'none' };
 
-  const keepsStored =
-    !!stored.currencyInfo.rate && endDate === stored.endDate && currencyId === stored.currencyId;
-  if (keepsStored) return { kind: 'stored', currencyInfo: stored.currencyInfo };
+  const { currencyInfo } = stored;
+  if (currencyInfo && endDate === stored.endDate && currencyId === stored.currencyId)
+    return { kind: 'stored', currencyInfo };
 
   return { kind: 'fetch' };
 }
@@ -81,22 +81,22 @@ export function exchangeRateSource(
 /** An Order's stored Currency and Exchange Rate, as the Order read model carries them. */
 type StoredCurrency = { id: number; rate: number; date: string | null };
 
-/** The Exchange Rate the Order form starts with for an Order stored in `currency`; NBP's table number isn't stored. */
-export const fromStoredExchangeRate = ({ id, rate, date }: StoredCurrency): ExchangeRate =>
-  hasExchangeRate(id) && rate && date ? { table: '', rate: String(rate), date } : NO_EXCHANGE_RATE;
+/** The Exchange Rate an Order stored in `currency` keeps while edited; NBP's table number isn't stored. */
+export const fromStoredExchangeRate = ({ id, rate, date }: StoredCurrency): ExchangeRate | null =>
+  hasExchangeRate(id) && rate && date ? { table: null, rate: String(rate), date } : null;
 
 /**
  * The PLN Price, Exchange Rate and its date an Order priced at `price` in `currencyId` is stored
- * with, at the submitted `currencyInfo`; null for a foreign Currency submitted without a rate.
+ * with, at `currencyInfo`; null for a foreign Currency without a rate.
  */
 export function toStoredPrice(
   currencyId: number,
   price: string,
-  currencyInfo: ExchangeRate,
+  currencyInfo: ExchangeRate | null,
 ): { pricePLN: string; exchangeRate: string; exchangeDate: string | null } | null {
   if (!hasExchangeRate(currencyId))
     return { pricePLN: price, exchangeRate: '1', exchangeDate: null };
-  if (!currencyInfo.rate) return null;
+  if (!currencyInfo) return null;
 
   return {
     pricePLN: toPricePLN(price, currencyInfo.rate),

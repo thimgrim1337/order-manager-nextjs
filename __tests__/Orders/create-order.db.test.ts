@@ -68,7 +68,7 @@ describe('createOrder', () => {
       expect(savedTruck.driverId).toBe(anna.id);
     }));
 
-  it("stores NBP's rate for its Unloading Date, whatever rate the client sent", () =>
+  it("stores NBP's rate for its Unloading Date", () =>
     withRollback(async (trx) => {
       const { orderForm, eur } = await seed(trx);
       const nbp = fakeNbp([
@@ -83,7 +83,6 @@ describe('createOrder', () => {
         orderForm({
           currencyId: eur.id,
           priceCurrency: '1000',
-          currencyInfo: { rate: '9.5', table: 'made-up', date: '2026-10-29' },
         }),
         nbp,
       );

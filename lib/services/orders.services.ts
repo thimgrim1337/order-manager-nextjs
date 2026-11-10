@@ -6,6 +6,7 @@ import type { db, dbTransaction } from '@/db/db';
 import { loadingPlace, order, truck, unloadingPlace } from '@/db/schemas';
 import { CACHE_TAG } from '../consts';
 import { findCurrency } from '../dal/currency.dal';
+import { findOrderExchangeRate } from '../dal/order.dal';
 import { getToday } from '../dates';
 import { isForeignKeyViolation, isUniqueViolation } from '../db-errors';
 import type { CityDto } from '../dto/city.dto';
@@ -16,7 +17,14 @@ import {
   selectOrderSchema,
 } from '../dto/order.dto';
 import { error, ok, type Result } from '../error';
-import { findExchangeRate, type NoExchangeRate, toStoredPrice } from '../exchange-rate';
+import {
+  exchangeRateSource,
+  findExchangeRate,
+  fromStoredExchangeRate,
+  type NoExchangeRate,
+  type StoredExchangeRate,
+  toStoredPrice,
+} from '../exchange-rate';
 import type { Nbp } from '../nbp';
 
 type InvalidData = { reason: 'InvalidData'; details: string };
@@ -30,7 +38,7 @@ export type CreateOrderFailure = InvalidData | OrderNrTaken | NoExchangeRate;
 
 type NotFound = { reason: 'NotFound' };
 
-export type UpdateOrderFailure = InvalidData | OrderNrTaken | NotFound;
+export type UpdateOrderFailure = InvalidData | OrderNrTaken | NotFound | NoExchangeRate;
 
 export type ChangeOrderStatusFailure = InvalidData | NotFound | { reason: 'UnknownStatus' };
 
@@ -47,8 +55,8 @@ const INVALIDATED_TAGS = {
 /**
  * Creates an Order with its Loading and Unloading Places and assigns its Driver to its Truck,
  * in one transaction, then invalidates the cached Orders and Trucks. A foreign-Currency Order is
- * priced at the Exchange Rate `nbp` gives as of the company's day at `now`, whatever rate the input
- * carries. Call it from a Server Action.
+ * priced at the Exchange Rate `nbp` gives as of the company's day at `now`. Call it from a Server
+ * Action.
  */
 export async function createOrder(
   database: db | dbTransaction,
@@ -59,22 +67,8 @@ export async function createOrder(
   const [invalid, form] = validateOrderForm(input);
   if (invalid) return error(invalid);
 
-  const orderCurrency = await findCurrency(database, form.currencyId);
-  if (!orderCurrency) return invalidData('Nieznana waluta.');
-
-  // In place of the submitted one; asked before the transaction, so it holds no connection meanwhile.
-  const [noExchangeRate, currencyInfo] = await findExchangeRate(
-    nbp,
-    orderCurrency,
-    form.endDate,
-    getToday(now),
-  );
-  if (noExchangeRate) return error(noExchangeRate);
-
-  const [unpriced, priced] = priceOrder({
-    ...form,
-    currencyInfo,
-  });
+  // Priced before the transaction, so it holds no connection while NBP is asked.
+  const [unpriced, priced] = await priceOrder(database, form, nbp, now);
   if (unpriced) return error(unpriced);
   const { loadingPlaces, unloadingPlaces, fields } = priced;
 
@@ -100,12 +94,16 @@ export async function createOrder(
 /**
  * Updates an Order, replaces its Loading and Unloading Places, re-assigns its Driver to its Truck
  * and recomputes its PLN price, in one transaction, then invalidates the cached Orders and Trucks.
+ * A foreign-Currency Order keeps its stored Exchange Rate while its Unloading Date and Currency
+ * hold; otherwise it is priced at the one `nbp` gives as of the company's day at `now`.
  * Call it from a Server Action.
  */
 export async function updateOrder(
   database: db | dbTransaction,
   orderIdInput: unknown,
   input: unknown,
+  nbp: Nbp,
+  now?: Date,
 ): Promise<Result<OrderDto, UpdateOrderFailure>> {
   const [invalidId, orderId] = parseId(orderIdInput);
   if (invalidId) return error(invalidId);
@@ -113,7 +111,16 @@ export async function updateOrder(
   const [invalid, form] = validateOrderForm(input);
   if (invalid) return error(invalid);
 
-  const [unpriced, priced] = priceOrder(form);
+  const storedOrder = await findOrderExchangeRate(database, orderId);
+  if (!storedOrder) return error({ reason: 'NotFound' });
+  const stored = {
+    endDate: storedOrder.endDate,
+    currencyId: storedOrder.currencyId,
+    currencyInfo: fromStoredExchangeRate(storedOrder.currency),
+  };
+
+  // Priced before the transaction, so it holds no connection while NBP is asked.
+  const [unpriced, priced] = await priceOrder(database, form, nbp, now, stored);
   if (unpriced) return error(unpriced);
   const { loadingPlaces, unloadingPlaces, fields } = priced;
 
@@ -218,9 +225,29 @@ function validateOrderForm(input: unknown) {
   return ok(validation.data);
 }
 
-/** Turns the Order form's price into the Order's PLN price, at the form's `currencyInfo`. */
-function priceOrder(form: OrderFormDto) {
-  const { loadingPlaces, unloadingPlaces, currencyInfo, ...fields } = form;
+/**
+ * Turns the Order form's price into the Order's PLN price, at `stored`'s Exchange Rate while the
+ * form keeps its Unloading Date and Currency, otherwise at the one `nbp` gives as of the company's
+ * day at `now`.
+ */
+async function priceOrder(
+  database: db | dbTransaction,
+  form: OrderFormDto,
+  nbp: Nbp,
+  now: Date | undefined,
+  stored?: StoredExchangeRate,
+) {
+  const { loadingPlaces, unloadingPlaces, ...fields } = form;
+
+  const orderCurrency = await findCurrency(database, fields.currencyId);
+  if (!orderCurrency) return invalidData('Nieznana waluta.');
+
+  const source = stored && exchangeRateSource(stored, fields.endDate, fields.currencyId);
+  const [noExchangeRate, currencyInfo] =
+    source?.kind === 'stored'
+      ? ok(source.currencyInfo)
+      : await findExchangeRate(nbp, orderCurrency, fields.endDate, getToday(now));
+  if (noExchangeRate) return error(noExchangeRate);
 
   const price = toStoredPrice(fields.currencyId, fields.priceCurrency, currencyInfo);
   if (!price) return invalidData('Brak kursu waluty.');

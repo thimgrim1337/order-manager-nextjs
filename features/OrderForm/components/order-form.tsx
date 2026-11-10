@@ -11,7 +11,11 @@ import { driverName } from '@/lib/drivers';
 import type { OrderDto, OrderFormDto } from '@/lib/dto/order.dto';
 import { useAppForm } from '../hooks/useAppForm';
 import useExchangeRate from '../hooks/useExchangeRate';
-import { getStartingValues, orderFormOptions } from '../lib/order-form-options';
+import {
+  getStartingExchangeRate,
+  getStartingValues,
+  orderFormOptions,
+} from '../lib/order-form-options';
 import CreateCity from './CityForm/create-city';
 import CreateCustomer from './CustomerForm/create-customer';
 import CurrencyInfo from './ui/currency-info';
@@ -30,6 +34,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
 
   // Read once per open, so Reset keeps the dates the form opened with.
   const [startingValues] = useState(() => getStartingValues(order));
+  const [startingExchangeRate] = useState(() => getStartingExchangeRate(startingValues, order));
   const [isEditable, setIsEditable] = useState(!order);
 
   const form = useAppForm({
@@ -38,7 +43,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     onSubmit: async ({ value }) => {
       if (exchangeRate.error) return;
 
-      await settleWrite(() => action({ ...value, currencyInfo: exchangeRate.currencyInfo }), {
+      await settleWrite(() => action(value), {
         closeDialog: onDialogClose,
         successDescription: order
           ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
@@ -48,8 +53,8 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   });
 
   const { endDate, currencyId, priceCurrency } = useStore(form.store, (state) => state.values);
-  // Saved with the Order in place of the form's `currencyInfo`, which keeps the stored one.
-  const exchangeRate = useExchangeRate(startingValues, endDate, currencyId);
+  // A preview: the Orders module works out the rate the Order is saved with the same way.
+  const exchangeRate = useExchangeRate(startingExchangeRate, endDate, currencyId);
 
   const fieldGroupStyle = 'flex-row pt-5';
 

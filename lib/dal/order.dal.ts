@@ -3,7 +3,7 @@ import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from 'drizzle-orm
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
-import { ordersWithDetailsView } from '@/db/schemas';
+import { order, ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
@@ -210,4 +210,27 @@ export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) 
   cacheTag(CACHE_TAG.Orders);
 
   return findOrdersInWeek(db, week, opts);
+}
+
+/** The Unloading Date, Currency and stored Exchange Rate of Order `orderId`, if it exists. */
+export async function findOrderExchangeRate(database: db | dbTransaction, orderId: number) {
+  const [found] = await database
+    .select({
+      endDate: order.endDate,
+      currencyId: order.currencyId,
+      exchangeRate: order.exchangeRate,
+      exchangeDate: order.exchangeDate,
+    })
+    .from(order)
+    .where(eq(order.id, orderId));
+  if (!found) return undefined;
+
+  const { endDate, currencyId, exchangeRate, exchangeDate } = found;
+
+  return {
+    endDate,
+    currencyId,
+    // Shaped as the Order read model carries it.
+    currency: { id: currencyId, rate: Number(exchangeRate), date: exchangeDate },
+  };
 }
