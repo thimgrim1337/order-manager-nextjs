@@ -1,13 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import { type OrderDay, orderDays } from '@/lib/order-day';
-import type { City, Country, Customer } from '@/types/types';
 import { week } from './utils/week';
 
 describe('Order Day: orderDays', () => {
   const w44 = week('2026-W44');
-  const poland: Country = { id: 1, name: 'Poland', code: 'PL' };
-  const germany: Country = { id: 2, name: 'Germany', code: 'DE' };
-  const city = (id: number, name: string, country: Country): City => ({
+  const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
+  const germany: CountryReadModel = { id: 2, name: 'Germany', code: 'DE' };
+  const city = (id: number, name: string, country: CountryReadModel): CityReadModel => ({
     id,
     name,
     postal: '00-001',
@@ -16,7 +18,7 @@ describe('Order Day: orderDays', () => {
   const warszawa = city(1, 'Warszawa', poland);
   const plock = city(2, 'Płock', poland);
   const berlin = city(3, 'Berlin', germany);
-  const customer: Customer = { id: 1, name: 'Acme', tax: 'PL1234567890' };
+  const customer: CustomerReadModel = { id: 1, name: 'Acme', tax: 'PL1234567890' };
   const order = (dates: { startDate: string; endDate: string }) => ({
     ...dates,
     loadingPlaces: [warszawa, plock],

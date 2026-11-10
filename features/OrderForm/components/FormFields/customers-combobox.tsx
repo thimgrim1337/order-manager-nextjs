@@ -1,11 +1,11 @@
 import useSearchQuery from '@/features/shared/hooks/use-search-query';
 import { searchCustomers } from '@/lib/actions';
-import type { Customer } from '@/types/types';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import ComboboxField from './combobox';
 import type { FormControlProps } from './form-base';
 
 type CustomerComboboxFieldProps = FormControlProps & {
-  customers: Customer[];
+  customers: CustomerReadModel[];
 };
 
 export default function CustomerComboboField({

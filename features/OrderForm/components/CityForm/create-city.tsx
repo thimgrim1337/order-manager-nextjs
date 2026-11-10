@@ -1,12 +1,12 @@
 'use client';
 
 import { MapPinPlus } from 'lucide-react';
-import type { Country } from '@/types/types';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
 import useToggle from '../../../shared/hooks/use-toggle';
 import FormDialog from '../ui/form-dialog';
 import CreateCityForm from './create-city-form';
 
-export default function CreateCity({ countries }: { countries: Country[] }) {
+export default function CreateCity({ countries }: { countries: CountryReadModel[] }) {
   const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
 
   return (

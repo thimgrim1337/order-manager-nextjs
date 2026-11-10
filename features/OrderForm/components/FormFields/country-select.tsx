@@ -1,9 +1,9 @@
-import type { Country } from '@/types/types';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
 import SelectField from './select-field';
 import 'country-flag-icons/3x2/flags.css';
 import useRecentValues from '../../hooks/useRecentValues';
 
-export default function CountrySelectField({ countries }: { countries: Country[] }) {
+export default function CountrySelectField({ countries }: { countries: CountryReadModel[] }) {
   const data = countries.map((country) => ({
     label: `${country.code} ${country.name}`,
     value: country.id,

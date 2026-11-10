@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import type { CityReadModel } from '@/lib/dal/city.dal';
 import { firstLoadingPlace, lastUnloadingPlace } from '@/lib/places';
-import type { City } from '@/types/types';
 
-const city = (id: number, name: string): City => ({ id, name, postal: '00-001', countryId: 1 });
+const city = (id: number, name: string): CityReadModel => ({
+  id,
+  name,
+  postal: '00-001',
+  countryId: 1,
+});
 const warszawa = city(1, 'Warszawa');
 const plock = city(2, 'Płock');
 const gdansk = city(3, 'Gdańsk');

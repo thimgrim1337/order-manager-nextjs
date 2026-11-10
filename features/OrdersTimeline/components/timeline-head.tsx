@@ -1,7 +1,7 @@
 import { TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDate } from '@/lib/dates';
 import { cn } from '@/lib/utils';
-import type { Day } from '@/types/types';
+import type { Day } from '@/lib/week';
 
 export default function TimelineHead({ weekdays }: { weekdays: Day[] }) {
   return (

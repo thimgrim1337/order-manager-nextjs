@@ -1,4 +1,8 @@
+import type { CurrencyReadModel } from '@/lib/dal/currency.dal';
 import { CURRENCY } from './consts';
+
+/** A Currency's code, as the NBP API takes it. */
+export type CurrencyCode = CurrencyReadModel['code'];
 
 /** An Exchange Rate as the Order form submits it: NBP's table number, mid rate and its date. */
 export type ExchangeRate = {

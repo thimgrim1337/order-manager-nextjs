@@ -1,8 +1,9 @@
 import z from 'zod';
 import { parseWeekKey } from '@/lib/week';
-import type { RawSearchParams } from '@/types/types';
 
 // Each parser returns undefined for a missing or invalid value, so one bad param never discards the others.
+
+export type RawSearchParams = Record<string, string | string[] | undefined>;
 
 export type RawSearchParam = RawSearchParams[string];
 

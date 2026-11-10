@@ -5,9 +5,10 @@ import {
   parsePageSize,
   parseSort,
   parseText,
+  type RawSearchParams,
 } from '@/features/shared/lib/search-param-parsers';
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, ORDER_SORT_FIELDS } from '@/lib/consts';
-import type { OrderQuery, RawSearchParams, SortParams } from '@/types/types';
+import type { OrderQuery, SortParams } from '@/lib/dal/order.dal';
 
 export type OrdersTableQuery = OrderQuery & { sort: SortParams };
 

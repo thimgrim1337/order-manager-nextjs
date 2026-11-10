@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import PageHeader from '@/components/ui/page-header';
 import TimelineContent from '@/features/OrdersTimeline/components/timeline-content';
-import type { RawSearchParams } from '@/types/types';
+import type { RawSearchParams } from '@/features/shared/lib/search-param-parsers';
 
 export default function TimelinePage({ searchParams }: { searchParams: Promise<RawSearchParams> }) {
   return (

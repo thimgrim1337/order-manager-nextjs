@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import PageHeader from '@/components/ui/page-header';
 import OrdersContent from '@/features/OrdersTable/components/orders-content';
-import type { RawSearchParams } from '@/types/types';
+import type { RawSearchParams } from '@/features/shared/lib/search-param-parsers';
 
 export default function OrdersPage({ searchParams }: { searchParams: Promise<RawSearchParams> }) {
   return (

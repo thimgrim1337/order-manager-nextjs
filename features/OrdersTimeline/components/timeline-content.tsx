@@ -1,9 +1,9 @@
 import { Table } from '@/components/ui/table';
 import OrderChoicesLoader from '@/features/shared/components/order-choices-loader';
+import type { RawSearchParams } from '@/features/shared/lib/search-param-parsers';
 import { getAllCountries } from '@/lib/dal/country.dal';
 import { getOrdersInWeek } from '@/lib/dal/order.dal';
 import { weekDays } from '@/lib/week';
-import type { RawSearchParams } from '@/types/types';
 import { parse } from '../lib/timeline-query';
 import TimelinePagination from './TimelinePagination/timeline-pagination';
 import TimelineBody from './timeline-body';

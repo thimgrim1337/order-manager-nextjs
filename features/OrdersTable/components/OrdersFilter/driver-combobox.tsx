@@ -9,8 +9,8 @@ import {
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
+import type { DriverReadModel } from '@/lib/dal/driver.dal';
 import { driverName } from '@/lib/drivers';
-import type { Driver } from '@/types/types';
 
 export default function DriverCombobox() {
   const { drivers } = useOrderChoices();
@@ -21,14 +21,14 @@ export default function DriverCombobox() {
       items={drivers}
       value={drivers.find((driver) => driver.id === query.driverId) ?? null}
       itemToStringLabel={driverName}
-      itemToStringValue={(item: Driver) => String(item.id)}
+      itemToStringValue={(item: DriverReadModel) => String(item.id)}
       onValueChange={(value) => change({ driverId: value?.id })}
     >
       <ComboboxInput placeholder="Wybierz kierowcę" showClear />
       <ComboboxContent>
         <ComboboxEmpty>Nic nie znaleziono.</ComboboxEmpty>
         <ComboboxList>
-          {(item: Driver) => (
+          {(item: DriverReadModel) => (
             <ComboboxItem key={item.id} value={item}>
               {driverName(item)}
             </ComboboxItem>

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import type { RawSearchParams } from '@/types/types';
+import type { RawSearchParams } from '@/features/shared/lib/search-param-parsers';
 
 /** A page's query rules (its `lib/*-query.ts`): how its URL reads, changes and writes back. */
 export type QueryModule<Query, Change> = {

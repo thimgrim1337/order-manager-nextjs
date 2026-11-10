@@ -1,7 +1,7 @@
 import CreateOrder from '@/features/OrderForm/components/create-order';
 import OrderChoicesLoader from '@/features/shared/components/order-choices-loader';
+import type { RawSearchParams } from '@/features/shared/lib/search-param-parsers';
 import { getAllOrders } from '@/lib/dal/order.dal';
-import type { RawSearchParams } from '@/types/types';
 import { parse } from '../lib/orders-table-query';
 import OrderTableFilter from './OrdersFilter/orders-table-filter';
 import OrdersTable from './orders-table';

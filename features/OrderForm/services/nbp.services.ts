@@ -1,7 +1,6 @@
 import { addDays, getYesterday } from '@/lib/dates';
-import type { ExchangeRate } from '@/lib/exchange-rate';
+import type { CurrencyCode, ExchangeRate } from '@/lib/exchange-rate';
 import { apiCall } from '@/lib/helpers';
-import type { CurrencyCode } from '@/types/types';
 
 type NBPRatesResponse = {
   table: string;

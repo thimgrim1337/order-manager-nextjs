@@ -9,7 +9,13 @@ import {
   startOfISOWeekYear,
 } from 'date-fns';
 import { formatDate, getToday, parseDate, toDate } from '@/lib/dates';
-import type { Day } from '@/types/types';
+
+/** One of a Week's days as the Timeline heads it: its date (`yyyy-MM-dd`), short weekday name, and whether it falls on a weekend. */
+export type Day = {
+  date: string;
+  name: string;
+  isWeekend: boolean;
+};
 
 /** A Monday-to-Sunday Week, held as its Monday (`yyyy-MM-dd`). */
 export type Week = string & { readonly __brand: 'Week' };

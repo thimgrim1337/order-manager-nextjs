@@ -4,18 +4,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import TimelineOrder from '@/features/OrdersTimeline/components/timeline-order';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { updateOrder } from '@/lib/actions';
+import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
-import type { City, Country } from '@/types/types';
 import { orderChoices } from '../utils/order-choices';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
 
 const w44 = week('2026-W44');
-const poland: Country = { id: 1, name: 'Poland', code: 'PL' };
-const germany: Country = { id: 2, name: 'Germany', code: 'DE' };
-const warszawa: City = { id: 1, name: 'Warszawa', postal: '00-001', countryId: poland.id };
-const berlin: City = { id: 2, name: 'Berlin', postal: '10115', countryId: germany.id };
+const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
+const germany: CountryReadModel = { id: 2, name: 'Germany', code: 'DE' };
+const warszawa: CityReadModel = { id: 1, name: 'Warszawa', postal: '00-001', countryId: poland.id };
+const berlin: CityReadModel = { id: 2, name: 'Berlin', postal: '10115', countryId: germany.id };
 
 const order = (dates: { startDate: string; endDate: string }) =>
   ({

@@ -7,7 +7,24 @@ import { ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
-import type { OrderQuery, SortParams } from '@/types/types';
+
+/** The Orders Table's sort: one column, ascending or descending. */
+export type SortParams = {
+  id: OrderSortField;
+  desc: boolean;
+};
+
+/** The Orders Table's query, as the Order DAL takes it: its filters, one sort and one page. */
+export type OrderQuery = {
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+  driverId?: number;
+  statusId?: number;
+  sort?: SortParams;
+  pageIndex: number;
+  pageSize: number;
+};
 
 /** The columns of an Order as the Orders Table and the Timeline show it. */
 const orderReadModel = {

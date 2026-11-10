@@ -11,21 +11,22 @@ import {
 } from '@/components/ui/combobox';
 import useSearchQuery from '@/features/shared/hooks/use-search-query';
 import { searchCities } from '@/lib/actions';
+import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
 import { countryOf } from '@/lib/places';
-import type { City, Country } from '@/types/types';
 import { useFieldContext } from '../../context/form-context';
 import FormBase, { type FormControlProps } from './form-base';
 
 type PlacesComboboxFieldProps = {
-  cities: City[];
-  countries: Country[];
+  cities: CityReadModel[];
+  countries: CountryReadModel[];
 };
 
 export default function PlacesComboboxField({
   cities: initialData,
   ...props
 }: FormControlProps & PlacesComboboxFieldProps) {
-  const field = useFieldContext<City[]>();
+  const field = useFieldContext<CityReadModel[]>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   const anchor = useComboboxAnchor();
   const { data: cities, setQuery } = useSearchQuery(searchCities, initialData);
@@ -36,10 +37,10 @@ export default function PlacesComboboxField({
     <FormBase {...props}>
       <Combobox
         items={cities}
-        itemToStringLabel={(item: City) => item.name}
-        itemToStringValue={(item: City) => String(item.id)}
+        itemToStringLabel={(item: CityReadModel) => item.name}
+        itemToStringValue={(item: CityReadModel) => String(item.id)}
         onInputValueChange={setQuery}
-        onValueChange={(items: City[]) => field.handleChange(items)}
+        onValueChange={(items: CityReadModel[]) => field.handleChange(items)}
         isItemEqualToValue={(item, value) => item.id === value.id}
         value={selectedCities}
         multiple
@@ -70,7 +71,7 @@ export default function PlacesComboboxField({
         <ComboboxContent>
           <ComboboxEmpty>Nic nie znaleziono.</ComboboxEmpty>
           <ComboboxList>
-            {(city: City) => (
+            {(city: CityReadModel) => (
               <ComboboxItem key={city.id} value={city}>
                 {city.name}
               </ComboboxItem>

@@ -1,6 +1,9 @@
-import { parseId, parseWeek } from '@/features/shared/lib/search-param-parsers';
+import {
+  parseId,
+  parseWeek,
+  type RawSearchParams,
+} from '@/features/shared/lib/search-param-parsers';
 import { currentWeek, formatWeekKey, type Week } from '@/lib/week';
-import type { RawSearchParams } from '@/types/types';
 
 export type TimelineQuery = {
   week: Week;

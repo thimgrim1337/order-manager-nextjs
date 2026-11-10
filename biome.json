@@ -98,13 +98,7 @@
               "options": {
                 "patterns": [
                   {
-                    "group": [
-                      "@/types/**",
-                      "@/lib/**",
-                      "@/features/**",
-                      "@/app/**",
-                      "@/components/**"
-                    ],
+                    "group": ["@/lib/**", "@/features/**", "@/app/**", "@/components/**"],
                     "message": "The DB schema is the bottom layer; type JSON columns from the tables ($inferSelect)."
                   }
                 ]

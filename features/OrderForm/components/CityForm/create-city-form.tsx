@@ -1,15 +1,15 @@
 import { FieldGroup } from '@/components/ui/field';
 import { settleWrite } from '@/features/shared/lib/settle-write';
 import { createCity } from '@/lib/actions';
+import type { CountryReadModel } from '@/lib/dal/country.dal';
 import { createCitySchema } from '@/lib/dto/city.dto';
-import type { Country } from '@/types/types';
 import { useAppForm } from '../../hooks/useAppForm';
 
 export default function CreateCityForm({
   countries,
   onDialogClose,
 }: {
-  countries: Country[];
+  countries: CountryReadModel[];
   onDialogClose: () => void;
 }) {
   const form = useAppForm({

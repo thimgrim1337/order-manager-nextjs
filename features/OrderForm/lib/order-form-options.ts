@@ -1,10 +1,10 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
 import { ORDER_STATUS } from '@/lib/consts';
+import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
 import { fromStoredExchangeRate, NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
-import type { City } from '@/types/types';
 
 /** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
 const getDefaultOrderDates = () => {
@@ -25,8 +25,8 @@ export const orderFormOptions = formOptions({
     statusId: ORDER_STATUS.InProgress as number,
     priceCurrency: '1',
     currencyId: 1,
-    loadingPlaces: [] as City[] | [],
-    unloadingPlaces: [] as City[] | [],
+    loadingPlaces: [] as CityReadModel[] | [],
+    unloadingPlaces: [] as CityReadModel[] | [],
     currencyInfo: NO_EXCHANGE_RATE,
   },
   validators: {
