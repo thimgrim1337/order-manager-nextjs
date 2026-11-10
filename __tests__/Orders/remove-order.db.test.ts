@@ -5,6 +5,7 @@ import { loadingPlace, unloadingPlace } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder, removeOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
+import { fakeNbp } from '../fakes/nbp';
 import { orderFormFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
@@ -15,7 +16,7 @@ vi.mock('next/cache', () => ({ updateTag: vi.fn(), cacheTag: vi.fn() }));
 async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
 
-  const [, created] = await createOrder(trx, orderFormFor(refs)());
+  const [, created] = await createOrder(trx, orderFormFor(refs)(), fakeNbp([]));
   if (!created) throw new Error('Seed Order was not created');
 
   return { created };

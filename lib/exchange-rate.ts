@@ -1,8 +1,8 @@
 import type { CurrencyReadModel } from '@/lib/dal/currency.dal';
 import { CURRENCY } from './consts';
-
-/** A Currency's code, as the NBP API takes it. */
-export type CurrencyCode = CurrencyReadModel['code'];
+import { addDays, getYesterday } from './dates';
+import { error, ok, type Result } from './error';
+import type { Nbp } from './nbp';
 
 /** An Exchange Rate as the Order form submits it: NBP's table number, mid rate and its date. */
 export type ExchangeRate = {
@@ -16,6 +16,42 @@ export const NO_EXCHANGE_RATE: ExchangeRate = { table: '', rate: '', date: '' };
 
 /** A PLN Order has no Exchange Rate; any other Currency needs one. */
 const hasExchangeRate = (currencyId: number) => currencyId !== CURRENCY.PLN;
+
+/** Why a foreign Currency has no Exchange Rate: NBP published none in the window, or could not be asked. */
+export type NoExchangeRate = { reason: 'ExchangeRateNotPublished' } | { reason: 'NbpUnavailable' };
+
+/** How far back from its last day the range asked of NBP reaches; longer than any run of days NBP skips. */
+const LOOKBACK_DAYS = 14;
+
+/**
+ * The Exchange Rate of `currency` for an Order unloading on `unloadingDate`, as of `today` (see
+ * `getToday`): none for PLN, without asking NBP; otherwise NBP's latest mid rate published before
+ * the Unloading Date and no later than today. NBP's published dates decide which days are business
+ * days, and a rate not yet published today falls back to the last.
+ */
+export async function findExchangeRate(
+  nbp: Nbp,
+  currency: CurrencyReadModel,
+  unloadingDate: string,
+  today: string,
+): Promise<Result<ExchangeRate, NoExchangeRate>> {
+  if (!hasExchangeRate(currency.id)) return ok(NO_EXCHANGE_RATE);
+
+  const dayBefore = getYesterday(unloadingDate);
+  const rangeEnd = dayBefore < today ? dayBefore : today;
+
+  const [failure, rates] = await nbp.midRates(
+    currency.code,
+    addDays(rangeEnd, -LOOKBACK_DAYS),
+    rangeEnd,
+  );
+  if (failure) return error(failure);
+
+  const rate = rates.at(-1);
+  if (!rate) return error({ reason: 'ExchangeRateNotPublished' });
+
+  return ok({ date: rate.effectiveDate, rate: rate.mid.toString(), table: rate.no });
+}
 
 /** The Unloading Date and Currency an Order's Exchange Rate was stored for, with that rate, as the form starts with them. */
 export type StoredExchangeRate = {

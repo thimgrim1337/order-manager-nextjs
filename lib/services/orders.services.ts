@@ -5,19 +5,32 @@ import z from 'zod';
 import type { db, dbTransaction } from '@/db/db';
 import { loadingPlace, order, truck, unloadingPlace } from '@/db/schemas';
 import { CACHE_TAG } from '../consts';
+import { findCurrency } from '../dal/currency.dal';
+import { getToday } from '../dates';
 import { isForeignKeyViolation, isUniqueViolation } from '../db-errors';
 import type { CityDto } from '../dto/city.dto';
-import { type OrderDto, OrderFormSchema, selectOrderSchema } from '../dto/order.dto';
+import {
+  type OrderDto,
+  type OrderFormDto,
+  OrderFormSchema,
+  selectOrderSchema,
+} from '../dto/order.dto';
 import { error, ok, type Result } from '../error';
-import { toStoredPrice } from '../exchange-rate';
+import { findExchangeRate, type NoExchangeRate, toStoredPrice } from '../exchange-rate';
+import type { Nbp } from '../nbp';
 
 type InvalidData = { reason: 'InvalidData'; details: string };
 
-export type CreateOrderFailure = InvalidData | { reason: 'OrderNrTaken' };
+const invalidData = (details: string) =>
+  error<'InvalidData', InvalidData>({ reason: 'InvalidData', details });
+
+type OrderNrTaken = { reason: 'OrderNrTaken' };
+
+export type CreateOrderFailure = InvalidData | OrderNrTaken | NoExchangeRate;
 
 type NotFound = { reason: 'NotFound' };
 
-export type UpdateOrderFailure = CreateOrderFailure | NotFound;
+export type UpdateOrderFailure = InvalidData | OrderNrTaken | NotFound;
 
 export type ChangeOrderStatusFailure = InvalidData | NotFound | { reason: 'UnknownStatus' };
 
@@ -33,16 +46,37 @@ const INVALIDATED_TAGS = {
 
 /**
  * Creates an Order with its Loading and Unloading Places and assigns its Driver to its Truck,
- * in one transaction, then invalidates the cached Orders and Trucks. Call it from a Server Action.
+ * in one transaction, then invalidates the cached Orders and Trucks. A foreign-Currency Order is
+ * priced at the Exchange Rate `nbp` gives as of the company's day at `now`, whatever rate the input
+ * carries. Call it from a Server Action.
  */
 export async function createOrder(
   database: db | dbTransaction,
   input: unknown,
+  nbp: Nbp,
+  now?: Date,
 ): Promise<Result<OrderDto, CreateOrderFailure>> {
-  const [invalid, form] = parseOrderForm(input);
+  const [invalid, form] = validateOrderForm(input);
   if (invalid) return error(invalid);
 
-  const { loadingPlaces, unloadingPlaces, fields } = form;
+  const orderCurrency = await findCurrency(database, form.currencyId);
+  if (!orderCurrency) return invalidData('Nieznana waluta.');
+
+  // In place of the submitted one; asked before the transaction, so it holds no connection meanwhile.
+  const [noExchangeRate, currencyInfo] = await findExchangeRate(
+    nbp,
+    orderCurrency,
+    form.endDate,
+    getToday(now),
+  );
+  if (noExchangeRate) return error(noExchangeRate);
+
+  const [unpriced, priced] = priceOrder({
+    ...form,
+    currencyInfo,
+  });
+  if (unpriced) return error(unpriced);
+  const { loadingPlaces, unloadingPlaces, fields } = priced;
 
   try {
     const created = await database.transaction(async (trx) => {
@@ -76,10 +110,12 @@ export async function updateOrder(
   const [invalidId, orderId] = parseId(orderIdInput);
   if (invalidId) return error(invalidId);
 
-  const [invalid, form] = parseOrderForm(input);
+  const [invalid, form] = validateOrderForm(input);
   if (invalid) return error(invalid);
 
-  const { loadingPlaces, unloadingPlaces, fields } = form;
+  const [unpriced, priced] = priceOrder(form);
+  if (unpriced) return error(unpriced);
+  const { loadingPlaces, unloadingPlaces, fields } = priced;
 
   try {
     const updated = await database.transaction(async (trx) => {
@@ -169,32 +205,25 @@ function invalidate(write: keyof typeof INVALIDATED_TAGS) {
 /** Parses a row id, such as an Order's or a Status's, from a Server Action's untrusted input. */
 function parseId(input: unknown) {
   const validation = z.int().positive().safeParse(input);
-  if (!validation.success)
-    return error<'InvalidData', InvalidData>({
-      reason: 'InvalidData',
-      details: z.prettifyError(validation.error),
-    });
+  if (!validation.success) return invalidData(z.prettifyError(validation.error));
 
   return ok(validation.data);
 }
 
-/** Validates the Order form and turns its price into the Order's PLN price, rate and date. */
-function parseOrderForm(input: unknown) {
+/** Validates the Order form from a Server Action's untrusted input. */
+function validateOrderForm(input: unknown) {
   const validation = OrderFormSchema.safeParse(input);
-  if (!validation.success)
-    return error<'InvalidData', InvalidData>({
-      reason: 'InvalidData',
-      details: z.prettifyError(validation.error),
-    });
+  if (!validation.success) return invalidData(z.prettifyError(validation.error));
 
-  const { loadingPlaces, unloadingPlaces, currencyInfo, ...fields } = validation.data;
+  return ok(validation.data);
+}
+
+/** Turns the Order form's price into the Order's PLN price, at the form's `currencyInfo`. */
+function priceOrder(form: OrderFormDto) {
+  const { loadingPlaces, unloadingPlaces, currencyInfo, ...fields } = form;
 
   const price = toStoredPrice(fields.currencyId, fields.priceCurrency, currencyInfo);
-  if (!price)
-    return error<'InvalidData', InvalidData>({
-      reason: 'InvalidData',
-      details: 'Brak kursu waluty.',
-    });
+  if (!price) return invalidData('Brak kursu waluty.');
 
   return ok({ loadingPlaces, unloadingPlaces, fields: { ...fields, ...price } });
 }

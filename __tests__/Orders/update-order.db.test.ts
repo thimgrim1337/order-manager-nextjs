@@ -6,6 +6,7 @@ import { truck } from '@/db/schemas';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import { createOrder, updateOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
+import { fakeNbp } from '../fakes/nbp';
 import { orderFormFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
@@ -17,7 +18,7 @@ async function seed(trx: dbTransaction) {
 
   const orderForm = orderFormFor(refs);
 
-  const [, created] = await createOrder(trx, orderForm());
+  const [, created] = await createOrder(trx, orderForm(), fakeNbp([]));
   if (!created) throw new Error('Seed Order was not created');
 
   return { orderForm, refs, created };

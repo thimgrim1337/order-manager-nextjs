@@ -1,8 +1,14 @@
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
+import { failureMessage } from '@/lib/action-response';
 import { getToday } from '@/lib/dates';
-import { exchangeRateSource, NO_EXCHANGE_RATE, type StoredExchangeRate } from '@/lib/exchange-rate';
-import { getExchangeRate } from '../services/nbp.services';
+import {
+  exchangeRateSource,
+  findExchangeRate,
+  NO_EXCHANGE_RATE,
+  type StoredExchangeRate,
+} from '@/lib/exchange-rate';
+import { nbpApi } from '@/lib/nbp';
 
 /**
  * The Exchange Rate an Order dated `endDate` in `currencyId` is saved with: the `stored` one while
@@ -28,7 +34,18 @@ export default function useExchangeRate(
   const rateQuery = useQuery({
     queryKey: ['exchangeRate', codeToFetch, endDate, today],
     queryFn:
-      codeToFetch && endDate ? () => getExchangeRate(codeToFetch, endDate, today) : skipToken,
+      codeToFetch && endDate
+        ? async () => {
+            const [failure, rate] = await findExchangeRate(
+              nbpApi,
+              { id: currencyId, code: codeToFetch },
+              endDate,
+              today,
+            );
+            if (failure) throw new Error(failureMessage(failure));
+            return rate;
+          }
+        : skipToken,
     retry: false,
   });
 

@@ -5,6 +5,7 @@ import { findOrders, findOrdersInWeek, type OrderQuery } from '@/lib/dal/order.d
 import { orderDays } from '@/lib/order-day';
 import { createOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
+import { fakeNbp } from '../fakes/nbp';
 import { orderFormFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
@@ -17,7 +18,7 @@ describe('Order read model', () => {
   it('gives the Orders Table and the Timeline the same Order', () =>
     withRollback(async (trx) => {
       const refs = await seedOrderReferences(trx);
-      await createOrder(trx, orderFormFor(refs)());
+      await createOrder(trx, orderFormFor(refs)(), fakeNbp([]));
 
       const {
         data: [inTable],
@@ -53,7 +54,11 @@ describe('Order read model', () => {
         .insert(city)
         .values({ name: 'Berlin', postal: '10115', countryId: germany.id })
         .returning();
-      await createOrder(trx, orderFormFor(refs)({ unloadingPlaces: [refs.cities.plock, berlin] }));
+      await createOrder(
+        trx,
+        orderFormFor(refs)({ unloadingPlaces: [refs.cities.plock, berlin] }),
+        fakeNbp([]),
+      );
       const polska = { id: refs.cities.warszawa.countryId, name: 'Polska', code: 'PL' };
       const niemcy = { id: germany.id, name: 'Niemcy', code: 'DE' };
 
@@ -117,10 +122,12 @@ async function seedOutOfIdOrder(trx: dbTransaction) {
   const [, gdanskToWarszawa] = await createOrder(
     trx,
     orderForm({ loadingPlaces: [gdansk, warszawa], unloadingPlaces: [plock, warszawa] }),
+    fakeNbp([]),
   );
   const [, plockToSzczecin] = await createOrder(
     trx,
     orderForm({ orderNr: 'ZL/2', loadingPlaces: [plock], unloadingPlaces: [szczecin] }),
+    fakeNbp([]),
   );
   if (!gdanskToWarszawa || !plockToSzczecin) throw new Error('Seed Orders were not created');
 

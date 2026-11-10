@@ -8,7 +8,7 @@ import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/a
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { NO_EXCHANGE_RATE } from '@/lib/exchange-rate';
 import { worker } from '../mocks/browser';
-import { fakeNbp, NBP_RATES_URL } from '../mocks/handlers';
+import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
 import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
@@ -148,7 +148,7 @@ describe('OrderForm', () => {
       // Wednesday 2027-01-20 12:00 in Warsaw, so the date pickers show January 2027.
       vi.setSystemTime(new Date('2027-01-20T11:00:00Z'));
       worker.use(
-        fakeNbp([
+        nbpApiServing([
           { no: '002/A/NBP/2027', mid: 4.24, effectiveDate: '2027-01-05' },
           { no: '003/A/NBP/2027', mid: 4.25, effectiveDate: '2027-01-07' },
         ]),

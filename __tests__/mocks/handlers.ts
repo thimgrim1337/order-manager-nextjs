@@ -1,10 +1,8 @@
 import { HttpResponse, http } from 'msw';
+import type { PublishedRate } from '@/lib/nbp';
 
 export const NBP_RATES_URL =
   'https://api.nbp.pl/api/exchangerates/rates/:table/:code/:startDate/:endDate/';
-
-/** A mid rate NBP published in table A on `effectiveDate`. */
-export type PublishedRate = { no: string; effectiveDate: string; mid: number };
 
 const mockRate: PublishedRate = { no: '107/NBP/A', mid: 4.25, effectiveDate: '2021-01-15' };
 
@@ -17,7 +15,7 @@ const ratesResponse = (code: string, rates: PublishedRate[]) =>
  * the ones in the range, oldest first, or 404 when there are none. A range ending after `today`
  * is a 400, as NBP answers one ending in the future.
  */
-export const fakeNbp = (rates: PublishedRate[], today = '9999-12-31') =>
+export const nbpApiServing = (rates: PublishedRate[], today = '9999-12-31') =>
   http.get<{ code: string; startDate: string; endDate: string }>(
     NBP_RATES_URL,
     ({ params: { code, startDate, endDate } }) => {

@@ -7,12 +7,13 @@ import { getCustomers } from './dal/customer.dal';
 import type { CityDto, CreateCityDto } from './dto/city.dto';
 import type { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
 import type { OrderDto, OrderFormDto } from './dto/order.dto';
+import { nbpApi } from './nbp';
 import * as Cities from './services/city.services';
 import * as Customers from './services/customer.services';
 import * as Orders from './services/orders.services';
 
 export async function createOrder(formData: OrderFormDto): Promise<ActionResponse<OrderDto>> {
-  return toActionResponse(await Orders.createOrder(db, formData));
+  return toActionResponse(await Orders.createOrder(db, formData, nbpApi));
 }
 
 export async function updateOrder(
