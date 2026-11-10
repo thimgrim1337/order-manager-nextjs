@@ -8,7 +8,7 @@ import { CACHE_TAG } from '../consts';
 import { findCurrency } from '../dal/currency.dal';
 import { findOrderExchangeRate } from '../dal/order.dal';
 import { getToday } from '../dates';
-import { isForeignKeyViolation, isUniqueViolation } from '../db-errors';
+import { isUniqueViolation, violatedForeignKey } from '../db-errors';
 import {
   type OrderDto,
   type OrderInputDto,
@@ -33,11 +33,33 @@ const invalidData = (details: string) =>
 
 type OrderNrTaken = { reason: 'OrderNrTaken' };
 
-export type CreateOrderFailure = InvalidData | OrderNrTaken | NoExchangeRate;
+/** The foreign key each reference an Order names is held by, and the outcome naming it unknown. */
+const UNKNOWN_REFERENCES = {
+  orders_truck_id_trucks_id_fk: { reason: 'UnknownTruck' },
+  orders_driver_id_drivers_id_fk: { reason: 'UnknownDriver' },
+  orders_customer_id_customers_id_fk: { reason: 'UnknownCustomer' },
+  orders_currency_id_currencies_id_fk: { reason: 'UnknownCurrency' },
+  order_loading_places_place_id_cities_id_fk: { reason: 'UnknownCity' },
+  order_unloading_places_place_id_cities_id_fk: { reason: 'UnknownCity' },
+} as const;
+
+type UnknownReference = (typeof UNKNOWN_REFERENCES)[keyof typeof UNKNOWN_REFERENCES];
+
+type RepeatedPlace = { reason: 'RepeatedLoadingPlace' } | { reason: 'RepeatedUnloadingPlace' };
+
+/** Why saving an Order, created or edited, is refused. */
+type SaveOrderFailure =
+  | InvalidData
+  | RepeatedPlace
+  | OrderNrTaken
+  | UnknownReference
+  | NoExchangeRate;
+
+export type CreateOrderFailure = SaveOrderFailure;
 
 type NotFound = { reason: 'NotFound' };
 
-export type UpdateOrderFailure = InvalidData | OrderNrTaken | NotFound | NoExchangeRate;
+export type UpdateOrderFailure = SaveOrderFailure | NotFound;
 
 export type ChangeOrderStatusFailure = InvalidData | NotFound | { reason: 'UnknownStatus' };
 
@@ -85,7 +107,8 @@ export async function createOrder(
 
     return ok(selectOrderSchema.parse(created));
   } catch (err) {
-    if (isOrderNrTaken(err)) return error({ reason: 'OrderNrTaken' });
+    const refused = saveOrderRefusal(err);
+    if (refused) return error(refused);
     throw err;
   }
 }
@@ -144,7 +167,8 @@ export async function updateOrder(
 
     return ok(selectOrderSchema.parse(updated));
   } catch (err) {
-    if (isOrderNrTaken(err)) return error({ reason: 'OrderNrTaken' });
+    const refused = saveOrderRefusal(err);
+    if (refused) return error(refused);
     throw err;
   }
 }
@@ -216,13 +240,22 @@ function parseId(input: unknown) {
   return ok(validation.data);
 }
 
-/** Validates the Order input from a Server Action's untrusted input. */
-function validateOrderInput(input: unknown) {
+/**
+ * Validates the Order input from a Server Action's untrusted input. A City is a Loading Place, and
+ * an Unloading Place, of an Order at most once.
+ */
+function validateOrderInput(input: unknown): Result<OrderInputDto, InvalidData | RepeatedPlace> {
   const validation = OrderInputSchema.safeParse(input);
   if (!validation.success) return invalidData(z.prettifyError(validation.error));
 
+  const { loadingPlaces, unloadingPlaces } = validation.data;
+  if (hasRepeats(loadingPlaces)) return error({ reason: 'RepeatedLoadingPlace' });
+  if (hasRepeats(unloadingPlaces)) return error({ reason: 'RepeatedUnloadingPlace' });
+
   return ok(validation.data);
 }
+
+const hasRepeats = (cityIds: number[]) => new Set(cityIds).size !== cityIds.length;
 
 /**
  * Turns the Order input's price into the Order's PLN price, at `stored`'s Exchange Rate while the
@@ -239,7 +272,7 @@ async function priceOrder(
   const { loadingPlaces, unloadingPlaces, ...fields } = orderInput;
 
   const orderCurrency = await findCurrency(database, fields.currencyId);
-  if (!orderCurrency) return invalidData('Nieznana waluta.');
+  if (!orderCurrency) return error({ reason: 'UnknownCurrency' });
 
   const source = stored && exchangeRateSource(stored, fields.endDate, fields.currencyId);
   const [noExchangeRate, currencyInfo] =
@@ -276,17 +309,34 @@ async function deletePlaces(trx: dbTransaction, orderId: number) {
   await trx.delete(unloadingPlace).where(eq(unloadingPlace.orderId, orderId));
 }
 
+/**
+ * Makes the Order's Driver its Truck's Regular Driver. Called once the Order is saved, whose
+ * foreign key holds the Truck in place, so a Truck it finds none of is a broken invariant.
+ */
 async function assignDriverToTruck(
   trx: dbTransaction,
   { driverId, truckId }: { driverId: number; truckId: number },
 ) {
-  await trx.update(truck).set({ driverId }).where(eq(truck.id, truckId));
+  const assigned = await trx
+    .update(truck)
+    .set({ driverId })
+    .where(eq(truck.id, truckId))
+    .returning({ id: truck.id });
+  if (!assigned.length) throw new Error(`Assigning a Driver found no Truck ${truckId}.`);
 }
 
-function isOrderNrTaken(err: unknown) {
-  return isUniqueViolation(err, 'orders_customer_id_order_nr_unique');
+/** The outcome a failed Order save is refused with, or none when the failure is unexpected. */
+function saveOrderRefusal(err: unknown): OrderNrTaken | UnknownReference | undefined {
+  if (isUniqueViolation(err, 'orders_customer_id_order_nr_unique')) {
+    return { reason: 'OrderNrTaken' };
+  }
+
+  const constraint = violatedForeignKey(err);
+  if (constraint && Object.hasOwn(UNKNOWN_REFERENCES, constraint)) {
+    return UNKNOWN_REFERENCES[constraint as keyof typeof UNKNOWN_REFERENCES];
+  }
 }
 
 function isUnknownStatus(err: unknown) {
-  return isForeignKeyViolation(err, 'orders_status_id_statuses_id_fk');
+  return violatedForeignKey(err) === 'orders_status_id_statuses_id_fk';
 }

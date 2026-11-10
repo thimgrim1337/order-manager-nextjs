@@ -9,14 +9,19 @@ export function isUniqueViolation(err: unknown, constraint?: string) {
   return violates(err, UNIQUE_VIOLATION, constraint);
 }
 
-/** Whether a query failed on the given foreign key constraint. */
-export function isForeignKeyViolation(err: unknown, constraint: string) {
-  return violates(err, FOREIGN_KEY_VIOLATION, constraint);
+/** The foreign key constraint a query failed on, or none when it failed otherwise. */
+export function violatedForeignKey(err: unknown) {
+  const cause = databaseError(err);
+
+  return cause?.code === FOREIGN_KEY_VIOLATION ? cause.constraint : undefined;
+}
+
+function databaseError(err: unknown) {
+  return err instanceof DrizzleQueryError ? (err.cause as DatabaseError | undefined) : undefined;
 }
 
 function violates(err: unknown, code: string, constraint?: string) {
-  const cause =
-    err instanceof DrizzleQueryError ? (err.cause as DatabaseError | undefined) : undefined;
+  const cause = databaseError(err);
 
   return cause?.code === code && (constraint === undefined || cause.constraint === constraint);
 }

@@ -23,11 +23,11 @@ The day an Order's unloading ends; the last day of the Order.
 _Avoid_: End date, delivery date
 
 **Loading Place** (_Miejsce załadunku_):
-A City an Order loads in. An Order keeps its Loading Places in the order they were entered; the Timeline and the Orders Table show the first one, or none when it has none.
+A City an Order loads in, at most once per Order. An Order keeps its Loading Places in the order they were entered; the Timeline and the Orders Table show the first one, or none when it has none.
 _Avoid_: Origin, pickup
 
 **Unloading Place** (_Miejsce rozładunku_):
-A City an Order unloads in. An Order keeps its Unloading Places in the order they were entered; the Timeline and the Orders Table show the last one, or none when it has none.
+A City an Order unloads in, at most once per Order. An Order keeps its Unloading Places in the order they were entered; the Timeline and the Orders Table show the last one, or none when it has none.
 _Avoid_: Destination, drop-off
 
 **Status** (_Status zlecenia_):

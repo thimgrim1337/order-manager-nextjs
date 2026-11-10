@@ -5,6 +5,7 @@ import type { dbTransaction } from '@/db/db';
 import { truck } from '@/db/schemas';
 import { toActionResponse } from '@/lib/action-response';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
+import type { OrderInputDto } from '@/lib/dto/order.dto';
 import { createOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
 import { failingNbp, fakeNbp } from '../fakes/nbp';
@@ -177,17 +178,70 @@ describe('createOrder', () => {
       expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
     }));
 
-  it('rejects an unknown Currency, and saves nothing', () =>
+  it('reports an unknown Currency, and saves nothing', () =>
     withRollback(async (trx) => {
       const { orderInput, eur } = await seed(trx);
 
-      const [failure] = await createOrder(
+      const result = await createOrder(trx, orderInput({ currencyId: eur.id + 100 }), fakeNbp([]));
+
+      expect(result[0]).toEqual({ reason: 'UnknownCurrency' });
+      expect(toActionResponse(result).message).toBe('Wybrana waluta nie istnieje.');
+      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
+    }));
+
+  it.each([
+    ['Truck', { truckId: 999999 }, 'UnknownTruck', 'Wybrany pojazd nie istnieje.'],
+    ['Driver', { driverId: 999999 }, 'UnknownDriver', 'Wybrany kierowca nie istnieje.'],
+    ['Customer', { customerId: 999999 }, 'UnknownCustomer', 'Wybrany zleceniodawca nie istnieje.'],
+    [
+      'Loading City',
+      { loadingPlaces: [999999] },
+      'UnknownCity',
+      'Wybrana miejscowość nie istnieje.',
+    ],
+    [
+      'Unloading City',
+      { unloadingPlaces: [999999] },
+      'UnknownCity',
+      'Wybrana miejscowość nie istnieje.',
+    ],
+  ] satisfies [
+    string,
+    Partial<OrderInputDto>,
+    string,
+    string,
+  ][])('reports an unknown %s, and saves nothing', (_, fields, reason, message) =>
+    withRollback(async (trx) => {
+      const { orderInput } = await seed(trx);
+
+      const result = await createOrder(trx, orderInput(fields), fakeNbp([]));
+
+      expect(result[0]).toEqual({ reason });
+      expect(toActionResponse(result).message).toBe(message);
+      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
+    }));
+
+  it.each([
+    ['Loading Places', 'loadingPlaces', 'RepeatedLoadingPlace', 'Miejsce załadunku powtarza się.'],
+    [
+      'Unloading Places',
+      'unloadingPlaces',
+      'RepeatedUnloadingPlace',
+      'Miejsce rozładunku powtarza się.',
+    ],
+  ] as const)('reports the same City twice in the %s, and saves nothing', (_, places, reason, message) =>
+    withRollback(async (trx) => {
+      const { orderInput, refs } = await seed(trx);
+      const { warszawa, plock } = refs.cities;
+
+      const result = await createOrder(
         trx,
-        orderInput({ currencyId: eur.id + 100 }),
+        orderInput({ [places]: [warszawa.id, plock.id, warszawa.id] }),
         fakeNbp([]),
       );
 
-      expect(failure?.reason).toBe('InvalidData');
+      expect(result[0]).toEqual({ reason });
+      expect(toActionResponse(result).message).toBe(message);
       expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
     }));
 

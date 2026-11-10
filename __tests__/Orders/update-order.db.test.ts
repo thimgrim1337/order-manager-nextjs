@@ -3,7 +3,9 @@ import { updateTag } from 'next/cache';
 import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { currency, truck } from '@/db/schemas';
+import { toActionResponse } from '@/lib/action-response';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
+import type { OrderInputDto } from '@/lib/dto/order.dto';
 import { createOrder, updateOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
 import { fakeNbp } from '../fakes/nbp';
@@ -153,6 +155,77 @@ describe('updateOrder', () => {
       expect(failure?.reason).toBe('InvalidData');
       const [saved] = await findOrdersInWeek(trx, orderWeek);
       expect(saved).toMatchObject({ startDate: '2026-10-27', endDate: '2026-10-29' });
+    }));
+
+  /** The seeded Order as `seed` saved it: ZL/1, Warszawa → Płock, Gdańsk. */
+  async function expectSeededOrderKept(trx: dbTransaction) {
+    const [saved] = await findOrdersInWeek(trx, orderWeek);
+    expect(saved).toMatchObject({ orderNr: 'ZL/1' });
+    expect(saved.loadingPlaces.map((place) => place.name)).toEqual(['Warszawa']);
+    expect(saved.unloadingPlaces.map((place) => place.name)).toEqual(['Płock', 'Gdańsk']);
+  }
+
+  it.each([
+    ['Truck', { truckId: 999999 }, 'UnknownTruck', 'Wybrany pojazd nie istnieje.'],
+    ['Driver', { driverId: 999999 }, 'UnknownDriver', 'Wybrany kierowca nie istnieje.'],
+    ['Customer', { customerId: 999999 }, 'UnknownCustomer', 'Wybrany zleceniodawca nie istnieje.'],
+    ['Currency', { currencyId: 999999 }, 'UnknownCurrency', 'Wybrana waluta nie istnieje.'],
+    [
+      'Loading City',
+      { loadingPlaces: [999999] },
+      'UnknownCity',
+      'Wybrana miejscowość nie istnieje.',
+    ],
+    [
+      'Unloading City',
+      { unloadingPlaces: [999999] },
+      'UnknownCity',
+      'Wybrana miejscowość nie istnieje.',
+    ],
+  ] satisfies [
+    string,
+    Partial<OrderInputDto>,
+    string,
+    string,
+  ][])('reports an unknown %s, keeping the saved Order', (_, fields, reason, message) =>
+    withRollback(async (trx) => {
+      const { orderInput, created } = await seed(trx);
+
+      const result = await updateOrder(
+        trx,
+        created.id,
+        orderInput({ orderNr: 'ZL/9', ...fields }),
+        fakeNbp([]),
+      );
+
+      expect(result[0]).toEqual({ reason });
+      expect(toActionResponse(result).message).toBe(message);
+      await expectSeededOrderKept(trx);
+    }));
+
+  it.each([
+    ['Loading Places', 'loadingPlaces', 'RepeatedLoadingPlace', 'Miejsce załadunku powtarza się.'],
+    [
+      'Unloading Places',
+      'unloadingPlaces',
+      'RepeatedUnloadingPlace',
+      'Miejsce rozładunku powtarza się.',
+    ],
+  ] as const)('reports the same City twice in the %s, keeping the saved Order', (_, places, reason, message) =>
+    withRollback(async (trx) => {
+      const { orderInput, refs, created } = await seed(trx);
+      const { warszawa, plock } = refs.cities;
+
+      const result = await updateOrder(
+        trx,
+        created.id,
+        orderInput({ orderNr: 'ZL/9', [places]: [warszawa.id, plock.id, warszawa.id] }),
+        fakeNbp([]),
+      );
+
+      expect(result[0]).toEqual({ reason });
+      expect(toActionResponse(result).message).toBe(message);
+      await expectSeededOrderKept(trx);
     }));
 
   it('replaces the Loading and Unloading Places, in the order entered', () =>
