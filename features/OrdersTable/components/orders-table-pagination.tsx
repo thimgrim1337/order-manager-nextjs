@@ -1,6 +1,6 @@
 import type { Table } from '@tanstack/react-table';
-
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { Button } from '../../../components/ui/button';
 import {
   Select,
@@ -10,11 +10,11 @@ import {
   SelectValue,
 } from '../../../components/ui/select';
 
-interface DataTablePagination<TData> {
-  table: Table<TData>;
+interface OrdersTablePaginationProps {
+  table: Table<OrderReadModel>;
 }
 
-export function OrdersTablePagination<TData>({ table }: DataTablePagination<TData>) {
+export function OrdersTablePagination({ table }: OrdersTablePaginationProps) {
   return (
     <div className="flex items-center justify-end p-2">
       <div className="flex items-center space-x-6 lg:space-x-8">

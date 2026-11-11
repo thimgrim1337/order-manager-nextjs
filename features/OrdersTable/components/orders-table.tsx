@@ -2,7 +2,6 @@
 
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import useTable from '../hooks/useTable';
-import { columns } from '../lib/columns';
 import { OrdersTableBody } from './orders-table-body';
 import { OrdersTablePagination } from './orders-table-pagination';
 
@@ -12,15 +11,11 @@ interface OrdersTableProps {
 }
 
 export default function OrdersTable({ orders, count }: OrdersTableProps) {
-  const table = useTable({
-    columns,
-    data: orders,
-    rowCount: count,
-  });
+  const table = useTable({ orders, rowCount: count });
 
   return (
     <>
-      <OrdersTableBody columns={columns} table={table} />
+      <OrdersTableBody table={table} />
       <OrdersTablePagination table={table} />
     </>
   );

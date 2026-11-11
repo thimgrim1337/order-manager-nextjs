@@ -1,3 +1,4 @@
+import { sortFields } from '@/features/OrdersTable/lib/columns';
 import {
   parseId,
   parseIsoDate,
@@ -7,7 +8,7 @@ import {
   parseText,
   type RawSearchParams,
 } from '@/features/shared/lib/search-param-parsers';
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, ORDER_SORT_FIELDS } from '@/lib/consts';
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/lib/consts';
 import type { OrderQuery, SortParams } from '@/lib/dal/order.dal';
 
 export type OrdersTableQuery = OrderQuery & { sort: SortParams };
@@ -21,7 +22,7 @@ export function parse(raw: RawSearchParams): OrdersTableQuery {
     endDate: parseIsoDate(raw.endDate),
     driverId: parseId(raw.driverId),
     statusId: parseId(raw.statusId),
-    sort: parseSort(raw.sort, ORDER_SORT_FIELDS) ?? DEFAULT_SORT,
+    sort: parseSort(raw.sort, sortFields) ?? DEFAULT_SORT,
     pageIndex: parsePageIndex(raw.pageIndex) ?? DEFAULT_PAGE_INDEX,
     pageSize: parsePageSize(raw.pageSize) ?? DEFAULT_PAGE_SIZE,
   };

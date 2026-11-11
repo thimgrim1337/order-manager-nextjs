@@ -4,9 +4,29 @@ import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
 import { order, ordersWithDetailsView } from '@/db/schemas';
-import { CACHE_TAG, type OrderSortField } from '@/lib/consts';
+import { CACHE_TAG } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
+
+/** The view column(s) each field the Orders Table sorts by orders on. */
+const sortColumns = {
+  statusId: ordersWithDetailsView.statusId,
+  truckPlate: ordersWithDetailsView.truckPlate,
+  loadingCity: ordersWithDetailsView.loadingCity,
+  unloadingCity: ordersWithDetailsView.unloadingCity,
+  orderNr: ordersWithDetailsView.orderNr,
+  startDate: ordersWithDetailsView.startDate,
+  endDate: ordersWithDetailsView.endDate,
+  pricePLN: ordersWithDetailsView.pricePLN,
+  priceCurrency: ordersWithDetailsView.priceCurrency,
+  currencyId: ordersWithDetailsView.currencyId,
+  customerName: ordersWithDetailsView.customerName,
+  // As Drivers are ordered: first name, then last name.
+  driverFullname: [ordersWithDetailsView.driverFirstName, ordersWithDetailsView.driverLastName],
+} satisfies Record<string, AnyPgColumn | AnyPgColumn[]>;
+
+/** A field the Orders Table sorts by. */
+export type OrderSortField = keyof typeof sortColumns;
 
 /** The Orders Table's sort: one column, ascending or descending. */
 export type SortParams = {
@@ -71,27 +91,11 @@ export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number
 
 export async function findOrders(database: db | dbTransaction, query: OrderQuery) {
   const getOrderBy = (sort?: SortParams) => {
-    const sortMappings: Record<OrderSortField, AnyPgColumn | AnyPgColumn[]> = {
-      statusId: ordersWithDetailsView.statusId,
-      truckPlate: ordersWithDetailsView.truckPlate,
-      loadingCity: ordersWithDetailsView.loadingCity,
-      unloadingCity: ordersWithDetailsView.unloadingCity,
-      orderNr: ordersWithDetailsView.orderNr,
-      startDate: ordersWithDetailsView.startDate,
-      endDate: ordersWithDetailsView.endDate,
-      pricePLN: ordersWithDetailsView.pricePLN,
-      priceCurrency: ordersWithDetailsView.priceCurrency,
-      currencyId: ordersWithDetailsView.currencyId,
-      customerName: ordersWithDetailsView.customerName,
-      // As Drivers are ordered: first name, then last name.
-      driverFullname: [ordersWithDetailsView.driverFirstName, ordersWithDetailsView.driverLastName],
-    };
-
     // Tie-breaker keeps row order stable across pages.
     const tieBreaker = asc(ordersWithDetailsView.id);
     if (!sort) return [tieBreaker];
 
-    const columns = [sortMappings[sort.id]].flat();
+    const columns = [sortColumns[sort.id]].flat();
     return [...columns.map((column) => (sort.desc ? desc(column) : asc(column))), tieBreaker];
   };
 

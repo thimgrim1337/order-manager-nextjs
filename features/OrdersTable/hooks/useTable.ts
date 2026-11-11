@@ -1,40 +1,32 @@
-import {
-  type ColumnDef,
-  getCoreRowModel,
-  type SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { columns, fromSortingState, toSortingState } from '@/features/OrdersTable/lib/columns';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
-import { ORDER_SORT_FIELDS, type OrderSortField } from '@/lib/consts';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 
-type useTableProps<TData, TValue> = {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+type useTableProps = {
+  orders: OrderReadModel[];
   rowCount: number;
 };
 
-export default function useTable<TData, TValue>({
-  columns,
-  data,
-  rowCount,
-}: useTableProps<TData, TValue>) {
+/** The Orders Table over one page of Orders, its sort and page held in the URL. */
+export default function useTable({ orders, rowCount }: useTableProps) {
   const { query, change } = useUrlQuery(ordersTableQuery);
   const paginationState = { pageIndex: query.pageIndex, pageSize: query.pageSize };
-  const sortState: SortingState = [query.sort];
+  const sortingState = toSortingState(query.sort);
 
-  const table = useReactTable({
-    data,
+  return useReactTable({
+    data: orders,
     columns,
-    rowCount: rowCount,
+    rowCount,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: (pagination) => {
       change(typeof pagination === 'function' ? pagination(paginationState) : pagination);
     },
-    onSortingChange: (sorter) => {
-      const [sort] = typeof sorter === 'function' ? sorter(sortState) : sorter;
-      if (!sort) return change({ sort: undefined });
-      if (isOrderSortField(sort.id)) change({ sort: { id: sort.id, desc: sort.desc } });
+    onSortingChange: (sorting) => {
+      change({
+        sort: fromSortingState(typeof sorting === 'function' ? sorting(sortingState) : sorting),
+      });
     },
     manualPagination: true,
     manualSorting: true,
@@ -42,14 +34,8 @@ export default function useTable<TData, TValue>({
     // A sort is always applied (newest Start Date first by default), so headers toggle asc/desc only.
     enableSortingRemoval: false,
     state: {
-      sorting: sortState,
+      sorting: sortingState,
       pagination: paginationState,
     },
   });
-
-  return table;
-}
-
-function isOrderSortField(id: string): id is OrderSortField {
-  return (ORDER_SORT_FIELDS as readonly string[]).includes(id);
 }

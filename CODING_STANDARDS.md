@@ -11,7 +11,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - Each page owns a query module (`features/<Feature>/lib/*-query.ts`) with `parse`, `apply` and `toSearchParams`.
 - Components read and change the URL query through `useUrlQuery(<page>Query)` (`features/shared/hooks/use-url-query.ts`), passing the page's query module directly; a page gets no hook of its own wrapping it. A change relative to the current query (the Week after it) passes a function: `change(({ week }) => ({ week: nextWeek(week) }))`.
 - `parse` reads every param through `features/shared/lib/search-param-parsers.ts` (Biome enforces that a query module imports no `zod`): one `parseX(value: RawSearchParam)` per kind of value, returning `undefined` when the value is missing or invalid. A new kind of param gets a new parser there.
-- A parser's bounds belong to its kind and live in it (`parsePageSize`, not `parseInteger({ min, max })`). It takes a second argument only for the values a page defines, like the sort fields `parseSort(value, ORDER_SORT_FIELDS)` accepts.
+- A parser's bounds belong to its kind and live in it (`parsePageSize`, not `parseInteger({ min, max })`). It takes a second argument only for the values a page defines, like the sort fields `parseSort(value, sortFields)` accepts (the Orders Table column set, `features/OrdersTable/lib/columns.tsx`).
 
 ## Dates and Weeks
 

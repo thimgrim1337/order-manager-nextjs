@@ -2,8 +2,7 @@ import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 import type { dbTransaction } from '@/db/db';
 import { city, customer, driver, order, truck } from '@/db/schemas';
-import type { OrderSortField } from '@/lib/consts';
-import { findOrders, type OrderQuery } from '@/lib/dal/order.dal';
+import { findOrders, type OrderQuery, type OrderSortField } from '@/lib/dal/order.dal';
 import { withRollback } from '../db/with-rollback';
 import { orderRowFor, seedOrder, seedOrderReferences } from '../fixtures/order';
 

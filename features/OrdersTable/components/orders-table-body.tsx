@@ -1,6 +1,6 @@
 'use client';
 
-import { type ColumnDef, flexRender, type Table } from '@tanstack/react-table';
+import { flexRender, type Table } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import {
@@ -13,15 +13,11 @@ import {
 } from '../../../components/ui/table';
 import OrdersContextMenu from './OrdersContextMenu/context-menu';
 
-interface OrdersTableBodyProps<TData, TValue> {
-  table: Table<TData>;
-  columns: ColumnDef<TData, TValue>[];
+interface OrdersTableBodyProps {
+  table: Table<OrderReadModel>;
 }
 
-export function OrdersTableBody<TData, TValue>({
-  table,
-  columns,
-}: OrdersTableBodyProps<TData, TValue>) {
+export function OrdersTableBody({ table }: OrdersTableBodyProps) {
   return (
     <TableMain>
       <TableHeader>
@@ -61,7 +57,7 @@ export function OrdersTableBody<TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <OrdersContextMenu key={row.id} order={row.original as OrderReadModel}>
+            <OrdersContextMenu key={row.id} order={row.original}>
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
@@ -77,7 +73,7 @@ export function OrdersTableBody<TData, TValue>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center ">
+            <TableCell colSpan={table.getVisibleLeafColumns().length} className="h-24 text-center ">
               Brak wyników.
             </TableCell>
           </TableRow>

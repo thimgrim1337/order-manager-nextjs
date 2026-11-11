@@ -35,20 +35,3 @@ type ZodMessages = {
 export const ZOD_ERROR_MESSAGES: ZodMessages = {
   FieldRequired: 'Pole jest wymagane.',
 };
-
-export const ORDER_SORT_FIELDS = [
-  'orderNr',
-  'startDate',
-  'endDate',
-  'loadingCity',
-  'unloadingCity',
-  'statusId',
-  'truckPlate',
-  'driverFullname',
-  'customerName',
-  'priceCurrency',
-  'currencyId',
-  'pricePLN',
-] as const;
-
-export type OrderSortField = (typeof ORDER_SORT_FIELDS)[number];
