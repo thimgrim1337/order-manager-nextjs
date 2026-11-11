@@ -23,6 +23,30 @@ describe('settleWrite', () => {
     expect(close).toHaveBeenCalledOnce();
   });
 
+  it('hands the written data over once the write succeeds', async () => {
+    const onSuccess = vi.fn();
+
+    await settleWrite(async () => writeResponse.succeeded({ id: 7 }), {
+      closeDialog: close,
+      successDescription: 'Zlecenie zapisane.',
+      onSuccess,
+    });
+
+    expect(onSuccess).toHaveBeenCalledExactlyOnceWith({ id: 7 });
+  });
+
+  it('hands nothing over when the write is refused', async () => {
+    const onSuccess = vi.fn();
+
+    await settleWrite(async () => writeResponse.refused('NotFound'), {
+      closeDialog: close,
+      successDescription: 'Zlecenie zapisane.',
+      onSuccess,
+    });
+
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
   it("shows a failed write's message in a toast and keeps the dialog open", async () => {
     await settleWrite(async () => writeResponse.refused('NotFound'), {
       closeDialog: close,

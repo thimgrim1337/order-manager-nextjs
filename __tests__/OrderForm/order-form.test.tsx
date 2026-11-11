@@ -1,11 +1,19 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { Toaster } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
-import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
+import {
+  createCity,
+  createCustomer,
+  createOrder,
+  searchCities,
+  searchCustomers,
+  updateOrder,
+} from '@/lib/actions';
+import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
@@ -29,6 +37,30 @@ const [plock] = choices.cities;
 const [customer] = choices.customers;
 // A Customer beyond the preloaded ones, found by searching.
 const angel: CustomerReadModel = { id: 5, name: 'ANGEL', tax: '5260250995' };
+
+// A Customer and a City the tests create from the Order form.
+const nowaFirma: CustomerReadModel = { id: 9, name: 'Nowa Firma', tax: 'PL9876543210' };
+const krakow: CityReadModel = { ...plock, id: 12, name: 'Kraków', postal: '30-001' };
+
+/** Creates a Customer through the Order form's create dialog. */
+const createCustomerInDialog = async (user: UserEvent) => {
+  await user.click(screen.getByRole('button', { name: 'Dodaj nowego zleceniodawcę' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Dodawanie nowego zleceniodawcy' });
+  await user.type(within(dialog).getByLabelText('Nazwa zleceniodawcy'), nowaFirma.name);
+  await user.type(within(dialog).getByLabelText('NIP'), nowaFirma.tax);
+  await user.click(within(dialog).getByRole('button', { name: 'Zapisz' }));
+  return dialog;
+};
+
+/** Creates a City through the Order form's create dialog, beside the Loading Places. */
+const createCityInDialog = async (user: UserEvent) => {
+  await user.click(screen.getByRole('button', { name: 'Dodaj nowe miejsce' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Dodawanie nowego miejsca' });
+  await user.type(within(dialog).getByLabelText('Kod pocztowy'), krakow.postal);
+  await user.type(within(dialog).getByLabelText('Nazwa miejscowości'), krakow.name);
+  await user.click(within(dialog).getByRole('button', { name: 'Zapisz' }));
+  return dialog;
+};
 
 /** The Customer search answers `answers[term]` for each term, and finds no one for any other. */
 const customerSearchAnswers = (answers: Record<string, CustomerReadModel[]>) =>
@@ -162,6 +194,100 @@ describe('OrderForm', () => {
 
         expect(screen.queryByText(ORDER_NR_TAKEN)).toBeNull();
         expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
+      });
+    });
+
+    describe('creating a Customer or a City from the form', () => {
+      it('picks the created Customer', async () => {
+        vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded(nowaFirma));
+        const { user, onDialogClose } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await createCustomerInDialog(user);
+
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('Nowa Firma');
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(createOrder).toHaveBeenCalledWith(
+          expect.objectContaining({ customerId: nowaFirma.id }),
+        );
+      });
+
+      it("clears the Order Number's refusal, as picking another Customer does", async () => {
+        vi.mocked(createOrder).mockResolvedValueOnce(writeResponse.refused('OrderNrTaken'));
+        vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded(nowaFirma));
+        const { user } = await setup();
+        await fillInNewOrder(user);
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await screen.findByText('Zlecenie o tym numerze już istnieje.');
+
+        const dialog = await createCustomerInDialog(user);
+
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        expect(screen.queryByText('Zlecenie o tym numerze już istnieje.')).toBeNull();
+        expect(screen.getByLabelText('Numer zlecenia')).not.toHaveAttribute('aria-invalid', 'true');
+      });
+
+      it('picks no Customer when the create is refused', async () => {
+        vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused('CustomerTaken'));
+        const { user } = await setup();
+        await fillInNewOrder(user);
+
+        await createCustomerInDialog(user);
+
+        await screen.findByText('Ten zleceniodawca już istnieje.');
+        expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('DEVIL');
+      });
+
+      it('adds the created City after the picked Loading Places, showing its Country', async () => {
+        vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded(krakow));
+        const { user, onDialogClose } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await createCityInDialog(user);
+
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        expect(screen.getByText('30-001')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(createOrder).toHaveBeenCalledWith(
+          expect.objectContaining({
+            loadingPlaces: [plock.id, krakow.id],
+            unloadingPlaces: [plock.id],
+          }),
+        );
+      });
+
+      it('does not add a City the Loading Places already hold', async () => {
+        vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded(plock));
+        const { user, onDialogClose } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await createCityInDialog(user);
+
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(createOrder).toHaveBeenCalledWith(
+          expect.objectContaining({ loadingPlaces: [plock.id] }),
+        );
+      });
+
+      it('adds no City when the create is refused', async () => {
+        vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityTaken'));
+        const { user, onDialogClose } = await setup();
+        await fillInNewOrder(user);
+
+        await createCityInDialog(user);
+
+        await screen.findByText('Ta miejscowość już istnieje.');
+        await user.keyboard('{Escape}');
+        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        expect(createOrder).toHaveBeenCalledWith(
+          expect.objectContaining({ loadingPlaces: [plock.id] }),
+        );
       });
     });
 

@@ -2,10 +2,12 @@
 
 import db from '@/db/db';
 import { type ActionResponse, toActionResponse } from './action-response';
+import type { CityReadModel } from './dal/city.dal';
 import { getCities } from './dal/city.dal';
+import type { CustomerReadModel } from './dal/customer.dal';
 import { getCustomers } from './dal/customer.dal';
-import type { CityDto, CreateCityDto } from './dto/city.dto';
-import type { CreateCustomerDto, CustomerDto } from './dto/customer.dto';
+import type { CreateCityDto } from './dto/city.dto';
+import type { CreateCustomerDto } from './dto/customer.dto';
 import type { OrderDto, OrderInputDto } from './dto/order.dto';
 import { nbpApi } from './nbp';
 import * as Cities from './services/city.services';
@@ -44,10 +46,10 @@ export async function searchCities(query: string) {
 
 export async function createCustomer(
   formData: CreateCustomerDto,
-): Promise<ActionResponse<CustomerDto>> {
+): Promise<ActionResponse<CustomerReadModel>> {
   return toActionResponse(await Customers.createCustomer(db, formData));
 }
 
-export async function createCity(formData: CreateCityDto): Promise<ActionResponse<CityDto>> {
+export async function createCity(formData: CreateCityDto): Promise<ActionResponse<CityReadModel>> {
   return toActionResponse(await Cities.createCity(db, formData));
 }

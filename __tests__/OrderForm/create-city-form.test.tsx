@@ -7,6 +7,7 @@ import { deferred } from '../utils/deferred';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
+const onCreated = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -17,6 +18,7 @@ const setup = () => {
   render(
     <CreateCityForm
       countries={[{ id: 1, code: 'PL', name: 'Poland' }]}
+      onCreated={onCreated}
       onDialogClose={onDialogClose}
     />,
   );
@@ -61,6 +63,7 @@ describe('CreateCityForm', () => {
           { id: 3, code: 'DE', name: 'Niemcy' },
           { id: 7, code: 'PL', name: 'Polska' },
         ]}
+        onCreated={onCreated}
         onDialogClose={onDialogClose}
       />,
     );

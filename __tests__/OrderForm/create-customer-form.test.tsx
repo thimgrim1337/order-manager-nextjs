@@ -7,6 +7,7 @@ import { deferred } from '../utils/deferred';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
+const onCreated = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -14,7 +15,7 @@ beforeEach(() => {
 
 const setup = () => {
   const user = userEvent.setup();
-  render(<CreateCustomerForm onDialogClose={onDialogClose} />);
+  render(<CreateCustomerForm onCreated={onCreated} onDialogClose={onDialogClose} />);
 
   return { user };
 };

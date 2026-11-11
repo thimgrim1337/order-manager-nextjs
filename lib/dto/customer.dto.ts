@@ -18,4 +18,3 @@ export const createCustomerSchema = createInsertSchema(customer, {
 export const selectCustomerSchema = createSelectSchema(customer);
 
 export type CreateCustomerDto = z.infer<typeof createCustomerSchema>;
-export type CustomerDto = z.infer<typeof selectCustomerSchema>;

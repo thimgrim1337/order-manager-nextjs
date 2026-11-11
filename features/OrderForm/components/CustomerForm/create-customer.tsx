@@ -1,12 +1,18 @@
 'use client';
 
 import { HousePlus } from 'lucide-react';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 
 import useToggle from '../../../shared/hooks/use-toggle';
 import FormDialog from '../ui/form-dialog';
 import CreateCustomerForm from './create-customer-form';
 
-export default function CreateCustomer() {
+/** Creates a Customer in a dialog, handing the created one to `onCreated`. */
+export default function CreateCustomer({
+  onCreated,
+}: {
+  onCreated: (customer: CustomerReadModel) => void;
+}) {
   const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
 
   return (
@@ -19,7 +25,7 @@ export default function CreateCustomer() {
       description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
       hideTriggerTitle
     >
-      <CreateCustomerForm onDialogClose={closeModal} />
+      <CreateCustomerForm onCreated={onCreated} onDialogClose={closeModal} />
     </FormDialog>
   );
 }

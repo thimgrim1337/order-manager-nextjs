@@ -4,8 +4,9 @@ import z from 'zod';
 import type { db, dbTransaction } from '@/db/db';
 import { customer } from '@/db/schemas';
 import { CACHE_TAG } from '../consts';
+import type { CustomerReadModel } from '../dal/customer.dal';
 import { isUniqueViolation } from '../db-errors';
-import { type CustomerDto, createCustomerSchema, selectCustomerSchema } from '../dto/customer.dto';
+import { createCustomerSchema, selectCustomerSchema } from '../dto/customer.dto';
 import { error, ok, type Result } from '../error';
 
 export type CreateCustomerFailure =
@@ -16,7 +17,7 @@ export type CreateCustomerFailure =
 export async function createCustomer(
   database: db | dbTransaction,
   input: unknown,
-): Promise<Result<CustomerDto, CreateCustomerFailure>> {
+): Promise<Result<CustomerReadModel, CreateCustomerFailure>> {
   const validation = createCustomerSchema.safeParse(input);
   if (!validation.success)
     return error({ reason: 'InvalidData', details: z.prettifyError(validation.error) });

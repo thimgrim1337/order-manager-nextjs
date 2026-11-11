@@ -10,7 +10,7 @@ import { type SettleWriteOptions, settleWrite } from '../lib/settle-write';
 export function useSettleWrite() {
   const [isPending, startTransition] = useTransition();
 
-  function settle<T>(action: () => Promise<ActionResponse<T>>, options: SettleWriteOptions) {
+  function settle<T>(action: () => Promise<ActionResponse<T>>, options: SettleWriteOptions<T>) {
     startTransition(() => settleWrite(action, options));
   }
 

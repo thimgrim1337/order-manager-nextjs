@@ -33,6 +33,19 @@ describe('Cities.createCity', () => {
       expect(created).toMatchObject({ name: 'Kraków', postal: '30-001', countryId: dbCountry.id });
     }));
 
+  it('returns the City with its Country, as an Order shows its Places', () =>
+    withRollback(async (trx) => {
+      const dbCountry = await seedCountry(trx);
+
+      const [, created] = await Cities.createCity(trx, {
+        name: 'Kraków',
+        postal: '30-001',
+        countryId: dbCountry.id,
+      });
+
+      expect(created?.country).toEqual({ id: dbCountry.id, name: 'Polska', code: 'PL' });
+    }));
+
   it('rejects a City whose name is taken', () =>
     withRollback(async (trx) => {
       const dbCountry = await seedCountry(trx);

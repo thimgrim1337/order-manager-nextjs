@@ -4,9 +4,11 @@ import type { ActionResponse, Refusal } from '@/lib/action-response';
 /** Next redacts a Server Action's thrown error in production, so its text means nothing to the user. */
 const UNEXPECTED_ERROR = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.';
 
-export type SettleWriteOptions = {
+export type SettleWriteOptions<T = unknown> = {
   /** Closes the dialog that made the write. */
   closeDialog: () => void;
+  /** Takes what the write saved, once it succeeded, before the dialog closes. */
+  onSuccess?: (data: T) => void;
   errorTitle?: string;
   successDescription: string;
   /**
@@ -28,10 +30,11 @@ export async function settleWrite<T>(
   action: () => Promise<ActionResponse<T>>,
   {
     closeDialog,
+    onSuccess,
     errorTitle = 'Niepowodzenie',
     successDescription,
     showOnField,
-  }: SettleWriteOptions,
+  }: SettleWriteOptions<T>,
 ): Promise<void> {
   try {
     const response = await action();
@@ -43,6 +46,7 @@ export async function settleWrite<T>(
     }
 
     toast.success('Sukces', { description: successDescription, richColors: true });
+    onSuccess?.(response.data);
     closeDialog();
   } catch (error) {
     console.error(error);

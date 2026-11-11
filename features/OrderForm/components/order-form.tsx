@@ -6,6 +6,8 @@ import { FieldGroup } from '@/components/ui/field';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
 import { settleWrite } from '@/features/shared/lib/settle-write';
 import type { ActionResponse } from '@/lib/action-response';
+import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { driverName } from '@/lib/drivers';
 import type { OrderDto, OrderInputDto } from '@/lib/dto/order.dto';
@@ -69,6 +71,18 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     }));
   const clearOrderNrRefusal = () => setOrderNrRefusal(undefined);
 
+  /** Makes a Customer created from the form the Order's, as picking them in the field does. */
+  const pickCreatedCustomer = (customer: CustomerReadModel) => {
+    form.setFieldValue('customer', customer);
+    clearOrderNrRefusal();
+  };
+
+  /** Adds a City created from the form after the Loading Places, beside whose field it is created. */
+  const addCreatedLoadingPlace = (city: CityReadModel) =>
+    form.setFieldValue('loadingPlaces', (places) =>
+      places.some((place) => place.id === city.id) ? places : [...places, city],
+    );
+
   const { endDate, currencyId, priceCurrency } = useStore(form.store, (state) => state.values);
   const exchangeRate = useExchangeRate(startingExchangeRate, endDate, currencyId);
 
@@ -97,7 +111,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
                   <field.CustomersComboboxField customers={customers} label="Zleceniodawca" />
                 )}
               </form.AppField>
-              <CreateCustomer />
+              <CreateCustomer onCreated={pickCreatedCustomer} />
             </div>
 
             <form.AppField name="orderNr" listeners={{ onChange: clearOrderNrRefusal }}>
@@ -119,7 +133,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
               <form.AppField name="loadingPlaces" mode="array">
                 {(field) => <field.PlacesComboboxField cities={cities} label="Miejsca załadunku" />}
               </form.AppField>
-              <CreateCity countries={countries} />
+              <CreateCity countries={countries} onCreated={addCreatedLoadingPlace} />
             </div>
             <form.AppField name="unloadingPlaces" mode="array">
               {(field) => <field.PlacesComboboxField cities={cities} label="Miejsca rozładunku" />}

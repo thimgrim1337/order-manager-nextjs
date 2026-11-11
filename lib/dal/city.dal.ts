@@ -13,7 +13,21 @@ import { toSearchTerm } from '../utils';
 export async function findCities(database: db | dbTransaction, search?: string) {
   const searchTerm = toSearchTerm(search);
 
-  return database
+  return selectCities(database)
+    .where(searchTerm ? ilike(city.name, searchTerm.pattern) : undefined)
+    .orderBy(inPolishOrder(city.name))
+    .limit(SEARCH_LIMIT);
+}
+
+/** The City with `id`, with its Country, as `findCities` reads it. */
+export async function findCity(database: db | dbTransaction, id: number) {
+  const [found] = await selectCities(database).where(eq(city.id, id));
+  return found;
+}
+
+/** Cities, each with its Country. */
+const selectCities = (database: db | dbTransaction) =>
+  database
     .select({
       id: city.id,
       name: city.name,
@@ -22,11 +36,7 @@ export async function findCities(database: db | dbTransaction, search?: string) 
       country: { id: country.id, name: country.name, code: country.code },
     })
     .from(city)
-    .innerJoin(country, eq(city.countryId, country.id))
-    .where(searchTerm ? ilike(city.name, searchTerm.pattern) : undefined)
-    .orderBy(inPolishOrder(city.name))
-    .limit(SEARCH_LIMIT);
-}
+    .innerJoin(country, eq(city.countryId, country.id));
 
 export type CityReadModel = Awaited<ReturnType<typeof findCities>>[number];
 
