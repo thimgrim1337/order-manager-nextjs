@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/create-customer-form';
 import { createCustomer } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
@@ -8,10 +8,6 @@ import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
 const onCreated = vi.fn();
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 
 const setup = () => {
   const user = userEvent.setup();

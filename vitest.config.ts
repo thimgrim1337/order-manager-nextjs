@@ -3,11 +3,16 @@ import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
+import FailuresReporter from './__tests__/failures-reporter';
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
 
   test: {
+    // Before each test, every mock drops its calls and queued `*Once` answers, so one red test
+    // cannot hand its unused answers to the next.
+    mockReset: true,
+    reporters: ['default', new FailuresReporter('__tests__/test-results/failures.txt')],
     projects: [
       {
         extends: true,

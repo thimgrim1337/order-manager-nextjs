@@ -1,6 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { changeOrderStatus, removeOrder } from '@/lib/actions';
 import { orderReadModel } from '../fixtures/order-read-model';
@@ -9,10 +9,6 @@ import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
 const order = orderReadModel({ orderNr: 'ZL-001' });
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 
 const setup = () => {
   const user = userEvent.setup();

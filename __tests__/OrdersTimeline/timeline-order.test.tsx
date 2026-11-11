@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import TimelineOrder from '@/features/OrdersTimeline/components/timeline-order';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { updateOrder } from '@/lib/actions';
@@ -121,10 +121,6 @@ describe('Timeline row', () => {
 });
 
 describe('Timeline row edit', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('opens the edit-Order dialog on click and saves the changed Order under its id', async () => {
     vi.mocked(updateOrder).mockResolvedValueOnce(writeResponse.succeeded());
     const choices = orderChoices();

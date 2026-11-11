@@ -20,6 +20,7 @@ import { orderReadModel } from '../fixtures/order-read-model';
 import { worker } from '../mocks/browser';
 import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
+import { openDialog } from '../utils/open-dialog';
 import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
 import { renderWithQueries } from '../utils/wrapper';
@@ -43,15 +44,13 @@ const angel: CustomerReadModel = { id: 5, name: 'ANGEL', tax: '5260250995' };
 const nowaFirma: CustomerReadModel = { id: 9, name: 'Nowa Firma', tax: 'PL9876543210' };
 const krakow: CityReadModel = { ...plock, id: 12, name: 'Kraków', postal: '30-001' };
 
-/** Waits for an opened dialog to move focus inside, which would otherwise land mid-typing. */
-const dialogTakesFocus = (dialog: HTMLElement) =>
-  vi.waitFor(() => expect(dialog).toContainElement(document.activeElement as HTMLElement));
-
 /** Creates a Customer through the Order form's create dialog. */
 const createCustomerInDialog = async (user: UserEvent) => {
-  await user.click(screen.getByRole('button', { name: 'Dodaj nowego zleceniodawcę' }));
-  const dialog = await screen.findByRole('dialog', { name: 'Dodawanie nowego zleceniodawcy' });
-  await dialogTakesFocus(dialog);
+  const dialog = await openDialog(
+    user,
+    'Dodaj nowego zleceniodawcę',
+    'Dodawanie nowego zleceniodawcy',
+  );
   await user.type(within(dialog).getByLabelText('Nazwa zleceniodawcy'), nowaFirma.name);
   await user.type(within(dialog).getByLabelText('NIP'), nowaFirma.tax);
   await user.click(within(dialog).getByRole('button', { name: 'Zapisz' }));
@@ -60,9 +59,7 @@ const createCustomerInDialog = async (user: UserEvent) => {
 
 /** Creates a City through the Order form's create dialog. */
 const createCityInDialog = async (user: UserEvent) => {
-  await user.click(screen.getByRole('button', { name: 'Dodaj nowe miejsce' }));
-  const dialog = await screen.findByRole('dialog', { name: 'Dodawanie nowego miejsca' });
-  await dialogTakesFocus(dialog);
+  const dialog = await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
   await user.type(within(dialog).getByLabelText('Kod pocztowy'), krakow.postal);
   await user.type(within(dialog).getByLabelText('Nazwa miejscowości'), krakow.name);
   await user.click(within(dialog).getByRole('button', { name: 'Zapisz' }));
@@ -86,7 +83,6 @@ const failNbp = () =>
   worker.use(http.get(NBP_RATES_URL, () => HttpResponse.json({}, { status: 500 })));
 
 beforeEach(() => {
-  vi.clearAllMocks();
   customerSearchAnswers({ ANG: [angel] });
   vi.mocked(createOrder).mockResolvedValue(writeResponse.succeeded());
   vi.useFakeTimers({ toFake: ['Date'] });

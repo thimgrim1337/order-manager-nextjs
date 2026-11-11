@@ -7,7 +7,6 @@ import { writeResponse } from '../utils/write-response';
 const close = vi.fn();
 
 beforeEach(() => {
-  vi.clearAllMocks();
   renderWithToaster(<div />);
 });
 
