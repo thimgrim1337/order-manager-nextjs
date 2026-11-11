@@ -6,10 +6,10 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox';
-import useSearchQuery from '@/features/shared/hooks/use-search-query';
 import { searchCustomers } from '@/lib/actions';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import { useFieldContext } from '../../context/form-context';
+import useSearchedChoices from '../../hooks/use-searched-choices';
 import FormBase, { type FormControlProps } from './form-base';
 
 type CustomerComboboxFieldProps = FormControlProps & {
@@ -24,7 +24,12 @@ export default function CustomersComboboxField({
   error,
 }: CustomerComboboxFieldProps) {
   const field = useFieldContext<CustomerReadModel | null>();
-  const { data: customers, setQuery } = useSearchQuery(searchCustomers, initialData);
+  const picked = field.state.value;
+  const { choices: customers, setSearchText } = useSearchedChoices({
+    search: searchCustomers,
+    startingChoices: initialData,
+    picked: picked ? [picked] : [],
+  });
 
   return (
     <FormBase label={label} icon={icon} error={error}>
@@ -33,10 +38,10 @@ export default function CustomersComboboxField({
           items={customers}
           itemToStringLabel={(item: CustomerReadModel) => item.name}
           itemToStringValue={(item: CustomerReadModel) => String(item.id)}
-          onInputValueChange={setQuery}
+          onInputValueChange={setSearchText}
           onValueChange={(item: CustomerReadModel | null) => field.handleChange(item)}
           isItemEqualToValue={(item, value) => item.id === value.id}
-          value={field.state.value}
+          value={picked}
         >
           <ComboboxInput placeholder="Wybierz zleceniodawcę" aria-invalid={isInvalid} id={id} />
           <ComboboxContent>

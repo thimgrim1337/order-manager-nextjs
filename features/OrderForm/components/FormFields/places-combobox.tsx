@@ -9,10 +9,10 @@ import {
   ComboboxList,
   useComboboxAnchor,
 } from '@/components/ui/combobox';
-import useSearchQuery from '@/features/shared/hooks/use-search-query';
 import { searchCities } from '@/lib/actions';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import { useFieldContext } from '../../context/form-context';
+import useSearchedChoices from '../../hooks/use-searched-choices';
 import FormBase, { type FormControlProps } from './form-base';
 
 type PlacesComboboxFieldProps = {
@@ -27,9 +27,12 @@ export default function PlacesComboboxField({
 }: FormControlProps & PlacesComboboxFieldProps) {
   const field = useFieldContext<CityReadModel[]>();
   const anchor = useComboboxAnchor();
-  const { data: cities, setQuery } = useSearchQuery(searchCities, initialData);
-
   const selectedCities = field.state.value;
+  const { choices: cities, setSearchText } = useSearchedChoices({
+    search: searchCities,
+    startingChoices: initialData,
+    picked: selectedCities,
+  });
 
   return (
     <FormBase label={label} icon={icon} error={error}>
@@ -38,7 +41,7 @@ export default function PlacesComboboxField({
           items={cities}
           itemToStringLabel={(item: CityReadModel) => item.name}
           itemToStringValue={(item: CityReadModel) => String(item.id)}
-          onInputValueChange={setQuery}
+          onInputValueChange={setSearchText}
           onValueChange={(items: CityReadModel[]) => field.handleChange(items)}
           isItemEqualToValue={(item, value) => item.id === value.id}
           value={selectedCities}

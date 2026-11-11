@@ -433,6 +433,31 @@ describe('OrderForm', () => {
       );
     });
 
+    it('lists its Customer beyond the preloaded ones first in the open list, as picked', async () => {
+      const { user } = await editSetup({ ...order, customer: angel });
+
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      await user.click(screen.getByLabelText('Zleceniodawca'));
+
+      const options = await screen.findAllByRole('option');
+      expect(options.map((option) => option.textContent)).toEqual(['ANGEL', 'DEVIL']);
+      expect(options[0]).toHaveAttribute('aria-selected', 'true');
+    });
+
+    it.each([
+      ['Miejsca załadunku', { loadingPlaces: [berlin] }],
+      ['Miejsca rozładunku', { unloadingPlaces: [berlin] }],
+    ])('lists its City beyond the preloaded ones first in the open %s list, as picked', async (label, places) => {
+      const { user } = await editSetup({ ...order, ...places });
+
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      await user.click(screen.getByLabelText(label));
+
+      const options = await screen.findAllByRole('option');
+      expect(options.map((option) => option.textContent)).toEqual(['Berlin', 'Płock']);
+      expect(options[0]).toHaveAttribute('aria-selected', 'true');
+    });
+
     it("shows the Order's Places with their Cities' Countries", async () => {
       await editSetup({ ...order, unloadingPlaces: [berlin] });
 
