@@ -191,6 +191,19 @@ describe('OrderForm', () => {
       expect(vi.mocked(createOrder).mock.calls[0]?.[0]).not.toHaveProperty('currencyInfo');
     });
 
+    it('marks the Currency field invalid and blocks saving when NBP fails', async () => {
+      failNbp();
+      const { user } = await setup();
+
+      await fillInNewOrder(user);
+      await user.click(screen.getByLabelText('Waluta'));
+      await user.click(await screen.findByRole('option', { name: 'EUR' }));
+      await screen.findByText('Nie udało się pobrać kursu walut.');
+
+      expect(screen.getByLabelText('Waluta')).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getByRole('button', { name: 'Zapisz' })).toBeDisabled();
+    });
+
     it("saves a EUR Order unloading after the new year's holiday with the rate from before it", async () => {
       // Wednesday 2027-01-20 12:00 in Warsaw, so the date pickers show January 2027.
       vi.setSystemTime(new Date('2027-01-20T11:00:00Z'));

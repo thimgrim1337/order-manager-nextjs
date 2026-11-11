@@ -26,65 +26,78 @@ export type SelectFieldProps = FormControlProps & {
   children?: ReactNode;
 };
 
-export default function SelectField({ children, ...props }: SelectFieldProps) {
+export default function SelectField({
+  children,
+  label,
+  icon,
+  error,
+  data,
+  placeholder,
+  showRecentList,
+  onTrackValue,
+  recentData,
+}: SelectFieldProps) {
   const field = useFieldContext<number>();
 
-  const isInvalid = (field.state.meta.isTouched && !field.state.meta.isValid) || !!props.error;
   const selectedValue = field.state.value;
-  const selectedItem = props.data.filter((item) => item.value === selectedValue)[0] || null;
+  const selectedItem = data.find((item) => item.value === selectedValue) ?? null;
 
-  const isShowRecentList = props.showRecentList && props.recentData && props.recentData.length > 0;
+  const isShowRecentList = showRecentList && recentData && recentData.length > 0;
 
   const restValues = isShowRecentList
-    ? props.data.filter((d) => !props.recentData?.find((o) => o.value === d.value))
-    : props.data;
+    ? data.filter((d) => !recentData?.find((o) => o.value === d.value))
+    : data;
 
   return (
-    <FormBase {...props}>
-      <Select
-        name={field.name}
-        items={props.data}
-        itemToStringLabel={(item: SelectData) => item.label}
-        itemToStringValue={(item: SelectData) => String(item.value)}
-        onValueChange={(item) => {
-          field.handleChange(item ? item.value : 0);
-          item && props.onTrackValue?.(item.value);
-        }}
-        value={selectedItem && selectedItem}
-      >
-        <SelectTrigger className="w-45" aria-invalid={isInvalid} id={field.name}>
-          <SelectValue placeholder={props.placeholder}>
-            {(data: SelectData) => (
-              <span className="flex gap-2 items-center">
-                {data?.icon} {data?.label}
-              </span>
-            )}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent alignItemWithTrigger={false}>
-          {isShowRecentList && (
-            <SelectGroup>
-              <SelectLabel>Ostatnio wybierane</SelectLabel>
-              {props.recentData?.map((item) => (
-                <SelectItem key={item.value} value={item}>
-                  {item.icon}
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          )}
-          <SelectGroup>
-            <SelectLabel>{props.placeholder}</SelectLabel>
-            {restValues.map((item) => (
-              <SelectItem key={item.value} value={item}>
-                {item.icon}
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      {children}
+    <FormBase label={label} icon={icon} error={error}>
+      {({ id, isInvalid }) => (
+        <>
+          <Select
+            name={field.name}
+            items={data}
+            itemToStringLabel={(item: SelectData) => item.label}
+            itemToStringValue={(item: SelectData) => String(item.value)}
+            onValueChange={(item) => {
+              field.handleChange(item ? item.value : 0);
+              item && onTrackValue?.(item.value);
+            }}
+            value={selectedItem && selectedItem}
+          >
+            <SelectTrigger className="w-45" aria-invalid={isInvalid} id={id}>
+              <SelectValue placeholder={placeholder}>
+                {(data: SelectData) => (
+                  <span className="flex gap-2 items-center">
+                    {data?.icon} {data?.label}
+                  </span>
+                )}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false}>
+              {isShowRecentList && (
+                <SelectGroup>
+                  <SelectLabel>Ostatnio wybierane</SelectLabel>
+                  {recentData?.map((item) => (
+                    <SelectItem key={item.value} value={item}>
+                      {item.icon}
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              )}
+              <SelectGroup>
+                <SelectLabel>{placeholder}</SelectLabel>
+                {restValues.map((item) => (
+                  <SelectItem key={item.value} value={item}>
+                    {item.icon}
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {children}
+        </>
+      )}
     </FormBase>
   );
 }

@@ -9,11 +9,18 @@ export type FormControlProps = {
   error?: string | null;
 };
 
+/** What the frame hands its field's control: the id its label points at, and whether it is invalid. */
+type FormControl = {
+  id: string;
+  isInvalid: boolean;
+};
+
 type FormBaseProps = {
-  children: ReactNode;
+  children: (control: FormControl) => ReactNode;
   horizontal?: boolean;
 };
 
+/** A field's frame: its label, its errors, and the one rule for when the field is invalid. */
 export default function FormBase({
   label,
   children,
@@ -22,19 +29,16 @@ export default function FormBase({
   error,
 }: FormControlProps & FormBaseProps) {
   const field = useFieldContext();
+  const id = field.name;
   const isInvalid = (field.state.meta.isTouched && !field.state.meta.isValid) || !!error;
   return (
-    <Field
-      aria-invalid={isInvalid}
-      orientation={horizontal ? 'horizontal' : undefined}
-      className="min-w-0 flex-1"
-    >
-      <FieldLabel htmlFor={field.name}>
+    <Field orientation={horizontal ? 'horizontal' : undefined} className="min-w-0 flex-1">
+      <FieldLabel htmlFor={id}>
         {icon}
         {label}
       </FieldLabel>
 
-      {children}
+      {children({ id, isInvalid })}
       {isInvalid && (
         <FieldError
           errors={
@@ -45,4 +49,3 @@ export default function FormBase({
     </Field>
   );
 }
-1;

@@ -7,46 +7,45 @@ import { formatDate, getToday, parseDate } from '@/lib/dates';
 import { useFieldContext } from '../../context/form-context';
 import FormBase, { type FormControlProps } from './form-base';
 
-export default function DateField(props: FormControlProps) {
+export default function DateField({ label, icon, error }: FormControlProps) {
   const [open, setOpen] = useState(false);
   const field = useFieldContext<string>();
-
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   const selectedDate = field.state.value;
 
   return (
-    <FormBase {...props}>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger
-          render={
-            <Button
-              variant="outline"
-              id={field.name}
-              className="w-48 justify-between font-normal"
-              aria-invalid={isInvalid}
-            >
-              {selectedDate ? selectedDate : 'Wybierz datę'}
+    <FormBase label={label} icon={icon} error={error}>
+      {({ id, isInvalid }) => (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger
+            render={
+              <Button
+                variant="outline"
+                id={id}
+                className="w-48 justify-between font-normal"
+                aria-invalid={isInvalid}
+              >
+                {selectedDate ? selectedDate : 'Wybierz datę'}
 
-              <ChevronDownIcon />
-            </Button>
-          }
-        ></PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-          <Calendar
-            mode="single"
-            defaultMonth={parseDate(getToday())}
-            showWeekNumber
-            weekStartsOn={1}
-            selected={parseDate(selectedDate)}
-            onSelect={(value) => {
-              field.handleChange(formatDate(value));
-              setOpen(false);
-            }}
-            className="rounded-lg border shadow-sm"
-            id={field.name}
-          />
-        </PopoverContent>
-      </Popover>
+                <ChevronDownIcon />
+              </Button>
+            }
+          ></PopoverTrigger>
+          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <Calendar
+              mode="single"
+              defaultMonth={parseDate(getToday())}
+              showWeekNumber
+              weekStartsOn={1}
+              selected={parseDate(selectedDate)}
+              onSelect={(value) => {
+                field.handleChange(formatDate(value));
+                setOpen(false);
+              }}
+              className="rounded-lg border shadow-sm"
+            />
+          </PopoverContent>
+        </Popover>
+      )}
     </FormBase>
   );
 }
