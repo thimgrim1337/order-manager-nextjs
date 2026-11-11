@@ -15,8 +15,6 @@ function makeQueryClient() {
   });
 }
 
-QueryClientProvider;
-
 let browserQueryClient: QueryClient | undefined;
 
 function getQueryClient() {

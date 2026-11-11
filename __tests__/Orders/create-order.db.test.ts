@@ -190,6 +190,7 @@ describe('createOrder', () => {
     }));
 
   it.each([
+    ['Status', { statusId: 999999 }, 'UnknownStatus', 'Nieznany status zlecenia.'],
     ['Truck', { truckId: 999999 }, 'UnknownTruck', 'Wybrany pojazd nie istnieje.'],
     ['Driver', { driverId: 999999 }, 'UnknownDriver', 'Wybrany kierowca nie istnieje.'],
     ['Customer', { customerId: 999999 }, 'UnknownCustomer', 'Wybrany zleceniodawca nie istnieje.'],

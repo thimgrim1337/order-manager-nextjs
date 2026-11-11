@@ -35,6 +35,7 @@ type OrderNrTaken = { reason: 'OrderNrTaken' };
 
 /** The foreign key each reference an Order names is held by, and the outcome naming it unknown. */
 const UNKNOWN_REFERENCES = {
+  orders_status_id_statuses_id_fk: { reason: 'UnknownStatus' },
   orders_truck_id_trucks_id_fk: { reason: 'UnknownTruck' },
   orders_driver_id_drivers_id_fk: { reason: 'UnknownDriver' },
   orders_customer_id_customers_id_fk: { reason: 'UnknownCustomer' },
@@ -199,7 +200,9 @@ export async function changeOrderStatus(
 
     return ok(selectOrderSchema.parse(changed));
   } catch (err) {
-    if (isUnknownStatus(err)) return error({ reason: 'UnknownStatus' });
+    // Only the Status changes, so it is the one reference the write can name unknown.
+    const refused = unknownReference(err);
+    if (refused?.reason === 'UnknownStatus') return error(refused);
     throw err;
   }
 }
@@ -331,12 +334,13 @@ function saveOrderRefusal(err: unknown): OrderNrTaken | UnknownReference | undef
     return { reason: 'OrderNrTaken' };
   }
 
+  return unknownReference(err);
+}
+
+/** The unknown reference a failed Order write names, or none when it failed otherwise. */
+function unknownReference(err: unknown): UnknownReference | undefined {
   const constraint = violatedForeignKey(err);
   if (constraint && Object.hasOwn(UNKNOWN_REFERENCES, constraint)) {
     return UNKNOWN_REFERENCES[constraint as keyof typeof UNKNOWN_REFERENCES];
   }
-}
-
-function isUnknownStatus(err: unknown) {
-  return violatedForeignKey(err) === 'orders_status_id_statuses_id_fk';
 }

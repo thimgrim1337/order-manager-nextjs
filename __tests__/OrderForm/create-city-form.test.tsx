@@ -52,6 +52,26 @@ describe('CreateCityForm', () => {
     await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
   });
 
+  it('defaults the City to Poland, whatever its id', async () => {
+    vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded());
+    const user = userEvent.setup();
+    render(
+      <CreateCityForm
+        countries={[
+          { id: 3, code: 'DE', name: 'Niemcy' },
+          { id: 7, code: 'PL', name: 'Polska' },
+        ]}
+        onDialogClose={onDialogClose}
+      />,
+    );
+
+    await user.type(screen.getByLabelText('Nazwa miejscowości'), 'Kraków');
+    await user.type(screen.getByLabelText('Kod pocztowy'), '30-001');
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+    expect(createCity).toHaveBeenCalledWith({ name: 'Kraków', postal: '30-001', countryId: 7 });
+  });
+
   it('sends one City while it is being created, however often Zapisz is clicked', async () => {
     const create = deferred();
     vi.mocked(createCity).mockReturnValueOnce(create.promise.then(() => writeResponse.succeeded()));

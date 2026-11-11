@@ -5,6 +5,8 @@ import type { CountryReadModel } from '@/lib/dal/country.dal';
 import { createCitySchema } from '@/lib/dto/city.dto';
 import { useAppForm } from '../../hooks/useAppForm';
 
+const POLAND_CODE = 'PL';
+
 export default function CreateCityForm({
   countries,
   onDialogClose,
@@ -16,7 +18,8 @@ export default function CreateCityForm({
     defaultValues: {
       name: '',
       postal: '',
-      countryId: 25,
+      // A new City is most often Polish; with no Poland among the choices, the user picks one.
+      countryId: countries.find((country) => country.code === POLAND_CODE)?.id ?? 0,
     },
     validators: {
       onChange: createCitySchema,

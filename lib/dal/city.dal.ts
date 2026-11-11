@@ -23,7 +23,7 @@ export async function findCities(database: db | dbTransaction, search?: string) 
     })
     .from(city)
     .innerJoin(country, eq(city.countryId, country.id))
-    .where(searchTerm ? ilike(city.name, searchTerm) : undefined)
+    .where(searchTerm ? ilike(city.name, searchTerm.pattern) : undefined)
     .orderBy(inPolishOrder(city.name))
     .limit(SEARCH_LIMIT);
 }

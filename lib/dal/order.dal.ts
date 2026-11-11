@@ -7,6 +7,7 @@ import { order, ordersWithDetailsView } from '@/db/schemas';
 import { CACHE_TAG } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
+import { toSearchTerm } from '../utils';
 
 /** The view column(s) each field the Orders Table sorts by orders on. */
 const sortColumns = {
@@ -68,19 +69,22 @@ const DAY_FIRST_DATE = /^(\d{2})([-/.])(\d{2})\2(\d{4})$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /** What the Orders Table's Search matches, as `GLOSSARY.md` defines it. */
-function parseSearch(search: string) {
-  const trimmed = search.trim();
-  const price = Number(trimmed);
-  const dayFirst = DAY_FIRST_DATE.exec(trimmed);
-  const dateShaped = ISO_DATE.test(trimmed)
-    ? trimmed
+function parseSearch(search?: string) {
+  const term = toSearchTerm(search);
+  if (!term) return undefined;
+
+  const { text, pattern } = term;
+  const price = Number(text);
+  const dayFirst = DAY_FIRST_DATE.exec(text);
+  const dateShaped = ISO_DATE.test(text)
+    ? text
     : dayFirst
       ? `${dayFirst[4]}-${dayFirst[3]}-${dayFirst[1]}`
       : undefined;
 
   return {
-    pattern: `%${trimmed}%`,
-    price: trimmed !== '' && !Number.isNaN(price) ? price : undefined,
+    pattern,
+    price: Number.isNaN(price) ? undefined : price,
     // A date-shaped term that is no calendar date (`31-02-2026`) is text only.
     date: dateShaped && isValid(parseDate(dateShaped)) ? dateShaped : undefined,
   };
@@ -104,8 +108,9 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
   const searchConditions = [];
   const allWhereConditions = [];
 
-  if (query.search) {
-    const { pattern, price, date } = parseSearch(query.search);
+  const search = parseSearch(query.search);
+  if (search) {
+    const { pattern, price, date } = search;
 
     searchConditions.push(
       ilike(ordersWithDetailsView.orderNr, pattern),

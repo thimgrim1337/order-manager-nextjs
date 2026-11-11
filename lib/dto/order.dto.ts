@@ -2,7 +2,7 @@ import { isAfter } from 'date-fns';
 import { createSelectSchema } from 'drizzle-zod';
 import z from 'zod';
 import { country, order } from '@/db/schemas';
-import { ORDER_STATUS, ZOD_ERROR_MESSAGES } from '../consts';
+import { ZOD_ERROR_MESSAGES } from '../consts';
 import { toDate } from '../dates';
 import { selectCitySchema as City } from './city.dto';
 
@@ -13,10 +13,8 @@ const OrderFields = z.object({
     .trim(),
   startDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
   endDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
-  statusId: z
-    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(ORDER_STATUS.InProgress)
-    .max(ORDER_STATUS.Delivered),
+  // Which Statuses exist is the database's to say: an unknown one is refused as `UnknownStatus`.
+  statusId: z.int({ error: ZOD_ERROR_MESSAGES.FieldRequired }).positive(),
   truckId: z
     .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Wybierz pojazd.' }),

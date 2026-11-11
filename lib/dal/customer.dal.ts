@@ -15,7 +15,7 @@ export async function findCustomers(database: db | dbTransaction, search?: strin
     .from(customer)
     .where(
       searchTerm
-        ? or(ilike(customer.name, searchTerm), ilike(customer.tax, searchTerm))
+        ? or(ilike(customer.name, searchTerm.pattern), ilike(customer.tax, searchTerm.pattern))
         : undefined,
     )
     .orderBy(inPolishOrder(customer.name))
