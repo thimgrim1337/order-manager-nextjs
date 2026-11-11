@@ -21,6 +21,8 @@ const EnvSchema = z.object({
   DB_URL: z.string(),
   DB_SEEDING: z.coerce.string(),
   DB_MIGRATING: z.coerce.string(),
+  /** Set only by Playwright's server: enables `app/api/e2e/expire-cache`. */
+  E2E: z.stringbool().optional(),
 
   //   ACCESS_TOKEN_SECRET: z.string(),
   //   REFRESH_TOKEN_SECRET: z.string(),

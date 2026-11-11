@@ -1,9 +1,9 @@
 import { loadEnvConfig } from '@next/env';
 import { defineConfig, devices } from '@playwright/test';
+import { E2E_BASE_URL, E2E_PORT } from './__tests__/e2e/helpers/e2e-server';
 
 loadEnvConfig(process.cwd());
 
-const port = process.env.E2E_PORT ?? '3001';
 const resultsDir = './__tests__/e2e/test-results';
 
 /**
@@ -37,7 +37,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: `http://localhost:${port}`,
+    baseURL: E2E_BASE_URL,
 
     /* CI traces its first retry. Locally, where nothing retries, keep a failed test's trace.
        No DOM snapshots: with the system Chromium they hang the trace's save until the test times out. */
@@ -91,10 +91,12 @@ export default defineConfig({
     // Serves the build made by `pnpm test:e2e` (or the CI build step); a leftover server would serve a stale build.
     // Locally its log goes to a file, so a red run's server errors outlast the terminal output; CI keeps them in the job log.
     command: process.env.CI
-      ? `pnpm start -p ${port}`
-      : `mkdir -p ${resultsDir} && pnpm start -p ${port} > ${resultsDir}/server.log 2>&1`,
-    url: `http://localhost:${port}`,
+      ? `pnpm start -p ${E2E_PORT}`
+      : `mkdir -p ${resultsDir} && pnpm start -p ${E2E_PORT} > ${resultsDir}/server.log 2>&1`,
+    url: E2E_BASE_URL,
     reuseExistingServer: false,
+    // Enables the route `cleanupTestData` expires the app's cache through.
+    env: { E2E: 'true' },
     // env: {
     //   NODE_ENV: 'test',
     //   DB_URL: process.env?.DB_URL,

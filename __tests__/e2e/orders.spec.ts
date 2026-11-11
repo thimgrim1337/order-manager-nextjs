@@ -10,11 +10,8 @@ const SEEDED_ORDER = {
   endDate: dayOfThisMonth(13),
 };
 const { orderNr } = SEEDED_ORDER;
-/**
- * The seeded Order's list. A seed skips the Orders cache, so the default list would show what the
- * creating tests' writes cached; each seeded test ends with a write, which drops this one.
- */
-const SEEDED_ORDER_LIST = `/orders?search=${orderNr}`;
+/** Not the seed's Order Number, so a stale cached list fails the seeded tests below. */
+const CREATED_ORDER_NR = 'E2E-009';
 
 test.describe('Order test', () => {
   test.beforeEach(async () => {
@@ -34,7 +31,7 @@ test.describe('Order test', () => {
     await page.getByLabel('Zleceniodawca').fill('Test');
     await page.getByRole('option', { name: 'Test Firma' }).click();
 
-    await page.getByLabel('Numer zlecenia').fill('E2E-001');
+    await page.getByLabel('Numer zlecenia').fill(CREATED_ORDER_NR);
 
     await page.getByLabel('Data załadunku').click();
     await expect(page.getByRole('gridcell', { name: '12' })).toBeVisible();
@@ -62,7 +59,7 @@ test.describe('Order test', () => {
 
     await expect(page.getByRole('heading', { name: 'Dodaj nowe zlecenie' })).not.toBeVisible();
 
-    await expect(page.getByRole('cell', { name: 'E2E-001' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: CREATED_ORDER_NR })).toBeVisible();
   });
 
   test('Create an Order with a Customer and a City created from its form', async ({ page }) => {
@@ -125,7 +122,7 @@ test.describe('Order test', () => {
     });
 
     test('Edit order price and display in table', async ({ page }) => {
-      await page.goto(SEEDED_ORDER_LIST);
+      await page.goto('/orders');
 
       const row = page.getByRole('row', { name: orderNr });
       await row.click({ button: 'right' });
@@ -146,7 +143,7 @@ test.describe('Order test', () => {
     });
 
     test('Change status order to finished', async ({ page }) => {
-      await page.goto(SEEDED_ORDER_LIST);
+      await page.goto('/orders');
 
       await expect(page.getByRole('cell', { name: 'w trakcie' })).toBeVisible();
 
@@ -167,7 +164,7 @@ test.describe('Order test', () => {
     });
 
     test('Delete order', async ({ page }) => {
-      await page.goto(SEEDED_ORDER_LIST);
+      await page.goto('/orders');
 
       await expect(page.getByRole('cell', { name: orderNr })).toBeVisible();
 
