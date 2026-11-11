@@ -77,11 +77,4 @@ export const toOrderInput = ({
 
 /** The Exchange Rate the form starts with: `order`'s stored one, or none for a new Order. */
 export const getStartingExchangeRate = (order?: OrderReadModel): StoredExchangeRate | null =>
-  order
-    ? toStoredExchangeRate({
-        endDate: order.endDate,
-        currencyId: order.currency.id,
-        exchangeRate: order.currency.rate,
-        exchangeDate: order.currency.date,
-      })
-    : null;
+  order ? toStoredExchangeRate(order) : null;

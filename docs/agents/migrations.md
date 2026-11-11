@@ -18,6 +18,8 @@ The view is SQL only. Drizzle sees it through `pgView(…).existing()` in `db/sc
 
 To change it, add a statement to the migration (or a `pnpm db:generate --custom --name=<topic>` one): `DROP VIEW orders_with_details;` and the whole `CREATE VIEW`, copied from that latest definition and edited. A column added, removed or renamed in the view is changed in the `pgView` column list too.
 
+It only filters, sorts and counts Orders: the Order's own columns, the collated `customer_name`, `driver_first_name` and `driver_last_name`, `truck_plate`, `status_name`, the `currency_code` for Search, and `loading_city`/`unloading_city`. It carries no JSON objects. The Order DAL takes a page of ids from it and loads the Orders through the schema's relations (`loadOrders` in `lib/dal/order.dal.ts`), so the Order read model is not the view's to shape.
+
 Its `loading_city`/`unloading_city` columns pick the same Places as `lib/places.ts`: the first Loading Place and last Unloading Place by `position`.
 
 ## Checking a backfill

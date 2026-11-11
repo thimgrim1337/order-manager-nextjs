@@ -26,21 +26,40 @@ describe('Order read model', () => {
       const [inTimeline] = await findOrdersInWeek(trx, orderWeek);
 
       expect(inTable).toEqual(inTimeline);
-      expect(Object.keys(inTable).sort()).toEqual([
-        'currency',
-        'customer',
-        'driver',
-        'endDate',
-        'id',
-        'loadingPlaces',
-        'orderNr',
-        'priceCurrency',
-        'pricePLN',
-        'startDate',
-        'status',
-        'truck',
-        'unloadingPlaces',
-      ]);
+    }));
+
+  it('gives the Customer, Driver, Truck, Status and Currency as their full rows', () =>
+    withRollback(async (trx) => {
+      const refs = await seedOrderReferences(trx);
+      await createOrder(trx, orderInputFor(refs)(), fakeNbp([]));
+
+      const {
+        data: [found],
+      } = await findOrders(trx, { pageIndex: 0, pageSize: 10 });
+
+      expect(found).toMatchObject({
+        customer: { id: refs.customer.id, name: 'Test Firma', tax: 'PL1234567890' },
+        driver: { id: refs.drivers.jan.id, firstName: 'Jan', lastName: 'Kowalski' },
+        truck: {
+          id: refs.truck.id,
+          plate: 'WP0997C',
+          insuranceEndAt: '2027-01-01',
+          serviceEndAt: '2027-01-01',
+          driverId: refs.drivers.jan.id,
+        },
+        status: refs.statuses.inProgress,
+        currency: { id: refs.currencies.pln.id, code: 'PLN' },
+      });
+    }));
+
+  it('gives a PLN Order no Exchange Rate date: only its rate column, 1', () =>
+    withRollback(async (trx) => {
+      const refs = await seedOrderReferences(trx);
+      await createOrder(trx, orderInputFor(refs)(), fakeNbp([]));
+
+      const [found] = await findOrdersInWeek(trx, orderWeek);
+
+      expect(found).toMatchObject({ exchangeRate: '1.0000', exchangeDate: null });
     }));
 
   it("gives each Loading and Unloading Place its City's Country, in the Orders Table and the Timeline", () =>

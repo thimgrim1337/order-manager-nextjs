@@ -3,7 +3,6 @@ import {
   date,
   index,
   integer,
-  json,
   numeric,
   pgTable,
   pgView,
@@ -11,20 +10,7 @@ import {
   timestamp,
   unique,
 } from 'drizzle-orm/pg-core';
-import {
-  type city,
-  type country,
-  currency,
-  customer,
-  driver,
-  loadingPlace,
-  status,
-  truck,
-  unloadingPlace,
-} from '.';
-
-/** A Loading or Unloading Place as the view gives it: its City with the City's Country. */
-type Place = typeof city.$inferSelect & { country: typeof country.$inferSelect };
+import { currency, customer, driver, loadingPlace, status, truck, unloadingPlace } from '.';
 
 const order = pgTable(
   'orders',
@@ -104,23 +90,7 @@ export const ordersWithDetailsView = pgView('orders_with_details', {
   driverId: integer('driver_id'),
   customerId: integer('customer_id'),
 
-  // JSON aggregated data
-  customer: json('customer').$type<typeof customer.$inferSelect>().notNull(),
-  driver: json('driver').$type<typeof driver.$inferSelect>().notNull(),
-  truck: json('truck').$type<typeof truck.$inferSelect>().notNull(),
-  status: json('status').$type<typeof status.$inferSelect>().notNull(),
-  loadingPlaces: json('loading_places').$type<Place[]>().notNull(),
-  unloadingPlaces: json('unloading_places').$type<Place[]>().notNull(),
-  currency: json('currency_info')
-    .$type<{
-      id: number;
-      code: string;
-      rate: number;
-      date: string;
-    }>()
-    .notNull(),
-
-  // Helper columns for sorting
+  // Sorting and Search helpers
   loadingCity: text('loading_city'),
   unloadingCity: text('unloading_city'),
   customerName: text('customer_name'),

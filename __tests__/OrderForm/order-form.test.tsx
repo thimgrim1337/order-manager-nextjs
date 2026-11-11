@@ -603,7 +603,9 @@ describe('OrderForm', () => {
     describe('a EUR Order', () => {
       const eurOrder = orderReadModel({
         ...orderFields,
-        currency: { id: 2, code: 'EUR', rate: 4.2, date: '2026-10-29' },
+        currency: { id: 2, code: 'EUR' },
+        exchangeRate: '4.2000',
+        exchangeDate: '2026-10-29',
       });
 
       /** NBP has an Exchange Rate for EUR only. */

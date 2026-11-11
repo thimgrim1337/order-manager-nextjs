@@ -65,7 +65,7 @@ export type StoredExchangeRate = {
 type StoredExchangeRateColumns = {
   endDate: string;
   currencyId: number;
-  exchangeRate: string | number | null;
+  exchangeRate: string | null;
   exchangeDate: string | null;
 };
 

@@ -1,9 +1,9 @@
 import { isValid } from 'date-fns';
-import { and, asc, count, desc, eq, gte, ilike, lte, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, ilike, inArray, lte, or, sql } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { cacheLife, cacheTag } from 'next/cache';
 import db, { type dbTransaction } from '@/db/db';
-import { order, ordersWithDetailsView } from '@/db/schemas';
+import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db/schemas';
 import { CACHE_TAG } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { type Week, weekBounds } from '@/lib/week';
@@ -47,22 +47,49 @@ export type OrderQuery = {
   pageSize: number;
 };
 
-/** The columns of an Order as the Orders Table and the Timeline show it. */
-const orderReadModel = {
-  id: ordersWithDetailsView.id,
-  orderNr: ordersWithDetailsView.orderNr,
-  startDate: ordersWithDetailsView.startDate,
-  endDate: ordersWithDetailsView.endDate,
-  status: ordersWithDetailsView.status,
-  customer: ordersWithDetailsView.customer,
-  driver: ordersWithDetailsView.driver,
-  truck: ordersWithDetailsView.truck,
-  currency: ordersWithDetailsView.currency,
-  priceCurrency: ordersWithDetailsView.priceCurrency,
-  pricePLN: ordersWithDetailsView.pricePLN,
-  loadingPlaces: ordersWithDetailsView.loadingPlaces,
-  unloadingPlaces: ordersWithDetailsView.unloadingPlaces,
-};
+/**
+ * The Orders with ids `ids`, in that order, as the Orders Table and the Timeline receive them: the
+ * Order's own columns, its Customer, Driver, Truck, Status and Currency, and its Loading and
+ * Unloading Places.
+ */
+async function loadOrders(database: db | dbTransaction, ids: number[]) {
+  if (ids.length === 0) return [];
+
+  const rows = await database.query.order.findMany({
+    where: inArray(order.id, ids),
+    with: {
+      customer: true,
+      driver: true,
+      truck: true,
+      status: true,
+      currency: true,
+      // In entered order, each as its City with its Country.
+      loadingPlaces: {
+        columns: {},
+        with: { place: { with: { country: true } } },
+        orderBy: [asc(loadingPlace.position)],
+      },
+      unloadingPlaces: {
+        columns: {},
+        with: { place: { with: { country: true } } },
+        orderBy: [asc(unloadingPlace.position)],
+      },
+    },
+  });
+
+  const byId = new Map(
+    rows.map(({ loadingPlaces, unloadingPlaces, ...row }) => [
+      row.id,
+      {
+        ...row,
+        loadingPlaces: loadingPlaces.map(({ place }) => place),
+        unloadingPlaces: unloadingPlaces.map(({ place }) => place),
+      },
+    ]),
+  );
+
+  return ids.flatMap((id) => byId.get(id) ?? []);
+}
 
 /** Day-first dates the search recognises besides ISO, as `day`, `month`, `year` with one separator. */
 const DAY_FIRST_DATE = /^(\d{2})([-/.])(\d{2})\2(\d{4})$/;
@@ -90,8 +117,10 @@ function parseSearch(search?: string) {
   };
 }
 
+const idsOf = (rows: { id: number }[]) => rows.map(({ id }) => id);
+
 /** An Order as the Orders Table and the Timeline receive it. */
-export type OrderReadModel = Awaited<ReturnType<typeof findOrdersInWeek>>[number];
+export type OrderReadModel = Awaited<ReturnType<typeof loadOrders>>[number];
 
 export async function findOrders(database: db | dbTransaction, query: OrderQuery) {
   const getOrderBy = (sort?: SortParams) => {
@@ -162,8 +191,8 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
 
   const whereConditions = allWhereConditions.length > 0 ? and(...allWhereConditions) : undefined;
 
-  const orders = database
-    .select(orderReadModel)
+  const orderIds = database
+    .select({ id: ordersWithDetailsView.id })
     .from(ordersWithDetailsView)
     .where(whereConditions)
     .orderBy(...orderBy)
@@ -177,7 +206,7 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
     .then(([row]) => row?.count ?? 0);
 
   return {
-    data: await orders,
+    data: await loadOrders(database, idsOf(await orderIds)),
     count: await ordersCount,
   };
 }
@@ -199,8 +228,8 @@ export async function findOrdersInWeek(
 ) {
   const { monday, sunday } = weekBounds(week);
 
-  return database
-    .select(orderReadModel)
+  const orderIds = await database
+    .select({ id: ordersWithDetailsView.id })
     .from(ordersWithDetailsView)
     .where(
       and(
@@ -210,6 +239,8 @@ export async function findOrdersInWeek(
       ),
     )
     .orderBy(asc(ordersWithDetailsView.startDate), asc(ordersWithDetailsView.id));
+
+  return loadOrders(database, idsOf(orderIds));
 }
 
 export async function getOrdersInWeek(week: Week, opts?: { driverId?: number }) {
