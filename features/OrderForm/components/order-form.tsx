@@ -87,18 +87,14 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
           <FieldGroup className="flex-row justify-between">
             <div className="flex-1 flex gap-2 items-end min-w-0">
               <form.AppField
-                name="customerId"
+                name="customer"
                 listeners={{
                   // The Order Number is unique per Customer, so another Customer may use it.
                   onChange: clearOrderNrRefusal,
                 }}
               >
                 {(field) => (
-                  <field.CustomersComboboxField
-                    // Editing, the Order's own Customer may lie outside the preloaded ones.
-                    customers={order ? [order.customer] : customers}
-                    label="Zleceniodawca"
-                  />
+                  <field.CustomersComboboxField customers={customers} label="Zleceniodawca" />
                 )}
               </form.AppField>
               <CreateCustomer />

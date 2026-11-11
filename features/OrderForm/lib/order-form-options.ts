@@ -1,6 +1,7 @@
 import { formOptions } from '@tanstack/react-form-nextjs';
 import { ORDER_STATUS } from '@/lib/consts';
 import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import type { OrderInputDto } from '@/lib/dto/order.dto';
@@ -19,7 +20,7 @@ export const orderFormOptions = formOptions({
     // Placeholders: `getStartingValues` sets them.
     startDate: '',
     endDate: '',
-    customerId: 0,
+    customer: null as CustomerReadModel | null,
     driverId: 0,
     truckId: 0,
     // Widened, or the form would only accept this one Status.
@@ -44,7 +45,7 @@ export const getStartingValues = (order?: OrderReadModel) => {
     orderNr: order.orderNr,
     startDate: order.startDate,
     endDate: order.endDate,
-    customerId: order.customer.id,
+    customer: order.customer,
     driverId: order.driver.id,
     truckId: order.truck.id,
     statusId: order.status.id,
@@ -58,13 +59,18 @@ export const getStartingValues = (order?: OrderReadModel) => {
 /** What the form holds, from opening to submit. */
 type FormValues = ReturnType<typeof getStartingValues>;
 
-/** The Order input the form's values save as: its picked Places as City ids, in picked order. */
+/**
+ * The Order input the form's values save as: its picked Customer as their id, its picked Places as
+ * City ids, in picked order. Only a valid form saves, so a Customer is picked by then.
+ */
 export const toOrderInput = ({
+  customer,
   loadingPlaces,
   unloadingPlaces,
   ...fields
 }: FormValues): OrderInputDto => ({
   ...fields,
+  customerId: customer?.id ?? 0,
   loadingPlaces: loadingPlaces.map((city) => city.id),
   unloadingPlaces: unloadingPlaces.map((city) => city.id),
 });

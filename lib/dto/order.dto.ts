@@ -5,6 +5,7 @@ import { country, order } from '@/db/schemas';
 import { ZOD_ERROR_MESSAGES } from '../consts';
 import { toDate } from '../dates';
 import { selectCitySchema as City } from './city.dto';
+import { selectCustomerSchema as Customer } from './customer.dto';
 
 const OrderFields = z.object({
   orderNr: z
@@ -21,9 +22,6 @@ const OrderFields = z.object({
   driverId: z
     .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Wyberz kierowcę.' }),
-  customerId: z
-    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: 'Wybierz zleceniodawcę.' }),
   currencyId: z
     .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Wybierz walutę' }),
@@ -49,11 +47,19 @@ const withPlaces = <Place extends z.ZodType>(place: Place) =>
 /** A Place as the form holds it: the picked City with its Country. */
 const Place = City.extend({ country: createSelectSchema(country) });
 
-/** On the form, the Loading and Unloading Places are the Cities the user picked. */
-const OrderFormFields = withPlaces(Place);
+const PICK_CUSTOMER = 'Wybierz zleceniodawcę.';
 
-/** On the Order input, the Loading and Unloading Places are City ids. */
-const OrderInputFields = withPlaces(z.int().positive());
+/** On the form, the Customer and the Loading and Unloading Places are the ones the user picked. */
+const OrderFormFields = withPlaces(Place).extend({
+  customer: z.object(Customer.shape, { error: PICK_CUSTOMER }),
+});
+
+/** On the Order input, the Customer is their id and the Loading and Unloading Places are City ids. */
+const OrderInputFields = withPlaces(z.int().positive()).extend({
+  customerId: z
+    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
+    .min(1, { error: PICK_CUSTOMER }),
+});
 
 const OrderDates = OrderFields.pick({ startDate: true, endDate: true });
 

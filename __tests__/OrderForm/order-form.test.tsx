@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { createOrder, searchCities, searchCustomers, updateOrder } from '@/lib/actions';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { worker } from '../mocks/browser';
 import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
@@ -26,6 +27,12 @@ const berlin = {
 };
 const [plock] = choices.cities;
 const [customer] = choices.customers;
+// A Customer beyond the preloaded ones, found by searching.
+const angel: CustomerReadModel = { id: 5, name: 'ANGEL', tax: '5260250995' };
+
+/** The Customer search answers `answers[term]` for each term, and finds no one for any other. */
+const customerSearchAnswers = (answers: Record<string, CustomerReadModel[]>) =>
+  vi.mocked(searchCustomers).mockImplementation(async (term) => answers[term] ?? []);
 
 /** NBP answers with a server error. */
 const failNbp = () =>
@@ -33,7 +40,7 @@ const failNbp = () =>
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(searchCustomers).mockResolvedValue([customer]);
+  customerSearchAnswers({ ANG: [angel] });
   vi.mocked(createOrder).mockResolvedValue(writeResponse.succeeded());
   vi.useFakeTimers({ toFake: ['Date'] });
   // Monday 2026-11-02 12:00 in Warsaw, so the date pickers show November 2026.
@@ -147,7 +154,6 @@ describe('OrderForm', () => {
       });
 
       it('clears the error once another Customer is picked, who may use the same Order Number', async () => {
-        vi.mocked(searchCustomers).mockResolvedValue([{ id: 5, name: 'ANGEL', tax: '5260250995' }]);
         const { user } = await saveTakenOrderNr();
 
         await user.clear(screen.getByLabelText('Zleceniodawca'));
@@ -231,6 +237,23 @@ describe('OrderForm', () => {
           currencyId: 2,
         }),
       );
+    });
+
+    it('keeps showing a Customer found by searching once the search no longer returns them', async () => {
+      const { user, onDialogClose } = await setup();
+
+      await fillInNewOrder(user);
+      const customerField = screen.getByLabelText('Zleceniodawca');
+      await user.clear(customerField);
+      await user.type(customerField, 'ANG');
+      await user.click(await screen.findByRole('option', { name: 'ANGEL' }));
+
+      // Picking types ANGEL into the search, which the stub answers with no one.
+      await vi.waitFor(() => expect(searchCustomers).toHaveBeenLastCalledWith('ANGEL'));
+      await expect.poll(() => customerField).toHaveValue('ANGEL');
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(createOrder).toHaveBeenCalledWith(expect.objectContaining({ customerId: angel.id }));
     });
 
     it('searches Cities by name and picks one beyond the preloaded ones', async () => {
@@ -391,6 +414,22 @@ describe('OrderForm', () => {
       expect(updateOrder).toHaveBeenCalledWith(
         7,
         expect.objectContaining({ loadingPlaces: [zgierz.id], unloadingPlaces: [zgierz.id] }),
+      );
+    });
+
+    it('shows its Customer beyond the preloaded ones, offering the preloaded Customers', async () => {
+      const { user, onDialogClose } = await editSetup({ ...order, customer: angel });
+
+      expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('ANGEL');
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      await user.click(screen.getByLabelText('Zleceniodawca'));
+      await user.click(await screen.findByRole('option', { name: 'DEVIL' }));
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(updateOrder).toHaveBeenCalledWith(
+        7,
+        expect.objectContaining({ customerId: customer.id }),
       );
     });
 

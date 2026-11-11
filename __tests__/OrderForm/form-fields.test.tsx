@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { useAppForm } from '@/features/OrderForm/hooks/useAppForm';
 import type { CityReadModel } from '@/lib/dal/city.dal';
+import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import { orderChoices } from '../utils/order-choices';
 import { renderWithQueries } from '../utils/wrapper';
 
@@ -17,7 +18,7 @@ function FieldsWithExternalError() {
       startDate: '',
       currencyId: 0,
       truckId: 0,
-      customerId: 0,
+      customer: null as CustomerReadModel | null,
       loadingPlaces: [] as CityReadModel[],
     },
   });
@@ -52,7 +53,7 @@ function FieldsWithExternalError() {
           />
         )}
       </form.AppField>
-      <form.AppField name="customerId">
+      <form.AppField name="customer">
         {(field) => (
           <field.CustomersComboboxField
             label="Zleceniodawca"
