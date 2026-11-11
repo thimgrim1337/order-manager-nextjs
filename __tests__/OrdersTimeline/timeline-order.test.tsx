@@ -6,7 +6,6 @@ import { OrderChoicesProvider } from '@/features/shared/context/order-choices-co
 import { updateOrder } from '@/lib/actions';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
-import { orderDays } from '@/lib/order-day';
 import { orderChoices } from '../utils/order-choices';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
@@ -23,6 +22,9 @@ const warszawa = {
   country: poland,
 };
 const berlin = { id: 2, name: 'Berlin', postal: '10115', countryId: germany.id, country: germany };
+
+/** Order 1's colour on the Timeline. */
+const orderColor = 'border-chart-2';
 
 const order = (dates: { startDate: string; endDate: string }) =>
   ({
@@ -43,11 +45,7 @@ function renderRow(dates: { startDate: string; endDate: string }) {
   render(
     <table>
       <tbody>
-        <TimelineOrder
-          order={theOrder}
-          days={orderDays(w44, theOrder)}
-          borderColor="border-red-500"
-        />
+        <TimelineOrder week={w44} order={theOrder} />
       </tbody>
     </table>,
   );
@@ -79,12 +77,12 @@ describe('Timeline row', () => {
     expect(tuesday).toHaveTextContent('WarszawaDEVIL');
     expect(flags(tuesday as HTMLElement)).toEqual(['PL']);
     expect(wednesday).toHaveTextContent(/^$/);
-    expect(wednesday).toHaveClass('border-red-500');
-    expect(thursday).toHaveClass('border-red-500');
+    expect(wednesday).toHaveClass(orderColor);
+    expect(thursday).toHaveClass(orderColor);
     expect(friday).toHaveTextContent('Berlin');
     expect(friday).not.toHaveTextContent('DEVIL');
     expect(flags(friday as HTMLElement)).toEqual(['DE']);
-    expect(saturday).not.toHaveClass('border-red-500');
+    expect(saturday).not.toHaveClass(orderColor);
     expect(sunday).toHaveTextContent(/^$/);
   });
 
@@ -102,7 +100,7 @@ describe('Timeline row', () => {
     expect(cells.slice(1, 6).map((cell) => cell.textContent)).toEqual(Array(5).fill(''));
     expect(cells[6]).toHaveTextContent(/^Berlin$/);
     expect(cells.flatMap(flags)).toEqual([]);
-    expect(cells.every((cell) => cell.classList.contains('border-red-500'))).toBe(true);
+    expect(cells.every((cell) => cell.classList.contains(orderColor))).toBe(true);
   });
 
   it('marks Monday as continuing from the previous Week and Sunday as continuing into the next', () => {
@@ -157,7 +155,7 @@ describe('Timeline row edit', () => {
       <OrderChoicesProvider choices={choices}>
         <table>
           <tbody>
-            <TimelineOrder order={edited} days={[]} borderColor="border-red-500" />
+            <TimelineOrder week={w44} order={edited} />
           </tbody>
         </table>
       </OrderChoicesProvider>,
