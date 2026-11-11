@@ -5,7 +5,7 @@ import TimelineOrder from '@/features/OrdersTimeline/components/timeline-order';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { updateOrder } from '@/lib/actions';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
-import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { orderReadModel } from '../fixtures/order-read-model';
 import { orderChoices } from '../utils/order-choices';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
@@ -27,17 +27,7 @@ const berlin = { id: 2, name: 'Berlin', postal: '10115', countryId: germany.id, 
 const orderColor = 'border-chart-2';
 
 const order = (dates: { startDate: string; endDate: string }) =>
-  ({
-    id: 1,
-    orderNr: 'ZL/1',
-    ...dates,
-    status: { id: 1, name: 'w trakcie' },
-    customer: { id: 1, name: 'DEVIL', tax: '7743241555' },
-    driver: { id: 1, firstName: 'Jan', lastName: 'Kowalski' },
-    truck: { id: 1, plate: 'WND0997C' },
-    loadingPlaces: [warszawa],
-    unloadingPlaces: [berlin],
-  }) as unknown as OrderReadModel;
+  orderReadModel({ ...dates, loadingPlaces: [warszawa], unloadingPlaces: [berlin] });
 
 /** The row's seven day cells, Monday first. */
 function renderRow(dates: { startDate: string; endDate: string }) {
@@ -138,18 +128,7 @@ describe('Timeline row edit', () => {
   it('opens the edit-Order dialog on click and saves the changed Order under its id', async () => {
     vi.mocked(updateOrder).mockResolvedValueOnce(writeResponse.succeeded());
     const choices = orderChoices();
-    const [plock] = choices.cities;
-    const edited = {
-      ...order({ startDate: '2026-10-27', endDate: '2026-10-30' }),
-      customer: choices.customers[0],
-      driver: choices.drivers[0],
-      truck: choices.trucks[0],
-      currency: { ...choices.currencies[0], rate: 1, date: '' },
-      priceCurrency: '1000',
-      pricePLN: '1000',
-      loadingPlaces: [plock],
-      unloadingPlaces: [plock],
-    } as OrderReadModel;
+    const edited = orderReadModel({ startDate: '2026-10-27', endDate: '2026-10-30' });
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     await renderWithQueries(
       <OrderChoicesProvider choices={choices}>

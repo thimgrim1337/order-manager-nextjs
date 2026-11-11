@@ -9,7 +9,7 @@ This is NextJS 16 App Router app, using shadcn for styling and drizzle for dateb
 - 'db/' - Database migrations and schemas. A migration touching existing rows or the orders view: read `docs/agents/migrations.md`.
 - 'features/' - App features,
 - 'lib/' - Utilites, API helpers, DTO and DAL
-- '__tests__/' - Tests: `*.test.ts` (browser), `*.db.test.ts` (db), `__tests__/e2e/*.spec.ts` (Playwright, cleanup in `__tests__/e2e/helpers/seed.ts`). Both db and e2e seed Orders through `__tests__/fixtures/order.ts`, passing a transaction or the global db.
+- '__tests__/' - Tests: `*.test.ts` (browser), `*.db.test.ts` (db), `__tests__/e2e/*.spec.ts` (Playwright, cleanup in `__tests__/e2e/helpers/seed.ts`). Both db and e2e seed Orders through `__tests__/fixtures/order.ts`, passing a transaction or the global db; browser tests build an `OrderReadModel` through `__tests__/fixtures/order-read-model.ts`.
 
 ## Purpose
 

@@ -3,16 +3,12 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { changeOrderStatus, removeOrder } from '@/lib/actions';
-import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { orderReadModel } from '../fixtures/order-read-model';
 import { deferred } from '../utils/deferred';
 import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
-const order = {
-  id: 1,
-  orderNr: 'ZL-001',
-  status: { id: 1, name: 'pending' },
-} as unknown as OrderReadModel;
+const order = orderReadModel({ orderNr: 'ZL-001' });
 
 beforeEach(() => {
   vi.clearAllMocks();

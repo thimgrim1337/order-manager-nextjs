@@ -16,6 +16,7 @@ import {
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { orderReadModel } from '../fixtures/order-read-model';
 import { worker } from '../mocks/browser';
 import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
@@ -475,21 +476,14 @@ describe('OrderForm', () => {
   });
 
   describe('edit', () => {
-    const order: OrderReadModel = {
+    const orderFields = {
       id: 7,
       orderNr: 'ZL-7',
       startDate: '2026-11-12',
       endDate: '2026-11-13',
-      customer,
       driver: choices.drivers[1],
-      truck: choices.trucks[0],
-      status: { id: 1, name: 'w trakcie' },
-      currency: { ...choices.currencies[0], rate: 1, date: '' },
-      priceCurrency: '1000',
-      pricePLN: '1000',
-      loadingPlaces: [plock],
-      unloadingPlaces: [plock],
     };
+    const order = orderReadModel(orderFields);
     const editSetup = (edited: OrderReadModel = order) =>
       setup({ order: edited, action: (input) => updateOrder(edited.id, input) });
 
@@ -607,12 +601,10 @@ describe('OrderForm', () => {
     });
 
     describe('a EUR Order', () => {
-      const eurOrder: OrderReadModel = {
-        ...order,
+      const eurOrder = orderReadModel({
+        ...orderFields,
         currency: { id: 2, code: 'EUR', rate: 4.2, date: '2026-10-29' },
-        priceCurrency: '1000',
-        pricePLN: '4200.00',
-      };
+      });
 
       /** NBP has an Exchange Rate for EUR only. */
       const nbpHasEurRateOnly = () =>

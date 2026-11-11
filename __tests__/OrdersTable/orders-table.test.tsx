@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersTable from '@/features/OrdersTable/components/orders-table';
-import type { OrderReadModel } from '@/lib/dal/order.dal';
+import { orderReadModel } from '../fixtures/order-read-model';
 
 const replaceMock = vi.hoisted(() => vi.fn());
 const search = vi.hoisted(() => ({ current: '' }));
@@ -13,23 +13,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: replaceMock }),
 }));
 
-const warszawa = { id: 1, name: 'Warszawa', postal: '00-001', countryId: 1 };
-
-const order = {
-  id: 1,
-  orderNr: 'ZL/1',
-  startDate: '2026-11-02',
-  endDate: '2026-11-03',
-  status: { id: 1, name: 'w trakcie' },
-  customer: { id: 1, name: 'DEVIL', tax: '7743241555' },
-  driver: { id: 1, firstName: 'Jan', lastName: 'Kowalski' },
-  truck: { id: 1, plate: 'WND0997C' },
-  currency: { id: 1, code: 'PLN' },
-  priceCurrency: '1000',
-  pricePLN: '1000',
-  loadingPlaces: [warszawa],
-  unloadingPlaces: [warszawa],
-} as unknown as OrderReadModel;
+const order = orderReadModel();
 
 beforeEach(() => {
   replaceMock.mockReset();
