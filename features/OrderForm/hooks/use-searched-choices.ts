@@ -5,6 +5,8 @@ type SearchedChoicesOptions<T> = {
   search: (text: string) => Promise<T[]>;
   /** The choices offered while there is no search text. */
   startingChoices: T[];
+  /** Offered first while there is no search text, ahead of the picked items, e.g. ones just created. */
+  offered?: T[];
   /** The items the field holds. */
   picked: T[];
 };
@@ -16,6 +18,7 @@ const SEARCH_DELAY = 300;
 export default function useSearchedChoices<T extends { id: number }>({
   search,
   startingChoices,
+  offered = [],
   picked,
 }: SearchedChoicesOptions<T>) {
   const [searchText, setSearchText] = useState('');
@@ -44,11 +47,18 @@ export default function useSearchedChoices<T extends { id: number }>({
     if (!text) setFound(null);
   };
 
-  const choices = (searchText && found) || [
-    // A picked item found by an earlier search, or saved on the Order, stays among the choices.
-    ...picked.filter((item) => !startingChoices.some((choice) => choice.id === item.id)),
-    ...startingChoices,
-  ];
+  const choices =
+    (searchText && found) ||
+    uniqueById([
+      ...offered,
+      // A picked item found by an earlier search, or saved on the Order, stays among the choices.
+      ...picked.filter((item) => !startingChoices.some((choice) => choice.id === item.id)),
+      ...startingChoices,
+    ]);
 
   return { choices, setSearchText: changeSearchText };
 }
+
+/** `items` without repeats, each kept where it first appears. */
+const uniqueById = <T extends { id: number }>(items: T[]) =>
+  items.filter((item, index) => items.findIndex(({ id }) => id === item.id) === index);

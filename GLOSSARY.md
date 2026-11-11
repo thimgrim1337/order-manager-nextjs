@@ -77,7 +77,7 @@ The company an Order is carried out for. Its name and its tax number (_NIP_) are
 _Avoid_: Client, contractor
 
 **City** (_Miejscowość_):
-A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created. Cities are ordered by name in Polish alphabetical order.
+A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created. Cities are ordered by name in Polish alphabetical order, except that the Order form offers the Cities created from it first in both Places, newest first, until the user searches.
 _Avoid_: Place, location, town (a Loading Place or Unloading Place is the role a City plays in an Order)
 
 ### Views

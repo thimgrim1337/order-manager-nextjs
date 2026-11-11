@@ -39,6 +39,8 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   const [startingValues] = useState(() => getStartingValues(order));
   const [startingExchangeRate] = useState(() => getStartingExchangeRate(order));
   const [isEditable, setIsEditable] = useState(!order);
+  // Cities created from this form, newest first, offered in both Places before any search.
+  const [createdCities, setCreatedCities] = useState<CityReadModel[]>([]);
 
   const form = useAppForm({
     ...orderFormOptions,
@@ -77,11 +79,9 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     clearOrderNrRefusal();
   };
 
-  /** Adds a City created from the form after the Loading Places, beside whose field it is created. */
-  const addCreatedLoadingPlace = (city: CityReadModel) =>
-    form.setFieldValue('loadingPlaces', (places) =>
-      places.some((place) => place.id === city.id) ? places : [...places, city],
-    );
+  /** Offers a City created from the form first in both Places, picking it in neither. */
+  const offerCreatedCity = (city: CityReadModel) =>
+    setCreatedCities((created) => [city, ...created]);
 
   const { endDate, currencyId, priceCurrency } = useStore(form.store, (state) => state.values);
   const exchangeRate = useExchangeRate(startingExchangeRate, endDate, currencyId);
@@ -129,15 +129,27 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
           </FieldGroup>
 
           <FieldGroup className={fieldGroupStyle}>
-            <div className="flex-1 flex gap-2 items-end">
-              <form.AppField name="loadingPlaces" mode="array">
-                {(field) => <field.PlacesComboboxField cities={cities} label="Miejsca załadunku" />}
-              </form.AppField>
-              <CreateCity countries={countries} onCreated={addCreatedLoadingPlace} />
-            </div>
-            <form.AppField name="unloadingPlaces" mode="array">
-              {(field) => <field.PlacesComboboxField cities={cities} label="Miejsca rozładunku" />}
+            <form.AppField name="loadingPlaces" mode="array">
+              {(field) => (
+                <field.PlacesComboboxField
+                  cities={cities}
+                  offered={createdCities}
+                  label="Miejsca załadunku"
+                />
+              )}
             </form.AppField>
+            <div className="flex-1 flex gap-2 items-end">
+              <form.AppField name="unloadingPlaces" mode="array">
+                {(field) => (
+                  <field.PlacesComboboxField
+                    cities={cities}
+                    offered={createdCities}
+                    label="Miejsca rozładunku"
+                  />
+                )}
+              </form.AppField>
+              <CreateCity countries={countries} onCreated={offerCreatedCity} />
+            </div>
           </FieldGroup>
           <FieldGroup className={fieldGroupStyle}>
             <form.AppField name="priceCurrency">

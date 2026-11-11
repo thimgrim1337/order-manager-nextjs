@@ -70,7 +70,7 @@ test.describe('Order test', () => {
 
     // A stale cached search would still find nothing after creating.
     await cacheEmptySearch(page, 'Zleceniodawca', 'Nowa');
-    await cacheEmptySearch(page, 'Miejsca rozładunku', 'Kra');
+    await cacheEmptySearch(page, 'Miejsca załadunku', 'Kra');
 
     await page.getByRole('button', { name: 'Dodaj nowego zleceniodawcę' }).click();
     const customerDialog = page.getByRole('dialog', { name: 'Dodawanie nowego zleceniodawcy' });
@@ -90,6 +90,10 @@ test.describe('Order test', () => {
     await cityDialog.getByLabel('Nazwa miejscowości').fill('Kraków');
     await cityDialog.getByRole('button', { name: 'Zapisz' }).click();
     await expect(cityDialog).not.toBeVisible();
+    // Offered at once, without searching.
+    await page.getByLabel('Miejsca rozładunku').click();
+    await page.getByRole('option', { name: 'Kraków' }).click();
+    await page.getByLabel('Miejsca rozładunku').press('Escape');
     await expect(page.getByText('30-001')).toBeVisible();
 
     await page.getByLabel('Numer zlecenia').fill('E2E-002');
@@ -100,7 +104,7 @@ test.describe('Order test', () => {
     await page.getByRole('gridcell', { name: '13' }).click();
     await expect(page.getByRole('gridcell', { name: '13' })).not.toBeVisible();
 
-    await searchCombobox(page, 'Miejsca rozładunku', 'Kra');
+    await searchCombobox(page, 'Miejsca załadunku', 'Kra');
     await page.getByRole('option', { name: 'Kraków' }).click();
 
     await page.getByLabel('Cena w walucie').fill('1000');
@@ -112,7 +116,7 @@ test.describe('Order test', () => {
 
     const row = page.getByRole('row', { name: 'E2E-002' });
     await expect(row.getByRole('cell', { name: 'Nowa Firma' })).toBeVisible();
-    // Kraków in both Places: the created Loading Place and the searched Unloading Place.
+    // Kraków in both Places: the offered Unloading Place and the searched Loading Place.
     await expect(row.getByRole('cell', { name: 'Kraków' })).toHaveCount(2);
   });
 

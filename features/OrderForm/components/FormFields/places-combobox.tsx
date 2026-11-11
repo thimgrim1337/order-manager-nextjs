@@ -17,10 +17,13 @@ import FormBase, { type FormControlProps } from './form-base';
 
 type PlacesComboboxFieldProps = {
   cities: CityReadModel[];
+  /** Cities offered first before any search, e.g. ones just created from the form. */
+  offered?: CityReadModel[];
 };
 
 export default function PlacesComboboxField({
   cities: initialData,
+  offered,
   label,
   icon,
   error,
@@ -31,6 +34,7 @@ export default function PlacesComboboxField({
   const { choices: cities, setSearchText } = useSearchedChoices({
     search: searchCities,
     startingChoices: initialData,
+    offered,
     picked: selectedCities,
   });
 
