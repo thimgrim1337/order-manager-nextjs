@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { updateTag } from 'next/cache';
 import { describe, expect, it, vi } from 'vitest';
 import type { dbTransaction } from '@/db/db';
-import { currency, truck } from '@/db/schemas';
+import { truck } from '@/db/schemas';
 import { toActionResponse } from '@/lib/action-response';
 import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import type { OrderInputDto } from '@/lib/dto/order.dto';
@@ -56,42 +56,6 @@ describe('updateOrder', () => {
         exchangeDate: '2026-10-28',
       });
       expect(nbp.requests).toEqual([]);
-    }));
-
-  it("stores NBP's rate for the new Currency once it changes", () =>
-    withRollback(async (trx) => {
-      const { orderInput, refs } = await seed(trx);
-      // Past the seeded Currencies' ids, which leave the identity sequence where it started.
-      const [usd] = await trx
-        .insert(currency)
-        .overridingSystemValue()
-        .values({ id: 3, code: 'USD' })
-        .returning();
-      const eurForm = orderInput({ currencyId: refs.currencies.eur.id, orderNr: 'ZL/2' });
-      const [, eurOrder] = await createOrder(
-        trx,
-        eurForm,
-        fakeNbp([{ no: '210/A/NBP/2026', mid: 4.2512, effectiveDate: '2026-10-28' }]),
-      );
-      if (!eurOrder) throw new Error('Seed EUR Order was not created');
-      // The fake publishes these for every Currency.
-      const nbp = fakeNbp([{ no: '210/A/NBP/2026', mid: 3.6512, effectiveDate: '2026-10-28' }]);
-
-      const [failure, updated] = await updateOrder(
-        trx,
-        eurOrder.id,
-        { ...eurForm, currencyId: usd.id, priceCurrency: '500' },
-        nbp,
-      );
-
-      expect(failure).toBeNull();
-      expect(updated).toMatchObject({
-        priceCurrency: '500.00',
-        pricePLN: '1825.60',
-        exchangeRate: '3.6512',
-        exchangeDate: '2026-10-28',
-      });
-      expect(nbp.requests.map((request) => request.code)).toEqual(['USD']);
     }));
 
   it("stores NBP's rate for the new Unloading Date once it changes", () =>

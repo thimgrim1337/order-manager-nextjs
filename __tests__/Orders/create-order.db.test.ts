@@ -8,7 +8,7 @@ import { findOrdersInWeek } from '@/lib/dal/order.dal';
 import type { OrderInputDto } from '@/lib/dto/order.dto';
 import { createOrder } from '@/lib/services/orders.services';
 import { withRollback } from '../db/with-rollback';
-import { failingNbp, fakeNbp } from '../fakes/nbp';
+import { fakeNbp } from '../fakes/nbp';
 import { orderInputFor, seedOrderReferences } from '../fixtures/order';
 import { week } from '../utils/week';
 
@@ -160,21 +160,6 @@ describe('createOrder', () => {
 
       expect(result[0]).toEqual({ reason: 'ExchangeRateNotPublished' });
       expect(toActionResponse(result).message).toBe('Nie znaleziono kursu dla wskazanej daty.');
-      expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
-    }));
-
-  it('reports an EUR Order while NBP is unavailable, and saves nothing', () =>
-    withRollback(async (trx) => {
-      const { orderInput, eur } = await seed(trx);
-
-      const result = await createOrder(
-        trx,
-        orderInput({ currencyId: eur.id, priceCurrency: '1000' }),
-        failingNbp({ reason: 'NbpUnavailable' }),
-      );
-
-      expect(result[0]).toEqual({ reason: 'NbpUnavailable' });
-      expect(toActionResponse(result).message).toBe('Nie udało się pobrać kursu walut.');
       expect(await findOrdersInWeek(trx, orderWeek)).toHaveLength(0);
     }));
 

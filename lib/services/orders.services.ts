@@ -17,11 +17,10 @@ import {
 } from '../dto/order.dto';
 import { error, ok, type Result } from '../error';
 import {
-  exchangeRateSource,
-  findExchangeRate,
-  fromStoredExchangeRate,
+  decideExchangeRate,
   type NoExchangeRate,
   type StoredExchangeRate,
+  toStoredExchangeRate,
   toStoredPrice,
 } from '../exchange-rate';
 import type { Nbp } from '../nbp';
@@ -136,11 +135,7 @@ export async function updateOrder(
 
   const storedOrder = await findOrderExchangeRate(database, orderId);
   if (!storedOrder) return error({ reason: 'NotFound' });
-  const stored = {
-    endDate: storedOrder.endDate,
-    currencyId: storedOrder.currencyId,
-    currencyInfo: fromStoredExchangeRate(storedOrder.currency),
-  };
+  const stored = toStoredExchangeRate(storedOrder);
 
   // Priced before the transaction, so it holds no connection while NBP is asked.
   const [unpriced, priced] = await priceOrder(database, orderInput, nbp, now, stored);
@@ -261,27 +256,28 @@ function validateOrderInput(input: unknown): Result<OrderInputDto, InvalidData |
 const hasRepeats = (cityIds: number[]) => new Set(cityIds).size !== cityIds.length;
 
 /**
- * Turns the Order input's price into the Order's PLN price, at `stored`'s Exchange Rate while the
- * input keeps its Unloading Date and Currency, otherwise at the one `nbp` gives as of the company's
- * day at `now`.
+ * Turns the Order input's price into the Order's PLN price, at the Exchange Rate the Exchange Rate
+ * module decides from `stored` (none for a new Order) and `nbp`, as of the company's day at `now`.
  */
 async function priceOrder(
   database: db | dbTransaction,
   orderInput: OrderInputDto,
   nbp: Nbp,
   now: Date | undefined,
-  stored?: StoredExchangeRate,
+  stored: StoredExchangeRate | null = null,
 ) {
   const { loadingPlaces, unloadingPlaces, ...fields } = orderInput;
 
   const orderCurrency = await findCurrency(database, fields.currencyId);
   if (!orderCurrency) return error({ reason: 'UnknownCurrency' });
 
-  const source = stored && exchangeRateSource(stored, fields.endDate, fields.currencyId);
-  const [noExchangeRate, currencyInfo] =
-    source?.kind === 'stored'
-      ? ok(source.currencyInfo)
-      : await findExchangeRate(nbp, orderCurrency, fields.endDate, getToday(now));
+  const [noExchangeRate, currencyInfo] = await decideExchangeRate(
+    nbp,
+    stored,
+    orderCurrency,
+    fields.endDate,
+    getToday(now),
+  );
   if (noExchangeRate) return error(noExchangeRate);
 
   const price = toStoredPrice(fields.currencyId, fields.priceCurrency, currencyInfo);

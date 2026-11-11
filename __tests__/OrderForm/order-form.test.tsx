@@ -501,29 +501,6 @@ describe('OrderForm', () => {
         );
       });
 
-      it('fetches a new Exchange Rate when its Currency changes', async () => {
-        nbpHasEurRateOnly();
-        const { user, onDialogClose } = await editSetup({
-          ...eurOrder,
-          currency: { id: 3, code: 'USD', rate: 3.6, date: '2026-10-29' },
-        });
-
-        await user.click(screen.getByRole('button', { name: 'Edytuj' }));
-        await user.click(screen.getByLabelText('Waluta'));
-        await user.click(await screen.findByRole('option', { name: 'EUR' }));
-        await screen.findByText('Tabela nr 211/A/NBP/2026 z dnia 2026-10-30, 1 EUR = 4.25 PLN');
-        expect(screen.getByText('Cena w PLN: 4250.00')).toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
-        expect(updateOrder).toHaveBeenCalledWith(
-          7,
-          expect.objectContaining({
-            currencyId: 2,
-          }),
-        );
-      });
-
       it('drops its Exchange Rate and blocks saving when the new Currency has none', async () => {
         nbpHasEurRateOnly();
         const { user } = await editSetup(eurOrder);

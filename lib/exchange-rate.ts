@@ -15,28 +15,29 @@ export type ExchangeRate = {
 };
 
 /** A PLN Order has no Exchange Rate; any other Currency needs one. */
-const hasExchangeRate = (currencyId: number) => currencyId !== CURRENCY.PLN;
+export const hasExchangeRate = (currencyId: number) => currencyId !== CURRENCY.PLN;
 
 /** Why a foreign Currency has no Exchange Rate: NBP published none in the window, or could not be asked. */
 export type NoExchangeRate = { reason: 'ExchangeRateNotPublished' } | { reason: 'NbpUnavailable' };
+
+/** The Exchange Rate an Order is saved with, or why a foreign Currency has none. */
+type ExchangeRateDecision = Result<ExchangeRate | null, NoExchangeRate>;
 
 /** How far back from its last day the range asked of NBP reaches; longer than any run of days NBP skips. */
 const LOOKBACK_DAYS = 14;
 
 /**
- * The Exchange Rate of `currency` for an Order unloading on `unloadingDate`, as of `today` (see
- * `getToday`): none for PLN, without asking NBP; otherwise NBP's latest mid rate published before
- * the Unloading Date and no later than today. NBP's published dates decide which days are business
- * days, and a rate not yet published today falls back to the last.
+ * NBP's Exchange Rate of the foreign `currency` for an Order unloading on `unloadingDate`, as of
+ * `today`: its latest mid rate published before the Unloading Date and no later than today. NBP's
+ * published dates decide which days are business days, and a rate not yet published today falls
+ * back to the last.
  */
-export async function findExchangeRate(
+async function askNbpForExchangeRate(
   nbp: Nbp,
   currency: CurrencyReadModel,
   unloadingDate: string,
   today: string,
-): Promise<Result<ExchangeRate | null, NoExchangeRate>> {
-  if (!hasExchangeRate(currency.id)) return ok(null);
-
+): Promise<ExchangeRateDecision> {
   const dayBefore = getYesterday(unloadingDate);
   const rangeEnd = dayBefore < today ? dayBefore : today;
 
@@ -53,37 +54,65 @@ export async function findExchangeRate(
   return ok({ date: rate.effectiveDate, rate: rate.mid.toString(), table: rate.no });
 }
 
-/** The Unloading Date and Currency an Order's Exchange Rate was stored for, with that rate, as the form starts with them. */
+/** The Unloading Date and Currency an Order's Exchange Rate was stored for, with that rate. */
 export type StoredExchangeRate = {
   endDate: string;
   currencyId: number;
   currencyInfo: ExchangeRate | null;
 };
 
+/** An Order's stored Unloading Date, Currency and Exchange Rate columns. */
+type StoredExchangeRateColumns = {
+  endDate: string;
+  currencyId: number;
+  exchangeRate: string | number | null;
+  exchangeDate: string | null;
+};
+
 /**
- * Where the Exchange Rate of an Order dated `endDate` in `currencyId` comes from: none for PLN, the
- * `stored` one while its Unloading Date and Currency hold, otherwise a freshly fetched one.
+ * The Exchange Rate an Order stored with `columns` keeps while edited: none for PLN, or for a
+ * foreign Order stored without a rate or its date. NBP's table number isn't stored.
  */
-export function exchangeRateSource(
-  stored: StoredExchangeRate,
-  endDate: string,
-  currencyId: number,
-): { kind: 'none' } | { kind: 'stored'; currencyInfo: ExchangeRate } | { kind: 'fetch' } {
-  if (!hasExchangeRate(currencyId)) return { kind: 'none' };
+export function toStoredExchangeRate({
+  endDate,
+  currencyId,
+  exchangeRate,
+  exchangeDate,
+}: StoredExchangeRateColumns): StoredExchangeRate {
+  const rate = Number(exchangeRate);
 
-  const { currencyInfo } = stored;
-  if (currencyInfo && endDate === stored.endDate && currencyId === stored.currencyId)
-    return { kind: 'stored', currencyInfo };
-
-  return { kind: 'fetch' };
+  return {
+    endDate,
+    currencyId,
+    currencyInfo:
+      hasExchangeRate(currencyId) && rate && exchangeDate
+        ? { table: null, rate: String(rate), date: exchangeDate }
+        : null,
+  };
 }
 
-/** An Order's stored Currency and Exchange Rate, as the Order read model carries them. */
-type StoredCurrency = { id: number; rate: number; date: string | null };
+/**
+ * The Exchange Rate an Order in `currency` unloading on `unloadingDate` is saved with, as of
+ * `today` (see `getToday`): none for PLN; the `stored` one (none for a new Order) while its
+ * Unloading Date and Currency hold; otherwise the one `nbp` gives, or why there is none.
+ *
+ * Decided without asking NBP, it answers at once rather than with a promise, so the Order form
+ * can preview it from its first render.
+ */
+export function decideExchangeRate(
+  nbp: Nbp,
+  stored: StoredExchangeRate | null,
+  currency: CurrencyReadModel,
+  unloadingDate: string,
+  today: string,
+): ExchangeRateDecision | Promise<ExchangeRateDecision> {
+  if (!hasExchangeRate(currency.id)) return ok(null);
 
-/** The Exchange Rate an Order stored in `currency` keeps while edited; NBP's table number isn't stored. */
-export const fromStoredExchangeRate = ({ id, rate, date }: StoredCurrency): ExchangeRate | null =>
-  hasExchangeRate(id) && rate && date ? { table: null, rate: String(rate), date } : null;
+  if (stored?.currencyInfo && unloadingDate === stored.endDate && currency.id === stored.currencyId)
+    return ok(stored.currencyInfo);
+
+  return askNbpForExchangeRate(nbp, currency, unloadingDate, today);
+}
 
 /**
  * The PLN Price, Exchange Rate and its date an Order priced at `price` in `currencyId` is stored

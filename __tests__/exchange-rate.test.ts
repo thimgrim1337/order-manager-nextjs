@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { CURRENCY } from '@/lib/consts';
 import {
-  exchangeRateSource,
-  findExchangeRate,
-  fromStoredExchangeRate,
+  decideExchangeRate,
   toPricePLN,
+  toStoredExchangeRate,
   toStoredPrice,
 } from '@/lib/exchange-rate';
 import { failingNbp, fakeNbp } from './fakes/nbp';
@@ -13,69 +12,40 @@ const EUR = { id: CURRENCY.EUR, code: 'EUR' };
 
 const EUR_RATE = { table: null, rate: '4.2', date: '2026-10-29' };
 
-describe('Exchange Rate: exchangeRateSource', () => {
-  it('has none for a PLN Order', () => {
-    const stored = {
-      endDate: '2026-10-30',
-      currencyId: CURRENCY.PLN,
-      currencyInfo: null,
-    };
+describe('Exchange Rate: toStoredExchangeRate', () => {
+  const columns = {
+    endDate: '2026-10-30',
+    currencyId: CURRENCY.EUR,
+    exchangeRate: '4.2512',
+    exchangeDate: '2026-10-28',
+  };
 
-    expect(exchangeRateSource(stored, '2026-10-30', CURRENCY.PLN)).toEqual({ kind: 'none' });
-  });
-
-  it("keeps a foreign Order's stored rate while its Unloading Date and Currency hold", () => {
-    const stored = { endDate: '2026-10-30', currencyId: CURRENCY.EUR, currencyInfo: EUR_RATE };
-
-    expect(exchangeRateSource(stored, '2026-10-30', CURRENCY.EUR)).toEqual({
-      kind: 'stored',
-      currencyInfo: EUR_RATE,
-    });
-  });
-
-  it('fetches a fresh rate once the Unloading Date changes', () => {
-    const stored = { endDate: '2026-10-30', currencyId: CURRENCY.EUR, currencyInfo: EUR_RATE };
-
-    expect(exchangeRateSource(stored, '2026-10-31', CURRENCY.EUR)).toEqual({ kind: 'fetch' });
-  });
-
-  it('fetches a fresh rate once the Currency changes to another foreign one', () => {
-    const stored = { endDate: '2026-10-30', currencyId: CURRENCY.EUR, currencyInfo: EUR_RATE };
-    const usdId = 3;
-
-    expect(exchangeRateSource(stored, '2026-10-30', usdId)).toEqual({ kind: 'fetch' });
-  });
-
-  it('fetches a rate for a foreign Order stored without one', () => {
-    const stored = {
+  it("is a foreign Order's stored rate and date, without NBP's table number", () => {
+    expect(toStoredExchangeRate(columns)).toEqual({
       endDate: '2026-10-30',
       currencyId: CURRENCY.EUR,
-      currencyInfo: null,
-    };
-
-    expect(exchangeRateSource(stored, '2026-10-30', CURRENCY.EUR)).toEqual({ kind: 'fetch' });
-  });
-});
-
-describe('Exchange Rate: fromStoredExchangeRate', () => {
-  it("is a foreign Order's stored rate and date, without NBP's table number", () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 4.2512, date: '2026-10-28' })).toEqual({
-      table: null,
-      rate: '4.2512',
-      date: '2026-10-28',
+      currencyInfo: { table: null, rate: '4.2512', date: '2026-10-28' },
     });
   });
 
-  it('is none for a PLN Order, stored at a rate of 1', () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.PLN, rate: 1, date: '2026-10-28' })).toBeNull();
+  it('has no rate for a PLN Order, stored at a rate of 1', () => {
+    const pln = {
+      ...columns,
+      currencyId: CURRENCY.PLN,
+      exchangeRate: '1.0000',
+      exchangeDate: null,
+    };
+
+    expect(toStoredExchangeRate(pln).currencyInfo).toBeNull();
   });
 
-  it('is none for a foreign Order stored without a rate', () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 0, date: '2026-10-28' })).toBeNull();
+  it('has no rate for a foreign Order stored without one', () => {
+    expect(toStoredExchangeRate({ ...columns, exchangeRate: null }).currencyInfo).toBeNull();
+    expect(toStoredExchangeRate({ ...columns, exchangeRate: '0.0000' }).currencyInfo).toBeNull();
   });
 
-  it('is none for a foreign Order stored without a date', () => {
-    expect(fromStoredExchangeRate({ id: CURRENCY.EUR, rate: 4.2512, date: null })).toBeNull();
+  it('has no rate for a foreign Order stored without its date', () => {
+    expect(toStoredExchangeRate({ ...columns, exchangeDate: null }).currencyInfo).toBeNull();
   });
 });
 
@@ -118,14 +88,72 @@ describe('Exchange Rate: toPricePLN', () => {
   });
 });
 
-describe('Exchange Rate: findExchangeRate', () => {
+describe('Exchange Rate: decideExchangeRate', () => {
+  const STORED_EUR = { endDate: '2026-10-30', currencyId: CURRENCY.EUR, currencyInfo: EUR_RATE };
+  const USD = { id: 3, code: 'USD' };
+
   it('has none for PLN, without asking NBP', async () => {
     const nbp = fakeNbp([]);
+    const pln = { id: CURRENCY.PLN, code: 'PLN' };
 
-    expect(
-      await findExchangeRate(nbp, { id: CURRENCY.PLN, code: 'PLN' }, '2026-11-03', '2026-11-04'),
-    ).toEqual([null, null]);
+    expect(await decideExchangeRate(nbp, null, pln, '2026-11-03', '2026-11-04')).toEqual([
+      null,
+      null,
+    ]);
+    expect(await decideExchangeRate(nbp, STORED_EUR, pln, '2026-10-30', '2026-11-04')).toEqual([
+      null,
+      null,
+    ]);
     expect(nbp.requests).toEqual([]);
+  });
+
+  it("keeps a foreign Order's stored rate while its Unloading Date and Currency hold, without asking NBP", async () => {
+    const nbp = failingNbp({ reason: 'NbpUnavailable' });
+
+    expect(await decideExchangeRate(nbp, STORED_EUR, EUR, '2026-10-30', '2026-11-04')).toEqual([
+      null,
+      EUR_RATE,
+    ]);
+  });
+
+  it('answers at once, without a promise, when it needs no NBP', () => {
+    const nbp = failingNbp({ reason: 'NbpUnavailable' });
+    const pln = { id: CURRENCY.PLN, code: 'PLN' };
+
+    expect(decideExchangeRate(nbp, null, pln, '2026-11-03', '2026-11-04')).toEqual([null, null]);
+    expect(decideExchangeRate(nbp, STORED_EUR, EUR, '2026-10-30', '2026-11-04')).toEqual([
+      null,
+      EUR_RATE,
+    ]);
+  });
+
+  it('asks NBP once the Unloading Date changes', async () => {
+    const nbp = fakeNbp([{ no: '212/A/NBP/2026', mid: 4.24, effectiveDate: '2026-11-02' }]);
+
+    expect(await decideExchangeRate(nbp, STORED_EUR, EUR, '2026-11-03', '2026-11-04')).toEqual([
+      null,
+      { table: '212/A/NBP/2026', rate: '4.24', date: '2026-11-02' },
+    ]);
+  });
+
+  it('asks NBP for the new Currency once it changes to another foreign one', async () => {
+    const nbp = fakeNbp([{ no: '209/A/NBP/2026', mid: 3.65, effectiveDate: '2026-10-29' }]);
+
+    expect(await decideExchangeRate(nbp, STORED_EUR, USD, '2026-10-30', '2026-11-04')).toEqual([
+      null,
+      { table: '209/A/NBP/2026', rate: '3.65', date: '2026-10-29' },
+    ]);
+    expect(nbp.requests.map((request) => request.code)).toEqual(['USD']);
+  });
+
+  it('asks NBP for a foreign Order stored without a rate', async () => {
+    const nbp = fakeNbp([{ no: '209/A/NBP/2026', mid: 4.2, effectiveDate: '2026-10-29' }]);
+    const stored = { ...STORED_EUR, currencyInfo: null };
+
+    expect(await decideExchangeRate(nbp, stored, EUR, '2026-10-30', '2026-11-04')).toEqual([
+      null,
+      { table: '209/A/NBP/2026', rate: '4.2', date: '2026-10-29' },
+    ]);
   });
 
   it('takes the last rate NBP published before an Unloading Date across the year boundary', async () => {
@@ -136,7 +164,7 @@ describe('Exchange Rate: findExchangeRate', () => {
     ]);
 
     // Monday; 2 and 3 January are a weekend, 1 January a holiday.
-    expect(await findExchangeRate(nbp, EUR, '2027-01-04', '2027-01-20')).toEqual([
+    expect(await decideExchangeRate(nbp, null, EUR, '2027-01-04', '2027-01-20')).toEqual([
       null,
       { table: '251/A/NBP/2026', rate: '4.22', date: '2026-12-31' },
     ]);
@@ -152,7 +180,7 @@ describe('Exchange Rate: findExchangeRate', () => {
     );
 
     // Wednesday 2026-11-04, before NBP publishes around noon.
-    expect(await findExchangeRate(nbp, EUR, '2026-11-20', '2026-11-04')).toEqual([
+    expect(await decideExchangeRate(nbp, null, EUR, '2026-11-20', '2026-11-04')).toEqual([
       null,
       { table: '213/A/NBP/2026', rate: '4.26', date: '2026-11-03' },
     ]);
@@ -165,14 +193,14 @@ describe('Exchange Rate: findExchangeRate', () => {
     ]);
 
     // 6 January (Epiphany) is a holiday.
-    expect(await findExchangeRate(nbp, EUR, '2027-01-07', '2027-01-20')).toEqual([
+    expect(await decideExchangeRate(nbp, null, EUR, '2027-01-07', '2027-01-20')).toEqual([
       null,
       { table: '002/A/NBP/2027', rate: '4.24', date: '2027-01-05' },
     ]);
   });
 
   it('has none when NBP published no rate in the window', async () => {
-    expect(await findExchangeRate(fakeNbp([]), EUR, '2026-11-03', '2026-11-04')).toEqual([
+    expect(await decideExchangeRate(fakeNbp([]), null, EUR, '2026-11-03', '2026-11-04')).toEqual([
       { reason: 'ExchangeRateNotPublished' },
       null,
     ]);
@@ -181,7 +209,7 @@ describe('Exchange Rate: findExchangeRate', () => {
   it('has none when NBP cannot be asked', async () => {
     const nbp = failingNbp({ reason: 'NbpUnavailable' });
 
-    expect(await findExchangeRate(nbp, EUR, '2026-11-03', '2026-11-04')).toEqual([
+    expect(await decideExchangeRate(nbp, STORED_EUR, EUR, '2026-11-03', '2026-11-04')).toEqual([
       { reason: 'NbpUnavailable' },
       null,
     ]);

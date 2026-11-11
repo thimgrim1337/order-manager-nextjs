@@ -35,7 +35,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
 
   // Read once per open, so Reset keeps the dates the form opened with.
   const [startingValues] = useState(() => getStartingValues(order));
-  const [startingExchangeRate] = useState(() => getStartingExchangeRate(startingValues, order));
+  const [startingExchangeRate] = useState(() => getStartingExchangeRate(order));
   const [isEditable, setIsEditable] = useState(!order);
 
   const form = useAppForm({
@@ -70,7 +70,6 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   const clearOrderNrRefusal = () => setOrderNrRefusal(undefined);
 
   const { endDate, currencyId, priceCurrency } = useStore(form.store, (state) => state.values);
-  // A preview: the Orders module works out the rate the Order is saved with the same way.
   const exchangeRate = useExchangeRate(startingExchangeRate, endDate, currencyId);
 
   const fieldGroupStyle = 'flex-row pt-5';

@@ -232,14 +232,6 @@ export async function findOrderExchangeRate(database: db | dbTransaction, orderI
     })
     .from(order)
     .where(eq(order.id, orderId));
-  if (!found) return undefined;
 
-  const { endDate, currencyId, exchangeRate, exchangeDate } = found;
-
-  return {
-    endDate,
-    currencyId,
-    // Shaped as the Order read model carries it.
-    currency: { id: currencyId, rate: Number(exchangeRate), date: exchangeDate },
-  };
+  return found;
 }

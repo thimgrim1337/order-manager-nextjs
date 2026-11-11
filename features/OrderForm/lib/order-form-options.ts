@@ -5,7 +5,7 @@ import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { addDays, getToday } from '@/lib/dates';
 import type { OrderInputDto } from '@/lib/dto/order.dto';
 import { OrderFormSchema } from '@/lib/dto/order.dto';
-import { fromStoredExchangeRate, type StoredExchangeRate } from '@/lib/exchange-rate';
+import { type StoredExchangeRate, toStoredExchangeRate } from '@/lib/exchange-rate';
 
 /** Loading Date today and Unloading Date tomorrow in Warsaw, read from one clock reading when called. */
 const getDefaultOrderDates = () => {
@@ -69,15 +69,13 @@ export const toOrderInput = ({
   unloadingPlaces: unloadingPlaces.map((city) => city.id),
 });
 
-/**
- * The Exchange Rate the form starts with, for the Unloading Date and Currency it opened with:
- * `order`'s stored one, or none for a new Order.
- */
-export const getStartingExchangeRate = (
-  { endDate, currencyId }: FormValues,
-  order?: OrderReadModel,
-): StoredExchangeRate => ({
-  endDate,
-  currencyId,
-  currencyInfo: order ? fromStoredExchangeRate(order.currency) : null,
-});
+/** The Exchange Rate the form starts with: `order`'s stored one, or none for a new Order. */
+export const getStartingExchangeRate = (order?: OrderReadModel): StoredExchangeRate | null =>
+  order
+    ? toStoredExchangeRate({
+        endDate: order.endDate,
+        currencyId: order.currency.id,
+        exchangeRate: order.currency.rate,
+        exchangeDate: order.currency.date,
+      })
+    : null;
