@@ -122,24 +122,12 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
           <FieldGroup className={fieldGroupStyle}>
             <div className="flex-1 flex gap-2 items-end">
               <form.AppField name="loadingPlaces" mode="array">
-                {(field) => (
-                  <field.PlacesComboboxField
-                    cities={cities}
-                    countries={countries}
-                    label="Miejsca załadunku"
-                  />
-                )}
+                {(field) => <field.PlacesComboboxField cities={cities} label="Miejsca załadunku" />}
               </form.AppField>
               <CreateCity countries={countries} />
             </div>
             <form.AppField name="unloadingPlaces" mode="array">
-              {(field) => (
-                <field.PlacesComboboxField
-                  cities={cities}
-                  countries={countries}
-                  label="Miejsca rozładunku"
-                />
-              )}
+              {(field) => <field.PlacesComboboxField cities={cities} label="Miejsca rozładunku" />}
             </form.AppField>
           </FieldGroup>
           <FieldGroup className={fieldGroupStyle}>

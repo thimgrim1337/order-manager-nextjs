@@ -2,15 +2,19 @@ import { describe, expect, it } from 'vitest';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import { type OrderDay, orderDays } from '@/lib/order-day';
-import { place } from './utils/place';
 import { week } from './utils/week';
 
 describe('Order Day: orderDays', () => {
   const w44 = week('2026-W44');
   const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
   const germany: CountryReadModel = { id: 2, name: 'Germany', code: 'DE' };
-  const city = (id: number, name: string, country: CountryReadModel) =>
-    place({ id, name, postal: '00-001', countryId: country.id }, country);
+  const city = (id: number, name: string, country: CountryReadModel) => ({
+    id,
+    name,
+    postal: '00-001',
+    countryId: country.id,
+    country,
+  });
   const warszawa = city(1, 'Warszawa', poland);
   const plock = city(2, 'Płock', poland);
   const berlin = city(3, 'Berlin', germany);

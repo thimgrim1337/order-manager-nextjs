@@ -12,11 +12,18 @@ import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
 import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
-import { place } from '../utils/place';
 import { renderWithQueries } from '../utils/wrapper';
 import { writeResponse } from '../utils/write-response';
 
 const choices = orderChoices();
+// A Place whose Country is not among the choices' Countries: the form shows it from the City.
+const berlin = {
+  id: 21,
+  name: 'Berlin',
+  postal: '10115',
+  countryId: 2,
+  country: { id: 2, name: 'Germany', code: 'DE' },
+};
 const [plock] = choices.cities;
 const [customer] = choices.customers;
 
@@ -214,7 +221,7 @@ describe('OrderForm', () => {
     });
 
     it('searches Cities by name and picks one beyond the preloaded ones', async () => {
-      const zgierz = { id: 11, name: 'Zgierz', postal: '95-100', countryId: 1 };
+      const zgierz = { ...plock, id: 11, name: 'Zgierz', postal: '95-100' };
       vi.mocked(searchCities).mockResolvedValue([zgierz]);
       const { user, onDialogClose } = await setup();
 
@@ -231,6 +238,16 @@ describe('OrderForm', () => {
           unloadingPlaces: [plock.id, zgierz.id],
         }),
       );
+    });
+
+    it("shows a searched City's Country on its picked Place", async () => {
+      vi.mocked(searchCities).mockResolvedValue([berlin]);
+      const { user } = await setup();
+
+      await user.type(screen.getByLabelText('Miejsca rozładunku'), 'Ber');
+      await user.click(await screen.findByRole('option', { name: 'Berlin' }));
+
+      expect(screen.getByText('DE')).toBeVisible();
     });
 
     it('opens dated today and tomorrow in Warsaw, read each time it opens', async () => {
@@ -296,9 +313,6 @@ describe('OrderForm', () => {
   });
 
   describe('edit', () => {
-    // The Order's Places carry their Country, as the Order read model gives them.
-    const [poland] = choices.countries;
-    const plockPlace = place(plock, poland);
     const order: OrderReadModel = {
       id: 7,
       orderNr: 'ZL-7',
@@ -311,8 +325,8 @@ describe('OrderForm', () => {
       currency: { ...choices.currencies[0], rate: 1, date: '' },
       priceCurrency: '1000',
       pricePLN: '1000',
-      loadingPlaces: [plockPlace],
-      unloadingPlaces: [plockPlace],
+      loadingPlaces: [plock],
+      unloadingPlaces: [plock],
     };
     const editSetup = (edited: OrderReadModel = order) =>
       setup({ order: edited, action: (input) => updateOrder(edited.id, input) });
@@ -343,20 +357,17 @@ describe('OrderForm', () => {
         statusId: 1,
         priceCurrency: '2500',
         currencyId: 1,
-        loadingPlaces: [plockPlace.id],
-        unloadingPlaces: [plockPlace.id],
+        loadingPlaces: [plock.id],
+        unloadingPlaces: [plock.id],
       });
     });
 
     it('removes a picked Unloading Place by its named button', async () => {
-      const zgierz = place(
-        { id: 11, name: 'Zgierz', postal: '95-100', countryId: poland.id },
-        poland,
-      );
+      const zgierz = { ...plock, id: 11, name: 'Zgierz', postal: '95-100' };
       const { user, onDialogClose } = await editSetup({
         ...order,
         loadingPlaces: [zgierz],
-        unloadingPlaces: [plockPlace, zgierz],
+        unloadingPlaces: [plock, zgierz],
       });
 
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));
@@ -368,6 +379,12 @@ describe('OrderForm', () => {
         7,
         expect.objectContaining({ loadingPlaces: [zgierz.id], unloadingPlaces: [zgierz.id] }),
       );
+    });
+
+    it("shows the Order's Places with their Cities' Countries", async () => {
+      await editSetup({ ...order, unloadingPlaces: [berlin] });
+
+      expect(screen.getByText('DE')).toBeVisible();
     });
 
     it("defaults the Driver to the picked Truck's Regular Driver", async () => {

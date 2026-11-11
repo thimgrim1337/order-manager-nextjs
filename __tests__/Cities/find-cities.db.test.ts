@@ -23,6 +23,21 @@ describe('findCities', () => {
       expect(cities.map((c) => c.name)).toEqual(['Warszawa']);
     }));
 
+  it('gives each City with its Country', () =>
+    withRollback(async (trx) => {
+      const [plock] = await seedCities(trx, ['Płock']);
+
+      expect(await findCities(trx, 'Płock')).toEqual([
+        {
+          id: plock.id,
+          name: 'Płock',
+          postal: '00-100',
+          countryId: plock.countryId,
+          country: { id: plock.countryId, name: 'Polska', code: 'PL' },
+        },
+      ]);
+    }));
+
   it('finds no City when no name matches', () =>
     withRollback(async (trx) => {
       await seedCities(trx, ['Płock', 'Warszawa']);

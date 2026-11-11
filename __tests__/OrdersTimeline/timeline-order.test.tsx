@@ -8,7 +8,6 @@ import type { CountryReadModel } from '@/lib/dal/country.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import { orderChoices } from '../utils/order-choices';
-import { place } from '../utils/place';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
 import { writeResponse } from '../utils/write-response';
@@ -16,8 +15,14 @@ import { writeResponse } from '../utils/write-response';
 const w44 = week('2026-W44');
 const poland: CountryReadModel = { id: 1, name: 'Poland', code: 'PL' };
 const germany: CountryReadModel = { id: 2, name: 'Germany', code: 'DE' };
-const warszawa = place({ id: 1, name: 'Warszawa', postal: '00-001', countryId: poland.id }, poland);
-const berlin = place({ id: 2, name: 'Berlin', postal: '10115', countryId: germany.id }, germany);
+const warszawa = {
+  id: 1,
+  name: 'Warszawa',
+  postal: '00-001',
+  countryId: poland.id,
+  country: poland,
+};
+const berlin = { id: 2, name: 'Berlin', postal: '10115', countryId: germany.id, country: germany };
 
 const order = (dates: { startDate: string; endDate: string }) =>
   ({
@@ -135,7 +140,7 @@ describe('Timeline row edit', () => {
   it('opens the edit-Order dialog on click and saves the changed Order under its id', async () => {
     vi.mocked(updateOrder).mockResolvedValueOnce(writeResponse.succeeded());
     const choices = orderChoices();
-    const plock = place(choices.cities[0], choices.countries[0]);
+    const [plock] = choices.cities;
     const edited = {
       ...order({ startDate: '2026-10-27', endDate: '2026-10-30' }),
       customer: choices.customers[0],

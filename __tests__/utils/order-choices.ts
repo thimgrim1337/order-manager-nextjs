@@ -5,7 +5,15 @@ import type { OrderChoices } from '@/features/shared/lib/order-choices';
  * two Trucks (one with a Driver), PLN/EUR/USD and the three Statuses.
  */
 export const orderChoices = (): OrderChoices => ({
-  cities: [{ id: 1, name: 'Płock', postal: '09-410', countryId: 1 }],
+  cities: [
+    {
+      id: 1,
+      name: 'Płock',
+      postal: '09-410',
+      countryId: 1,
+      country: { id: 1, name: 'Poland', code: 'PL' },
+    },
+  ],
   customers: [{ id: 1, name: 'DEVIL', tax: '7743241555' }],
   drivers: [
     { id: 1, firstName: 'Jan', lastName: 'Kowalski' },

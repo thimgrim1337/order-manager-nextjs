@@ -1,7 +1,7 @@
 import { isAfter } from 'date-fns';
 import { createSelectSchema } from 'drizzle-zod';
 import z from 'zod';
-import { order } from '@/db/schemas';
+import { country, order } from '@/db/schemas';
 import { ORDER_STATUS, ZOD_ERROR_MESSAGES } from '../consts';
 import { toDate } from '../dates';
 import { selectCitySchema as City } from './city.dto';
@@ -48,8 +48,11 @@ const withPlaces = <Place extends z.ZodType>(place: Place) =>
       .min(1, { error: 'Wybierz co najmniej 1 miejsce rozładunku.' }),
   });
 
+/** A Place as the form holds it: the picked City with its Country. */
+const Place = City.extend({ country: createSelectSchema(country) });
+
 /** On the form, the Loading and Unloading Places are the Cities the user picked. */
-const OrderFormFields = withPlaces(City);
+const OrderFormFields = withPlaces(Place);
 
 /** On the Order input, the Loading and Unloading Places are City ids. */
 const OrderInputFields = withPlaces(z.int().positive());
