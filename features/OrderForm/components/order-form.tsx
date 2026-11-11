@@ -168,33 +168,29 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
           </FieldGroup>
           <FieldGroup className={fieldGroupStyle}>
             <form.AppField
-              name="truckId"
+              name="truck"
               listeners={{
                 onChange: ({ value }) => {
-                  const assignedDriver = trucks.filter((truck) => truck.id === value)[0]?.driverId;
+                  const regularDriver = drivers.find((driver) => driver.id === value?.driverId);
 
-                  if (assignedDriver) form.setFieldValue('driverId', assignedDriver);
+                  if (regularDriver) form.setFieldValue('driver', regularDriver);
                 },
               }}
             >
               {(field) => (
-                <field.ComboboxField
-                  data={trucks.map((truck) => ({
-                    value: truck.id,
-                    label: truck.plate,
-                  }))}
+                <field.SinglePickComboboxField
+                  choices={trucks}
+                  itemLabel={(truck) => truck.plate}
                   label="Pojazd"
                   placeholder="Wybierz pojazd"
                 />
               )}
             </form.AppField>
-            <form.AppField name="driverId">
+            <form.AppField name="driver">
               {(field) => (
-                <field.ComboboxField
-                  data={drivers.map((driver) => ({
-                    value: driver.id,
-                    label: driverName(driver),
-                  }))}
+                <field.SinglePickComboboxField
+                  choices={drivers}
+                  itemLabel={driverName}
                   label="Kierowca"
                   placeholder="Wybierz kierowcę"
                 />

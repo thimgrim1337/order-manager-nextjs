@@ -446,6 +446,35 @@ describe('OrderForm', () => {
       expect(screen.getByLabelText('Kierowca')).toHaveValue('');
     });
 
+    it('keeps the picked Driver when the picked Truck has no Regular Driver', async () => {
+      const { user, onDialogClose } = await setup();
+
+      await fillInNewOrder(user);
+      await user.click(screen.getByLabelText('Kierowca'));
+      await user.click(screen.getByRole('option', { name: 'Adam Nowak' }));
+      await user.click(screen.getByLabelText('Pojazd'));
+      await user.click(screen.getByRole('option', { name: 'WPL1234A' }));
+
+      expect(screen.getByLabelText('Kierowca')).toHaveValue('Adam Nowak');
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(createOrder).toHaveBeenCalledWith(
+        expect.objectContaining({ truckId: 2, driverId: 2 }),
+      );
+    });
+
+    it('refuses to save without a Truck or a Driver, saying which is missing', async () => {
+      const { user } = await setup();
+
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await screen.findByText('Wybierz pojazd.');
+      expect(screen.getByText('Wybierz kierowcę.')).toBeVisible();
+      expect(screen.getByLabelText('Pojazd')).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getByLabelText('Kierowca')).toHaveAttribute('aria-invalid', 'true');
+      expect(createOrder).not.toHaveBeenCalled();
+    });
+
     it('does not submit when the Loading Date is after the Unloading Date', async () => {
       const { user } = await setup();
 
@@ -576,6 +605,39 @@ describe('OrderForm', () => {
       const options = await screen.findAllByRole('option');
       expect(options.map((option) => option.textContent)).toEqual(['Berlin', 'Płock']);
       expect(options[0]).toHaveAttribute('aria-selected', 'true');
+    });
+
+    it('shows its Customer, Truck and Driver', async () => {
+      await editSetup();
+
+      expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('DEVIL');
+      expect(screen.getByLabelText('Pojazd')).toHaveValue('WND0997C');
+      expect(screen.getByLabelText('Kierowca')).toHaveValue('Adam Nowak');
+    });
+
+    it('shows its Truck and Driver beyond the choices, saving them unchanged', async () => {
+      const truck = {
+        id: 30,
+        plate: 'WGM5555X',
+        insuranceEndAt: '2027-06-01',
+        serviceEndAt: '2027-06-01',
+        driverId: null,
+      };
+      const driver = { id: 31, firstName: 'Ewa', lastName: 'Zielińska' };
+      const { user, onDialogClose } = await editSetup(
+        orderReadModel({ ...orderFields, truck, driver }),
+      );
+
+      expect(screen.getByLabelText('Pojazd')).toHaveValue('WGM5555X');
+      expect(screen.getByLabelText('Kierowca')).toHaveValue('Ewa Zielińska');
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(updateOrder).toHaveBeenCalledWith(
+        7,
+        expect.objectContaining({ truckId: 30, driverId: 31 }),
+      );
     });
 
     it("shows the Order's Places with their Cities' Countries", async () => {

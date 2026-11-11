@@ -1,5 +1,4 @@
 import { createFormHook } from '@tanstack/react-form-nextjs';
-import ComboboxField from '../components/FormFields/combobox';
 import FormControls from '../components/FormFields/controls';
 import CountrySelectField from '../components/FormFields/country-select';
 import CustomersComboboxField from '../components/FormFields/customers-combobox';
@@ -7,6 +6,7 @@ import DateField from '../components/FormFields/date-field';
 import InputField from '../components/FormFields/input';
 import PlacesComboboxField from '../components/FormFields/places-combobox';
 import SelectField from '../components/FormFields/select-field';
+import SinglePickComboboxField from '../components/FormFields/single-pick-combobox';
 import { fieldContext, formContext } from '../context/form-context';
 
 export const { useAppForm } = createFormHook({
@@ -14,7 +14,7 @@ export const { useAppForm } = createFormHook({
     InputField,
     DateField,
     SelectField,
-    ComboboxField,
+    SinglePickComboboxField,
     CustomersComboboxField,
     PlacesComboboxField,
     CountrySelectField,

@@ -16,6 +16,8 @@ async function findTrucks(database: db | dbTransaction) {
     .from(truck);
 }
 
+export type TruckReadModel = Awaited<ReturnType<typeof findTrucks>>[number];
+
 export async function getAllTrucks() {
   'use cache';
   cacheLife('days');

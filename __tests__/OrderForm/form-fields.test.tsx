@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { useAppForm } from '@/features/OrderForm/hooks/useAppForm';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
+import type { TruckReadModel } from '@/lib/dal/truck.dal';
 import { orderChoices } from '../utils/order-choices';
 import { renderWithQueries } from '../utils/wrapper';
 
@@ -17,7 +18,7 @@ function FieldsWithExternalError() {
       orderNr: '',
       startDate: '',
       currencyId: 0,
-      truckId: 0,
+      truck: null as TruckReadModel | null,
       customer: null as CustomerReadModel | null,
       loadingPlaces: [] as CityReadModel[],
     },
@@ -42,14 +43,15 @@ function FieldsWithExternalError() {
           />
         )}
       </form.AppField>
-      <form.AppField name="truckId">
+      <form.AppField name="truck">
         {(field) => (
-          <field.ComboboxField
+          <field.SinglePickComboboxField
             label="Pojazd"
             icon={icon}
             placeholder="Wybierz pojazd"
             error={ERROR}
-            data={choices.trucks.map((t) => ({ label: t.plate, value: t.id }))}
+            choices={choices.trucks}
+            itemLabel={(truck) => truck.plate}
           />
         )}
       </form.AppField>

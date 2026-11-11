@@ -6,6 +6,8 @@ import { ZOD_ERROR_MESSAGES } from '../consts';
 import { toDate } from '../dates';
 import { selectCitySchema as City } from './city.dto';
 import { selectCustomerSchema as Customer } from './customer.dto';
+import { selectDriverSchema as Driver } from './driver.dto';
+import { selectTruckSchema as Truck } from './truck.dto';
 
 const OrderFields = z.object({
   orderNr: z
@@ -16,12 +18,6 @@ const OrderFields = z.object({
   endDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
   // Which Statuses exist is the database's to say: an unknown one is refused as `UnknownStatus`.
   statusId: z.int({ error: ZOD_ERROR_MESSAGES.FieldRequired }).positive(),
-  truckId: z
-    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: 'Wybierz pojazd.' }),
-  driverId: z
-    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: 'Wyberz kierowcę.' }),
   currencyId: z
     .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: 'Wybierz walutę' }),
@@ -48,17 +44,31 @@ const withPlaces = <Place extends z.ZodType>(place: Place) =>
 const Place = City.extend({ country: createSelectSchema(country) });
 
 const PICK_CUSTOMER = 'Wybierz zleceniodawcę.';
+const PICK_TRUCK = 'Wybierz pojazd.';
+const PICK_DRIVER = 'Wybierz kierowcę.';
 
-/** On the form, the Customer and the Loading and Unloading Places are the ones the user picked. */
+/**
+ * On the form, the Customer, Truck, Driver and the Loading and Unloading Places are the ones the
+ * user picked.
+ */
 const OrderFormFields = withPlaces(Place).extend({
   customer: z.object(Customer.shape, { error: PICK_CUSTOMER }),
+  truck: z.object(Truck.shape, { error: PICK_TRUCK }),
+  driver: z.object(Driver.shape, { error: PICK_DRIVER }),
 });
 
-/** On the Order input, the Customer is their id and the Loading and Unloading Places are City ids. */
+/** A picked item's id on the Order input, refused with `message` when none is picked. */
+const pickedId = (message: string) =>
+  z.number({ error: ZOD_ERROR_MESSAGES.FieldRequired }).min(1, { error: message });
+
+/**
+ * On the Order input, the Customer, Truck and Driver are their ids and the Loading and Unloading
+ * Places are City ids.
+ */
 const OrderInputFields = withPlaces(z.int().positive()).extend({
-  customerId: z
-    .number({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: PICK_CUSTOMER }),
+  customerId: pickedId(PICK_CUSTOMER),
+  truckId: pickedId(PICK_TRUCK),
+  driverId: pickedId(PICK_DRIVER),
 });
 
 const OrderDates = OrderFields.pick({ startDate: true, endDate: true });
