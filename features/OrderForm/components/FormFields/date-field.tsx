@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from 'lucide-react';
 import { useState } from 'react';
+import { pl } from 'react-day-picker/locale';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -10,7 +11,8 @@ import FormBase, { type FormControlProps } from './form-base';
 export default function DateField({ label, icon, error }: FormControlProps) {
   const [open, setOpen] = useState(false);
   const field = useFieldContext<string>();
-  const selectedDate = field.state.value;
+  const value = field.state.value;
+  const selectedDay = value ? parseDate(value) : undefined;
 
   return (
     <FormBase label={label} icon={icon} error={error}>
@@ -24,7 +26,7 @@ export default function DateField({ label, icon, error }: FormControlProps) {
                 className="w-48 justify-between font-normal"
                 aria-invalid={isInvalid}
               >
-                {selectedDate ? selectedDate : 'Wybierz datę'}
+                {value ? value : 'Wybierz datę'}
 
                 <ChevronDownIcon />
               </Button>
@@ -33,12 +35,13 @@ export default function DateField({ label, icon, error }: FormControlProps) {
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
             <Calendar
               mode="single"
+              locale={pl}
               // An Order needs both dates: clicking the picked day keeps it rather than clearing it.
               required
-              defaultMonth={parseDate(getToday())}
+              defaultMonth={selectedDay ?? parseDate(getToday())}
               showWeekNumber
               weekStartsOn={1}
-              selected={parseDate(selectedDate)}
+              selected={selectedDay}
               onSelect={(value) => {
                 field.handleChange(formatDate(value));
                 setOpen(false);

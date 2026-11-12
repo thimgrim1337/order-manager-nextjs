@@ -1,4 +1,5 @@
 import { ChevronDownIcon } from 'lucide-react';
+import { pl } from 'react-day-picker/locale';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -28,6 +29,7 @@ export default function DateInput({ filterName }: { filterName: 'startDate' | 'e
       <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
+          locale={pl}
           defaultMonth={parseDate(selectedDate || getToday())}
           showWeekNumber
           weekStartsOn={1}

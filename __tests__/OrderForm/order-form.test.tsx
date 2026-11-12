@@ -81,6 +81,14 @@ const placeChoices = async (user: UserEvent, label: string) => {
 const customerSearchAnswers = (answers: Record<string, CustomerReadModel[]>) =>
   vi.mocked(searchCustomers).mockImplementation(async (term) => answers[term] ?? []);
 
+/** Opens the date field labelled `label` and reads the month its calendar shows, then closes it. */
+const calendarMonth = async (user: UserEvent, label: string) => {
+  await user.click(screen.getByLabelText(label));
+  const month = screen.getByRole('grid').getAttribute('aria-label');
+  await user.keyboard('{Escape}');
+  return month;
+};
+
 /** Lets a save that slipped through reach its write, before a test says none was sent. */
 const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 50)));
 
@@ -537,6 +545,15 @@ describe('OrderForm', () => {
       expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     });
 
+    it("opens each date's calendar on its month, the Unloading Date's next month on a month's last day", async () => {
+      // Saturday 2026-10-31 12:00 in Warsaw, so the form opens dated 31 October and 1 November.
+      vi.setSystemTime(new Date('2026-10-31T11:00:00Z'));
+      const { user } = await setup();
+
+      expect(await calendarMonth(user, 'Data załadunku')).toBe('październik 2026');
+      expect(await calendarMonth(user, 'Data rozładunku')).toBe('listopad 2026');
+    });
+
     it('keeps each date when its picked day is clicked again', async () => {
       // Thursday 2026-11-12 12:00 in Warsaw, so the form opens dated 12 and 13 November.
       vi.setSystemTime(new Date('2026-11-12T11:00:00Z'));
@@ -630,6 +647,16 @@ describe('OrderForm', () => {
 
     beforeEach(() => {
       vi.mocked(updateOrder).mockResolvedValue(writeResponse.succeeded());
+    });
+
+    it("opens each date's calendar on its month, not the current one", async () => {
+      const { user } = await editSetup(
+        orderReadModel({ ...orderFields, startDate: '2026-09-30', endDate: '2026-10-01' }),
+      );
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+
+      expect(await calendarMonth(user, 'Data załadunku')).toBe('wrzesień 2026');
+      expect(await calendarMonth(user, 'Data rozładunku')).toBe('październik 2026');
     });
 
     it('starts locked on the Order and submits the changed Order under its id', async () => {

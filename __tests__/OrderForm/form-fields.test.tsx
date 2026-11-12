@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 import { useAppForm } from '@/features/OrderForm/hooks/useAppForm';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
@@ -106,5 +107,21 @@ describe('Order form fields', () => {
 
     const control = screen.getByLabelText(label);
     for (const prop of ['label', 'icon', 'error']) expect(control).not.toHaveAttribute(prop);
+  });
+
+  it('opens an empty date field on the current month in Warsaw', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    // Sunday 2026-11-01 00:30 in Warsaw, still October in UTC.
+    vi.setSystemTime(new Date('2026-10-31T23:30:00Z'));
+    try {
+      const user = userEvent.setup();
+      await renderWithQueries(<FieldsWithExternalError />);
+
+      await user.click(screen.getByLabelText('Data załadunku'));
+
+      expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'listopad 2026');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
