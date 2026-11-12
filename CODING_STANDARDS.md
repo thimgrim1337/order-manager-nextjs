@@ -64,3 +64,7 @@ An element's accessible name is whatever a screen reader announces for it: its t
 - Constants shared across files live in `lib/consts.ts`; module-private constants stay in their module.
 - A domain rule several views share lives in `lib/<concept>.ts` (`exchange-rate.ts`, `places.ts`), tested in `__tests__/<concept>.test.ts`.
 - A diff that moves where something lives (a helper, a fixture, a script) or changes what a doc describes (a behaviour, a decision noted on an ADR) updates every pointer to it: `CLAUDE.md`, `CODING_STANDARDS.md`, `docs/` and comments name the new place and say what is now true.
+
+## Issues
+
+- A diff that meets an acceptance criterion of an open issue other than its own (`gh issue list --state open --json number,title,body`): the review names that issue and the criterion, so the work ticks it and comments with the commit SHA, as `docs/agents/issue-tracker.md` ("Record progress on another issue") says.
