@@ -2,6 +2,7 @@ import { expect, type Page, test } from '@playwright/test';
 import db from '@/db/db';
 import { seedOrder, seedOrderReferences } from '../fixtures/order';
 import { cacheEmptySearch, searchCombobox } from './helpers/combobox';
+import { openDialog } from './helpers/open-dialog';
 import { cleanupTestData, dayOfThisMonth } from './helpers/seed';
 
 const SEEDED_ORDER = {
@@ -39,7 +40,7 @@ test.describe('Order test', () => {
     await pinClockToLoadingDay(page);
     await page.goto('/orders');
 
-    await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
+    await openDialog(page, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
 
     await page.getByLabel('Zleceniodawca').fill('Test');
     await page.getByRole('option', { name: 'Test Firma' }).click();
@@ -80,14 +81,17 @@ test.describe('Order test', () => {
     await pinClockToLoadingDay(page);
     await page.goto('/orders');
 
-    await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
+    await openDialog(page, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
 
     // A stale cached search would still find nothing after creating.
     await cacheEmptySearch(page, 'Zleceniodawca', 'Nowa');
     await cacheEmptySearch(page, 'Miejsca załadunku', 'Kra');
 
-    await page.getByRole('button', { name: 'Dodaj nowego zleceniodawcę' }).click();
-    const customerDialog = page.getByRole('dialog', { name: 'Dodawanie nowego zleceniodawcy' });
+    const customerDialog = await openDialog(
+      page,
+      'Dodaj nowego zleceniodawcę',
+      'Dodawanie nowego zleceniodawcy',
+    );
     await customerDialog.getByLabel('Nazwa zleceniodawcy').fill('Nowa Firma');
     await customerDialog.getByLabel('NIP').fill('PL9876543210');
     await customerDialog.getByRole('button', { name: 'Zapisz' }).click();
@@ -96,8 +100,7 @@ test.describe('Order test', () => {
     await searchCombobox(page, 'Zleceniodawca', 'Nowa');
     await page.getByRole('option', { name: 'Nowa Firma' }).click();
 
-    await page.getByRole('button', { name: 'Dodaj nowe miejsce' }).click();
-    const cityDialog = page.getByRole('dialog', { name: 'Dodawanie nowego miejsca' });
+    const cityDialog = await openDialog(page, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
     await cityDialog.getByLabel('Kod kraju').click();
     await page.getByRole('option', { name: 'PL Polska' }).click();
     await cityDialog.getByLabel('Kod pocztowy').fill('30-001');

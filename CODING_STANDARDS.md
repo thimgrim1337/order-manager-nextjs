@@ -26,6 +26,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 - A test covering existing code goes red when that code breaks: each condition it covers fails a test once mutated (`>=` to `>`, a filter dropped, `and` to `or`). A range filter gets an Order on each edge and one just past it.
 - Tests build a Week from its key with `week('2026-W44')` (`__tests__/utils/week.ts`).
 - A browser test opens a dialog through `openDialog` (`__tests__/utils/open-dialog.ts`), which waits for the dialog to take focus before anything is typed into it.
+- An e2e spec opens a dialog from its button through `openDialog` (`__tests__/e2e/helpers/open-dialog.ts`), which also clicks again until the page has hydrated the button.
 
 ## Data access
 

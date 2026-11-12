@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import db from '@/db/db';
 import { seedOrder, seedOrderReferences } from '../fixtures/order';
+import { openDialog } from './helpers/open-dialog';
 import { cleanupTestData } from './helpers/seed';
 
 /**
@@ -56,8 +57,7 @@ test.describe('Accessibility', () => {
     await expect(page.getByRole('button', { name: 'Dodaj nowe zlecenie' })).toBeVisible();
     expect(await violations(page)).toEqual([]);
 
-    await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
-    await expect(page.getByRole('dialog')).toBeVisible();
+    await openDialog(page, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
     expect(await violations(page)).toEqual([]);
   });
 
