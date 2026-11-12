@@ -24,6 +24,9 @@ export type WriteDialog = {
   ) => Promise<void>;
 };
 
+/** What a form in a write dialog saves through: its write, and whether one runs from an earlier opening. */
+export type FormWrite = Pick<WriteDialog, 'write' | 'isWriting'>;
+
 /**
  * Each dialog keeps its own open state, so a late close from one of a row's dialogs closes only
  * that one, never another opened since.

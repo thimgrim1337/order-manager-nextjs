@@ -1,5 +1,5 @@
 import { FieldGroup } from '@/components/ui/field';
-import { settleWrite } from '@/features/shared/lib/settle-write';
+import type { FormWrite } from '@/features/shared/hooks/use-write-dialog';
 import { createCustomer } from '@/lib/actions';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import { createCustomerSchema } from '@/lib/dto/customer.dto';
@@ -7,11 +7,11 @@ import { useAppForm } from '../../hooks/useAppForm';
 
 export default function CreateCustomerForm({
   onCreated,
-  onDialogClose,
+  dialog,
 }: {
   /** Takes the created Customer. */
   onCreated: (customer: CustomerReadModel) => void;
-  onDialogClose: () => void;
+  dialog: FormWrite;
 }) {
   const form = useAppForm({
     defaultValues: {
@@ -22,8 +22,7 @@ export default function CreateCustomerForm({
       onChange: createCustomerSchema,
     },
     onSubmit: async ({ value }) =>
-      settleWrite(() => createCustomer(value), {
-        closeDialog: onDialogClose,
+      dialog.write(() => createCustomer(value), {
         onSuccess: onCreated,
         successDescription: `Pomyślnie utworzono nowego zleceniodawcę: ${value.name}`,
       }),
@@ -31,7 +30,7 @@ export default function CreateCustomerForm({
 
   return (
     <form.AppForm>
-      <form.SaveForm>
+      <form.SaveForm isSaving={dialog.isWriting}>
         <FieldGroup>
           <form.AppField name="name">
             {(field) => <field.InputField label="Nazwa zleceniodawcy" />}

@@ -1,5 +1,5 @@
 import { FieldGroup } from '@/components/ui/field';
-import { settleWrite } from '@/features/shared/lib/settle-write';
+import type { FormWrite } from '@/features/shared/hooks/use-write-dialog';
 import { createCity } from '@/lib/actions';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
@@ -11,12 +11,12 @@ const POLAND_CODE = 'PL';
 export default function CreateCityForm({
   countries,
   onCreated,
-  onDialogClose,
+  dialog,
 }: {
   countries: CountryReadModel[];
   /** Takes the created City, with its Country. */
   onCreated: (city: CityReadModel) => void;
-  onDialogClose: () => void;
+  dialog: FormWrite;
 }) {
   const form = useAppForm({
     defaultValues: {
@@ -29,8 +29,7 @@ export default function CreateCityForm({
       onChange: createCitySchema,
     },
     onSubmit: async ({ value }) =>
-      settleWrite(() => createCity(value), {
-        closeDialog: onDialogClose,
+      dialog.write(() => createCity(value), {
         onSuccess: onCreated,
         errorTitle: 'Nie udało się utworzyć miejscowości.',
         successDescription: `Pomyślnie utworzono nową miejscowość: ${value.name}`,
@@ -39,7 +38,7 @@ export default function CreateCityForm({
 
   return (
     <form.AppForm>
-      <form.SaveForm>
+      <form.SaveForm isSaving={dialog.isWriting}>
         <FieldGroup>
           <form.AppField name="countryId">
             {(field) => <field.CountrySelectField countries={countries} />}

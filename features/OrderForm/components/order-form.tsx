@@ -4,7 +4,7 @@ import { useStore } from '@tanstack/react-form';
 import { useEffect, useRef, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
-import type { WriteDialog } from '@/features/shared/hooks/use-write-dialog';
+import type { FormWrite } from '@/features/shared/hooks/use-write-dialog';
 import type { ActionResponse } from '@/lib/action-response';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
@@ -28,8 +28,7 @@ export type OrderFormProps = {
   order?: OrderReadModel;
   /** Saves the filled-in Order through the Orders module. */
   action: (input: OrderInputDto) => Promise<ActionResponse<OrderDto>>;
-  /** The dialog the form saves through, which knows whether a save runs from an earlier opening. */
-  dialog: Pick<WriteDialog, 'write' | 'isWriting'>;
+  dialog: FormWrite;
 };
 
 /** Creates or edits an Order. */

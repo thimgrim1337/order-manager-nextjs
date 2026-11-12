@@ -1,9 +1,9 @@
 'use client';
 
 import { MapPinPlus } from 'lucide-react';
+import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
-import useToggle from '../../../shared/hooks/use-toggle';
 import FormDialog from '../ui/form-dialog';
 import CreateCityForm from './create-city-form';
 
@@ -15,21 +15,19 @@ export default function CreateCity({
   countries: CountryReadModel[];
   onCreated: (city: CityReadModel) => void;
 }) {
-  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
+  const dialog = useWriteDialog();
 
   return (
     <FormDialog
-      isOpen={isModalOpen}
-      onOpenChange={setIsModalOpen}
+      isOpen={dialog.isOpen}
+      onOpenChange={dialog.onOpenChange}
       icon={<MapPinPlus />}
-      title={'	Dodawanie nowego miejsca'}
+      title="Dodawanie nowego miejsca"
       triggerAriaLabel="Dodaj nowe miejsce"
       description="Wypełnij wszystkie pola aby dodać nowe miejsce."
       hideTriggerTitle
     >
-      <div className="flex flex-col">
-        <CreateCityForm countries={countries} onCreated={onCreated} onDialogClose={closeModal} />
-      </div>
+      <CreateCityForm countries={countries} onCreated={onCreated} dialog={dialog} />
     </FormDialog>
   );
 }

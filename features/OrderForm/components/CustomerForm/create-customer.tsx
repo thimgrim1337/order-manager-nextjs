@@ -1,9 +1,8 @@
 'use client';
 
 import { HousePlus } from 'lucide-react';
+import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
-
-import useToggle from '../../../shared/hooks/use-toggle';
 import FormDialog from '../ui/form-dialog';
 import CreateCustomerForm from './create-customer-form';
 
@@ -13,19 +12,19 @@ export default function CreateCustomer({
 }: {
   onCreated: (customer: CustomerReadModel) => void;
 }) {
-  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
+  const dialog = useWriteDialog();
 
   return (
     <FormDialog
-      isOpen={isModalOpen}
-      onOpenChange={setIsModalOpen}
+      isOpen={dialog.isOpen}
+      onOpenChange={dialog.onOpenChange}
       icon={<HousePlus />}
       title={'Dodawanie nowego zleceniodawcy'}
       triggerAriaLabel="Dodaj nowego zleceniodawcę"
       description="Wypełnij wszystkie pola aby dodać nowego zleceniodawcę."
       hideTriggerTitle
     >
-      <CreateCustomerForm onCreated={onCreated} onDialogClose={closeModal} />
+      <CreateCustomerForm onCreated={onCreated} dialog={dialog} />
     </FormDialog>
   );
 }

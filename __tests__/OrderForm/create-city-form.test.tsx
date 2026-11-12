@@ -6,10 +6,12 @@ import { userEvent as browserUser } from 'vitest/browser';
 import CreateCityForm from '@/features/OrderForm/components/CityForm/create-city-form';
 import { createCity } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
+import { idleWriteDialog } from '../utils/idle-write-dialog';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
 const onCreated = vi.fn();
+const dialog = idleWriteDialog(onDialogClose);
 
 const setup = () => {
   const user = userEvent.setup();
@@ -17,7 +19,7 @@ const setup = () => {
     <CreateCityForm
       countries={[{ id: 1, code: 'PL', name: 'Poland' }]}
       onCreated={onCreated}
-      onDialogClose={onDialogClose}
+      dialog={dialog}
     />,
   );
 
@@ -78,7 +80,7 @@ describe('CreateCityForm', () => {
           { id: 7, code: 'PL', name: 'Polska' },
         ]}
         onCreated={onCreated}
-        onDialogClose={onDialogClose}
+        dialog={dialog}
       />,
     );
 

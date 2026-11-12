@@ -6,9 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // The browser's own input: user-event's Enter clicks any submit button inside the form, whether
 // the form owns it or not, so it passes where the browser's Enter submits nothing.
 import { userEvent as browserUser } from 'vitest/browser';
+import CreateOrder from '@/features/OrderForm/components/create-order';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
-import { settleWrite } from '@/features/shared/lib/settle-write';
 import {
   createCity,
   createCustomer,
@@ -24,6 +24,7 @@ import { orderReadModel } from '../fixtures/order-read-model';
 import { worker } from '../mocks/browser';
 import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
 import { deferred } from '../utils/deferred';
+import { idleWriteDialog } from '../utils/idle-write-dialog';
 import { openDialog } from '../utils/open-dialog';
 import { orderChoices } from '../utils/order-choices';
 import { pickDate } from '../utils/pick-date';
@@ -115,15 +116,7 @@ const setup = async (props: Partial<OrderFormProps> = {}) => {
 
   const { unmount } = await renderWithQueries(
     <OrderChoicesProvider choices={choices}>
-      <OrderForm
-        action={createOrder}
-        // A dialog whose save starts with this form, as `useWriteDialog`'s does when it opens idle.
-        dialog={{
-          isWriting: false,
-          write: (action, options) => settleWrite(action, { ...options, closeDialog }),
-        }}
-        {...props}
-      />
+      <OrderForm action={createOrder} dialog={idleWriteDialog(closeDialog)} {...props} />
       {/* sonner's own, as in `renderWithToaster`, which can't wrap `renderWithQueries`. */}
       <Toaster />
     </OrderChoicesProvider>,
@@ -295,6 +288,90 @@ describe('OrderForm', () => {
             unloadingPlaces: [plock.id, krakow.id],
           }),
         );
+      });
+
+      it('shows the Customer create running in its dialog reopened mid-save, and picks the Customer once created', async () => {
+        const create = deferred();
+        vi.mocked(createCustomer).mockReturnValueOnce(
+          create.promise.then(() => writeResponse.succeeded(nowaFirma)),
+        );
+        const { user } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await createCustomerInDialog(user);
+        await user.keyboard('{Escape}');
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        const reopened = await openDialog(
+          user,
+          'Dodaj nowego zleceniodawcę',
+          'Dodawanie nowego zleceniodawcy',
+        );
+
+        const sending = within(reopened).getByRole('button', { name: 'Wysyłanie' });
+        expect(sending).toBeDisabled();
+        await user.click(sending);
+        expect(createCustomer).toHaveBeenCalledOnce();
+
+        await act(async () => create.resolve());
+
+        await expect.poll(() => reopened).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('Nowa Firma');
+      });
+
+      it('picks the created Customer when its dialog closed before the create finished', async () => {
+        const create = deferred();
+        vi.mocked(createCustomer).mockReturnValueOnce(
+          create.promise.then(() => writeResponse.succeeded(nowaFirma)),
+        );
+        const { user } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await createCustomerInDialog(user);
+        await user.keyboard('{Escape}');
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        await act(async () => create.resolve());
+
+        await expect.poll(() => screen.getByLabelText('Zleceniodawca')).toHaveValue('Nowa Firma');
+      });
+
+      it('shows the City create running in its dialog reopened mid-save, and offers the City once created', async () => {
+        const create = deferred();
+        vi.mocked(createCity).mockReturnValueOnce(
+          create.promise.then(() => writeResponse.succeeded(krakow)),
+        );
+        const { user } = await setup();
+
+        const dialog = await createCityInDialog(user);
+        await user.keyboard('{Escape}');
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        const reopened = await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
+
+        const sending = within(reopened).getByRole('button', { name: 'Wysyłanie' });
+        expect(sending).toBeDisabled();
+        await user.click(sending);
+        expect(createCity).toHaveBeenCalledOnce();
+
+        await act(async () => create.resolve());
+
+        await expect.poll(() => reopened).not.toBeInTheDocument();
+        expect(await placeChoices(user, 'Miejsca załadunku')).toEqual(['Kraków', 'Płock']);
+        expect(await placeChoices(user, 'Miejsca rozładunku')).toEqual(['Kraków', 'Płock']);
+      });
+
+      it('offers the created City first when its dialog closed before the create finished', async () => {
+        const create = deferred();
+        vi.mocked(createCity).mockReturnValueOnce(
+          create.promise.then(() => writeResponse.succeeded(krakow)),
+        );
+        const { user } = await setup();
+
+        const dialog = await createCityInDialog(user);
+        await user.keyboard('{Escape}');
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        await act(async () => create.resolve());
+
+        expect(await placeChoices(user, 'Miejsca załadunku')).toEqual(['Kraków', 'Płock']);
+        expect(await placeChoices(user, 'Miejsca rozładunku')).toEqual(['Kraków', 'Płock']);
       });
 
       it('offers Cities created one after another newest first, each once', async () => {
@@ -980,5 +1057,37 @@ describe('OrderForm', () => {
         expect(screen.getByRole('button', { name: 'Zapisz' })).toBeDisabled();
       });
     });
+  });
+});
+
+describe('CreateOrder', () => {
+  it('shows the create running, and sends no second one, in its dialog reopened mid-save', async () => {
+    const create = deferred();
+    vi.mocked(createOrder).mockReturnValueOnce(
+      create.promise.then(() => writeResponse.succeeded()),
+    );
+    const heading = { name: 'Dodaj nowe zlecenie' };
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    await renderWithQueries(
+      <OrderChoicesProvider choices={choices}>
+        <CreateOrder />
+      </OrderChoicesProvider>,
+    );
+
+    await openDialog(user, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
+    await fillInNewOrder(user);
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+    await user.keyboard('{Escape}');
+    await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
+    await openDialog(user, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
+
+    const sending = screen.getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(createOrder).toHaveBeenCalledOnce();
+
+    await act(async () => create.resolve());
+
+    await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
   });
 });

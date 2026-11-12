@@ -6,14 +6,16 @@ import { userEvent as browserUser } from 'vitest/browser';
 import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/create-customer-form';
 import { createCustomer } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
+import { idleWriteDialog } from '../utils/idle-write-dialog';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
 const onCreated = vi.fn();
+const dialog = idleWriteDialog(onDialogClose);
 
 const setup = () => {
   const user = userEvent.setup();
-  render(<CreateCustomerForm onCreated={onCreated} onDialogClose={onDialogClose} />);
+  render(<CreateCustomerForm onCreated={onCreated} dialog={dialog} />);
 
   return { user };
 };
