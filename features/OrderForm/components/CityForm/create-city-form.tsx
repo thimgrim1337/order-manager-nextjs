@@ -38,15 +38,8 @@ export default function CreateCityForm({
   });
 
   return (
-    <form
-      id="create-city-form"
-      data-testid="create-city-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-    >
-      <form.AppForm>
+    <form.AppForm>
+      <form.SaveForm>
         <FieldGroup>
           <form.AppField name="countryId">
             {(field) => <field.CountrySelectField countries={countries} />}
@@ -58,8 +51,7 @@ export default function CreateCityForm({
             {(field) => <field.InputField label="Nazwa miejscowości" />}
           </form.AppField>
         </FieldGroup>
-        <form.FormControls id={form.formId} />
-      </form.AppForm>
-    </form>
+      </form.SaveForm>
+    </form.AppForm>
   );
 }

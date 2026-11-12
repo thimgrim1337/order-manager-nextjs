@@ -38,7 +38,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   // Read once per open, so Reset keeps the dates the form opened with.
   const [startingValues] = useState(() => getStartingValues(order));
   const [startingExchangeRate] = useState(() => getStartingExchangeRate(order));
-  const [isEditable, setIsEditable] = useState(!order);
+  const [isLocked, setIsLocked] = useState(!!order);
   // Cities created from this form, newest first, offered in both Places before any search.
   const [createdCities, setCreatedCities] = useState<CityReadModel[]>([]);
 
@@ -46,8 +46,6 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
     ...orderFormOptions,
     defaultValues: startingValues,
     onSubmit: async ({ value }) => {
-      if (exchangeRate.error) return;
-
       await settleWrite(() => action(toOrderInput(value)), {
         closeDialog: onDialogClose,
         successDescription: order
@@ -89,15 +87,13 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   const fieldGroupStyle = 'flex-row pt-5';
 
   return (
-    <form
-      id="order-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-    >
-      <form.AppForm>
-        <fieldset disabled={!isEditable}>
+    <form.AppForm>
+      <form.SaveForm
+        // Saving without the Exchange Rate would leave the Order without its PLN Price.
+        isBlocked={!!exchangeRate.error}
+        lock={order && { isLocked, setIsLocked }}
+      >
+        <fieldset disabled={isLocked}>
           <FieldGroup className="flex-row justify-between">
             <div className="flex-1 flex gap-2 items-end min-w-0">
               <form.AppField
@@ -210,15 +206,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
             </form.AppField>
           </FieldGroup>
         </fieldset>
-        <form.FormControls
-          id={form.formId}
-          isEditButton={!!order}
-          isEditable={isEditable}
-          // Saving without the Exchange Rate would leave the Order without its PLN Price.
-          isBlocked={!!exchangeRate.error}
-          onEditBtnClick={order ? setIsEditable : undefined}
-        />
-      </form.AppForm>
-    </form>
+      </form.SaveForm>
+    </form.AppForm>
   );
 }

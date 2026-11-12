@@ -1,6 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+// The browser's own Enter: user-event's clicks any submit button inside the form, owned or not.
+import { userEvent as browserUser } from 'vitest/browser';
 import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/create-customer-form';
 import { createCustomer } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
@@ -39,6 +41,18 @@ describe('CreateCustomerForm', () => {
 
     expect(createCustomer).toHaveBeenCalledWith({ name: 'DEVIL', tax: 'PL7743241555' });
     await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+  });
+
+  it('creates the Customer once on Enter in its Tax Number', async () => {
+    vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded());
+    const { user } = setup();
+
+    await user.type(screen.getByLabelText('Nazwa zleceniodawcy'), 'DEVIL');
+    await user.type(screen.getByLabelText('NIP'), 'PL7743241555');
+    await browserUser.keyboard('{Enter}');
+
+    await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+    expect(createCustomer).toHaveBeenCalledExactlyOnceWith({ name: 'DEVIL', tax: 'PL7743241555' });
   });
 
   it('sends one Customer while it is being created, however often Zapisz is clicked', async () => {

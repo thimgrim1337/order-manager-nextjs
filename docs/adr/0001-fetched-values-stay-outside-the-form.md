@@ -1,6 +1,6 @@
 # Values fetched for a form stay outside its TanStack Form state
 
-The Order form's Exchange Rate is fetched (or kept from the stored Order) by `useExchangeRate`, a hook the form reads during render; it never enters the form's state. Its error reaches the Currency field through `SelectField`'s `error` prop (`FormControlProps` in `features/OrderForm/components/FormFields/form-base.tsx`), it blocks saving through `FormControls`' `isBlocked`, and `onSubmit` sends the hook's `currencyInfo` in place of the form's. We chose this because TanStack Form takes a value from React state only by copying it in, and the `useEffect`s doing that (plus a validator reading the fetch's outcome from the render's closure) caused both bugs of #14.
+The Order form's Exchange Rate is fetched (or kept from the stored Order) by `useExchangeRate`, a hook the form reads during render; it never enters the form's state. Its error reaches the Currency field through `SelectField`'s `error` prop (`FormControlProps` in `features/OrderForm/components/FormFields/form-base.tsx`), it blocks saving through `SaveForm`'s `isBlocked`, and `onSubmit` sends the hook's `currencyInfo` in place of the form's. We chose this because TanStack Form takes a value from React state only by copying it in, and the `useEffect`s doing that (plus a validator reading the fetch's outcome from the render's closure) caused both bugs of #14.
 
 ## Considered Options
 

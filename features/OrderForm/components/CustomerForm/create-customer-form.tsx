@@ -30,23 +30,15 @@ export default function CreateCustomerForm({
   });
 
   return (
-    <form
-      id="create-customer-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-    >
-      <form.AppForm>
+    <form.AppForm>
+      <form.SaveForm>
         <FieldGroup>
           <form.AppField name="name">
             {(field) => <field.InputField label="Nazwa zleceniodawcy" />}
           </form.AppField>
           <form.AppField name="tax">{(field) => <field.InputField label="NIP" />}</form.AppField>
         </FieldGroup>
-
-        <form.FormControls id={form.formId} />
-      </form.AppForm>
-    </form>
+      </form.SaveForm>
+    </form.AppForm>
   );
 }

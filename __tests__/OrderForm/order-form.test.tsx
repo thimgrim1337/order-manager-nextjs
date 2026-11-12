@@ -3,6 +3,9 @@ import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { Toaster } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+// The browser's own input: user-event's Enter clicks any submit button inside the form, whether
+// the form owns it or not, so it passes where the browser's Enter submits nothing.
+import { userEvent as browserUser } from 'vitest/browser';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import {
@@ -77,6 +80,9 @@ const placeChoices = async (user: UserEvent, label: string) => {
 /** The Customer search answers `answers[term]` for each term, and finds no one for any other. */
 const customerSearchAnswers = (answers: Record<string, CustomerReadModel[]>) =>
   vi.mocked(searchCustomers).mockImplementation(async (term) => answers[term] ?? []);
+
+/** Lets a save that slipped through reach its write, before a test says none was sent. */
+const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 50)));
 
 /** NBP answers with a server error. */
 const failNbp = () =>
@@ -308,6 +314,44 @@ describe('OrderForm', () => {
         ]);
       });
 
+      it('creates the City once on Enter in its name, not saving the Order behind it', async () => {
+        vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded(krakow));
+        const { user } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
+        await user.type(within(dialog).getByLabelText('Kod pocztowy'), krakow.postal);
+        await user.type(within(dialog).getByLabelText('Nazwa miejscowości'), krakow.name);
+        await browserUser.keyboard('{Enter}');
+
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        await settle();
+        expect(createCity).toHaveBeenCalledOnce();
+        expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
+        expect(createOrder).not.toHaveBeenCalled();
+      });
+
+      it('creates the Customer once on Enter in its Tax Number, not saving the Order behind it', async () => {
+        vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded(nowaFirma));
+        const { user } = await setup();
+        await fillInNewOrder(user);
+
+        const dialog = await openDialog(
+          user,
+          'Dodaj nowego zleceniodawcę',
+          'Dodawanie nowego zleceniodawcy',
+        );
+        await user.type(within(dialog).getByLabelText('Nazwa zleceniodawcy'), nowaFirma.name);
+        await user.type(within(dialog).getByLabelText('NIP'), nowaFirma.tax);
+        await browserUser.keyboard('{Enter}');
+
+        await expect.poll(() => dialog).not.toBeInTheDocument();
+        await settle();
+        expect(createCustomer).toHaveBeenCalledOnce();
+        expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
+        expect(createOrder).not.toHaveBeenCalled();
+      });
+
       it('offers no new City when the create is refused', async () => {
         vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityTaken'));
         const { user } = await setup();
@@ -318,6 +362,19 @@ describe('OrderForm', () => {
         expect(await placeChoices(user, 'Miejsca załadunku')).toEqual(['Płock']);
         expect(await placeChoices(user, 'Miejsca rozładunku')).toEqual(['Płock']);
       });
+    });
+
+    it('saves the Order once on Enter in its Order Number', async () => {
+      const { user, onDialogClose } = await setup();
+
+      await fillInNewOrder(user);
+      await user.click(screen.getByLabelText('Numer zlecenia'));
+      await browserUser.keyboard('{Enter}');
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(createOrder).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({ orderNr: 'ZL-12' }),
+      );
     });
 
     it('sends one Order while it is being saved, however often Zapisz is clicked', async () => {
@@ -363,6 +420,21 @@ describe('OrderForm', () => {
 
       expect(screen.getByLabelText('Waluta')).toHaveAttribute('aria-invalid', 'true');
       expect(screen.getByRole('button', { name: 'Zapisz' })).toBeDisabled();
+    });
+
+    it('does not save on Enter when NBP fails, as the disabled Zapisz does not', async () => {
+      failNbp();
+      const { user } = await setup();
+
+      await fillInNewOrder(user);
+      await user.click(screen.getByLabelText('Waluta'));
+      await user.click(await screen.findByRole('option', { name: 'EUR' }));
+      await screen.findByText('Nie udało się pobrać kursu walut.');
+      await user.click(screen.getByLabelText('Numer zlecenia'));
+      await browserUser.keyboard('{Enter}');
+
+      await settle();
+      expect(createOrder).not.toHaveBeenCalled();
     });
 
     it("saves a EUR Order unloading after the new year's holiday with the rate from before it", async () => {
@@ -573,6 +645,34 @@ describe('OrderForm', () => {
         loadingPlaces: [plock.id],
         unloadingPlaces: [plock.id],
       });
+    });
+
+    it('unlocks on Edytuj without saving the Order', async () => {
+      const { onDialogClose } = await editSetup();
+
+      // The browser's own click, whose activation a submit button left in Edytuj's place would run.
+      await browserUser.click(screen.getByRole('button', { name: 'Edytuj' }));
+
+      expect(screen.getByLabelText('Cena w walucie')).toBeEnabled();
+      expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
+      expect(updateOrder).not.toHaveBeenCalled();
+      expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
+    it('saves the changed Order once on Enter in its Price', async () => {
+      const { user, onDialogClose } = await editSetup();
+
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      const price = screen.getByLabelText('Cena w walucie');
+      await user.clear(price);
+      await user.type(price, '2500');
+      await browserUser.keyboard('{Enter}');
+
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      expect(updateOrder).toHaveBeenCalledExactlyOnceWith(
+        7,
+        expect.objectContaining({ priceCurrency: '2500' }),
+      );
     });
 
     it('offers a City created from it ahead of its saved Places beyond the preloaded ones', async () => {

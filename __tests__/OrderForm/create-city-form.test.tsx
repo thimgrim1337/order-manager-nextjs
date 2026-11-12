@@ -1,6 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+// The browser's own Enter: user-event's clicks any submit button inside the form, owned or not.
+import { userEvent as browserUser } from 'vitest/browser';
 import CreateCityForm from '@/features/OrderForm/components/CityForm/create-city-form';
 import { createCity } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
@@ -48,6 +50,22 @@ describe('CreateCityForm', () => {
 
     expect(createCity).toHaveBeenCalledWith({ name: 'Kraków', postal: '30-001', countryId: 1 });
     await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+  });
+
+  it('creates the City once on Enter in its name', async () => {
+    vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded());
+    const { user } = setup();
+
+    await user.type(screen.getByLabelText('Kod pocztowy'), '30-001');
+    await user.type(screen.getByLabelText('Nazwa miejscowości'), 'Kraków');
+    await browserUser.keyboard('{Enter}');
+
+    await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+    expect(createCity).toHaveBeenCalledExactlyOnceWith({
+      name: 'Kraków',
+      postal: '30-001',
+      countryId: 1,
+    });
   });
 
   it('defaults the City to Poland, whatever its id', async () => {
