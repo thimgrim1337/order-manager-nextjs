@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { userEvent as browserUser } from 'vitest/browser';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
+import { settleWrite } from '@/features/shared/lib/settle-write';
 import {
   createCity,
   createCustomer,
@@ -110,17 +111,25 @@ afterEach(() => {
 
 const setup = async (props: Partial<OrderFormProps> = {}) => {
   const user = userEvent.setup({ pointerEventsCheck: 0 });
-  const onDialogClose = vi.fn();
+  const closeDialog = vi.fn();
 
   const { unmount } = await renderWithQueries(
     <OrderChoicesProvider choices={choices}>
-      <OrderForm action={createOrder} onDialogClose={onDialogClose} {...props} />
+      <OrderForm
+        action={createOrder}
+        // A dialog whose save starts with this form, as `useWriteDialog`'s does when it opens idle.
+        dialog={{
+          isWriting: false,
+          write: (action, options) => settleWrite(action, { ...options, closeDialog }),
+        }}
+        {...props}
+      />
       {/* sonner's own, as in `renderWithToaster`, which can't wrap `renderWithQueries`. */}
       <Toaster />
     </OrderChoicesProvider>,
   );
 
-  return { user, onDialogClose, unmount };
+  return { user, closeDialog, unmount };
 };
 
 /** Fills in every field of a new PLN Order, ZL-12 for DEVIL from Płock to Płock on 12–13 November. */
@@ -143,13 +152,13 @@ const fillInNewOrder = async (user: UserEvent) => {
 describe('OrderForm', () => {
   describe('create', () => {
     it('submits a new PLN Order to the Orders module and closes the dialog', async () => {
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
 
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(createOrder).toHaveBeenCalledExactlyOnceWith({
         orderNr: 'ZL-12',
         startDate: '2026-11-12',
@@ -167,13 +176,13 @@ describe('OrderForm', () => {
 
     it("shows a refused Order's reason in a toast and keeps the dialog open", async () => {
       vi.mocked(createOrder).mockResolvedValueOnce(writeResponse.refused('UnknownTruck'));
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
       await expect.poll(() => screen.queryByText('Wybrany pojazd nie istnieje.')).toBeVisible();
-      expect(onDialogClose).not.toHaveBeenCalled();
+      expect(closeDialog).not.toHaveBeenCalled();
     });
 
     describe('an Order Number the Customer already uses', () => {
@@ -189,22 +198,22 @@ describe('OrderForm', () => {
       };
 
       it('shows the error on the Order Number field instead of a toast', async () => {
-        const { onDialogClose } = await saveTakenOrderNr();
+        const { closeDialog } = await saveTakenOrderNr();
 
         expect(screen.getByLabelText('Numer zlecenia')).toHaveAttribute('aria-invalid', 'true');
         expect(screen.getAllByText(ORDER_NR_TAKEN)).toHaveLength(1);
         expect(screen.queryByText('Niepowodzenie')).toBeNull();
-        expect(onDialogClose).not.toHaveBeenCalled();
+        expect(closeDialog).not.toHaveBeenCalled();
       });
 
       it('clears the error and saves once the Order Number changes', async () => {
-        const { user, onDialogClose } = await saveTakenOrderNr();
+        const { user, closeDialog } = await saveTakenOrderNr();
 
         await user.type(screen.getByLabelText('Numer zlecenia'), 'A');
 
         expect(screen.queryByText(ORDER_NR_TAKEN)).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
         expect(createOrder).toHaveBeenLastCalledWith(
           expect.objectContaining({ orderNr: 'ZL-12A' }),
         );
@@ -225,7 +234,7 @@ describe('OrderForm', () => {
     describe('creating a Customer or a City from the form', () => {
       it('picks the created Customer', async () => {
         vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded(nowaFirma));
-        const { user, onDialogClose } = await setup();
+        const { user, closeDialog } = await setup();
         await fillInNewOrder(user);
 
         const dialog = await createCustomerInDialog(user);
@@ -233,7 +242,7 @@ describe('OrderForm', () => {
         await expect.poll(() => dialog).not.toBeInTheDocument();
         expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('Nowa Firma');
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
         expect(createOrder).toHaveBeenCalledWith(
           expect.objectContaining({ customerId: nowaFirma.id }),
         );
@@ -267,7 +276,7 @@ describe('OrderForm', () => {
 
       it('offers the created City first in both Places, picking it in neither', async () => {
         vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded(krakow));
-        const { user, onDialogClose } = await setup();
+        const { user, closeDialog } = await setup();
         await fillInNewOrder(user);
 
         const dialog = await createCityInDialog(user);
@@ -279,7 +288,7 @@ describe('OrderForm', () => {
         await user.click(screen.getByRole('option', { name: 'Kraków' }));
         await user.keyboard('{Escape}');
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
         expect(createOrder).toHaveBeenCalledWith(
           expect.objectContaining({
             loadingPlaces: [plock.id],
@@ -373,13 +382,13 @@ describe('OrderForm', () => {
     });
 
     it('saves the Order once on Enter in its Order Number', async () => {
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       await user.click(screen.getByLabelText('Numer zlecenia'));
       await browserUser.keyboard('{Enter}');
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(createOrder).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({ orderNr: 'ZL-12' }),
       );
@@ -404,7 +413,7 @@ describe('OrderForm', () => {
     });
 
     it('submits a new non-PLN Order without an Exchange Rate, which the Orders module works out', async () => {
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       await user.click(screen.getByLabelText('Waluta'));
@@ -412,7 +421,7 @@ describe('OrderForm', () => {
       await screen.findByText('Tabela nr 107/NBP/A z dnia 2021-01-15, 1 EUR = 4.25 PLN');
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(createOrder).toHaveBeenCalledWith(expect.objectContaining({ currencyId: 2 }));
       expect(vi.mocked(createOrder).mock.calls[0]?.[0]).not.toHaveProperty('currencyInfo');
     });
@@ -454,7 +463,7 @@ describe('OrderForm', () => {
           { no: '003/A/NBP/2027', mid: 4.25, effectiveDate: '2027-01-07' },
         ]),
       );
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       await pickDate(user, 'Data rozładunku', 7);
@@ -465,7 +474,7 @@ describe('OrderForm', () => {
       await screen.findByText('Tabela nr 002/A/NBP/2027 z dnia 2027-01-05, 1 EUR = 4.24 PLN');
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(createOrder).toHaveBeenCalledWith(
         expect.objectContaining({
           endDate: '2027-01-07',
@@ -475,7 +484,7 @@ describe('OrderForm', () => {
     });
 
     it('keeps showing a Customer found by searching once the search no longer returns them', async () => {
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       const customerField = screen.getByLabelText('Zleceniodawca');
@@ -487,21 +496,21 @@ describe('OrderForm', () => {
       await vi.waitFor(() => expect(searchCustomers).toHaveBeenLastCalledWith('ANGEL'));
       await expect.poll(() => customerField).toHaveValue('ANGEL');
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(createOrder).toHaveBeenCalledWith(expect.objectContaining({ customerId: angel.id }));
     });
 
     it('searches Cities by name and picks one beyond the preloaded ones', async () => {
       const zgierz = { ...plock, id: 11, name: 'Zgierz', postal: '95-100' };
       vi.mocked(searchCities).mockResolvedValue([zgierz]);
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       await user.type(screen.getByLabelText('Miejsca rozładunku'), 'Zgi');
       await user.click(await screen.findByRole('option', { name: 'Zgierz' }));
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(searchCities).toHaveBeenCalledWith('Zgi');
       expect(createOrder).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -576,7 +585,7 @@ describe('OrderForm', () => {
     });
 
     it('keeps the picked Driver when the picked Truck has no Regular Driver', async () => {
-      const { user, onDialogClose } = await setup();
+      const { user, closeDialog } = await setup();
 
       await fillInNewOrder(user);
       await user.click(screen.getByLabelText('Kierowca'));
@@ -586,7 +595,7 @@ describe('OrderForm', () => {
 
       expect(screen.getByLabelText('Kierowca')).toHaveValue('Adam Nowak');
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(createOrder).toHaveBeenCalledWith(
         expect.objectContaining({ truckId: 2, driverId: 2 }),
       );
@@ -660,7 +669,7 @@ describe('OrderForm', () => {
     });
 
     it('starts locked on the Order and submits the changed Order under its id', async () => {
-      const { user, onDialogClose } = await editSetup();
+      const { user, closeDialog } = await editSetup();
 
       const price = screen.getByLabelText('Cena w walucie');
       expect(price).toBeDisabled();
@@ -670,7 +679,7 @@ describe('OrderForm', () => {
 
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(updateOrder).toHaveBeenCalledExactlyOnceWith(7, {
         orderNr: 'ZL-7',
         startDate: '2026-11-12',
@@ -687,7 +696,7 @@ describe('OrderForm', () => {
     });
 
     it('unlocks on Edytuj without saving the Order', async () => {
-      const { onDialogClose } = await editSetup();
+      const { closeDialog } = await editSetup();
 
       // The browser's own click, whose activation a submit button left in Edytuj's place would run.
       await browserUser.click(screen.getByRole('button', { name: 'Edytuj' }));
@@ -695,7 +704,7 @@ describe('OrderForm', () => {
       expect(screen.getByLabelText('Cena w walucie')).toBeEnabled();
       expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
       expect(updateOrder).not.toHaveBeenCalled();
-      expect(onDialogClose).not.toHaveBeenCalled();
+      expect(closeDialog).not.toHaveBeenCalled();
     });
 
     it('restores the values it opened with on Reset and locks again', async () => {
@@ -715,7 +724,7 @@ describe('OrderForm', () => {
 
     it('stays editable with what the user entered when the save is refused', async () => {
       vi.mocked(updateOrder).mockResolvedValueOnce(writeResponse.refused('UnknownTruck'));
-      const { user, onDialogClose } = await editSetup();
+      const { user, closeDialog } = await editSetup();
 
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));
       const price = screen.getByLabelText('Cena w walucie');
@@ -727,11 +736,11 @@ describe('OrderForm', () => {
       expect(price).toHaveValue(2500);
       expect(price).toBeEnabled();
       expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
-      expect(onDialogClose).not.toHaveBeenCalled();
+      expect(closeDialog).not.toHaveBeenCalled();
     });
 
     it('saves the changed Order once on Enter in its Price', async () => {
-      const { user, onDialogClose } = await editSetup();
+      const { user, closeDialog } = await editSetup();
 
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));
       const price = screen.getByLabelText('Cena w walucie');
@@ -739,7 +748,7 @@ describe('OrderForm', () => {
       await user.type(price, '2500');
       await browserUser.keyboard('{Enter}');
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(updateOrder).toHaveBeenCalledExactlyOnceWith(
         7,
         expect.objectContaining({ priceCurrency: '2500' }),
@@ -759,7 +768,7 @@ describe('OrderForm', () => {
 
     it('removes a picked Unloading Place by its named button', async () => {
       const zgierz = { ...plock, id: 11, name: 'Zgierz', postal: '95-100' };
-      const { user, onDialogClose } = await editSetup({
+      const { user, closeDialog } = await editSetup({
         ...order,
         loadingPlaces: [zgierz],
         unloadingPlaces: [plock, zgierz],
@@ -769,7 +778,7 @@ describe('OrderForm', () => {
       await user.click(screen.getByRole('button', { name: 'Usuń Płock' }));
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(updateOrder).toHaveBeenCalledWith(
         7,
         expect.objectContaining({ loadingPlaces: [zgierz.id], unloadingPlaces: [zgierz.id] }),
@@ -777,7 +786,7 @@ describe('OrderForm', () => {
     });
 
     it('shows its Customer beyond the preloaded ones, offering the preloaded Customers', async () => {
-      const { user, onDialogClose } = await editSetup({ ...order, customer: angel });
+      const { user, closeDialog } = await editSetup({ ...order, customer: angel });
 
       expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('ANGEL');
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));
@@ -785,7 +794,7 @@ describe('OrderForm', () => {
       await user.click(await screen.findByRole('option', { name: 'DEVIL' }));
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(updateOrder).toHaveBeenCalledWith(
         7,
         expect.objectContaining({ customerId: customer.id }),
@@ -834,7 +843,7 @@ describe('OrderForm', () => {
         driverId: null,
       };
       const driver = { id: 31, firstName: 'Ewa', lastName: 'Zielińska' };
-      const { user, onDialogClose } = await editSetup(
+      const { user, closeDialog } = await editSetup(
         orderReadModel({ ...orderFields, truck, driver }),
       );
 
@@ -843,7 +852,7 @@ describe('OrderForm', () => {
       await user.click(screen.getByRole('button', { name: 'Edytuj' }));
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+      await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
       expect(updateOrder).toHaveBeenCalledWith(
         7,
         expect.objectContaining({ truckId: 30, driverId: 31 }),
@@ -902,7 +911,7 @@ describe('OrderForm', () => {
 
       it('saves with its stored Exchange Rate while NBP is down', async () => {
         failNbp();
-        const { user, onDialogClose } = await editSetup(eurOrder);
+        const { user, closeDialog } = await editSetup(eurOrder);
 
         await user.click(screen.getByRole('button', { name: 'Edytuj' }));
         await user.clear(screen.getByLabelText('Cena w walucie'));
@@ -910,7 +919,7 @@ describe('OrderForm', () => {
         expect(screen.getByText('Cena w PLN: 8400.00')).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
         expect(updateOrder).toHaveBeenCalledWith(
           7,
           expect.objectContaining({
@@ -922,7 +931,7 @@ describe('OrderForm', () => {
 
       it('keeps its stored Exchange Rate again when the Unloading Date changes back', async () => {
         failNbp();
-        const { user, onDialogClose } = await editSetup(eurOrder);
+        const { user, closeDialog } = await editSetup(eurOrder);
 
         await user.click(screen.getByRole('button', { name: 'Edytuj' }));
         await pickDate(user, 'Data rozładunku', 20);
@@ -931,7 +940,7 @@ describe('OrderForm', () => {
         await screen.findByText('Kurs z dnia 2026-10-29, 1 EUR = 4.2 PLN');
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
         expect(updateOrder).toHaveBeenCalledWith(
           7,
           expect.objectContaining({ endDate: '2026-11-13' }),
@@ -940,7 +949,7 @@ describe('OrderForm', () => {
 
       it('fetches a new Exchange Rate when its Unloading Date changes', async () => {
         nbpHasEurRateOnly();
-        const { user, onDialogClose } = await editSetup(eurOrder);
+        const { user, closeDialog } = await editSetup(eurOrder);
 
         await user.click(screen.getByRole('button', { name: 'Edytuj' }));
         await pickDate(user, 'Data rozładunku', 20);
@@ -948,7 +957,7 @@ describe('OrderForm', () => {
         expect(screen.getByText('Cena w PLN: 4250.00')).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Zapisz' }));
 
-        await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalled());
+        await vi.waitFor(() => expect(closeDialog).toHaveBeenCalled());
         expect(updateOrder).toHaveBeenCalledWith(
           7,
           expect.objectContaining({

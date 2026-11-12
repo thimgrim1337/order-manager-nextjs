@@ -2,6 +2,7 @@
 
 import { Pen } from 'lucide-react';
 import Dialog from '@/features/shared/components/ui/dialog';
+import type { WriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import { updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import OrderForm from './order-form';
@@ -9,26 +10,20 @@ import OrderForm from './order-form';
 /** The edit-Order dialog: the Order form on `order`, saving it back under its id. */
 export default function EditOrderDialog({
   order,
-  isModalOpen,
-  onOpenChange,
+  dialog,
 }: {
   order: OrderReadModel;
-  isModalOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  dialog: WriteDialog;
 }) {
   return (
     <Dialog
-      isOpen={isModalOpen}
-      onOpenChange={onOpenChange}
+      isOpen={dialog.isOpen}
+      onOpenChange={dialog.onOpenChange}
       icon={<Pen />}
       title={`Edycja zlecenia ${order.orderNr}`}
       className="min-w-5xl"
     >
-      <OrderForm
-        order={order}
-        action={(input) => updateOrder(order.id, input)}
-        onDialogClose={() => onOpenChange(false)}
-      />
+      <OrderForm order={order} action={(input) => updateOrder(order.id, input)} dialog={dialog} />
     </Dialog>
   );
 }

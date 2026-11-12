@@ -1,4 +1,4 @@
-import { type ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -6,17 +6,15 @@ import {
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
 import EditOrderDialog from '@/features/OrderForm/components/edit-order-dialog';
+import { useWriteDialog, type WriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import ContextMenuRemove from './context-menu-remove';
 import ContextMenuStatus from './context-menu-status';
 
 export type ContextMenuOptionProps = {
   order: OrderReadModel;
-  isModalOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  dialog: WriteDialog;
 };
-
-type OpenDialog = 'edit' | 'status' | 'remove' | null;
 
 export default function OrdersContextMenu({
   order,
@@ -25,34 +23,25 @@ export default function OrdersContextMenu({
   order: OrderReadModel;
   children: ReactElement;
 }) {
-  const [openDialog, setOpenDialog] = useState<OpenDialog>(null);
-
-  // A late close from one dialog must not close another that opened since.
-  const dialogProps = (dialog: Exclude<OpenDialog, null>): ContextMenuOptionProps => ({
-    order,
-    isModalOpen: openDialog === dialog,
-    onOpenChange: (open) =>
-      setOpenDialog((current) => {
-        if (open) return dialog;
-        return current === dialog ? null : current;
-      }),
-  });
+  const editDialog = useWriteDialog();
+  const statusDialog = useWriteDialog();
+  const removeDialog = useWriteDialog();
 
   return (
     <>
       <ContextMenu>
         <ContextMenuTrigger render={children} />
         <ContextMenuContent>
-          <ContextMenuItem onClick={() => setOpenDialog('status')}>Status</ContextMenuItem>
-          <ContextMenuItem onClick={() => setOpenDialog('edit')}>Edycja</ContextMenuItem>
-          <ContextMenuItem variant="destructive" onClick={() => setOpenDialog('remove')}>
+          <ContextMenuItem onClick={statusDialog.open}>Status</ContextMenuItem>
+          <ContextMenuItem onClick={editDialog.open}>Edycja</ContextMenuItem>
+          <ContextMenuItem variant="destructive" onClick={removeDialog.open}>
             Usuń
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-      <EditOrderDialog {...dialogProps('edit')} />
-      <ContextMenuStatus {...dialogProps('status')} />
-      <ContextMenuRemove {...dialogProps('remove')} />
+      <EditOrderDialog order={order} dialog={editDialog} />
+      <ContextMenuStatus order={order} dialog={statusDialog} />
+      <ContextMenuRemove order={order} dialog={removeDialog} />
     </>
   );
 }

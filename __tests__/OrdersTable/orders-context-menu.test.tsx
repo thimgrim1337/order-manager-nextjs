@@ -1,11 +1,15 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Toaster } from 'sonner';
 import { describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
-import { changeOrderStatus, removeOrder } from '@/lib/actions';
+import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
+import { changeOrderStatus, removeOrder, updateOrder } from '@/lib/actions';
 import { orderReadModel } from '../fixtures/order-read-model';
 import { deferred } from '../utils/deferred';
+import { orderChoices } from '../utils/order-choices';
 import { renderWithToaster } from '../utils/render-with-toaster';
+import { renderWithQueries } from '../utils/wrapper';
 import { writeResponse } from '../utils/write-response';
 
 const order = orderReadModel({ orderNr: 'ZL-001' });
@@ -225,5 +229,109 @@ describe('OrdersContextMenu', () => {
     await expect
       .poll(() => screen.queryByRole('heading', { name: 'Czy jesteś pewny ?' }))
       .toBeNull();
+  });
+
+  it('keeps a Remove dialog opened since open when the Status change closed mid-write succeeds', async () => {
+    const save = deferred();
+    vi.mocked(changeOrderStatus).mockReturnValueOnce(
+      save.promise.then(() => writeResponse.succeeded()),
+    );
+    const { user } = setup();
+
+    await openStatusDialog(user);
+    await user.click(await screen.findByRole('button', { name: 'zakończone' }));
+    await user.keyboard('{Escape}');
+    await expect
+      .poll(() => screen.queryByRole('heading', { name: 'Zmiana statusu zlecenia' }))
+      .toBeNull();
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Usuń' }));
+    expect(await screen.findByRole('heading', { name: 'Czy jesteś pewny ?' })).toBeVisible();
+
+    await act(async () => save.resolve());
+
+    await expect
+      .poll(() => screen.queryByText('Zlecenie ZL-001 ma teraz status: zakończone.'))
+      .toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Czy jesteś pewny ?' })).toBeVisible();
+  });
+});
+
+describe('OrdersContextMenu edit', () => {
+  const editHeading = { name: 'Edycja zlecenia ZL-001' };
+
+  const editSetup = async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    await renderWithQueries(
+      <OrderChoicesProvider choices={orderChoices()}>
+        <OrdersContextMenu order={order}>
+          <div>ZL-001 row</div>
+        </OrdersContextMenu>
+        <Toaster />
+      </OrderChoicesProvider>,
+    );
+    return { user };
+  };
+
+  const openEditDialog = async (user: ReturnType<typeof userEvent.setup>) => {
+    await user.pointer({ keys: '[MouseRight]', target: screen.getByText('ZL-001 row') });
+    await user.click(await screen.findByRole('menuitem', { name: 'Edycja' }));
+    expect(await screen.findByRole('heading', editHeading)).toBeVisible();
+  };
+
+  /** Saves the Order, then closes its dialog with Escape while the save still runs, and reopens it. */
+  const reopenMidSave = async (user: ReturnType<typeof userEvent.setup>) => {
+    await openEditDialog(user);
+    await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+    await user.keyboard('{Escape}');
+    await expect.poll(() => screen.queryByRole('heading', editHeading)).toBeNull();
+    await openEditDialog(user);
+  };
+
+  it('shows the save running, and sends no second one, in an edit dialog reopened mid-save', async () => {
+    const save = deferred();
+    vi.mocked(updateOrder).mockReturnValueOnce(save.promise.then(() => writeResponse.succeeded()));
+    const { user } = await editSetup();
+
+    await reopenMidSave(user);
+
+    const sending = screen.getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(updateOrder).toHaveBeenCalledOnce();
+
+    await act(async () => save.resolve());
+
+    await expect.poll(() => screen.queryByRole('heading', editHeading)).toBeNull();
+  });
+
+  it('leaves an edit dialog reopened mid-save open and editable when the save is refused', async () => {
+    const save = deferred();
+    vi.mocked(updateOrder).mockReturnValueOnce(
+      save.promise.then(() => writeResponse.refused('NotFound')),
+    );
+    const { user } = await editSetup();
+
+    await reopenMidSave(user);
+    await act(async () => save.resolve());
+
+    await expect.poll(() => screen.queryByText('Zlecenie nie istnieje.')).toBeVisible();
+    expect(screen.getByRole('heading', editHeading)).toBeVisible();
+    await expect.poll(() => screen.queryByRole('button', { name: 'Zapisz' })).toBeEnabled();
+    expect(screen.getByLabelText('Cena w walucie')).toBeEnabled();
+  });
+
+  it('toasts a taken Order Number refused after the edit dialog was reopened, whose form never held it', async () => {
+    const save = deferred();
+    vi.mocked(updateOrder).mockReturnValueOnce(
+      save.promise.then(() => writeResponse.refused('OrderNrTaken')),
+    );
+    const { user } = await editSetup();
+
+    await reopenMidSave(user);
+    await act(async () => save.resolve());
+
+    await expect.poll(() => screen.queryByText('Niepowodzenie')).toBeVisible();
   });
 });

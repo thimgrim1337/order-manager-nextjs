@@ -1,10 +1,10 @@
 'use client';
 
 import { useStore } from '@tanstack/react-form';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
-import { settleWrite } from '@/features/shared/lib/settle-write';
+import type { WriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import type { ActionResponse } from '@/lib/action-response';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
@@ -28,11 +28,12 @@ export type OrderFormProps = {
   order?: OrderReadModel;
   /** Saves the filled-in Order through the Orders module. */
   action: (input: OrderInputDto) => Promise<ActionResponse<OrderDto>>;
-  onDialogClose: () => void;
+  /** The dialog the form saves through, which knows whether a save runs from an earlier opening. */
+  dialog: Pick<WriteDialog, 'write' | 'isWriting'>;
 };
 
 /** Creates or edits an Order. */
-export default function OrderForm({ order, action, onDialogClose }: OrderFormProps) {
+export default function OrderForm({ order, action, dialog }: OrderFormProps) {
   const { cities, countries, currencies, customers, drivers, trucks } = useOrderChoices();
 
   // Read once per open, so Reset keeps the dates the form opened with.
@@ -40,18 +41,25 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   const [startingExchangeRate] = useState(() => getStartingExchangeRate(order));
   // Cities created from this form, newest first, offered in both Places before any search.
   const [createdCities, setCreatedCities] = useState<CityReadModel[]>([]);
+  // A save refused after its dialog closed has no field left to show on, so it gets the toast.
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const form = useAppForm({
     ...orderFormOptions,
     defaultValues: startingValues,
     onSubmit: async ({ value }) => {
-      await settleWrite(() => action(toOrderInput(value)), {
-        closeDialog: onDialogClose,
+      await dialog.write(() => action(toOrderInput(value)), {
         successDescription: order
           ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
           : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
         showOnField: ({ reason, message }) => {
-          if (reason !== 'OrderNrTaken') return false;
+          if (reason !== 'OrderNrTaken' || !isMounted.current) return false;
           setOrderNrRefusal(message);
           return true;
         },
@@ -90,6 +98,7 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
       <form.SaveForm
         // Saving without the Exchange Rate would leave the Order without its PLN Price.
         isBlocked={!!exchangeRate.error}
+        isSaving={dialog.isWriting}
         startsLocked={!!order}
       >
         <FieldGroup className="flex-row justify-between">

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import TimelineOrder from '@/features/OrdersTimeline/components/timeline-order';
@@ -6,6 +6,7 @@ import { OrderChoicesProvider } from '@/features/shared/context/order-choices-co
 import { updateOrder } from '@/lib/actions';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
 import { orderReadModel } from '../fixtures/order-read-model';
+import { deferred } from '../utils/deferred';
 import { orderChoices } from '../utils/order-choices';
 import { week } from '../utils/week';
 import { renderWithQueries } from '../utils/wrapper';
@@ -153,5 +154,38 @@ describe('Timeline row edit', () => {
     await expect
       .poll(() => screen.queryByRole('heading', { name: 'Edycja zlecenia ZL/1' }))
       .toBeNull();
+  });
+
+  it('shows the save running, and sends no second one, in an edit dialog reopened mid-save', async () => {
+    const save = deferred();
+    vi.mocked(updateOrder).mockReturnValueOnce(save.promise.then(() => writeResponse.succeeded()));
+    const heading = { name: 'Edycja zlecenia ZL/1' };
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    await renderWithQueries(
+      <OrderChoicesProvider choices={orderChoices()}>
+        <table>
+          <tbody>
+            <TimelineOrder week={w44} order={orderReadModel()} />
+          </tbody>
+        </table>
+      </OrderChoicesProvider>,
+    );
+
+    await user.click(screen.getByRole('row'));
+    await user.click(await screen.findByRole('button', { name: 'Edytuj' }));
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+    await user.keyboard('{Escape}');
+    await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
+    await user.click(screen.getByRole('row'));
+    expect(await screen.findByRole('heading', heading)).toBeVisible();
+
+    const sending = screen.getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(updateOrder).toHaveBeenCalledOnce();
+
+    await act(async () => save.resolve());
+
+    await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
   });
 });

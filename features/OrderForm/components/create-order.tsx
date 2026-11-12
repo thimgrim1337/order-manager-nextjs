@@ -1,24 +1,24 @@
 'use client';
 
 import { FilePlus } from 'lucide-react';
+import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import { createOrder } from '@/lib/actions';
-import useToggle from '../../shared/hooks/use-toggle';
 import OrderForm from './order-form';
 import FormDialog from './ui/form-dialog';
 
 export default function CreateOrder() {
-  const [isModalOpen, { setValue: setIsModalOpen, setFalse: closeModal }] = useToggle();
+  const dialog = useWriteDialog();
 
   return (
     <FormDialog
-      isOpen={isModalOpen}
-      onOpenChange={setIsModalOpen}
+      isOpen={dialog.isOpen}
+      onOpenChange={dialog.onOpenChange}
       icon={<FilePlus />}
       title={'Dodaj nowe zlecenie'}
       description="Wypełnij wszystkie pola aby dodać nowe zlecenie."
       className="min-w-5xl"
     >
-      <OrderForm action={createOrder} onDialogClose={closeModal} />
+      <OrderForm action={createOrder} dialog={dialog} />
     </FormDialog>
   );
 }

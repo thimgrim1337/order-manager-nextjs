@@ -10,11 +10,17 @@ import { useEditLock } from '../../hooks/use-edit-lock';
 export default function SaveForm({
   children,
   isBlocked = false,
+  isSaving = false,
   startsLocked = false,
 }: {
   children: ReactNode;
   /** Keeps a valid form from saving, for what its fields don't validate. */
   isBlocked?: boolean;
+  /**
+   * Whether a save runs that outlives the form, as a dialog's write does when it closes and
+   * reopens mid-save: the form opens saving, and saves nothing more until it settles.
+   */
+  isSaving?: boolean;
   /**
    * Opens with its fields locked until the user asks to edit them: Edytuj shows in place of Zapisz
    * and unlocks them, and Reset locks them again.
@@ -24,6 +30,7 @@ export default function SaveForm({
   const form = useFormContext();
   const lock = useEditLock({
     startsLocked,
+    isSaving,
     submit: () => form.handleSubmit(),
     restore: () => form.reset(),
   });
@@ -48,7 +55,11 @@ export default function SaveForm({
                 Edytuj
               </Button>
             ) : (
-              <Button key="save" type="submit" disabled={!canSubmit || isBlocked}>
+              <Button
+                key="save"
+                type="submit"
+                disabled={!canSubmit || isBlocked || lock.state === 'saving'}
+              >
                 {lock.state === 'saving' ? 'Wysyłanie' : 'Zapisz'}
               </Button>
             )}

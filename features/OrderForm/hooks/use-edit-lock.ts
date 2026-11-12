@@ -18,19 +18,26 @@ type EditLock = {
 
 /**
  * A form's edit lock: it opens `locked` when `startsLocked` (an existing Order), `editing`
- * otherwise. `submit` and `restore` are the form's own, so the lock knows nothing of its values.
+ * otherwise, and `saving` while `isSaving` (a save from before the form opened, which leaves it
+ * `editing` once settled). `submit` and `restore` are the form's own, so the lock knows nothing of
+ * its values.
  */
 export function useEditLock({
   startsLocked,
+  isSaving,
   submit,
   restore,
 }: {
   startsLocked: boolean;
+  isSaving: boolean;
   submit: () => Promise<void>;
   restore: () => void;
 }): EditLock {
   const startingState = startsLocked ? 'locked' : 'editing';
-  const [state, setState] = useState<EditLockState>(startingState);
+  const [ownState, setState] = useState<EditLockState>(() =>
+    isSaving ? 'editing' : startingState,
+  );
+  const state = isSaving && ownState === 'editing' ? 'saving' : ownState;
 
   return {
     state,
