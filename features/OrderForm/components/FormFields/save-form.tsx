@@ -1,26 +1,33 @@
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { useFormContext } from '../../context/form-context';
+import { useEditLock } from '../../hooks/use-edit-lock';
 
 /**
- * The form's element and its controls: it saves only through its own submit, whether the user
- * clicks Zapisz or presses Enter in a field.
+ * The form's element and its controls, rendering its edit lock (`useEditLock`): it saves only
+ * through its own submit, whether the user clicks Zapisz or presses Enter in a field.
  */
 export default function SaveForm({
   children,
   isBlocked = false,
-  lock,
+  startsLocked = false,
 }: {
   children: ReactNode;
   /** Keeps a valid form from saving, for what its fields don't validate. */
   isBlocked?: boolean;
   /**
-   * Fields locked until the user asks to edit them: Edytuj shows in place of Zapisz and unlocks
-   * them, and Reset locks them again.
+   * Opens with its fields locked until the user asks to edit them: Edytuj shows in place of Zapisz
+   * and unlocks them, and Reset locks them again.
    */
-  lock?: { isLocked: boolean; setIsLocked: (isLocked: boolean) => void };
+  startsLocked?: boolean;
 }) {
   const form = useFormContext();
+  const lock = useEditLock({
+    startsLocked,
+    submit: () => form.handleSubmit(),
+    restore: () => form.reset(),
+  });
+
   return (
     <form
       onSubmit={(e) => {
@@ -28,21 +35,21 @@ export default function SaveForm({
         // A dialog's form opened from this one sits inside it in React's tree, so its submit bubbles here.
         e.stopPropagation();
         // Enter submits only through an enabled Zapisz, so `isBlocked` and the lock hold here too.
-        form.handleSubmit();
+        lock.save();
       }}
     >
-      {children}
-      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-        {([canSubmit, isSubmitting]) => (
+      <fieldset disabled={lock.state === 'locked'}>{children}</fieldset>
+      <form.Subscribe selector={(state) => state.canSubmit}>
+        {(canSubmit) => (
           <div className="mt-5 flex gap-2">
-            {lock?.isLocked ? (
+            {lock.state === 'locked' ? (
               // Keyed apart from Zapisz: one button turned submit by its own click would submit the form.
-              <Button key="edit" type="button" onClick={() => lock.setIsLocked(false)}>
+              <Button key="edit" type="button" onClick={lock.edit}>
                 Edytuj
               </Button>
             ) : (
               <Button key="save" type="submit" disabled={!canSubmit || isBlocked}>
-                {isSubmitting ? 'Wysyłanie' : 'Zapisz'}
+                {lock.state === 'saving' ? 'Wysyłanie' : 'Zapisz'}
               </Button>
             )}
             <Button
@@ -50,8 +57,7 @@ export default function SaveForm({
               variant={'secondary'}
               onClick={(e) => {
                 e.preventDefault();
-                lock?.setIsLocked(true);
-                form.reset();
+                lock.reset();
               }}
             >
               Reset

@@ -43,6 +43,7 @@ Read during review. Biome and `tsc` enforce formatting and types; these are the 
 ## Forms
 
 - A value a form fetches (like the Order form's Exchange Rate) stays outside its TanStack Form state, with no `useEffect` copying it in: its error goes through a field's `error` prop and `SaveForm`'s `isBlocked` (`features/OrderForm/components/FormFields/save-form.tsx`), the one rule keeping Zapisz, and so Enter, from saving. Where the server decides the value too (the Exchange Rate), `onSubmit` sends none and the fetched one is only a preview. See `docs/adr/0001-fetched-values-stay-outside-the-form.md`.
+- A form's edit lock (an existing Order opens locked until Edytuj) lives in `useEditLock` (`features/OrderForm/hooks/use-edit-lock.ts`), which names its states (`locked`, `editing`, `saving`) and transitions (`edit`, `save`, `reset`). `SaveForm` owns it and only renders it, disabling the form's fields while locked; a form opts in with `startsLocked` and passes nothing else about editing. `isBlocked` stays a separate input, as above.
 - A refused write a field can show (a taken Order Number) goes to `settleWrite`'s `showOnField`, which puts its message in that field's `errorMap.onServer`, cleared by the `listeners.onChange` of the fields it concerns; every other refusal is toasted.
 
 ## Accessibility

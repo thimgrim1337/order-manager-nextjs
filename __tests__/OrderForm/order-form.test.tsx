@@ -698,6 +698,38 @@ describe('OrderForm', () => {
       expect(onDialogClose).not.toHaveBeenCalled();
     });
 
+    it('restores the values it opened with on Reset and locks again', async () => {
+      const { user } = await editSetup();
+
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      const price = screen.getByLabelText('Cena w walucie');
+      await user.clear(price);
+      await user.type(price, '2500');
+      await user.click(screen.getByRole('button', { name: 'Reset' }));
+
+      expect(price).toHaveValue(1000);
+      expect(price).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Edytuj' })).toBeVisible();
+      expect(screen.queryByRole('button', { name: 'Zapisz' })).toBeNull();
+    });
+
+    it('stays editable with what the user entered when the save is refused', async () => {
+      vi.mocked(updateOrder).mockResolvedValueOnce(writeResponse.refused('UnknownTruck'));
+      const { user, onDialogClose } = await editSetup();
+
+      await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+      const price = screen.getByLabelText('Cena w walucie');
+      await user.clear(price);
+      await user.type(price, '2500');
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+      await expect.poll(() => screen.queryByText('Wybrany pojazd nie istnieje.')).toBeVisible();
+      expect(price).toHaveValue(2500);
+      expect(price).toBeEnabled();
+      expect(screen.getByRole('button', { name: 'Zapisz' })).toBeEnabled();
+      expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
     it('saves the changed Order once on Enter in its Price', async () => {
       const { user, onDialogClose } = await editSetup();
 

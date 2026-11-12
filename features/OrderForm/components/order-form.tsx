@@ -38,7 +38,6 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
   // Read once per open, so Reset keeps the dates the form opened with.
   const [startingValues] = useState(() => getStartingValues(order));
   const [startingExchangeRate] = useState(() => getStartingExchangeRate(order));
-  const [isLocked, setIsLocked] = useState(!!order);
   // Cities created from this form, newest first, offered in both Places before any search.
   const [createdCities, setCreatedCities] = useState<CityReadModel[]>([]);
 
@@ -91,121 +90,119 @@ export default function OrderForm({ order, action, onDialogClose }: OrderFormPro
       <form.SaveForm
         // Saving without the Exchange Rate would leave the Order without its PLN Price.
         isBlocked={!!exchangeRate.error}
-        lock={order && { isLocked, setIsLocked }}
+        startsLocked={!!order}
       >
-        <fieldset disabled={isLocked}>
-          <FieldGroup className="flex-row justify-between">
-            <div className="flex-1 flex gap-2 items-end min-w-0">
-              <form.AppField
-                name="customer"
-                listeners={{
-                  // The Order Number is unique per Customer, so another Customer may use it.
-                  onChange: clearOrderNrRefusal,
-                }}
-              >
-                {(field) => (
-                  <field.CustomersComboboxField customers={customers} label="Zleceniodawca" />
-                )}
-              </form.AppField>
-              <CreateCustomer onCreated={pickCreatedCustomer} />
-            </div>
-
-            <form.AppField name="orderNr" listeners={{ onChange: clearOrderNrRefusal }}>
-              {(field) => <field.InputField label="Numer zlecenia" />}
+        <FieldGroup className="flex-row justify-between">
+          <div className="flex-1 flex gap-2 items-end min-w-0">
+            <form.AppField
+              name="customer"
+              listeners={{
+                // The Order Number is unique per Customer, so another Customer may use it.
+                onChange: clearOrderNrRefusal,
+              }}
+            >
+              {(field) => (
+                <field.CustomersComboboxField customers={customers} label="Zleceniodawca" />
+              )}
             </form.AppField>
-          </FieldGroup>
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField name="startDate">
-              {(field) => <field.DateField label="Data załadunku" />}
-            </form.AppField>
+            <CreateCustomer onCreated={pickCreatedCustomer} />
+          </div>
 
-            <form.AppField name="endDate">
-              {(field) => <field.DateField label="Data rozładunku" />}
-            </form.AppField>
-          </FieldGroup>
+          <form.AppField name="orderNr" listeners={{ onChange: clearOrderNrRefusal }}>
+            {(field) => <field.InputField label="Numer zlecenia" />}
+          </form.AppField>
+        </FieldGroup>
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField name="startDate">
+            {(field) => <field.DateField label="Data załadunku" />}
+          </form.AppField>
 
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField name="loadingPlaces" mode="array">
+          <form.AppField name="endDate">
+            {(field) => <field.DateField label="Data rozładunku" />}
+          </form.AppField>
+        </FieldGroup>
+
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField name="loadingPlaces" mode="array">
+            {(field) => (
+              <field.PlacesComboboxField
+                cities={cities}
+                offered={createdCities}
+                label="Miejsca załadunku"
+              />
+            )}
+          </form.AppField>
+          <div className="flex-1 flex gap-2 items-end">
+            <form.AppField name="unloadingPlaces" mode="array">
               {(field) => (
                 <field.PlacesComboboxField
                   cities={cities}
                   offered={createdCities}
-                  label="Miejsca załadunku"
+                  label="Miejsca rozładunku"
                 />
               )}
             </form.AppField>
-            <div className="flex-1 flex gap-2 items-end">
-              <form.AppField name="unloadingPlaces" mode="array">
-                {(field) => (
-                  <field.PlacesComboboxField
-                    cities={cities}
-                    offered={createdCities}
-                    label="Miejsca rozładunku"
+            <CreateCity countries={countries} onCreated={offerCreatedCity} />
+          </div>
+        </FieldGroup>
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField name="priceCurrency">
+            {(field) => <field.InputField label="Cena w walucie" type="number" min={0} />}
+          </form.AppField>
+          <form.AppField name="currencyId">
+            {(field) => (
+              <field.SelectField
+                label="Waluta"
+                placeholder="Wybierz walutę"
+                error={exchangeRate.error}
+                data={currencies.map((currency) => ({
+                  label: currency.code,
+                  value: currency.id,
+                }))}
+              >
+                {exchangeRate.currencyCode && (
+                  <CurrencyInfo
+                    isLoading={exchangeRate.isLoading}
+                    currencyCode={exchangeRate.currencyCode}
+                    currencyInfo={exchangeRate.currencyInfo}
+                    priceCurrency={priceCurrency}
                   />
                 )}
-              </form.AppField>
-              <CreateCity countries={countries} onCreated={offerCreatedCity} />
-            </div>
-          </FieldGroup>
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField name="priceCurrency">
-              {(field) => <field.InputField label="Cena w walucie" type="number" min={0} />}
-            </form.AppField>
-            <form.AppField name="currencyId">
-              {(field) => (
-                <field.SelectField
-                  label="Waluta"
-                  placeholder="Wybierz walutę"
-                  error={exchangeRate.error}
-                  data={currencies.map((currency) => ({
-                    label: currency.code,
-                    value: currency.id,
-                  }))}
-                >
-                  {exchangeRate.currencyCode && (
-                    <CurrencyInfo
-                      isLoading={exchangeRate.isLoading}
-                      currencyCode={exchangeRate.currencyCode}
-                      currencyInfo={exchangeRate.currencyInfo}
-                      priceCurrency={priceCurrency}
-                    />
-                  )}
-                </field.SelectField>
-              )}
-            </form.AppField>
-          </FieldGroup>
-          <FieldGroup className={fieldGroupStyle}>
-            <form.AppField
-              name="truck"
-              listeners={{
-                onChange: ({ value }) => {
-                  const regularDriver = drivers.find((driver) => driver.id === value?.driverId);
+              </field.SelectField>
+            )}
+          </form.AppField>
+        </FieldGroup>
+        <FieldGroup className={fieldGroupStyle}>
+          <form.AppField
+            name="truck"
+            listeners={{
+              onChange: ({ value }) => {
+                const regularDriver = drivers.find((driver) => driver.id === value?.driverId);
 
-                  if (regularDriver) form.setFieldValue('driver', regularDriver);
-                },
-              }}
-            >
-              {(field) => (
-                <field.SinglePickComboboxField
-                  choices={trucks}
-                  itemLabel={(truck) => truck.plate}
-                  label="Pojazd"
-                  placeholder="Wybierz pojazd"
-                />
-              )}
-            </form.AppField>
-            <form.AppField name="driver">
-              {(field) => (
-                <field.SinglePickComboboxField
-                  choices={drivers}
-                  itemLabel={driverName}
-                  label="Kierowca"
-                  placeholder="Wybierz kierowcę"
-                />
-              )}
-            </form.AppField>
-          </FieldGroup>
-        </fieldset>
+                if (regularDriver) form.setFieldValue('driver', regularDriver);
+              },
+            }}
+          >
+            {(field) => (
+              <field.SinglePickComboboxField
+                choices={trucks}
+                itemLabel={(truck) => truck.plate}
+                label="Pojazd"
+                placeholder="Wybierz pojazd"
+              />
+            )}
+          </form.AppField>
+          <form.AppField name="driver">
+            {(field) => (
+              <field.SinglePickComboboxField
+                choices={drivers}
+                itemLabel={driverName}
+                label="Kierowca"
+                placeholder="Wybierz kierowcę"
+              />
+            )}
+          </form.AppField>
+        </FieldGroup>
       </form.SaveForm>
     </form.AppForm>
   );
