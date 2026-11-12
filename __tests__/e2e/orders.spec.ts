@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import db from '@/db/db';
 import { seedOrder, seedOrderReferences } from '../fixtures/order';
 import { cacheEmptySearch, searchCombobox } from './helpers/combobox';
@@ -13,6 +13,18 @@ const { orderNr } = SEEDED_ORDER;
 /** Not the seed's Order Number, so a stale cached list fails the seeded tests below. */
 const CREATED_ORDER_NR = 'E2E-009';
 
+/** The days of this month the create specs pick for Loading and Unloading. */
+const PICKED_DAY = { loading: '12', unloading: '13' };
+
+/**
+ * Sets the browser's clock to midday in Warsaw on the loading day, so the Order form opens dated
+ * on the days the create specs pick, whatever day they run on.
+ */
+const pinClockToLoadingDay = (page: Page) =>
+  page.clock.setSystemTime(
+    new Date(`${dayOfThisMonth(Number(PICKED_DAY.loading))}T12:00:00+01:00`),
+  );
+
 test.describe('Order test', () => {
   test.beforeEach(async () => {
     await cleanupTestData();
@@ -24,6 +36,7 @@ test.describe('Order test', () => {
 
   test('Create new order and display in table', async ({ page }) => {
     await seedOrderReferences(db);
+    await pinClockToLoadingDay(page);
     await page.goto('/orders');
 
     await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
@@ -34,14 +47,14 @@ test.describe('Order test', () => {
     await page.getByLabel('Numer zlecenia').fill(CREATED_ORDER_NR);
 
     await page.getByLabel('Data załadunku').click();
-    await expect(page.getByRole('gridcell', { name: '12' })).toBeVisible();
-    await page.getByRole('gridcell', { name: '12' }).click();
-    await expect(page.getByRole('gridcell', { name: '12' })).not.toBeVisible();
+    await expect(page.getByRole('gridcell', { name: PICKED_DAY.loading })).toBeVisible();
+    await page.getByRole('gridcell', { name: PICKED_DAY.loading }).click();
+    await expect(page.getByRole('gridcell', { name: PICKED_DAY.loading })).not.toBeVisible();
 
     await page.getByLabel('Data rozładunku').click();
-    await expect(page.getByRole('gridcell', { name: '13' })).toBeVisible();
-    await page.getByRole('gridcell', { name: '13' }).click();
-    await expect(page.getByRole('gridcell', { name: '13' })).not.toBeVisible();
+    await expect(page.getByRole('gridcell', { name: PICKED_DAY.unloading })).toBeVisible();
+    await page.getByRole('gridcell', { name: PICKED_DAY.unloading }).click();
+    await expect(page.getByRole('gridcell', { name: PICKED_DAY.unloading })).not.toBeVisible();
 
     await page.getByLabel('Miejsca załadunku').fill('Warszawa');
     await page.getByRole('option', { name: 'Warszawa' }).click();
@@ -64,6 +77,7 @@ test.describe('Order test', () => {
 
   test('Create an Order with a Customer and a City created from its form', async ({ page }) => {
     await seedOrderReferences(db);
+    await pinClockToLoadingDay(page);
     await page.goto('/orders');
 
     await page.getByRole('button', { name: 'Dodaj nowe zlecenie' }).click();
@@ -98,11 +112,11 @@ test.describe('Order test', () => {
 
     await page.getByLabel('Numer zlecenia').fill('E2E-002');
     await page.getByLabel('Data załadunku').click();
-    await page.getByRole('gridcell', { name: '12' }).click();
-    await expect(page.getByRole('gridcell', { name: '12' })).not.toBeVisible();
+    await page.getByRole('gridcell', { name: PICKED_DAY.loading }).click();
+    await expect(page.getByRole('gridcell', { name: PICKED_DAY.loading })).not.toBeVisible();
     await page.getByLabel('Data rozładunku').click();
-    await page.getByRole('gridcell', { name: '13' }).click();
-    await expect(page.getByRole('gridcell', { name: '13' })).not.toBeVisible();
+    await page.getByRole('gridcell', { name: PICKED_DAY.unloading }).click();
+    await expect(page.getByRole('gridcell', { name: PICKED_DAY.unloading })).not.toBeVisible();
 
     await searchCombobox(page, 'Miejsca załadunku', 'Kra');
     await page.getByRole('option', { name: 'Kraków' }).click();

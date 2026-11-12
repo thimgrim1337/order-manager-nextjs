@@ -537,6 +537,18 @@ describe('OrderForm', () => {
       expect(screen.queryByRole('grid')).not.toBeInTheDocument();
     });
 
+    it('keeps each date when its picked day is clicked again', async () => {
+      // Thursday 2026-11-12 12:00 in Warsaw, so the form opens dated 12 and 13 November.
+      vi.setSystemTime(new Date('2026-11-12T11:00:00Z'));
+      const { user } = await setup();
+
+      await pickDate(user, 'Data załadunku', 12);
+      await pickDate(user, 'Data rozładunku', 13);
+
+      expect(screen.getByLabelText('Data załadunku')).toHaveTextContent('2026-11-12');
+      expect(screen.getByLabelText('Data rozładunku')).toHaveTextContent('2026-11-13');
+    });
+
     it('leaves the Driver empty when the picked Truck has no Regular Driver', async () => {
       const { user } = await setup();
 

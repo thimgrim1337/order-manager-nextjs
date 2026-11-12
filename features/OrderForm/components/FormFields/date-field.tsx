@@ -33,6 +33,8 @@ export default function DateField({ label, icon, error }: FormControlProps) {
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
             <Calendar
               mode="single"
+              // An Order needs both dates: clicking the picked day keeps it rather than clearing it.
+              required
               defaultMonth={parseDate(getToday())}
               showWeekNumber
               weekStartsOn={1}
