@@ -1,12 +1,14 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Toaster } from 'sonner';
 import { describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
-import { changeOrderStatus, removeOrder, updateOrder } from '@/lib/actions';
+import { changeOrderStatus, createCity, removeOrder, updateOrder } from '@/lib/actions';
 import { orderReadModel } from '../fixtures/order-read-model';
+import { createCityInDialog, krakow } from '../utils/create-city-in-dialog';
 import { deferred } from '../utils/deferred';
+import { openDialog } from '../utils/open-dialog';
 import { orderChoices } from '../utils/order-choices';
 import { renderWithToaster } from '../utils/render-with-toaster';
 import { renderWithQueries } from '../utils/wrapper';
@@ -333,5 +335,33 @@ describe('OrdersContextMenu edit', () => {
     await act(async () => save.resolve());
 
     await expect.poll(() => screen.queryByText('Niepowodzenie')).toBeVisible();
+  });
+
+  it('shows a City create running, and sends no second one, in its dialog reopened from an edit dialog closed mid-create', async () => {
+    const create = deferred();
+    vi.mocked(createCity).mockReturnValueOnce(
+      create.promise.then(() => writeResponse.succeeded(krakow)),
+    );
+    const { user } = await editSetup();
+
+    await openEditDialog(user);
+    await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+    const dialog = await createCityInDialog(user);
+    await user.keyboard('{Escape}');
+    await expect.poll(() => dialog).not.toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    await expect.poll(() => screen.queryByRole('heading', editHeading)).toBeNull();
+    await openEditDialog(user);
+    await user.click(screen.getByRole('button', { name: 'Edytuj' }));
+    const reopened = await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
+
+    const sending = within(reopened).getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(createCity).toHaveBeenCalledOnce();
+
+    await act(async () => create.resolve());
+
+    await expect.poll(() => reopened).not.toBeInTheDocument();
   });
 });

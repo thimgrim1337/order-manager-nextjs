@@ -5,3 +5,4 @@ Every Orders Table row mounts its own edit, Status and Remove dialogs (through t
 ## Consequences
 
 - To offer Status and Remove on the Timeline, wrap its row in the same context menu module rather than building a page-level one.
+- The City and Customer create dialogs opened from a row's edit dialog keep their running write in that row too (`useOrderDialog`), so it survives the edit dialog closing and reopening mid-create.

@@ -9,6 +9,7 @@ import { userEvent as browserUser } from 'vitest/browser';
 import CreateOrder from '@/features/OrderForm/components/create-order';
 import OrderForm, { type OrderFormProps } from '@/features/OrderForm/components/order-form';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
+import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import {
   createCity,
   createCustomer,
@@ -17,12 +18,12 @@ import {
   searchCustomers,
   updateOrder,
 } from '@/lib/actions';
-import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderReadModel } from '../fixtures/order-read-model';
 import { worker } from '../mocks/browser';
 import { NBP_RATES_URL, nbpApiServing } from '../mocks/handlers';
+import { createCityInDialog, krakow } from '../utils/create-city-in-dialog';
 import { deferred } from '../utils/deferred';
 import { idleWriteDialog } from '../utils/idle-write-dialog';
 import { openDialog } from '../utils/open-dialog';
@@ -45,9 +46,8 @@ const [customer] = choices.customers;
 // A Customer beyond the preloaded ones, found by searching.
 const angel: CustomerReadModel = { id: 5, name: 'ANGEL', tax: '5260250995' };
 
-// A Customer and a City the tests create from the Order form.
+// A Customer the tests create from the Order form.
 const nowaFirma: CustomerReadModel = { id: 9, name: 'Nowa Firma', tax: 'PL9876543210' };
-const krakow: CityReadModel = { ...plock, id: 12, name: 'Kraków', postal: '30-001' };
 
 /** Creates a Customer through the Order form's create dialog. */
 const createCustomerInDialog = async (user: UserEvent) => {
@@ -58,15 +58,6 @@ const createCustomerInDialog = async (user: UserEvent) => {
   );
   await user.type(within(dialog).getByLabelText('Nazwa zleceniodawcy'), nowaFirma.name);
   await user.type(within(dialog).getByLabelText('NIP'), nowaFirma.tax);
-  await user.click(within(dialog).getByRole('button', { name: 'Zapisz' }));
-  return dialog;
-};
-
-/** Creates a City through the Order form's create dialog. */
-const createCityInDialog = async (user: UserEvent) => {
-  const dialog = await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
-  await user.type(within(dialog).getByLabelText('Kod pocztowy'), krakow.postal);
-  await user.type(within(dialog).getByLabelText('Nazwa miejscowości'), krakow.name);
   await user.click(within(dialog).getByRole('button', { name: 'Zapisz' }));
   return dialog;
 };
@@ -110,13 +101,32 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+/**
+ * The Order form with its own write starting idle, and its City and Customer create dialogs held
+ * outside it, as whoever renders the Order dialog holds them.
+ */
+function HeldOrderForm({
+  closeDialog,
+  ...props
+}: Partial<OrderFormProps> & { closeDialog: () => void }) {
+  const city = useWriteDialog();
+  const customer = useWriteDialog();
+  return (
+    <OrderForm
+      action={createOrder}
+      dialog={{ ...idleWriteDialog(closeDialog), city, customer }}
+      {...props}
+    />
+  );
+}
+
 const setup = async (props: Partial<OrderFormProps> = {}) => {
   const user = userEvent.setup({ pointerEventsCheck: 0 });
   const closeDialog = vi.fn();
 
   const { unmount } = await renderWithQueries(
     <OrderChoicesProvider choices={choices}>
-      <OrderForm action={createOrder} dialog={idleWriteDialog(closeDialog)} {...props} />
+      <HeldOrderForm closeDialog={closeDialog} {...props} />
       {/* sonner's own, as in `renderWithToaster`, which can't wrap `renderWithQueries`. */}
       <Toaster />
     </OrderChoicesProvider>,
@@ -1061,25 +1071,42 @@ describe('OrderForm', () => {
 });
 
 describe('CreateOrder', () => {
-  it('shows the create running, and sends no second one, in its dialog reopened mid-save', async () => {
-    const create = deferred();
-    vi.mocked(createOrder).mockReturnValueOnce(
-      create.promise.then(() => writeResponse.succeeded()),
-    );
-    const heading = { name: 'Dodaj nowe zlecenie' };
+  const heading = { name: 'Dodaj nowe zlecenie' };
+
+  const setupCreateOrder = async () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     await renderWithQueries(
       <OrderChoicesProvider choices={choices}>
         <CreateOrder />
       </OrderChoicesProvider>,
     );
+    return user;
+  };
 
-    await openDialog(user, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
+  const openCreateOrder = (user: UserEvent) =>
+    openDialog(user, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
+
+  /** Closes the open create dialog with Escape, then the create-Order dialog behind it. */
+  const closeBoth = async (user: UserEvent, dialog: HTMLElement) => {
+    await user.keyboard('{Escape}');
+    await expect.poll(() => dialog).not.toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
+  };
+
+  it('shows the create running, and sends no second one, in its dialog reopened mid-save', async () => {
+    const create = deferred();
+    vi.mocked(createOrder).mockReturnValueOnce(
+      create.promise.then(() => writeResponse.succeeded()),
+    );
+    const user = await setupCreateOrder();
+
+    await openCreateOrder(user);
     await fillInNewOrder(user);
     await user.click(screen.getByRole('button', { name: 'Zapisz' }));
     await user.keyboard('{Escape}');
     await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
-    await openDialog(user, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
+    await openCreateOrder(user);
 
     const sending = screen.getByRole('button', { name: 'Wysyłanie' });
     expect(sending).toBeDisabled();
@@ -1089,5 +1116,71 @@ describe('CreateOrder', () => {
     await act(async () => create.resolve());
 
     await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
+  });
+
+  it('shows a City create running, and sends no second one, in its dialog reopened from a create-Order dialog closed mid-create', async () => {
+    const create = deferred();
+    vi.mocked(createCity).mockReturnValueOnce(
+      create.promise.then(() => writeResponse.succeeded(krakow)),
+    );
+    const user = await setupCreateOrder();
+
+    await openCreateOrder(user);
+    await closeBoth(user, await createCityInDialog(user));
+    await openCreateOrder(user);
+    const reopened = await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
+
+    const sending = within(reopened).getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(createCity).toHaveBeenCalledOnce();
+
+    await act(async () => create.resolve());
+
+    await expect.poll(() => reopened).not.toBeInTheDocument();
+  });
+
+  it('shows a Customer create running, and sends no second one, in its dialog reopened from a create-Order dialog closed mid-create', async () => {
+    const create = deferred();
+    vi.mocked(createCustomer).mockReturnValueOnce(
+      create.promise.then(() => writeResponse.succeeded(nowaFirma)),
+    );
+    const user = await setupCreateOrder();
+
+    await openCreateOrder(user);
+    await closeBoth(user, await createCustomerInDialog(user));
+    await openCreateOrder(user);
+    const reopened = await openDialog(
+      user,
+      'Dodaj nowego zleceniodawcę',
+      'Dodawanie nowego zleceniodawcy',
+    );
+
+    const sending = within(reopened).getByRole('button', { name: 'Wysyłanie' });
+    expect(sending).toBeDisabled();
+    await user.click(sending);
+    expect(createCustomer).toHaveBeenCalledOnce();
+
+    await act(async () => create.resolve());
+
+    await expect.poll(() => reopened).not.toBeInTheDocument();
+  });
+
+  it('closes a City dialog opened mid-save with the create-Order dialog, so it stays closed once that reopens', async () => {
+    const create = deferred();
+    vi.mocked(createOrder).mockReturnValueOnce(
+      create.promise.then(() => writeResponse.succeeded()),
+    );
+    const user = await setupCreateOrder();
+
+    await openCreateOrder(user);
+    await fillInNewOrder(user);
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+    await openDialog(user, 'Dodaj nowe miejsce', 'Dodawanie nowego miejsca');
+    await act(async () => create.resolve());
+    await expect.poll(() => screen.queryByRole('heading', heading)).toBeNull();
+    await openCreateOrder(user);
+
+    expect(screen.queryByRole('dialog', { name: 'Dodawanie nowego miejsca' })).toBeNull();
   });
 });

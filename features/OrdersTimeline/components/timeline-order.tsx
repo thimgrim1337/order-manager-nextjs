@@ -2,7 +2,7 @@
 
 import { TableRow } from '@/components/ui/table';
 import EditOrderDialog from '@/features/OrderForm/components/edit-order-dialog';
-import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
+import { useOrderDialog } from '@/features/OrderForm/hooks/use-order-dialog';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderDays } from '@/lib/order-day';
 import type { Week } from '@/lib/week';
@@ -13,7 +13,7 @@ import TimelinePlaceCell from './timeline-place';
 /** An Order's row on the Timeline: its Order Days in the Week, in its own colour. */
 export default function TimelineOrder({ week, order }: { week: Week; order: OrderReadModel }) {
   const borderColor = timelineColor(order.id);
-  const editDialog = useWriteDialog();
+  const editDialog = useOrderDialog();
 
   return (
     <>

@@ -1,13 +1,13 @@
 'use client';
 
 import { FilePlus } from 'lucide-react';
-import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import { createOrder } from '@/lib/actions';
+import { useOrderDialog } from '../hooks/use-order-dialog';
 import OrderForm from './order-form';
 import FormDialog from './ui/form-dialog';
 
 export default function CreateOrder() {
-  const dialog = useWriteDialog();
+  const dialog = useOrderDialog();
 
   return (
     <FormDialog

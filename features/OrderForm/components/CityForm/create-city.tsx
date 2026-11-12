@@ -1,7 +1,7 @@
 'use client';
 
 import { MapPinPlus } from 'lucide-react';
-import { useWriteDialog } from '@/features/shared/hooks/use-write-dialog';
+import type { WriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
 import FormDialog from '../ui/form-dialog';
@@ -11,12 +11,17 @@ import CreateCityForm from './create-city-form';
 export default function CreateCity({
   countries,
   onCreated,
+  dialog,
 }: {
   countries: CountryReadModel[];
+  /**
+   * Takes the created City; bound when the create is sent, so a City created after the Order form
+   * that sent it closed reaches no form, only the choices the create refreshed.
+   */
   onCreated: (city: CityReadModel) => void;
+  /** Held by whoever renders the Order dialog, so a create outlives the Order form too. */
+  dialog: WriteDialog;
 }) {
-  const dialog = useWriteDialog();
-
   return (
     <FormDialog
       isOpen={dialog.isOpen}

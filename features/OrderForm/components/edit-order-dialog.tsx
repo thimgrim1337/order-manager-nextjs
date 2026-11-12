@@ -2,9 +2,9 @@
 
 import { Pen } from 'lucide-react';
 import Dialog from '@/features/shared/components/ui/dialog';
-import type { WriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import { updateOrder } from '@/lib/actions';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
+import type { OrderDialog } from '../hooks/use-order-dialog';
 import OrderForm from './order-form';
 
 /** The edit-Order dialog: the Order form on `order`, saving it back under its id. */
@@ -13,7 +13,7 @@ export default function EditOrderDialog({
   dialog,
 }: {
   order: OrderReadModel;
-  dialog: WriteDialog;
+  dialog: OrderDialog;
 }) {
   return (
     <Dialog

@@ -6,6 +6,7 @@ import {
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
 import EditOrderDialog from '@/features/OrderForm/components/edit-order-dialog';
+import { useOrderDialog } from '@/features/OrderForm/hooks/use-order-dialog';
 import { useWriteDialog, type WriteDialog } from '@/features/shared/hooks/use-write-dialog';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import ContextMenuRemove from './context-menu-remove';
@@ -23,7 +24,7 @@ export default function OrdersContextMenu({
   order: OrderReadModel;
   children: ReactElement;
 }) {
-  const editDialog = useWriteDialog();
+  const editDialog = useOrderDialog();
   const statusDialog = useWriteDialog();
   const removeDialog = useWriteDialog();
 

@@ -4,13 +4,13 @@ import { useStore } from '@tanstack/react-form';
 import { useEffect, useRef, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
-import type { FormWrite } from '@/features/shared/hooks/use-write-dialog';
 import type { ActionResponse } from '@/lib/action-response';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { driverName } from '@/lib/drivers';
 import type { OrderDto, OrderInputDto } from '@/lib/dto/order.dto';
+import type { OrderFormWrite } from '../hooks/use-order-dialog';
 import { useAppForm } from '../hooks/useAppForm';
 import useExchangeRate from '../hooks/useExchangeRate';
 import {
@@ -28,7 +28,7 @@ export type OrderFormProps = {
   order?: OrderReadModel;
   /** Saves the filled-in Order through the Orders module. */
   action: (input: OrderInputDto) => Promise<ActionResponse<OrderDto>>;
-  dialog: FormWrite;
+  dialog: OrderFormWrite;
 };
 
 /** Creates or edits an Order. */
@@ -113,7 +113,7 @@ export default function OrderForm({ order, action, dialog }: OrderFormProps) {
                 <field.CustomersComboboxField customers={customers} label="Zleceniodawca" />
               )}
             </form.AppField>
-            <CreateCustomer onCreated={pickCreatedCustomer} />
+            <CreateCustomer onCreated={pickCreatedCustomer} dialog={dialog.customer} />
           </div>
 
           <form.AppField name="orderNr" listeners={{ onChange: clearOrderNrRefusal }}>
@@ -150,7 +150,7 @@ export default function OrderForm({ order, action, dialog }: OrderFormProps) {
                 />
               )}
             </form.AppField>
-            <CreateCity countries={countries} onCreated={offerCreatedCity} />
+            <CreateCity countries={countries} onCreated={offerCreatedCity} dialog={dialog.city} />
           </div>
         </FieldGroup>
         <FieldGroup className={fieldGroupStyle}>
