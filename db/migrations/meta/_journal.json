@@ -57,6 +57,13 @@
       "when": 1794600851379,
       "tag": "0007_taken-names-and-tax-numbers",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794601860371,
+      "tag": "0008_taken-plates-and-driver-names",
+      "breakpoints": true
     }
   ]
 }

@@ -59,11 +59,11 @@ A company vehicle that carries Orders, known by its Plate. It may have a Regular
 _Avoid_: Vehicle, car
 
 **Plate** (_Numer rejestracyjny_):
-A Truck's registration number; unique, so it identifies the Truck.
+A Truck's registration number; unique, so it identifies the Truck. It is written in capitals and digits only, without spaces or dashes, so _WND 8093A_ and _wnd-8093a_ are the same Plate.
 _Avoid_: Registration, truck number
 
 **Driver** (_Kierowca_):
-A person who drives Orders. Known by first and last name, shown as "Jan Kowalski" and ordered by that name, first name first, in Polish alphabetical order; no two Drivers share both.
+A person who drives Orders. Known by first and last name, shown as "Jan Kowalski" and ordered by that name, first name first, in Polish alphabetical order. No two Drivers share both, a name being taken as it is for a Customer.
 _Avoid_: Employee, chauffeur
 
 **Regular Driver** (_Stały kierowca_):

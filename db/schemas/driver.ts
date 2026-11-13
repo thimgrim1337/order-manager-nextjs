@@ -1,5 +1,5 @@
-import { relations } from 'drizzle-orm';
-import { integer, pgTable, text, unique } from 'drizzle-orm/pg-core';
+import { relations, sql } from 'drizzle-orm';
+import { integer, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import { order } from '.';
 
 const driver = pgTable(
@@ -9,7 +9,13 @@ const driver = pgTable(
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
   },
-  (table) => [unique().on(table.firstName, table.lastName)],
+  (table) => [
+    uniqueIndex('drivers_name_unique').using(
+      'btree',
+      sql`LOWER(${table.firstName})`,
+      sql`LOWER(${table.lastName})`,
+    ),
+  ],
 );
 
 export const driversRelations = relations(driver, ({ many }) => ({

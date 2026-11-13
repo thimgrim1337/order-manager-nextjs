@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import { type AnyPgColumn, date, index, integer, pgTable, text } from 'drizzle-orm/pg-core';
+import { type AnyPgColumn, check, date, integer, pgTable, text } from 'drizzle-orm/pg-core';
 import { driver, order } from '.';
 
 const trucks = pgTable(
@@ -11,13 +11,15 @@ const trucks = pgTable(
     serviceEndAt: date('service_end_at').notNull(),
     driverId: integer('driver_id').references((): AnyPgColumn => driver.id),
   },
-  (table) => [index('idx_trucks_plate_lower').using('btree', sql`LOWER(${table.plate})`)],
+  // A Plate is written in capitals and digits only, so the plain unique constraint compares
+  // Plates that differ only in letter case, spaces or dashes alike.
+  (table) => [check('trucks_plate_canonical', sql`${table.plate} ~ '^[A-Z0-9]+$'`)],
 );
 
 export const trucksRelations = relations(trucks, ({ one, many }) => ({
   orders: many(order),
   driver: one(driver, {
-    fields: [trucks.id],
+    fields: [trucks.driverId],
     references: [driver.id],
   }),
 }));
