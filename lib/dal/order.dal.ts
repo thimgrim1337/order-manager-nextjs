@@ -6,6 +6,7 @@ import db, { type dbTransaction } from '@/db/db';
 import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db/schemas';
 import { CACHE_TAG } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
+import { existingPageIndex } from '@/lib/pagination';
 import { type Week, weekBounds } from '@/lib/week';
 import { toSearchTerm } from '../utils';
 
@@ -122,6 +123,7 @@ const idsOf = (rows: { id: number }[]) => rows.map(({ id }) => id);
 /** An Order as the Orders Table and the Timeline receive it. */
 export type OrderReadModel = Awaited<ReturnType<typeof loadOrders>>[number];
 
+/** The page of Orders matching `query` (the last, if that page is past it) and how many match. */
 export async function findOrders(database: db | dbTransaction, query: OrderQuery) {
   const getOrderBy = (sort?: SortParams) => {
     // Tie-breaker keeps row order stable across pages.
@@ -191,23 +193,24 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
 
   const whereConditions = allWhereConditions.length > 0 ? and(...allWhereConditions) : undefined;
 
-  const orderIds = database
+  const [counted] = await database
+    .select({ count: count() })
+    .from(ordersWithDetailsView)
+    .where(whereConditions);
+  const ordersCount = counted?.count ?? 0;
+  const pageIndex = existingPageIndex(query.pageIndex, query.pageSize, ordersCount);
+
+  const orderIds = await database
     .select({ id: ordersWithDetailsView.id })
     .from(ordersWithDetailsView)
     .where(whereConditions)
     .orderBy(...orderBy)
     .limit(query.pageSize)
-    .offset(query.pageIndex * query.pageSize);
-
-  const ordersCount = database
-    .select({ count: count() })
-    .from(ordersWithDetailsView)
-    .where(whereConditions)
-    .then(([row]) => row?.count ?? 0);
+    .offset(pageIndex * query.pageSize);
 
   return {
-    data: await loadOrders(database, idsOf(await orderIds)),
-    count: await ordersCount,
+    data: await loadOrders(database, idsOf(orderIds)),
+    count: ordersCount,
   };
 }
 

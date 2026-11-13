@@ -203,4 +203,37 @@ test.describe('Order test', () => {
       await expect(page.getByRole('cell', { name: orderNr })).not.toBeVisible();
     });
   });
+
+  test('Opening a page past the last shows the last page', async ({ page }) => {
+    await seedOrder(db, await seedOrderReferences(db), SEEDED_ORDER);
+    await page.goto('/orders?pageIndex=3');
+
+    await expect(page.getByRole('cell', { name: orderNr })).toBeVisible();
+    await expect(page.getByText('Strona 1 z 1')).toBeVisible();
+    await expect(page).toHaveURL(/\/orders$/);
+  });
+
+  test('Deleting the only Order on the last page shows the new last page', async ({ page }) => {
+    const refs = await seedOrderReferences(db);
+    // A full first page of Orders starting after the seeded one, which the newest-first sort puts
+    // alone on the second page.
+    for (let nr = 1; nr <= 10; nr++) {
+      await seedOrder(db, refs, {
+        orderNr: `E2E-1${String(nr).padStart(2, '0')}`,
+        startDate: dayOfThisMonth(20),
+        endDate: dayOfThisMonth(21),
+      });
+    }
+    await seedOrder(db, refs, SEEDED_ORDER);
+    await page.goto('/orders?pageIndex=1');
+
+    await expect(page.getByText('Strona 2 z 2')).toBeVisible();
+    await page.getByRole('row', { name: orderNr }).click({ button: 'right' });
+    await page.getByRole('menuitem', { name: 'Usuń' }).click();
+    await page.getByRole('button', { name: 'Usuń' }).click();
+
+    await expect(page.getByText('Strona 1 z 1')).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'E2E-101' })).toBeVisible();
+    await expect(page).toHaveURL(/\/orders$/);
+  });
 });

@@ -23,7 +23,9 @@ export const CACHE_TAG = {
 } as const;
 
 export const DEFAULT_PAGE_INDEX = 0;
-export const DEFAULT_PAGE_SIZE = 10;
+/** The page sizes the Orders Table offers; a URL asking for any other gets the default. */
+export const PAGE_SIZES = [10, 20, 30, 40, 50] as const;
+export const DEFAULT_PAGE_SIZE = PAGE_SIZES[0];
 
 /** How many Customers or Cities a search returns: the comboboxes show the first ones by name. */
 export const SEARCH_LIMIT = 10;

@@ -8,7 +8,7 @@ import {
   parseText,
   type RawSearchParams,
 } from '@/features/shared/lib/search-param-parsers';
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/lib/consts';
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, PAGE_SIZES } from '@/lib/consts';
 import type { OrderQuery, SortParams } from '@/lib/dal/order.dal';
 
 export type OrdersTableQuery = OrderQuery & { sort: SortParams };
@@ -24,7 +24,7 @@ export function parse(raw: RawSearchParams): OrdersTableQuery {
     statusId: parseId(raw.statusId),
     sort: parseSort(raw.sort, sortFields) ?? DEFAULT_SORT,
     pageIndex: parsePageIndex(raw.pageIndex) ?? DEFAULT_PAGE_INDEX,
-    pageSize: parsePageSize(raw.pageSize) ?? DEFAULT_PAGE_SIZE,
+    pageSize: parsePageSize(raw.pageSize, PAGE_SIZES) ?? DEFAULT_PAGE_SIZE,
   };
 }
 

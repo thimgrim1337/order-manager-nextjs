@@ -39,6 +39,11 @@ describe('Orders Table Query: parse', () => {
     });
   });
 
+  it('falls back to the default page size for one the page-size select does not offer', () => {
+    expect(parse({ pageSize: '75' }).pageSize).toBe(10);
+    expect(parse({ pageSize: '40' }).pageSize).toBe(40);
+  });
+
   it('ignores each invalid param on its own and keeps the valid ones', () => {
     const raw = {
       search: 'Kraków',

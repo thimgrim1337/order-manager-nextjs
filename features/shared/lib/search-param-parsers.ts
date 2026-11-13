@@ -34,9 +34,11 @@ export function parsePageIndex(value: RawSearchParam) {
   return result.success ? result.data : undefined;
 }
 
-export function parsePageSize(value: RawSearchParam) {
-  const result = z.coerce.number().int().min(10).max(100).safeParse(first(value));
-  return result.success ? result.data : undefined;
+/** One of the page sizes a page offers, `sizes`. */
+export function parsePageSize<Size extends number>(value: RawSearchParam, sizes: readonly Size[]) {
+  const result = z.coerce.number().safeParse(first(value));
+  if (!result.success) return undefined;
+  return sizes.find((size) => size === result.data);
 }
 
 /** A `field.asc` or `field.desc` sort on one of `fields`. */

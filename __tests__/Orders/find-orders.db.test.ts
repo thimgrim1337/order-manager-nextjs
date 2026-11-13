@@ -280,7 +280,7 @@ describe('findOrders filters', () => {
 });
 
 describe('findOrders paging', () => {
-  it('returns the requested page and the count of all matching Orders', () =>
+  it('returns the requested page, or the last when it is past it, and the count of all matching Orders', () =>
     withRollback(async (trx) => {
       const { first, second, refs } = await seed(trx);
       const [third] = await trx
@@ -293,11 +293,24 @@ describe('findOrders paging', () => {
 
       expect(await page(0)).toMatchObject({ count: 3, data: [{ id: first }, { id: second }] });
       expect(await page(1)).toMatchObject({ count: 3, data: [{ id: third.id }] });
-      expect(await page(2)).toEqual({ count: 3, data: [] });
+      expect(await page(2)).toMatchObject({ count: 3, data: [{ id: third.id }] });
       expect(await page(0, 'kowalski')).toMatchObject({
         count: 2,
         data: [{ id: first }, { id: third.id }],
       });
-      expect(await page(1, 'kowalski')).toEqual({ count: 2, data: [] });
+      expect(await page(1, 'kowalski')).toMatchObject({
+        count: 2,
+        data: [{ id: first }, { id: third.id }],
+      });
+    }));
+
+  it('returns no Orders and a count of 0 when none match', () =>
+    withRollback(async (trx) => {
+      await seed(trx);
+
+      expect(await findOrders(trx, { pageIndex: 3, pageSize: 2, search: 'nikt' })).toEqual({
+        count: 0,
+        data: [],
+      });
     }));
 });

@@ -1,5 +1,6 @@
 import type { Table } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { PAGE_SIZES } from '@/lib/consts';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { Button } from '../../../components/ui/button';
 import {
@@ -32,7 +33,7 @@ export function OrdersTablePagination({ table }: OrdersTablePaginationProps) {
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {PAGE_SIZES.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

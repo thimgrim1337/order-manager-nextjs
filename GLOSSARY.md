@@ -92,12 +92,19 @@ The filter, end of the range orders to fetch: it keeps Orders whose End Date is 
 The searchable, paginated list of all Orders, unrestricted by date unless the user filters it.
 _Avoid_: Order list, orders page
 
+**Page** (_Strona_):
+One run of the Orders Table's Orders, a Page Size long, in its sort. The Orders Table always shows a Page that exists: asked for one past the last, it shows the last; with no Orders matching, it shows one empty Page.
+_Avoid_: Paging, offset
+
+**Page Size** (_Wierszy na stronę_):
+How many Orders a Page shows: 10, 20, 30, 40 or 50, 10 unless the user picks another.
+
 **Search** (_Wyszukiwanie_):
 The Orders Table's one free-text term. It matches an Order by any of its text columns (Order Number, Customer, Driver, Truck, Status, Currency, Loading and Unloading Cities), by a Price or PLN Price within 1 of it when it is a number, and by its Start or End Date when it is a calendar date (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY); a date-shaped term that is no calendar date (31-02-2026) matches as text only.
 _Avoid_: Global filter, query
 
 **Reset** (_Reset_):
-Returns the Orders Table to a view with no Search, no filters and no sort the user chose, back on its first page and keeping how many Orders a page shows. A Search term typed but not yet applied is dropped with them.
+Returns the Orders Table to a view with no Search, no filters and no sort the user chose, back on its first Page and keeping its Page Size. A Search term typed but not yet applied is dropped with them.
 _Avoid_: Clear filters, clear all
 
 **Timeline** (_Harmonogram_):

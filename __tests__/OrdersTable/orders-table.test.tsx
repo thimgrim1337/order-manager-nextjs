@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderTableFilter from '@/features/OrdersTable/components/OrdersFilter/orders-table-filter';
 import OrdersTable from '@/features/OrdersTable/components/orders-table';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
+import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { orderReadModel } from '../fixtures/order-read-model';
 import { holdNavigations, openUrl, renderedUrl } from '../utils/memory-url';
 import { orderChoices } from '../utils/order-choices';
@@ -19,12 +20,16 @@ function waitTypingPause() {
   return new Promise((resolve) => setTimeout(resolve, TYPING_PAUSE));
 }
 
-function renderAt(href: string) {
+/** Renders the page at `href` over one page of Orders, `count` matching in all. */
+function renderAt(
+  href: string,
+  { orders = [order], count = orders.length }: { orders?: OrderReadModel[]; count?: number } = {},
+) {
   openUrl(href);
   render(
     <OrderChoicesProvider choices={choices}>
       <OrderTableFilter />
-      <OrdersTable orders={[order]} count={1} />
+      <OrdersTable orders={orders} count={count} />
     </OrderChoicesProvider>,
   );
   return userEvent.setup();
@@ -77,6 +82,82 @@ describe('OrdersTable sorting', () => {
     await user.click(screen.getByRole('button', { name: 'Kierowca' }));
 
     expect(urlParam('sort')).toBe('driverFullname.desc');
+  });
+});
+
+describe('OrdersTable pagination', () => {
+  it('shows the last page and puts it in the URL when the requested page is past it', async () => {
+    renderAt('/orders?sort=driverFullname.asc&pageIndex=1', { orders: [], count: 10 });
+
+    expect(screen.getByText('Strona 1 z 1')).toBeInTheDocument();
+    await expect.poll(() => urlParam('pageIndex')).toBeNull();
+    expect(urlParam('sort')).toBe('driverFullname.asc');
+  });
+
+  it('shows one empty page when no Orders match', () => {
+    renderAt('/orders', { orders: [] });
+
+    expect(screen.getByText('Brak wyników.')).toBeInTheDocument();
+    expect(screen.getByText('Strona 1 z 1')).toBeInTheDocument();
+  });
+
+  it('steps to the next and the previous page', async () => {
+    const user = renderAt('/orders', { count: 30 });
+
+    await user.click(screen.getByRole('button', { name: 'Idź do kolejnej strony' }));
+    expect(urlParam('pageIndex')).toBe('1');
+    expect(screen.getByText('Strona 2 z 3')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Wróć do poprzedniej strony' }));
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('jumps to the last and the first page', async () => {
+    const user = renderAt('/orders', { count: 30 });
+
+    await user.click(screen.getByRole('button', { name: 'Idź do ostatniej strony' }));
+    expect(urlParam('pageIndex')).toBe('2');
+
+    await user.click(screen.getByRole('button', { name: 'Wróć do pierwszej strony' }));
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('offers no page after the last', () => {
+    renderAt('/orders?pageIndex=2', { count: 30 });
+
+    expect(screen.getByRole('button', { name: 'Idź do kolejnej strony' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Idź do ostatniej strony' })).toBeDisabled();
+  });
+
+  it('offers no page before the first', () => {
+    renderAt('/orders', { count: 30 });
+
+    expect(screen.getByRole('button', { name: 'Wróć do poprzedniej strony' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Wróć do pierwszej strony' })).toBeDisabled();
+  });
+
+  it('puts a picked page size in the URL, back on the first page', async () => {
+    const user = renderAt('/orders?pageIndex=2', { count: 30 });
+
+    await user.click(screen.getByLabelText('Wierszy na stronę'));
+    await user.click(screen.getByRole('option', { name: '20' }));
+
+    expect(urlParam('pageSize')).toBe('20');
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('offers the page sizes 10 to 50 in steps of 10, showing the one the URL opened with', async () => {
+    const user = renderAt('/orders?pageSize=30');
+
+    expect(screen.getByLabelText('Wierszy na stronę')).toHaveTextContent('30');
+    await user.click(screen.getByLabelText('Wierszy na stronę'));
+    expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+      '10',
+      '20',
+      '30',
+      '40',
+      '50',
+    ]);
   });
 });
 
