@@ -110,8 +110,12 @@ function parseSearch(search?: string) {
       ? `${dayFirst[4]}-${dayFirst[3]}-${dayFirst[1]}`
       : undefined;
 
+  // A Plate is written without spaces or dashes, so they are left out of the term to match one.
+  const plateTerm = text.replace(/[\s-]/g, '');
+
   return {
     pattern,
+    platePattern: toSearchTerm(plateTerm)?.pattern,
     price: Number.isNaN(price) ? undefined : price,
     // A date-shaped term that is no calendar date (`31-02-2026`) is text only.
     date: dateShaped && isValid(parseDate(dateShaped)) ? dateShaped : undefined,
@@ -141,7 +145,7 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
 
   const search = parseSearch(query.search);
   if (search) {
-    const { pattern, price, date } = search;
+    const { pattern, platePattern, price, date } = search;
 
     searchConditions.push(
       ilike(ordersWithDetailsView.orderNr, pattern),
@@ -151,12 +155,13 @@ export async function findOrders(database: db | dbTransaction, query: OrderQuery
         sql`${ordersWithDetailsView.driverFirstName} || ' ' || ${ordersWithDetailsView.driverLastName}`,
         pattern,
       ),
-      ilike(ordersWithDetailsView.truckPlate, pattern),
       ilike(ordersWithDetailsView.statusName, pattern),
       ilike(ordersWithDetailsView.currencyCode, pattern),
       ilike(ordersWithDetailsView.loadingCity, pattern),
       ilike(ordersWithDetailsView.unloadingCity, pattern),
     );
+
+    if (platePattern) searchConditions.push(ilike(ordersWithDetailsView.truckPlate, platePattern));
 
     if (price !== undefined) {
       searchConditions.push(

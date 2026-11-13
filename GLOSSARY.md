@@ -104,7 +104,7 @@ _Avoid_: Paging, offset
 How many Orders a Page shows: 10, 20, 30, 40 or 50, 10 unless the user picks another.
 
 **Search** (_Wyszukiwanie_):
-The Orders Table's one free-text term. It matches an Order by any of its text columns (Order Number, Customer, Driver, Truck, Status, Currency, Loading and Unloading Cities), by a Price or PLN Price within 1 of it when it is a number, and by its Start or End Date when it is a calendar date (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY); a date-shaped term that is no calendar date (31-02-2026) matches as text only.
+The Orders Table's one free-text term. It matches an Order by any of its text columns (Order Number, Customer, Driver, Truck, Status, Currency, Loading and Unloading Cities), by its Plate with the term's spaces and dashes left out (_WND 2839C_ finds _WND2839C_), by a Price or PLN Price within 1 of it when it is a number, and by its Start or End Date when it is a calendar date (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY); a date-shaped term that is no calendar date (31-02-2026) matches as text only.
 _Avoid_: Global filter, query
 
 **Reset** (_Reset_):

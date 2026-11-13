@@ -160,6 +160,34 @@ describe('findOrders search', () => {
     }));
 
   it.each([
+    ['a space', 'ab 12'],
+    ['a dash', 'AB-1234'],
+    ['a no-break space', 'ab\u00a012'],
+  ])('finds an Order by its Plate typed with %s', (_, search) =>
+    withRollback(async (trx) => {
+      const { second } = await seed(trx);
+
+      expect(await searchedIds(trx, search)).toEqual([second]);
+    }));
+
+  it('finds no Order by its Plate when the term is only dashes and spaces', () =>
+    withRollback(async (trx) => {
+      await seed(trx);
+
+      expect(await searchedIds(trx, '- -')).toEqual([]);
+    }));
+
+  it('finds an Order by its Order Number with the term as typed, dashes included', () =>
+    withRollback(async (trx) => {
+      const refs = await seedOrderReferences(trx);
+      const withDash = await seedOrder(trx, refs, { orderNr: 'TEST-002' });
+      await seedOrder(trx, refs, { orderNr: 'TEST002' });
+
+      expect(await searchedIds(trx, 'test-002')).toEqual([withDash.id]);
+      expect(await searchedIds(trx, '-')).toEqual([withDash.id]);
+    }));
+
+  it.each([
     '2026-11-02',
     '02-11-2026',
     '02/11/2026',
