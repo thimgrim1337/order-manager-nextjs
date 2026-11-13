@@ -1,20 +1,11 @@
 import { act, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import * as timelineQuery from '@/features/OrdersTimeline/lib/timeline-query';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { nextWeek } from '@/lib/week';
+import { holdNavigations, openUrl, requestedUrl } from '../utils/memory-url';
 import { week } from '../utils/week';
-
-const replaceMock = vi.hoisted(() => vi.fn());
-const pathname = vi.hoisted(() => ({ current: '/orders' }));
-
-// The rendered search params stay empty: no navigation has rendered yet.
-vi.mock('next/navigation', () => ({
-  useSearchParams: () => new URLSearchParams(),
-  usePathname: () => pathname.current,
-  useRouter: () => ({ replace: replaceMock }),
-}));
 
 function goBack() {
   act(() => {
@@ -22,21 +13,20 @@ function goBack() {
   });
 }
 
+// No navigation renders: each change after the first builds on one still in flight.
 beforeEach(() => {
-  // The pending navigation is shared by every hook on the page; start each test without one.
-  const { unmount } = renderHook(() => useUrlQuery(ordersTableQuery));
-  goBack();
-  unmount();
-  replaceMock.mockReset();
+  holdNavigations();
 });
 
 function lastUrl() {
-  return new URL(replaceMock.mock.lastCall?.[0], window.location.origin);
+  const url = requestedUrl();
+  if (!url) throw new Error('No navigation since the page opened');
+  return url;
 }
 
 describe('useUrlQuery with the Orders Table query', () => {
   beforeEach(() => {
-    pathname.current = '/orders';
+    openUrl('/orders');
   });
 
   it('keeps both changes in the URL when the second comes before the first is rendered', () => {
@@ -56,7 +46,7 @@ describe('useUrlQuery with the Orders Table query', () => {
 
     result.current.change({ statusId: undefined });
 
-    expect(replaceMock).not.toHaveBeenCalled();
+    expect(requestedUrl()).toBeUndefined();
   });
 
   it('builds on the rendered query again after back/forward navigation', () => {
@@ -77,7 +67,7 @@ const MARCH_WEEK = week('2026-W10');
 
 describe('useUrlQuery with the Timeline query', () => {
   beforeEach(() => {
-    pathname.current = '/timeline';
+    openUrl('/timeline');
   });
 
   it('moves two Weeks on two quick "Next week" changes', () => {

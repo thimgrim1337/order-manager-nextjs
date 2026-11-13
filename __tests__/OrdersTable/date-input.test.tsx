@@ -1,15 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { expect, it, vi } from 'vitest';
+import { expect, it } from 'vitest';
 import DateInput from '@/features/OrdersTable/components/OrdersFilter/date-input';
-
-vi.mock('next/navigation', () => ({
-  useSearchParams: () => new URLSearchParams('startDate=2026-09-15'),
-  usePathname: () => '/orders',
-  useRouter: () => ({ replace: vi.fn() }),
-}));
+import { openUrl } from '../utils/memory-url';
 
 it("names a date filter's calendar in Polish", async () => {
+  openUrl('/orders?startDate=2026-09-15');
   render(<DateInput filterName="startDate" />);
   const user = userEvent.setup();
 

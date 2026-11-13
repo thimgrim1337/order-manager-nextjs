@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react';
 import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query';
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
+import { parseText } from '@/features/shared/lib/search-param-parsers';
 import { Button } from '../../../../components/ui/button';
 import DebouncedInput from '../../../../components/ui/debounced-input';
 
@@ -13,6 +14,7 @@ export default function OrdersSearch() {
         className=" border rounded-md"
         placeholder={`Szukaj zleceń....`}
         onDebouncedChange={(value) => change({ search: value })}
+        normalize={(value) => parseText(value) ?? ''}
         value={query.search ?? ''}
         icon={<Search className="text-muted-foreground" size={'1.5rem'} />}
       />
