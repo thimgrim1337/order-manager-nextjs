@@ -1,6 +1,5 @@
-import { act, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Toaster } from 'sonner';
 import { describe, expect, it, vi } from 'vitest';
 import OrdersContextMenu from '@/features/OrdersTable/components/OrdersContextMenu/context-menu';
 import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
@@ -10,7 +9,6 @@ import { createCityInDialog, krakow } from '../utils/create-city-in-dialog';
 import { deferred } from '../utils/deferred';
 import { openDialog } from '../utils/open-dialog';
 import { orderChoices } from '../utils/order-choices';
-import { renderWithToaster } from '../utils/render-with-toaster';
 import { renderWithQueries } from '../utils/wrapper';
 import { writeResponse } from '../utils/write-response';
 
@@ -18,7 +16,7 @@ const order = orderReadModel({ orderNr: 'ZL-001' });
 
 const setup = () => {
   const user = userEvent.setup();
-  renderWithToaster(
+  render(
     <OrdersContextMenu order={order}>
       <div>ZL-001 row</div>
     </OrdersContextMenu>,
@@ -269,7 +267,6 @@ describe('OrdersContextMenu edit', () => {
         <OrdersContextMenu order={order}>
           <div>ZL-001 row</div>
         </OrdersContextMenu>
-        <Toaster />
       </OrderChoicesProvider>,
     );
     return { user };

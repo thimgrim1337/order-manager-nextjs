@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 // The browser's own Enter: user-event's clicks any submit button inside the form, owned or not.
@@ -7,7 +7,6 @@ import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/cre
 import { createCustomer } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
 import { idleWriteDialog } from '../utils/idle-write-dialog';
-import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
@@ -16,7 +15,7 @@ const dialog = idleWriteDialog(onDialogClose);
 
 const setup = () => {
   const user = userEvent.setup();
-  renderWithToaster(<CreateCustomerForm onCreated={onCreated} dialog={dialog} />);
+  render(<CreateCustomerForm onCreated={onCreated} dialog={dialog} />);
 
   return { user };
 };

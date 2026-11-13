@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 // The browser's own Enter: user-event's clicks any submit button inside the form, owned or not.
@@ -7,7 +7,6 @@ import CreateCityForm from '@/features/OrderForm/components/CityForm/create-city
 import { createCity } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
 import { idleWriteDialog } from '../utils/idle-write-dialog';
-import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
@@ -16,7 +15,7 @@ const dialog = idleWriteDialog(onDialogClose);
 
 const setup = () => {
   const user = userEvent.setup();
-  renderWithToaster(
+  render(
     <CreateCityForm
       countries={[{ id: 1, code: 'PL', name: 'Poland' }]}
       onCreated={onCreated}
@@ -74,7 +73,7 @@ describe('CreateCityForm', () => {
   it('defaults the City to Poland, whatever its id', async () => {
     vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded());
     const user = userEvent.setup();
-    renderWithToaster(
+    render(
       <CreateCityForm
         countries={[
           { id: 3, code: 'DE', name: 'Niemcy' },
@@ -123,7 +122,7 @@ describe('CreateCityForm', () => {
 
       expect(screen.getByLabelText('Nazwa miejscowości')).toHaveAttribute('aria-invalid', 'true');
       expect(screen.getAllByText(CITY_NAME_TAKEN)).toHaveLength(1);
-      expect(screen.queryByText(/Nie udało się/)).toBeNull();
+      expect(screen.queryByText('Nie udało się utworzyć miejscowości.')).toBeNull();
       expect(onDialogClose).not.toHaveBeenCalled();
     });
 

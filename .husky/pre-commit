@@ -8,9 +8,10 @@ if [ "$(git write-tree)" = "$(git rev-parse -q --verify 'ORIG_HEAD^{tree}')" ]; 
   echo "▶ pre-commit: tree already checked as ORIG_HEAD, skipping"
   exit 0
 fi
-# Docs and agent config only: nothing to lint, typecheck or test.
+# Docs and agent config only: nothing to typecheck or test, but the config is still linted.
 if ! git diff --cached --name-only | grep -qvE '\.md$|^\.mcp\.json$'; then
-  echo "▶ pre-commit: docs only, skipping"
+  echo "▶ pre-commit: docs only, linting staged config"
+  pnpm exec lint-staged
   exit 0
 fi
 

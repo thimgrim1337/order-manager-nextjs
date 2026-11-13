@@ -8,7 +8,7 @@ export const createCitySchema = createInsertSchema(city, {
     .string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .min(1, { error: ZOD_ERROR_MESSAGES.FieldRequired })
     .max(20, {
-      error: 'Nazwa miejscowości nie może być dłuższa niż 20 znaków.',
+      error: 'Nazwa miejscowości nie może być dłuższa niż 20 znaków.',
     })
     .trim(),
   postal: z

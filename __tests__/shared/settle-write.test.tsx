@@ -1,14 +1,9 @@
 import { screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { settleWrite } from '@/features/shared/lib/settle-write';
-import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
 const close = vi.fn();
-
-beforeEach(() => {
-  renderWithToaster(<div />);
-});
 
 describe('settleWrite', () => {
   it('confirms a successful write in a toast and closes the dialog', async () => {

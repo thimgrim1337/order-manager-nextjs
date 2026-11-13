@@ -1,0 +1,9 @@
+or {
+  JsStringLiteralExpression(),
+  JsTemplateChunkElement(),
+  JsxText(),
+  JsxString()
+} as $text where {
+  $text <: r".*\x{00A0}.*",
+  register_diagnostic(span=$text, message="A no-break space (U+00A0), which a Polish keyboard types on AltGr+Space: type a plain space, or escape it where one is meant.")
+}

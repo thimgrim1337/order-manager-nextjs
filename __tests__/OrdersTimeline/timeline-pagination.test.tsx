@@ -75,7 +75,7 @@ describe('Timeline Week navigation', () => {
 
     expect(urlParam('week')).toBe('2027-W01');
     await user.click(weekSelect());
-    expect(screen.getAllByRole('option')).toHaveLength(52);
+    expect(await screen.findAllByRole('option')).toHaveLength(52);
     expect(screen.getByRole('option', { selected: true })).toHaveTextContent(/^1$/);
   });
 
@@ -86,7 +86,7 @@ describe('Timeline Week navigation', () => {
 
     expect(urlParam('week')).toBe('2025-W52');
     await user.click(weekSelect());
-    expect(screen.getAllByRole('option')).toHaveLength(52);
+    expect(await screen.findAllByRole('option')).toHaveLength(52);
     expect(screen.getByRole('option', { selected: true })).toHaveTextContent(/^52$/);
   });
 

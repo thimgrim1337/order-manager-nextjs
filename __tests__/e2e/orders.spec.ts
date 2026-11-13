@@ -192,7 +192,7 @@ test.describe('Order test', () => {
       await page.getByRole('row', { name: orderNr }).click({ button: 'right' });
       await page.getByRole('menuitem', { name: 'Usuń' }).click();
 
-      await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Czy jesteś pewny ? ' })).toBeVisible();
 
       await page.getByRole('button', { name: 'Usuń' }).click();
 

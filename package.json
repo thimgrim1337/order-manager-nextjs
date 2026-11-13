@@ -22,7 +22,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": "biome check --write"
+    "**/*.{js,jsx,ts,tsx,json}": "biome check --write --no-errors-on-unmatched"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

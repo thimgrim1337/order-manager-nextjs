@@ -12,7 +12,7 @@ import { selectTruckSchema as Truck } from './truck.dto';
 const OrderFields = z.object({
   orderNr: z
     .string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
-    .min(1, { error: 'Numer zlecenia nie może być pusty.' })
+    .min(1, { error: 'Numer zlecenia nie może być pusty.' })
     .trim(),
   startDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
   endDate: z.string({ error: ZOD_ERROR_MESSAGES.FieldRequired }),
@@ -24,7 +24,7 @@ const OrderFields = z.object({
   priceCurrency: z
     .string({ error: ZOD_ERROR_MESSAGES.FieldRequired })
     .refine((val) => Number(val) > 0, {
-      error: 'Cena musi być wyższa od zera.',
+      error: 'Cena musi być wyższa od zera.',
     })
     .trim(),
 });

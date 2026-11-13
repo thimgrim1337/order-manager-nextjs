@@ -40,7 +40,7 @@ export default function CreateCityForm({
     onSubmit: async ({ value, formApi }) =>
       dialog.write(() => createCity(value), {
         onSuccess: onCreated,
-        errorTitle: 'Nie udało się utworzyć miejscowości.',
+        errorTitle: 'Nie udało się utworzyć miejscowości.',
         successDescription: `Pomyślnie utworzono nową miejscowość: ${value.name}`,
         showOnField: refusals.showOnField(formApi),
       }),

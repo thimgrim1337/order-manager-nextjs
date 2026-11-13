@@ -1,7 +1,6 @@
 import { act, screen, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
-import { Toaster } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // The browser's own input: user-event's Enter clicks any submit button inside the form, whether
 // the form owns it or not, so it passes where the browser's Enter submits nothing.
@@ -127,8 +126,6 @@ const setup = async (props: Partial<OrderFormProps> = {}) => {
   const { unmount } = await renderWithQueries(
     <OrderChoicesProvider choices={choices}>
       <HeldOrderForm closeDialog={closeDialog} {...props} />
-      {/* sonner's own, as in `renderWithToaster`, which can't wrap `renderWithQueries`. */}
-      <Toaster />
     </OrderChoicesProvider>,
   );
 
