@@ -25,7 +25,8 @@ type RefusalForm<TValues> = {
 /**
  * Shows a form's declared refusals on their fields. `listeners` go in the form's options: a change
  * of a mounted `clearedBy` field, typed or through `setFieldValue`, drops the refusal from its
- * field's `errorMap.onServer`, which TanStack clears only on a field with its own validators.
+ * field's `errorMap.onServer`, which TanStack clears only on a field with its own validators
+ * (`defaultValidationLogic` runs none without them: form-core 1.28.5 `dist/esm/ValidationLogic.js`).
  * `showOnField(form)` is `settleWrite`'s `showOnField`; once the form is gone, a refusal has no
  * field left to show on, so it gets the toast.
  */

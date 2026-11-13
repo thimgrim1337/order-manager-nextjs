@@ -57,6 +57,11 @@ An element's accessible name is whatever a screen reader announces for it: its t
 - Tests find elements by role and their Polish accessible name.
 - `__tests__/e2e/a11y.spec.ts` runs axe (WCAG 2.1 A/AA plus Label in Name) on each page; a new page or dialog gets a scan there axe counts a control's visible description as part of its label, so a control named by `aria-labelledby` and described by `aria-describedby` (the Status menu buttons) is passed as `describedControls`, which skips Label in Name for it alone.
 
+## Library behaviour
+
+- Code working around a library's behaviour (clearing what it leaves, repeating what it skips) names where that behaviour is: its source line in `node_modules/.pnpm/<pkg>@<version>/node_modules/<pkg>/dist`, or a test that shows it. A workaround for a behaviour the installed version no longer has is a finding.
+- TanStack's docs and repo are reachable through the `tanstack-form` and `tanstack-table` MCP servers (`.mcp.json`; gitmcp, the repo's default branch): use them to find the API or the file to read, then confirm the behaviour in the installed version's source, which may differ.
+
 ## Types
 
 - Use the library's named type (`NodePgTransaction`, `InferSelectModel`…). Derive a type with `Parameters`/`ReturnType` only when the library doesn't export one.

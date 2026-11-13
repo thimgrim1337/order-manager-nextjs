@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "tanstack-form": {
+      "type": "http",
+      "url": "https://gitmcp.io/TanStack/form"
+    },
+    "tanstack-table": {
+      "type": "http",
+      "url": "https://gitmcp.io/TanStack/table"
+    }
+  }
+}
