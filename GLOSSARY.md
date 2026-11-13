@@ -73,11 +73,15 @@ _Avoid_: Assigned driver, truck owner
 ### Customers and Cities
 
 **Customer** (_Zleceniodawca_):
-The company an Order is carried out for. Its name and its tax number (_NIP_) are each unique: a Customer with either already taken cannot be created. Customers are ordered by name in Polish alphabetical order.
+The company an Order is carried out for. Its name and its Tax Number are each unique: a Customer with either already taken cannot be created. A name is taken regardless of letter case and of repeated spaces, but Polish letters count (_Lodz_ is not _Łódź_); it keeps the spelling it was created with. Customers are ordered by name in Polish alphabetical order.
 _Avoid_: Client, contractor
 
+**Tax Number** (_NIP_):
+A Customer's tax identifier: a Polish NIP (10 digits with a valid checksum) or a foreign VAT number (a country prefix other than PL followed by letters and digits). It is written in capitals without spaces, dashes or dots, and a Polish NIP without its PL prefix, so _PL 123-456-78-90_ and _1234567890_ are the same Tax Number.
+_Avoid_: Tax id, VAT id
+
 **City** (_Miejscowość_):
-A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created. Cities are ordered by name in Polish alphabetical order, except that the Order form offers the Cities created from it first in both Places, newest first, until the user searches.
+A place an Order loads or unloads in, with its postal code and country. Its name is unique: a City whose name is taken cannot be created, a name being taken as it is for a Customer. Cities are ordered by name in Polish alphabetical order, except that the Order form offers the Cities created from it first in both Places, newest first, until the user searches.
 _Avoid_: Place, location, town (a Loading Place or Unloading Place is the role a City plays in an Order)
 
 ### Views

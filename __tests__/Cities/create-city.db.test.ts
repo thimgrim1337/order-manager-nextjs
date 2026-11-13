@@ -57,6 +57,32 @@ describe('Cities.createCity', () => {
       expect(failure).toEqual({ reason: 'CityNameTaken' });
     }));
 
+  it('rejects a City whose name is taken in other letter case, Polish letters included', () =>
+    withRollback(async (trx) => {
+      const dbCountry = await seedCountry(trx);
+      await Cities.createCity(trx, { name: 'Łódź', postal: '90-001', countryId: dbCountry.id });
+
+      const [failure] = await Cities.createCity(trx, {
+        name: 'ŁÓDŹ',
+        postal: '90-002',
+        countryId: dbCountry.id,
+      });
+
+      expect(failure).toEqual({ reason: 'CityNameTaken' });
+    }));
+
+  it('saves a City with repeated spaces in its name as one, taking that name', () =>
+    withRollback(async (trx) => {
+      const dbCountry = await seedCountry(trx);
+      const city = { name: 'Nowy  Targ', postal: '34-400', countryId: dbCountry.id };
+
+      const [, created] = await Cities.createCity(trx, city);
+      const [failure] = await Cities.createCity(trx, { ...city, name: 'Nowy Targ' });
+
+      expect(created?.name).toBe('Nowy Targ');
+      expect(failure).toEqual({ reason: 'CityNameTaken' });
+    }));
+
   it('rejects a City identical to a saved one as its name taken', () =>
     withRollback(async (trx) => {
       const dbCountry = await seedCountry(trx);

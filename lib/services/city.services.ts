@@ -13,10 +13,7 @@ export type CreateCityFailure =
   | { reason: 'InvalidData'; details: string }
   | { reason: 'CityNameTaken' };
 
-/**
- * The refusal each unique City constraint stands for. `cities_name_postal_country_id_unique` is
- * left out: Postgres reports `cities_name_unique` for a City it would also reject.
- */
+/** The refusal each unique City constraint stands for. */
 const TAKEN_REFUSALS = { cities_name_unique: { reason: 'CityNameTaken' } } as const;
 
 /** Creates a City, returned with its Country, then invalidates the cached Cities. Call it from a Server Action. */

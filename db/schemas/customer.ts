@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import { index, integer, pgTable, text } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import order from './order';
 
 const customer = pgTable(
@@ -7,9 +7,10 @@ const customer = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     tax: text('tax').notNull().unique(),
-    name: text().notNull().unique(),
+    name: text().notNull(),
   },
-  (table) => [index('idx_customers_name_lower').using('btree', sql`LOWER(${table.name})`)],
+  // A name is taken regardless of letter case.
+  (table) => [uniqueIndex('customers_name_unique').using('btree', sql`LOWER(${table.name})`)],
 );
 
 export const customerRelations = relations(customer, ({ many }) => ({

@@ -41,7 +41,7 @@ export async function seedOrderReferences(database: db | dbTransaction) {
     .returning();
   const [dbCustomer] = await database
     .insert(customer)
-    .values({ name: 'Test Firma', tax: 'PL1234567890' })
+    .values({ name: 'Test Firma', tax: '1234563218' })
     .returning();
   const { statuses, currencies } = await seedReference(database);
   const [dbTruck] = await database

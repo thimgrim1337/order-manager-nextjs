@@ -50,6 +50,13 @@
       "when": 1794398844456,
       "tag": "0006_orders-view-filter-only",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794600851379,
+      "tag": "0007_taken-names-and-tax-numbers",
+      "breakpoints": true
     }
   ]
 }

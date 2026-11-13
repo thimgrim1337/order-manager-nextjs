@@ -18,7 +18,7 @@ describe('Order Day: orderDays', () => {
   const warszawa = city(1, 'Warszawa', poland);
   const plock = city(2, 'Płock', poland);
   const berlin = city(3, 'Berlin', germany);
-  const customer: CustomerReadModel = { id: 1, name: 'Acme', tax: 'PL1234567890' };
+  const customer: CustomerReadModel = { id: 1, name: 'Acme', tax: '1234563218' };
   const order = (dates: { startDate: string; endDate: string }) => ({
     ...dates,
     loadingPlaces: [warszawa, plock],

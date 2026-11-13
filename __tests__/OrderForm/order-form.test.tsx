@@ -46,7 +46,7 @@ const [customer] = choices.customers;
 const angel: CustomerReadModel = { id: 5, name: 'ANGEL', tax: '5260250995' };
 
 // A Customer the tests create from the Order form.
-const nowaFirma: CustomerReadModel = { id: 9, name: 'Nowa Firma', tax: 'PL9876543210' };
+const nowaFirma: CustomerReadModel = { id: 9, name: 'Nowa Firma', tax: '9876543210' };
 
 /** Creates a Customer through the Order form's create dialog. */
 const createCustomerInDialog = async (user: UserEvent) => {

@@ -38,7 +38,7 @@ describe('Order read model', () => {
       } = await findOrders(trx, { pageIndex: 0, pageSize: 10 });
 
       expect(found).toMatchObject({
-        customer: { id: refs.customer.id, name: 'Test Firma', tax: 'PL1234567890' },
+        customer: { id: refs.customer.id, name: 'Test Firma', tax: '1234563218' },
         driver: { id: refs.drivers.jan.id, firstName: 'Jan', lastName: 'Kowalski' },
         truck: {
           id: refs.truck.id,

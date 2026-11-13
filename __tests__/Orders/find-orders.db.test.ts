@@ -14,7 +14,7 @@ async function seed(trx: dbTransaction) {
   const refs = await seedOrderReferences(trx);
   const [alfaTrans] = await trx
     .insert(customer)
-    .values({ name: 'Alfa Trans', tax: 'PL0987654321' })
+    .values({ name: 'Alfa Trans', tax: '0987654327' })
     .returning();
   const [ab1234] = await trx
     .insert(truck)
@@ -53,8 +53,8 @@ async function seedPolishNames(trx: dbTransaction) {
   const [zaklad, lodzka] = await trx
     .insert(customer)
     .values([
-      { name: 'Zakład Transportowy', tax: 'PL1111111111' },
-      { name: 'Łódzka Spedycja', tax: 'PL2222222222' },
+      { name: 'Zakład Transportowy', tax: '1111111111' },
+      { name: 'Łódzka Spedycja', tax: '2222222222' },
     ])
     .returning();
   const [zamosc, zgierz, lodz, lowicz] = await trx

@@ -80,14 +80,16 @@ describe('CreateCustomerForm', () => {
       label: 'Nazwa zleceniodawcy',
       otherLabel: 'NIP',
       message: 'Zleceniodawca o tej nazwie już istnieje.',
+      changed: 'DEVIL2',
     },
     {
       reason: 'CustomerTaxTaken',
       label: 'NIP',
       otherLabel: 'Nazwa zleceniodawcy',
       message: 'Zleceniodawca o tym NIP-ie już istnieje.',
+      changed: '5260250995',
     },
-  ] as const)('when its $label is taken', ({ reason, label, otherLabel, message }) => {
+  ] as const)('when its $label is taken', ({ reason, label, otherLabel, message, changed }) => {
     const saveTaken = async () => {
       vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused(reason));
       const { user } = setup();
@@ -117,13 +119,40 @@ describe('CreateCustomerForm', () => {
       const { user } = await saveTaken();
       vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded());
 
-      await user.type(screen.getByLabelText(label), '1');
+      await user.clear(screen.getByLabelText(label));
+      await user.type(screen.getByLabelText(label), changed);
 
       expect(screen.queryByText(message)).toBeNull();
       expect(screen.getByLabelText(label)).not.toHaveAttribute('aria-invalid', 'true');
       await user.click(screen.getByRole('button', { name: 'Zapisz' }));
       await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
     });
+  });
+
+  it('creates a Customer from a Polish NIP of ten digits', async () => {
+    vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded());
+    const { user } = setup();
+
+    await user.type(screen.getByLabelText('NIP'), '7743241555');
+    await user.type(screen.getByLabelText('Nazwa zleceniodawcy'), 'DEVIL');
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+    expect(createCustomer).toHaveBeenCalledWith({ name: 'DEVIL', tax: '7743241555' });
+  });
+
+  it.each([
+    { tax: '7743241556', message: 'Nieprawidłowy NIP.' },
+    { tax: 'DE1', message: 'Nieprawidłowy numer VAT.' },
+  ])('shows $message on the NIP field for $tax, sending nothing', async ({ tax, message }) => {
+    const { user } = setup();
+
+    await user.type(screen.getByLabelText('NIP'), tax);
+    await user.type(screen.getByLabelText('Nazwa zleceniodawcy'), 'DEVIL');
+    await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+
+    expect(await screen.findByText(message)).toBeInTheDocument();
+    expect(screen.getByLabelText('NIP')).toHaveAttribute('aria-invalid', 'true');
+    expect(createCustomer).not.toHaveBeenCalled();
   });
 
   it('not call createCustomer when no or uncorrect data are provided', async () => {

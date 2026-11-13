@@ -8,8 +8,8 @@ async function seedCustomers(trx: dbTransaction, customers: { name: string; tax:
   return trx.insert(customer).values(customers).returning();
 }
 
-const devil = { name: 'Devil Transport', tax: 'PL7743241555' };
-const anioł = { name: 'Anioł Logistyka', tax: 'PL5250001009' };
+const devil = { name: 'Devil Transport', tax: '7743241555' };
+const anioł = { name: 'Anioł Logistyka', tax: '5250001003' };
 
 describe('findCustomers', () => {
   it('finds a Customer by part of its name, ignoring case', () =>
@@ -41,7 +41,7 @@ describe('findCustomers', () => {
     withRollback(async (trx) => {
       await seedCustomers(trx, [devil, anioł]);
 
-      const customers = await findCustomers(trx, 'PL');
+      const customers = await findCustomers(trx, '3');
 
       expect(customers.map((c) => c.name)).toEqual(['Anioł Logistyka', 'Devil Transport']);
     }));
@@ -49,12 +49,12 @@ describe('findCustomers', () => {
   it('orders the matches by name in Polish alphabetical order', () =>
     withRollback(async (trx) => {
       await seedCustomers(trx, [
-        { name: 'Zenit', tax: 'PL1111111111' },
-        { name: 'Śląsk Trans', tax: 'PL2222222222' },
-        { name: 'Sokół', tax: 'PL3333333333' },
+        { name: 'Zenit', tax: '9990000014' },
+        { name: 'Śląsk Trans', tax: '9990000020' },
+        { name: 'Sokół', tax: '9990000037' },
       ]);
 
-      const customers = await findCustomers(trx, 'PL');
+      const customers = await findCustomers(trx, '999000');
 
       expect(customers.map((c) => c.name)).toEqual(['Sokół', 'Śląsk Trans', 'Zenit']);
     }));
