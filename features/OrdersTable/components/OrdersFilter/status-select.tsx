@@ -12,7 +12,7 @@ import {
   type StatusPresentation,
 } from '@/features/shared/lib/status-presentation';
 
-export default function StatusSelect() {
+export default function StatusSelect({ id }: { id: string }) {
   const { query, change } = useUrlQuery(ordersTableQuery);
 
   return (
@@ -22,7 +22,7 @@ export default function StatusSelect() {
       itemToStringValue={(status) => String(status.id)}
       onValueChange={(value) => change({ statusId: value?.id })}
     >
-      <SelectTrigger className="w-45">
+      <SelectTrigger id={id} className="w-45">
         <SelectValue placeholder="Wybierz status zlecenia"></SelectValue>
       </SelectTrigger>
       <SelectContent alignItemWithTrigger={false}>

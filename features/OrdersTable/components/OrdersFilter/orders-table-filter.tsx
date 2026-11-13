@@ -23,17 +23,13 @@ export default function OrderTableFilter() {
         </CollapsibleTrigger>
         <CollapsibleContent className={'flex gap-2 mt-4 '}>
           <FilterField label="Data załadunku od">
-            <DateInput filterName="startDate" />
+            {(id) => <DateInput id={id} filterName="startDate" />}
           </FilterField>
           <FilterField label="Data rozładunku do">
-            <DateInput filterName="endDate" />
+            {(id) => <DateInput id={id} filterName="endDate" />}
           </FilterField>
-          <FilterField label="Kierowca">
-            <DriverCombobox />
-          </FilterField>
-          <FilterField label="Status zlecenia">
-            <StatusSelect />
-          </FilterField>
+          <FilterField label="Kierowca">{(id) => <DriverCombobox id={id} />}</FilterField>
+          <FilterField label="Status zlecenia">{(id) => <StatusSelect id={id} />}</FilterField>
         </CollapsibleContent>
       </Collapsible>
     </div>

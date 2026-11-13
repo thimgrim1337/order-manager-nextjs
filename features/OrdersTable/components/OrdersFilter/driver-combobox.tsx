@@ -12,7 +12,7 @@ import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import type { DriverReadModel } from '@/lib/dal/driver.dal';
 import { driverName } from '@/lib/drivers';
 
-export default function DriverCombobox() {
+export default function DriverCombobox({ id }: { id: string }) {
   const { drivers } = useOrderChoices();
   const { query, change } = useUrlQuery(ordersTableQuery);
 
@@ -24,7 +24,7 @@ export default function DriverCombobox() {
       itemToStringValue={(item: DriverReadModel) => String(item.id)}
       onValueChange={(value) => change({ driverId: value?.id })}
     >
-      <ComboboxInput placeholder="Wybierz kierowcę" showClear />
+      <ComboboxInput id={id} placeholder="Wybierz kierowcę" showClear />
       <ComboboxContent>
         <ComboboxEmpty>Nic nie znaleziono.</ComboboxEmpty>
         <ComboboxList>

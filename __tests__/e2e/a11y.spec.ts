@@ -52,12 +52,19 @@ test.describe('Accessibility', () => {
     await cleanupTestData();
   });
 
-  test('the Orders page and its create-Order dialog', async ({ page }) => {
+  test('the Orders page, its filters and its create-Order dialog', async ({ page }) => {
     await page.goto('/orders');
     await expect(page.getByRole('button', { name: 'Dodaj nowe zlecenie' })).toBeVisible();
     expect(await violations(page)).toEqual([]);
 
     await openDialog(page, 'Dodaj nowe zlecenie', 'Dodaj nowe zlecenie');
+    expect(await violations(page)).toEqual([]);
+
+    // The dialog opened, so the page has hydrated and the click unfolds the filters.
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await page.getByRole('button', { name: 'Filtrowanie' }).click();
+    await expect(page.getByLabel('Kierowca')).toBeVisible();
     expect(await violations(page)).toEqual([]);
   });
 

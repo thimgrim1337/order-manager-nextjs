@@ -7,7 +7,12 @@ import * as ordersTableQuery from '@/features/OrdersTable/lib/orders-table-query
 import useUrlQuery from '@/features/shared/hooks/use-url-query';
 import { formatDate, getToday, parseDate } from '@/lib/dates';
 
-export default function DateInput({ filterName }: { filterName: 'startDate' | 'endDate' }) {
+type DateInputProps = {
+  id: string;
+  filterName: 'startDate' | 'endDate';
+};
+
+export default function DateInput({ id, filterName }: DateInputProps) {
   const { query, change } = useUrlQuery(ordersTableQuery);
   const selectedDate = query[filterName];
 
@@ -15,7 +20,7 @@ export default function DateInput({ filterName }: { filterName: 'startDate' | 'e
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="outline" className="w-48 justify-between font-normal">
+          <Button variant="outline" id={id} className="w-48 justify-between font-normal">
             {selectedDate ? (
               selectedDate
             ) : (

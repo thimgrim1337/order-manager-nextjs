@@ -1,12 +1,16 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
-import OrdersSearch from '@/features/OrdersTable/components/OrdersFilter/orders-search';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import OrderTableFilter from '@/features/OrdersTable/components/OrdersFilter/orders-table-filter';
 import OrdersTable from '@/features/OrdersTable/components/orders-table';
+import { OrderChoicesProvider } from '@/features/shared/context/order-choices-context';
 import { orderReadModel } from '../fixtures/order-read-model';
 import { holdNavigations, openUrl, renderedUrl } from '../utils/memory-url';
+import { orderChoices } from '../utils/order-choices';
+import { pickDate } from '../utils/pick-date';
 
 const order = orderReadModel();
+const choices = orderChoices();
 
 // Past the Search input's debounce.
 const TYPING_PAUSE = 700;
@@ -18,12 +22,19 @@ function waitTypingPause() {
 function renderAt(href: string) {
   openUrl(href);
   render(
-    <>
-      <OrdersSearch />
+    <OrderChoicesProvider choices={choices}>
+      <OrderTableFilter />
       <OrdersTable orders={[order]} count={1} />
-    </>,
+    </OrderChoicesProvider>,
   );
   return userEvent.setup();
+}
+
+/** Renders the page at `href` with its filters unfolded. */
+async function renderFiltersAt(href: string) {
+  const user = renderAt(href);
+  await user.click(screen.getByRole('button', { name: 'Filtrowanie' }));
+  return user;
 }
 
 function urlParam(name: string) {
@@ -120,6 +131,89 @@ describe('OrdersTable search', () => {
 
     await expect.poll(() => urlParam('search'), { timeout: TYPING_PAUSE }).toBeNull();
     expect(renderedUrl().pathname).toBe('/orders');
+  });
+});
+
+describe('OrdersTable filters', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    // Monday 2026-11-02 12:00 in Warsaw, so the date filters' calendars show November 2026.
+    vi.setSystemTime(new Date('2026-11-02T11:00:00Z'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('puts a picked Start date in the URL, back on the first page', async () => {
+    const user = await renderFiltersAt('/orders?pageIndex=2');
+
+    await pickDate(user, 'Data załadunku od', 12);
+
+    expect(urlParam('startDate')).toBe('2026-11-12');
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('puts a picked End date in the URL, back on the first page', async () => {
+    const user = await renderFiltersAt('/orders?pageIndex=2');
+
+    await pickDate(user, 'Data rozładunku do', 20);
+
+    expect(urlParam('endDate')).toBe('2026-11-20');
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('shows the Start and End dates the URL opened with', async () => {
+    await renderFiltersAt('/orders?startDate=2026-09-15&endDate=2026-10-20');
+
+    expect(screen.getByLabelText('Data załadunku od')).toHaveTextContent('2026-09-15');
+    expect(screen.getByLabelText('Data rozładunku do')).toHaveTextContent('2026-10-20');
+  });
+
+  it('puts a picked Driver in the URL, back on the first page', async () => {
+    const user = await renderFiltersAt('/orders?pageIndex=2');
+
+    await user.click(screen.getByLabelText('Kierowca'));
+    await user.click(screen.getByRole('option', { name: 'Adam Nowak' }));
+
+    expect(urlParam('driverId')).toBe('2');
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('shows the Driver the URL opened with', async () => {
+    await renderFiltersAt('/orders?driverId=2');
+
+    expect(screen.getByLabelText('Kierowca')).toHaveValue('Adam Nowak');
+  });
+
+  it('puts a picked Status in the URL, back on the first page', async () => {
+    const user = await renderFiltersAt('/orders?pageIndex=2');
+
+    await user.click(screen.getByLabelText('Status zlecenia'));
+    await user.click(screen.getByRole('option', { name: 'zakończone' }));
+
+    expect(urlParam('statusId')).toBe('3');
+    expect(urlParam('pageIndex')).toBeNull();
+  });
+
+  it('shows the Status the URL opened with', async () => {
+    await renderFiltersAt('/orders?statusId=2');
+
+    expect(screen.getByLabelText('Status zlecenia')).toHaveTextContent('anulowane');
+  });
+
+  it('keeps a Driver picked while the Status picked just before is still navigating', async () => {
+    const user = await renderFiltersAt('/orders');
+    const release = holdNavigations();
+
+    await user.click(screen.getByLabelText('Status zlecenia'));
+    await user.click(screen.getByRole('option', { name: 'zakończone' }));
+    await user.click(screen.getByLabelText('Kierowca'));
+    await user.click(screen.getByRole('option', { name: 'Adam Nowak' }));
+    act(() => release({ lastOnly: true }));
+
+    expect(urlParam('statusId')).toBe('3');
+    expect(urlParam('driverId')).toBe('2');
   });
 });
 
