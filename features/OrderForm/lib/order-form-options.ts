@@ -59,7 +59,7 @@ export const getStartingValues = (order?: OrderReadModel) => {
 };
 
 /** What the form holds, from opening to submit. */
-type FormValues = ReturnType<typeof getStartingValues>;
+export type OrderFormValues = ReturnType<typeof getStartingValues>;
 
 /**
  * The Order input the form's values save as: its picked Customer, Truck and Driver as their ids,
@@ -72,7 +72,7 @@ export const toOrderInput = ({
   loadingPlaces,
   unloadingPlaces,
   ...fields
-}: FormValues): OrderInputDto => ({
+}: OrderFormValues): OrderInputDto => ({
   ...fields,
   customerId: customer?.id ?? 0,
   truckId: truck?.id ?? 0,

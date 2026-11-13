@@ -1,9 +1,10 @@
 'use client';
 
 import { useStore } from '@tanstack/react-form';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { useOrderChoices } from '@/features/shared/context/order-choices-context';
+import { type FieldRefusal, useFieldRefusals } from '@/features/shared/hooks/use-field-refusals';
 import type { ActionResponse } from '@/lib/action-response';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CustomerReadModel } from '@/lib/dal/customer.dal';
@@ -16,6 +17,7 @@ import useExchangeRate from '../hooks/useExchangeRate';
 import {
   getStartingExchangeRate,
   getStartingValues,
+  type OrderFormValues,
   orderFormOptions,
   toOrderInput,
 } from '../lib/order-form-options';
@@ -31,6 +33,11 @@ export type OrderFormProps = {
   dialog: OrderFormWrite;
 };
 
+/** The Order Number is unique per Customer, so a taken one stops applying once either changes. */
+const REFUSALS: FieldRefusal<OrderFormValues>[] = [
+  { reason: 'OrderNrTaken', field: 'orderNr', clearedBy: ['orderNr', 'customer'] },
+];
+
 /** Creates or edits an Order. */
 export default function OrderForm({ order, action, dialog }: OrderFormProps) {
   const { cities, countries, currencies, customers, drivers, trucks } = useOrderChoices();
@@ -40,48 +47,25 @@ export default function OrderForm({ order, action, dialog }: OrderFormProps) {
   const [startingExchangeRate] = useState(() => getStartingExchangeRate(order));
   // Cities created from this form, newest first, offered in both Places before any search.
   const [createdCities, setCreatedCities] = useState<CityReadModel[]>([]);
-  // A save refused after its dialog closed has no field left to show on, so it gets the toast.
-  const isMounted = useRef(false);
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+  const refusals = useFieldRefusals(REFUSALS);
 
   const form = useAppForm({
     ...orderFormOptions,
     defaultValues: startingValues,
-    onSubmit: async ({ value }) => {
+    listeners: refusals.listeners,
+    onSubmit: async ({ value, formApi }) => {
       await dialog.write(() => action(toOrderInput(value)), {
         successDescription: order
           ? `Pomyślnie zaktualizowano zlecenie o numerze ${value.orderNr}.`
           : `Pomyślnie utworzono zlecenie o numerze ${value.orderNr}.`,
-        showOnField: ({ reason, message }) => {
-          if (reason !== 'OrderNrTaken' || !isMounted.current) return false;
-          setOrderNrRefusal(message);
-          return true;
-        },
+        showOnField: refusals.showOnField(formApi),
       });
     },
   });
 
-  /**
-   * Shows a refused write's message on the Order Number, or drops it with `undefined`. TanStack
-   * clears an `onServer` error only on a field with its own validators, so the listeners drop it.
-   */
-  const setOrderNrRefusal = (message: string | undefined) =>
-    form.setFieldMeta('orderNr', (meta) => ({
-      ...meta,
-      errorMap: { ...meta.errorMap, onServer: message && { message } },
-    }));
-  const clearOrderNrRefusal = () => setOrderNrRefusal(undefined);
-
   /** Makes a Customer created from the form the Order's, as picking them in the field does. */
-  const pickCreatedCustomer = (customer: CustomerReadModel) => {
+  const pickCreatedCustomer = (customer: CustomerReadModel) =>
     form.setFieldValue('customer', customer);
-    clearOrderNrRefusal();
-  };
 
   /** Offers a City created from the form first in both Places, picking it in neither. */
   const offerCreatedCity = (city: CityReadModel) =>
@@ -102,13 +86,7 @@ export default function OrderForm({ order, action, dialog }: OrderFormProps) {
       >
         <FieldGroup className="flex-row justify-between">
           <div className="flex-1 flex gap-2 items-end min-w-0">
-            <form.AppField
-              name="customer"
-              listeners={{
-                // The Order Number is unique per Customer, so another Customer may use it.
-                onChange: clearOrderNrRefusal,
-              }}
-            >
+            <form.AppField name="customer">
               {(field) => (
                 <field.CustomersComboboxField customers={customers} label="Zleceniodawca" />
               )}
@@ -116,7 +94,7 @@ export default function OrderForm({ order, action, dialog }: OrderFormProps) {
             <CreateCustomer onCreated={pickCreatedCustomer} dialog={dialog.customer} />
           </div>
 
-          <form.AppField name="orderNr" listeners={{ onChange: clearOrderNrRefusal }}>
+          <form.AppField name="orderNr">
             {(field) => <field.InputField label="Numer zlecenia" />}
           </form.AppField>
         </FieldGroup>
