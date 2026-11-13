@@ -267,13 +267,13 @@ describe('OrderForm', () => {
       });
 
       it('picks no Customer when the create is refused', async () => {
-        vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused('CustomerTaken'));
+        vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused('CustomerNameTaken'));
         const { user } = await setup();
         await fillInNewOrder(user);
 
         await createCustomerInDialog(user);
 
-        await screen.findByText('Ten zleceniodawca już istnieje.');
+        await screen.findByText('Zleceniodawca o tej nazwie już istnieje.');
         expect(screen.getByLabelText('Zleceniodawca')).toHaveValue('DEVIL');
       });
 
@@ -457,12 +457,12 @@ describe('OrderForm', () => {
       });
 
       it('offers no new City when the create is refused', async () => {
-        vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityTaken'));
+        vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityNameTaken'));
         const { user } = await setup();
 
         await createCityInDialog(user);
 
-        await screen.findByText('Ta miejscowość już istnieje.');
+        await screen.findByText('Miejscowość o tej nazwie już istnieje.');
         expect(await placeChoices(user, 'Miejsca załadunku')).toEqual(['Płock']);
         expect(await placeChoices(user, 'Miejsca rozładunku')).toEqual(['Płock']);
       });

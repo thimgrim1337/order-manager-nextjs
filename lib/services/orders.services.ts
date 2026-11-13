@@ -8,7 +8,7 @@ import { CACHE_TAG } from '../consts';
 import { findCurrency } from '../dal/currency.dal';
 import { findOrderExchangeRate } from '../dal/order.dal';
 import { getToday } from '../dates';
-import { isUniqueViolation, violatedForeignKey } from '../db-errors';
+import { outcomeOf, violatedForeignKey, violatedUniqueConstraint } from '../db-errors';
 import {
   type OrderDto,
   type OrderInputDto,
@@ -326,7 +326,7 @@ async function assignDriverToTruck(
 
 /** The outcome a failed Order save is refused with, or none when the failure is unexpected. */
 function saveOrderRefusal(err: unknown): OrderNrTaken | UnknownReference | undefined {
-  if (isUniqueViolation(err, 'orders_customer_id_order_nr_unique')) {
+  if (violatedUniqueConstraint(err) === 'orders_customer_id_order_nr_unique') {
     return { reason: 'OrderNrTaken' };
   }
 
@@ -335,8 +335,5 @@ function saveOrderRefusal(err: unknown): OrderNrTaken | UnknownReference | undef
 
 /** The unknown reference a failed Order write names, or none when it failed otherwise. */
 function unknownReference(err: unknown): UnknownReference | undefined {
-  const constraint = violatedForeignKey(err);
-  if (constraint && Object.hasOwn(UNKNOWN_REFERENCES, constraint)) {
-    return UNKNOWN_REFERENCES[constraint as keyof typeof UNKNOWN_REFERENCES];
-  }
+  return outcomeOf(violatedForeignKey(err), UNKNOWN_REFERENCES);
 }

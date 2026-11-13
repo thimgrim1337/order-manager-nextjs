@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 // The browser's own Enter: user-event's clicks any submit button inside the form, owned or not.
@@ -7,6 +7,7 @@ import CreateCityForm from '@/features/OrderForm/components/CityForm/create-city
 import { createCity } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
 import { idleWriteDialog } from '../utils/idle-write-dialog';
+import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
@@ -15,7 +16,7 @@ const dialog = idleWriteDialog(onDialogClose);
 
 const setup = () => {
   const user = userEvent.setup();
-  render(
+  renderWithToaster(
     <CreateCityForm
       countries={[{ id: 1, code: 'PL', name: 'Poland' }]}
       onCreated={onCreated}
@@ -73,7 +74,7 @@ describe('CreateCityForm', () => {
   it('defaults the City to Poland, whatever its id', async () => {
     vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded());
     const user = userEvent.setup();
-    render(
+    renderWithToaster(
       <CreateCityForm
         countries={[
           { id: 3, code: 'DE', name: 'Niemcy' },
@@ -106,14 +107,48 @@ describe('CreateCityForm', () => {
     await act(async () => create.resolve());
   });
 
-  it('keeps the dialog open when the City is not created', async () => {
-    vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityTaken'));
-    const { user } = setup();
+  describe('when its name is taken', () => {
+    const CITY_NAME_TAKEN = 'Miejscowość o tej nazwie już istnieje.';
 
-    await fillAndSubmit(user);
+    const saveTakenName = async () => {
+      vi.mocked(createCity).mockResolvedValueOnce(writeResponse.refused('CityNameTaken'));
+      const { user } = setup();
+      await fillAndSubmit(user);
+      await screen.findByText(CITY_NAME_TAKEN);
+      return { user };
+    };
 
-    await vi.waitFor(() => expect(createCity).toHaveBeenCalledOnce());
-    expect(onDialogClose).not.toHaveBeenCalled();
+    it('shows the refusal on the name field instead of a toast, keeping the dialog open', async () => {
+      await saveTakenName();
+
+      expect(screen.getByLabelText('Nazwa miejscowości')).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getAllByText(CITY_NAME_TAKEN)).toHaveLength(1);
+      expect(screen.queryByText(/Nie udało się/)).toBeNull();
+      expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
+    it('keeps the refusal when another field changes', async () => {
+      const { user } = await saveTakenName();
+
+      await user.type(screen.getByLabelText('Kod pocztowy'), '1');
+
+      expect(screen.getByText(CITY_NAME_TAKEN)).toBeInTheDocument();
+    });
+
+    it('clears the refusal and saves once the name changes', async () => {
+      const { user } = await saveTakenName();
+      vi.mocked(createCity).mockResolvedValueOnce(writeResponse.succeeded());
+
+      await user.type(screen.getByLabelText('Nazwa miejscowości'), 'a');
+
+      expect(screen.queryByText(CITY_NAME_TAKEN)).toBeNull();
+      expect(screen.getByLabelText('Nazwa miejscowości')).not.toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+    });
   });
 
   it('not call createCity when no or uncorrect data are provided', async () => {

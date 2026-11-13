@@ -30,7 +30,19 @@ describe('Customers.createCustomer', () => {
         name: 'Inna Firma',
       });
 
-      expect(failure).toEqual({ reason: 'CustomerTaken' });
+      expect(failure).toEqual({ reason: 'CustomerTaxTaken' });
+    }));
+
+  it('rejects a Customer whose name is taken', () =>
+    withRollback(async (trx) => {
+      await Customers.createCustomer(trx, customerForm);
+
+      const [failure] = await Customers.createCustomer(trx, {
+        ...customerForm,
+        tax: 'PL0987654321',
+      });
+
+      expect(failure).toEqual({ reason: 'CustomerNameTaken' });
     }));
 
   it('rejects a Customer with a too short tax number', () =>

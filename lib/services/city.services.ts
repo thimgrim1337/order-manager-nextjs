@@ -5,13 +5,19 @@ import type { db, dbTransaction } from '@/db/db';
 import { city } from '@/db/schemas';
 import { CACHE_TAG } from '../consts';
 import { type CityReadModel, findCity } from '../dal/city.dal';
-import { isUniqueViolation } from '../db-errors';
+import { outcomeOf, violatedUniqueConstraint } from '../db-errors';
 import { createCitySchema } from '../dto/city.dto';
 import { error, ok, type Result } from '../error';
 
 export type CreateCityFailure =
   | { reason: 'InvalidData'; details: string }
-  | { reason: 'CityTaken' };
+  | { reason: 'CityNameTaken' };
+
+/**
+ * The refusal each unique City constraint stands for. `cities_name_postal_country_id_unique` is
+ * left out: Postgres reports `cities_name_unique` for a City it would also reject.
+ */
+const TAKEN_REFUSALS = { cities_name_unique: { reason: 'CityNameTaken' } } as const;
 
 /** Creates a City, returned with its Country, then invalidates the cached Cities. Call it from a Server Action. */
 export async function createCity(
@@ -35,7 +41,8 @@ export async function createCity(
 
     return ok(created);
   } catch (err) {
-    if (isUniqueViolation(err)) return error({ reason: 'CityTaken' });
+    const refusal = outcomeOf(violatedUniqueConstraint(err), TAKEN_REFUSALS);
+    if (refusal) return error(refusal);
     throw err;
   }
 }

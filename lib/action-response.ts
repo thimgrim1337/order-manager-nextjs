@@ -20,8 +20,9 @@ const FAILURE_MESSAGES = {
   UnknownCity: 'Wybrana miejscowość nie istnieje.',
   RepeatedLoadingPlace: 'Miejsce załadunku powtarza się.',
   RepeatedUnloadingPlace: 'Miejsce rozładunku powtarza się.',
-  CityTaken: 'Ta miejscowość już istnieje.',
-  CustomerTaken: 'Ten zleceniodawca już istnieje.',
+  CityNameTaken: 'Miejscowość o tej nazwie już istnieje.',
+  CustomerNameTaken: 'Zleceniodawca o tej nazwie już istnieje.',
+  CustomerTaxTaken: 'Zleceniodawca o tym NIP-ie już istnieje.',
   ExchangeRateNotPublished: 'Nie znaleziono kursu dla wskazanej daty.',
   NbpUnavailable: 'Nie udało się pobrać kursu walut.',
 };

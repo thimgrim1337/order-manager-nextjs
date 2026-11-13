@@ -1,12 +1,18 @@
 import { FieldGroup } from '@/components/ui/field';
+import { type FieldRefusal, useFieldRefusals } from '@/features/shared/hooks/use-field-refusals';
 import type { FormWrite } from '@/features/shared/hooks/use-write-dialog';
 import { createCity } from '@/lib/actions';
 import type { CityReadModel } from '@/lib/dal/city.dal';
 import type { CountryReadModel } from '@/lib/dal/country.dal';
-import { createCitySchema } from '@/lib/dto/city.dto';
+import { type CreateCityDto, createCitySchema } from '@/lib/dto/city.dto';
 import { useAppForm } from '../../hooks/useAppForm';
 
 const POLAND_CODE = 'PL';
+
+/** A City's name is unique, so a taken one stops applying once it changes. */
+const REFUSALS: FieldRefusal<CreateCityDto>[] = [
+  { reason: 'CityNameTaken', field: 'name', clearedBy: ['name'] },
+];
 
 export default function CreateCityForm({
   countries,
@@ -18,6 +24,8 @@ export default function CreateCityForm({
   onCreated: (city: CityReadModel) => void;
   dialog: FormWrite;
 }) {
+  const refusals = useFieldRefusals(REFUSALS);
+
   const form = useAppForm({
     defaultValues: {
       name: '',
@@ -28,11 +36,13 @@ export default function CreateCityForm({
     validators: {
       onChange: createCitySchema,
     },
-    onSubmit: async ({ value }) =>
+    listeners: refusals.listeners,
+    onSubmit: async ({ value, formApi }) =>
       dialog.write(() => createCity(value), {
         onSuccess: onCreated,
         errorTitle: 'Nie udało się utworzyć miejscowości.',
         successDescription: `Pomyślnie utworzono nową miejscowość: ${value.name}`,
+        showOnField: refusals.showOnField(formApi),
       }),
   });
 

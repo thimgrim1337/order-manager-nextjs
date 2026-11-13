@@ -54,7 +54,18 @@ describe('Cities.createCity', () => {
 
       const [failure] = await Cities.createCity(trx, { ...krakow, postal: '30-002' });
 
-      expect(failure).toEqual({ reason: 'CityTaken' });
+      expect(failure).toEqual({ reason: 'CityNameTaken' });
+    }));
+
+  it('rejects a City identical to a saved one as its name taken', () =>
+    withRollback(async (trx) => {
+      const dbCountry = await seedCountry(trx);
+      const krakow = { name: 'Kraków', postal: '30-001', countryId: dbCountry.id };
+      await Cities.createCity(trx, krakow);
+
+      const [failure] = await Cities.createCity(trx, krakow);
+
+      expect(failure).toEqual({ reason: 'CityNameTaken' });
     }));
 
   it('rejects a City without a name', () =>

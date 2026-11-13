@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 // The browser's own Enter: user-event's clicks any submit button inside the form, owned or not.
@@ -7,6 +7,7 @@ import CreateCustomerForm from '@/features/OrderForm/components/CustomerForm/cre
 import { createCustomer } from '@/lib/actions';
 import { deferred } from '../utils/deferred';
 import { idleWriteDialog } from '../utils/idle-write-dialog';
+import { renderWithToaster } from '../utils/render-with-toaster';
 import { writeResponse } from '../utils/write-response';
 
 const onDialogClose = vi.fn();
@@ -15,7 +16,7 @@ const dialog = idleWriteDialog(onDialogClose);
 
 const setup = () => {
   const user = userEvent.setup();
-  render(<CreateCustomerForm onCreated={onCreated} dialog={dialog} />);
+  renderWithToaster(<CreateCustomerForm onCreated={onCreated} dialog={dialog} />);
 
   return { user };
 };
@@ -74,14 +75,56 @@ describe('CreateCustomerForm', () => {
     await act(async () => create.resolve());
   });
 
-  it('keeps the dialog open when the Customer is not created', async () => {
-    vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused('CustomerTaken'));
-    const { user } = setup();
+  describe.each([
+    {
+      reason: 'CustomerNameTaken',
+      label: 'Nazwa zleceniodawcy',
+      otherLabel: 'NIP',
+      message: 'Zleceniodawca o tej nazwie już istnieje.',
+    },
+    {
+      reason: 'CustomerTaxTaken',
+      label: 'NIP',
+      otherLabel: 'Nazwa zleceniodawcy',
+      message: 'Zleceniodawca o tym NIP-ie już istnieje.',
+    },
+  ] as const)('when its $label is taken', ({ reason, label, otherLabel, message }) => {
+    const saveTaken = async () => {
+      vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.refused(reason));
+      const { user } = setup();
+      await fillAndSubmit(user);
+      await screen.findByText(message);
+      return { user };
+    };
 
-    await fillAndSubmit(user);
+    it('shows the refusal on that field instead of a toast, keeping the dialog open', async () => {
+      await saveTaken();
 
-    await vi.waitFor(() => expect(createCustomer).toHaveBeenCalledOnce());
-    expect(onDialogClose).not.toHaveBeenCalled();
+      expect(screen.getByLabelText(label)).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getAllByText(message)).toHaveLength(1);
+      expect(screen.queryByText('Niepowodzenie')).toBeNull();
+      expect(onDialogClose).not.toHaveBeenCalled();
+    });
+
+    it('keeps the refusal when the other field changes', async () => {
+      const { user } = await saveTaken();
+
+      await user.type(screen.getByLabelText(otherLabel), '1');
+
+      expect(screen.getByText(message)).toBeInTheDocument();
+    });
+
+    it('clears the refusal and saves once that field changes', async () => {
+      const { user } = await saveTaken();
+      vi.mocked(createCustomer).mockResolvedValueOnce(writeResponse.succeeded());
+
+      await user.type(screen.getByLabelText(label), '1');
+
+      expect(screen.queryByText(message)).toBeNull();
+      expect(screen.getByLabelText(label)).not.toHaveAttribute('aria-invalid', 'true');
+      await user.click(screen.getByRole('button', { name: 'Zapisz' }));
+      await vi.waitFor(() => expect(onDialogClose).toHaveBeenCalledOnce());
+    });
   });
 
   it('not call createCustomer when no or uncorrect data are provided', async () => {

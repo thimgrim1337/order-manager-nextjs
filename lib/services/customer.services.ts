@@ -5,13 +5,20 @@ import type { db, dbTransaction } from '@/db/db';
 import { customer } from '@/db/schemas';
 import { CACHE_TAG } from '../consts';
 import type { CustomerReadModel } from '../dal/customer.dal';
-import { isUniqueViolation } from '../db-errors';
+import { outcomeOf, violatedUniqueConstraint } from '../db-errors';
 import { createCustomerSchema, selectCustomerSchema } from '../dto/customer.dto';
 import { error, ok, type Result } from '../error';
 
 export type CreateCustomerFailure =
   | { reason: 'InvalidData'; details: string }
-  | { reason: 'CustomerTaken' };
+  | { reason: 'CustomerNameTaken' }
+  | { reason: 'CustomerTaxTaken' };
+
+/** The refusal each unique Customer constraint stands for: the field it finds taken. */
+const TAKEN_REFUSALS = {
+  customers_name_unique: { reason: 'CustomerNameTaken' },
+  customers_tax_unique: { reason: 'CustomerTaxTaken' },
+} as const;
 
 /** Creates a Customer, then invalidates the cached Customers. Call it from a Server Action. */
 export async function createCustomer(
@@ -32,7 +39,8 @@ export async function createCustomer(
 
     return ok(selectCustomerSchema.parse(created));
   } catch (err) {
-    if (isUniqueViolation(err)) return error({ reason: 'CustomerTaken' });
+    const refusal = outcomeOf(violatedUniqueConstraint(err), TAKEN_REFUSALS);
+    if (refusal) return error(refusal);
     throw err;
   }
 }
