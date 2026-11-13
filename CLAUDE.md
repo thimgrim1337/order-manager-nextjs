@@ -42,5 +42,5 @@ Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/ag
 
 - Commit messages: concise Conventional Commits (`type(scope): subject`), minimal or no body.
 - Every change goes on a branch for its feature (e.g. `feat/<feature>`, `chore/<topic>`), not an unrelated feature branch. The pre-commit hook rejects commits on `main`.
-- Follow-ups from reviewing the current branch (refactors, typos, review findings) stay on that branch.
+- A branch lands on `main` as one commit: follow-ups from reviewing it (refactors, typos, review findings) amend that commit (`git commit --amend`) rather than stacking.
 - `main` stays linear: rebase the branch onto `main`, then fast-forward it (`merge.ff only` refuses anything else). No merge commits.

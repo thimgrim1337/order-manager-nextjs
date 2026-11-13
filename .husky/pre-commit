@@ -3,6 +3,17 @@ if [ "$(git branch --show-current)" = "main" ]; then
   exit 1
 fi
 
+# A tree that already passed this hook (a squash, a reworded amend) needs no rerun.
+if [ "$(git write-tree)" = "$(git rev-parse -q --verify 'ORIG_HEAD^{tree}')" ]; then
+  echo "▶ pre-commit: tree already checked as ORIG_HEAD, skipping"
+  exit 0
+fi
+# Docs and agent config only: nothing to lint, typecheck or test.
+if ! git diff --cached --name-only | grep -qvE '\.md$|^\.mcp\.json$'; then
+  echo "▶ pre-commit: docs only, skipping"
+  exit 0
+fi
+
 # Husky runs this with `sh -e`, so the last step printed is the one that failed.
 echo "▶ pre-commit: lint-staged"
 pnpm exec lint-staged
