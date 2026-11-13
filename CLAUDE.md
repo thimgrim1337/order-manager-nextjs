@@ -32,7 +32,7 @@ Issues live in GitHub Issues (`thimgrim1337/order-manager-nextjs`) via the `gh` 
 
 ### Triage labels
 
-Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+Read `docs/agents/triage-labels.md` before labelling an issue or ending a grilling.
 
 ### Domain docs
 
