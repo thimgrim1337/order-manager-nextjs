@@ -48,14 +48,15 @@ export function requestedUrl() {
 
 /**
  * Keeps navigations in flight until the returned `release` renders them in order, the way a
- * navigation that is still loading leaves the page on its old URL.
+ * navigation that is still loading leaves the page on its old URL. `release({ lastOnly: true })`
+ * renders only the last, the way Next coalesces navigations made in one transition.
  */
 export function holdNavigations() {
   held = [];
-  return function release() {
+  return function release({ lastOnly = false }: { lastOnly?: boolean } = {}) {
     const navigations = held ?? [];
     held = undefined;
-    for (const url of navigations) render(url);
+    for (const url of lastOnly ? navigations.slice(-1) : navigations) render(url);
   };
 }
 

@@ -11,6 +11,10 @@ const order = orderReadModel();
 // Past the Search input's debounce.
 const TYPING_PAUSE = 700;
 
+function waitTypingPause() {
+  return new Promise((resolve) => setTimeout(resolve, TYPING_PAUSE));
+}
+
 function renderAt(href: string) {
   openUrl(href);
   render(
@@ -81,7 +85,7 @@ describe('OrdersTable search', () => {
     const release = holdNavigations();
 
     await user.type(searchInput(), 'ab');
-    await new Promise((resolve) => setTimeout(resolve, TYPING_PAUSE));
+    await waitTypingPause();
     await user.type(searchInput(), 'c');
     act(release);
 
@@ -95,7 +99,7 @@ describe('OrdersTable search', () => {
     const release = holdNavigations();
 
     await user.type(searchInput(), 'ab ');
-    await new Promise((resolve) => setTimeout(resolve, TYPING_PAUSE));
+    await waitTypingPause();
     await user.type(searchInput(), 'c');
     act(release);
 
@@ -116,5 +120,52 @@ describe('OrdersTable search', () => {
 
     await expect.poll(() => urlParam('search'), { timeout: TYPING_PAUSE }).toBeNull();
     expect(renderedUrl().pathname).toBe('/orders');
+  });
+});
+
+describe('OrdersTable reset', () => {
+  it('drops a Search term still waiting on the typing pause', async () => {
+    const user = renderAt('/orders');
+
+    await user.type(searchInput(), 'Kraków');
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    await waitTypingPause();
+
+    expect(searchInput()).toHaveValue('');
+    expect(urlParam('search')).toBeNull();
+  });
+
+  it('drops a typed Search term with the one already in the URL', async () => {
+    const user = renderAt('/orders?search=Gda');
+
+    await user.type(searchInput(), 'nsk');
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    await waitTypingPause();
+
+    expect(searchInput()).toHaveValue('');
+    expect(urlParam('search')).toBeNull();
+  });
+
+  it('drops a sent Search term when only Reset’s navigation renders', async () => {
+    const user = renderAt('/orders');
+    const release = holdNavigations();
+
+    await user.type(searchInput(), 'Kraków');
+    await waitTypingPause();
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    act(() => release({ lastOnly: true }));
+
+    expect(searchInput()).toHaveValue('');
+    expect(urlParam('search')).toBeNull();
+  });
+
+  it('clears the filters, the sort and the page, keeping the page size', async () => {
+    const user = renderAt(
+      '/orders?search=Gda&startDate=2026-11-02&endDate=2026-11-08&driverId=3&statusId=1&sort=driverFullname.asc&pageIndex=2&pageSize=20',
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+
+    expect(renderedUrl().search).toBe('?pageSize=20');
   });
 });

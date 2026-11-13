@@ -96,6 +96,10 @@ _Avoid_: Order list, orders page
 The Orders Table's one free-text term. It matches an Order by any of its text columns (Order Number, Customer, Driver, Truck, Status, Currency, Loading and Unloading Cities), by a Price or PLN Price within 1 of it when it is a number, and by its Start or End Date when it is a calendar date (YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY or DD.MM.YYYY); a date-shaped term that is no calendar date (31-02-2026) matches as text only.
 _Avoid_: Global filter, query
 
+**Reset** (_Reset_):
+Returns the Orders Table to a view with no Search, no filters and no sort the user chose, back on its first page and keeping how many Orders a page shows. A Search term typed but not yet applied is dropped with them.
+_Avoid_: Clear filters, clear all
+
 **Timeline** (_Harmonogram_):
 The one-Week view of every Order in that Week, laid out across days, used for planning Trucks and Drivers.
 _Avoid_: Schedule, calendar, planner
