@@ -8,8 +8,8 @@ import { CACHE_TAG } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { existingPageIndex } from '@/lib/pagination';
 import { plateSearchText } from '@/lib/plate';
+import { toSearchTerm } from '@/lib/search';
 import { type Week, weekBounds } from '@/lib/week';
-import { toSearchTerm } from '../utils';
 
 /** The view column(s) each field the Orders Table sorts by orders on. */
 const sortColumns = {

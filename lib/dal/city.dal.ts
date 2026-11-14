@@ -4,7 +4,7 @@ import db, { type dbTransaction } from '@/db/db';
 import { city, country } from '@/db/schemas';
 import { CACHE_TAG, SEARCH_LIMIT } from '@/lib/consts';
 import { inPolishOrder } from '@/lib/polish-order';
-import { toSearchTerm } from '../utils';
+import { toSearchTerm } from '@/lib/search';
 
 /**
  * Cities whose name contains `search`, ignoring case, by name in Polish alphabetical order: each

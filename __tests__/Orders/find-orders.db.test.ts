@@ -188,6 +188,27 @@ describe('findOrders search', () => {
     }));
 
   it.each([
+    '_',
+    '%',
+    '\\',
+  ])('finds only Orders containing %s, matching it as itself, alone or within a longer term in any case', (character) =>
+    withRollback(async (trx) => {
+      const refs = await seedOrderReferences(trx);
+      const containing = await seedOrder(trx, refs, { orderNr: `A${character}1` });
+      await seedOrder(trx, refs, { orderNr: 'AB1' });
+
+      expect(await searchedIds(trx, character)).toEqual([containing.id]);
+      expect(await searchedIds(trx, `a${character}1`)).toEqual([containing.id]);
+    }));
+
+  it.each(['_', '%', '\\'])('finds no Order by %s when none contains it', (character) =>
+    withRollback(async (trx) => {
+      await seed(trx);
+
+      expect(await searchedIds(trx, character)).toEqual([]);
+    }));
+
+  it.each([
     '2026-11-02',
     '02-11-2026',
     '02/11/2026',

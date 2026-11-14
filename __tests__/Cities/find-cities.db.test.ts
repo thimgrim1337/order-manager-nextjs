@@ -45,6 +45,20 @@ describe('findCities', () => {
       expect(await findCities(trx, 'Berlin')).toEqual([]);
     }));
 
+  it.each([
+    '_',
+    '%',
+    '\\',
+  ])('finds only Cities containing %s, matching it as itself, alone or within a longer term in any case', (character) =>
+    withRollback(async (trx) => {
+      await seedCities(trx, [`A${character}1`, 'AB1']);
+
+      expect((await findCities(trx, character)).map((c) => c.name)).toEqual([`A${character}1`]);
+      expect((await findCities(trx, `a${character}1`)).map((c) => c.name)).toEqual([
+        `A${character}1`,
+      ]);
+    }));
+
   it('orders the matches by name', () =>
     withRollback(async (trx) => {
       await seedCities(trx, ['Testowo Dolne', 'Testowo Górne', 'Testowo Bliskie']);

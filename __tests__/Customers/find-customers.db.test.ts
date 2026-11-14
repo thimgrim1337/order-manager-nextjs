@@ -37,6 +37,25 @@ describe('findCustomers', () => {
       expect(await findCustomers(trx, 'Nieznana')).toEqual([]);
     }));
 
+  it.each([
+    '_',
+    '%',
+    '\\',
+  ])('finds only Customers containing %s, matching it as itself, alone or within a longer term in any case', (character) =>
+    withRollback(async (trx) => {
+      await seedCustomers(trx, [
+        { name: `A${character}1 Trans`, tax: '9990000014' },
+        { name: 'AB1 Trans', tax: '9990000020' },
+      ]);
+
+      expect((await findCustomers(trx, character)).map((c) => c.name)).toEqual([
+        `A${character}1 Trans`,
+      ]);
+      expect((await findCustomers(trx, `a${character}1`)).map((c) => c.name)).toEqual([
+        `A${character}1 Trans`,
+      ]);
+    }));
+
   it('orders the matches by name', () =>
     withRollback(async (trx) => {
       await seedCustomers(trx, [devil, anioł]);
