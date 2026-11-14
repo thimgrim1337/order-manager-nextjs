@@ -7,6 +7,7 @@ import { loadingPlace, order, ordersWithDetailsView, unloadingPlace } from '@/db
 import { CACHE_TAG } from '@/lib/consts';
 import { parseDate } from '@/lib/dates';
 import { existingPageIndex } from '@/lib/pagination';
+import { plateSearchText } from '@/lib/plate';
 import { type Week, weekBounds } from '@/lib/week';
 import { toSearchTerm } from '../utils';
 
@@ -110,12 +111,9 @@ function parseSearch(search?: string) {
       ? `${dayFirst[4]}-${dayFirst[3]}-${dayFirst[1]}`
       : undefined;
 
-  // A Plate is written without spaces or dashes, so they are left out of the term to match one.
-  const plateTerm = text.replace(/[\s-]/g, '');
-
   return {
     pattern,
-    platePattern: toSearchTerm(plateTerm)?.pattern,
+    platePattern: toSearchTerm(plateSearchText(text))?.pattern,
     price: Number.isNaN(price) ? undefined : price,
     // A date-shaped term that is no calendar date (`31-02-2026`) is text only.
     date: dateShaped && isValid(parseDate(dateShaped)) ? dateShaped : undefined,

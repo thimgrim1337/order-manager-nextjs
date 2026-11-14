@@ -685,6 +685,32 @@ describe('OrderForm', () => {
       );
     });
 
+    it.each([
+      'WND 0997C',
+      'wnd-0997c',
+      'wnd 09',
+    ])('offers the Truck whose Plate is WND0997C for %j typed into the Truck field', async (typed) => {
+      const { user } = await setup();
+
+      await user.type(screen.getByLabelText('Pojazd'), typed);
+
+      const options = await screen.findAllByRole('option');
+      expect(options.map((option) => option.textContent)).toEqual(['WND0997C']);
+    });
+
+    it.each([
+      '-',
+      '- -',
+      'WND.09',
+    ])('offers no Truck for %j typed into the Truck field', async (typed) => {
+      const { user } = await setup();
+
+      await user.type(screen.getByLabelText('Pojazd'), typed);
+
+      await screen.findByText('Nic nie znaleziono.');
+      expect(screen.queryAllByRole('option')).toEqual([]);
+    });
+
     it('refuses to save without a Truck or a Driver, saying which is missing', async () => {
       const { user } = await setup();
 

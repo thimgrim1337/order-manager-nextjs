@@ -59,7 +59,7 @@ A company vehicle that carries Orders, known by its Plate. It may have a Regular
 _Avoid_: Vehicle, car
 
 **Plate** (_Numer rejestracyjny_):
-A Truck's registration number; unique, so it identifies the Truck. It is written in capitals and digits only, without spaces or dashes, so _WND 8093A_ and _wnd-8093a_ are the same Plate.
+A Truck's registration number; unique, so it identifies the Truck. It is written in capitals and digits only, without spaces or dashes, so _WND 8093A_ and _wnd-8093a_ are the same Plate. Searched for, in Search or the Order form's Truck field, a Plate is found with the typed text's spaces and dashes left out (_WND 28_ finds _WND2839C_).
 _Avoid_: Registration, truck number
 
 **Driver** (_Kierowca_):

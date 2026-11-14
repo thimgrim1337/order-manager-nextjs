@@ -17,6 +17,11 @@ type SinglePickComboboxFieldProps<T> = FormControlProps & {
   placeholder: string;
   /** Called with the text typed into the field, e.g. to search the choices. */
   onSearchTextChange?: (text: string) => void;
+  /**
+   * Whether an item matches the text typed into the field. Left out, Base UI matches its label with
+   * `contains` (`@base-ui/react` 1.4.1, `esm/combobox/root/AriaCombobox.js:148-159`).
+   */
+  filter?: (item: T, text: string) => boolean;
 };
 
 /**
@@ -28,6 +33,7 @@ export default function SinglePickComboboxField<T extends { id: number }>({
   itemLabel,
   placeholder,
   onSearchTextChange,
+  filter,
   label,
   icon,
   error,
@@ -41,6 +47,7 @@ export default function SinglePickComboboxField<T extends { id: number }>({
           items={choices}
           itemToStringLabel={itemLabel}
           itemToStringValue={(item: T) => String(item.id)}
+          filter={filter}
           onInputValueChange={onSearchTextChange}
           onValueChange={(item: T | null) => field.handleChange(item)}
           isItemEqualToValue={(item, value) => item.id === value.id}

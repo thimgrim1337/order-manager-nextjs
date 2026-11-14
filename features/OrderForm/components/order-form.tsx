@@ -11,6 +11,7 @@ import type { CustomerReadModel } from '@/lib/dal/customer.dal';
 import type { OrderReadModel } from '@/lib/dal/order.dal';
 import { driverName } from '@/lib/drivers';
 import type { OrderDto, OrderInputDto } from '@/lib/dto/order.dto';
+import { plateMatches } from '@/lib/plate';
 import type { OrderFormWrite } from '../hooks/use-order-dialog';
 import { useAppForm } from '../hooks/useAppForm';
 import useExchangeRate from '../hooks/useExchangeRate';
@@ -173,6 +174,7 @@ export default function OrderForm({ order, action, dialog }: OrderFormProps) {
               <field.SinglePickComboboxField
                 choices={trucks}
                 itemLabel={(truck) => truck.plate}
+                filter={(truck, text) => plateMatches(truck.plate, text)}
                 label="Pojazd"
                 placeholder="Wybierz pojazd"
               />
