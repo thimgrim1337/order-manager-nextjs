@@ -22,5 +22,7 @@ echo "▶ pre-commit: typecheck"
 pnpm typecheck
 echo "▶ pre-commit: knip"
 pnpm knip
+echo "▶ pre-commit: lib tests"
+sh scripts/check-lib-tests.sh
 echo "▶ pre-commit: tests"
 pnpm test:staged

@@ -69,7 +69,7 @@ An element's accessible name is whatever a screen reader announces for it: its t
 ## Placement
 
 - Constants shared across files live in `lib/consts.ts`; module-private constants stay in their module.
-- A domain rule several views share lives in `lib/<concept>.ts` (`exchange-rate.ts`, `places.ts`), tested in `__tests__/<concept>.test.ts`.
+- A domain rule several views share lives in `lib/<concept>.ts` (`exchange-rate.ts`, `places.ts`), tested in `__tests__/<concept>.test.ts` (`.db.test.ts` when it needs Postgres); `scripts/check-lib-tests.sh` enforces it.
 - A diff that moves where something lives (a helper, a fixture, a script) or changes what a doc describes (a behaviour, a decision noted on an ADR) updates every pointer to it: `CLAUDE.md`, `CODING_STANDARDS.md`, `docs/` and comments name the new place and say what is now true.
 
 ## Issues
